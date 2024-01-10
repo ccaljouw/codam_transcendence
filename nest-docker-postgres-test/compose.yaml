@@ -11,11 +11,15 @@ version: '3.5'
 services: 
   db: 
     image: postgres 
+    # build:
+    #   context: .
+    #   dockerfile: PGSQLDocker
     restart: always
     environment:
       - POSTGRES_PASSWORD=postgres 
     container_name: postgres 
     volumes:
+      - ./db-init:/docker-entrypoint-initdb.d
       - ./pgdata:/var/lib/postgresql/data 
     ports:
       - '5432:5432' 

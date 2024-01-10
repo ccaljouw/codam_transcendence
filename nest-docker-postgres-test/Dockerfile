@@ -1,3 +1,8 @@
+# FROM postgres
+# ENV POSTGRESS_PASSWORD postgres
+# ENV POSTGRES_DB pdb
+# COPY ./db-init/test_db.sql ./docker-entrypoint-inidb.db/
+
 FROM node:21.5.0 
 WORKDIR /app
 COPY package*.json ./
