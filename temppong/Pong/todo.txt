@@ -1,5 +1,0 @@
-create sleek state machine
-add star end and play scenes
-
-add interpolation
-
