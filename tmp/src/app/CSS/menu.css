@@ -1,0 +1,20 @@
+.menu {
+    background:grey;
+    /* width: 100% */
+}
+
+.menu-item-active,
+.menu-item-inactive {
+  padding: 15px 32px;
+  width: 20%
+}
+
+.menu-item-active {
+  background: white;
+  color: grey;
+}
+
+.menu-item-inactive {
+  background: grey;
+  color: black;
+}

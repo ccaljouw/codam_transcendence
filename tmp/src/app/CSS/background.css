@@ -1,0 +1,35 @@
+.transcendence-Home,
+.transcendence-Profile,
+.transcendence-Game,
+.transcendence-Chat,
+.transcendence-SignUp {
+  padding: 32px 32px;
+}
+
+.transcendence-Home {
+  background: red;
+}
+
+.transcendence-Profile {
+  background: orange;
+}
+
+.transcendence-Game {
+  background: rgb(6, 148, 6);
+}
+
+.transcendence-Chat {
+  background: blue;
+}
+
+.transcendence-SignUp {
+  background: purple;
+}
+
+.form {
+  background:grey;
+}
+
+h1 {
+  color: white;
+}
