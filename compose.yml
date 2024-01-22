@@ -1,0 +1,53 @@
+version: '3.5'
+
+services:
+  db: 
+    image: postgres:16
+    container_name: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=me
+      - POSTGRES_PASSWORD=pwd
+      - POSTGRES_DB=postgres
+    # TODO: figure out how to keep data
+    # volumes:
+    #   - ./postgres_db:/var/lib/postgresql/data
+    networks:
+      - transcendence
+
+  app: 
+    build: 
+      context: .
+      dockerfile: Dockerfile 
+    container_name: backend
+    restart: always
+    ports: 
+      - '3000:3000'
+      - '5555:5555'
+    volumes:
+      - myApp:/app
+    depends_on:
+      - db
+    networks:
+      - transcendence
+
+  nginx:
+    image: nginx:1.23
+    container_name: testcoverage
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./app/coverage/lcov-report:/usr/share/nginx/html
+      - .:/etc/nginx/conf.d/
+
+networks:
+  transcendence:
+
+volumes:
+    myApp:
+      driver: local
+      driver_opts:
+        o: bind
+        type: none
+        device: ./app
