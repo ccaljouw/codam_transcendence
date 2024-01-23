@@ -5,26 +5,29 @@ import { SeedService } from './seed.service';
 @Injectable()
 export class TestingService {
   constructor(private readonly seedService: SeedService) {}
-  async runTests(): Promise<boolean> {
+  async runTests(): Promise<string> {
     const seed = await this.seedService.runSeed();
     
     if (seed) {
-        return new Promise<boolean>((resolve, reject) => {
-          const jestProcess = exec('npm test', (error, stdout, stderror) => {
+        return new Promise<string>((resolve, reject) => {
+          const jestProcess = exec('npm run test:cov', (error, stdout, stderror) => {
             if (error) {
               console.error(`Error while running tests: ${error.message}`);
-              reject(error);
+              reject(error.message);
             } else {
+              const outputMessage = `Tests executed successfully.\n\n${stderror}`;
               console.log(stdout);
-              resolve(true);
+              resolve(outputMessage);
             }
           });
           
+          jestProcess.stdin?.end();
+
           jestProcess.stdout.pipe(process.stdout);
           jestProcess.stderr.pipe(process.stderr);
         });
     } else {
-      return (false);
+      return ('seed failed');
     }
   }
 }

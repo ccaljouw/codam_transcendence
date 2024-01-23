@@ -12,14 +12,11 @@ export class TestingController {
   @ApiOperation({ summary: '(Runs backend tests)'})
   async runTests() {
   try {
-    const testSuccessfull = await this.testingService.runTests();
-    if (testSuccessfull) {
-      return { message: 'Tests executed successfully'}
-    } else {
-      return { message: 'Tests failed'}
-    }
+    const outputMessage = await this.testingService.runTests();
+    const returnMessage = outputMessage.replace(/\n/g, '<br>');
+    return returnMessage;
   } catch (error) {
-    return { message: 'Error running tests'}
+    return 'Error running tests'
   }
   }
 }
