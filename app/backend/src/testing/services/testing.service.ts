@@ -5,29 +5,33 @@ import { SeedService } from './seed.service';
 @Injectable()
 export class TestingService {
   constructor(private readonly seedService: SeedService) {}
-  async runTests(): Promise<string> {
-    const seed = await this.seedService.runSeed();
-    
-    if (seed) {
-        return new Promise<string>((resolve, reject) => {
-          const jestProcess = exec('npm run test:cov', (error, stdout, stderror) => {
-            if (error) {
-              console.error(`Error while running tests: ${error.message}`);
-              reject(error.message);
-            } else {
-              const outputMessage = `Tests executed successfully.\n\n${stderror}`;
-              console.log(stdout);
-              resolve(outputMessage);
-            }
-          });
-          
-          jestProcess.stdin?.end();
-
-          jestProcess.stdout.pipe(process.stdout);
-          jestProcess.stderr.pipe(process.stderr);
-        });
-    } else {
-      return ('seed failed');
-    }
+  
+  async runSeed(): Promise<string> {
+    return await this.seedService.runSeed();
   }
+
+  async runBackendTests(): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      const jestProcess = exec('npm run test:cov', (error, stdout, stderr) => {
+        if (error) {
+          console.error(`ERROR WHILE RUNNING TESTS: ${error.message}`);
+          reject(`ERROR WHILE RUNNING TESTS: ${error.message}`);
+        } else {
+          const outputMessage = `BACKEND TESTS PASSED\n\n${stderr}\n\n`;
+          console.log(stdout);
+          resolve(outputMessage);
+        }
+      });
+      
+      jestProcess.stdin?.end();
+
+      jestProcess.stdout.pipe(process.stdout);
+      jestProcess.stderr.pipe(process.stderr);
+    });
+  }
+
+  async runFrontendTests(): Promise<string> {
+    return 'NO FRONTEND TESTS YET\n\n';
+  }
+
 }
