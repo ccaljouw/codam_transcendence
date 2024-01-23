@@ -1,5 +1,5 @@
 import { Controller, Get, Redirect } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller()
 export class WebsiteController {
