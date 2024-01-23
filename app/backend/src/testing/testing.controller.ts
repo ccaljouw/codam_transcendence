@@ -1,10 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 import { TestingService } from './services/testing.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { SeedService } from './services/seed.service';
-import { run } from 'node:test';
 
-@Controller('test')
+@Controller('testing')
 @ApiTags('test')
 export class TestingController {
   constructor(private readonly testingService: TestingService) {}
