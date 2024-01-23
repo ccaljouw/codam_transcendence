@@ -49,15 +49,5 @@ services:
     networks:
       - transcendence
 
-  nginx:
-    image: nginx:1.23
-    container_name: testcoverage
-    restart: unless-stopped
-    ports:
-      - "8080:80"
-    volumes:
-      - ./app/coverage/lcov-report:/usr/share/nginx/html
-      - .:/etc/nginx/conf.d/
-
 networks:
   transcendence:

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from '../users.service';
-import { MockPrismaService } from '../../prisma/tests/prisma.service.spec';
-import { PrismaService } from '../../prisma/prisma.service';
+import { MockPrismaService } from '../../database/tests/prisma.service.spec';
+import { PrismaService } from '../../database/prisma.service';
 
 // create a mock of this service for use in other tests
 export class MockUsersService {}

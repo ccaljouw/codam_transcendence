@@ -15,7 +15,6 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "prisma:initialMigrate": "npx prisma migrate dev --name 'init'",
     "test": "jest",
     "test:watch": "jest --watchAll",
     "test:cov": "jest --coverage",
@@ -29,14 +28,14 @@
       "ts"
     ],
     "rootDir": "src",
-    "testRegex": ".*\\.*.spec\\.ts$",
+    "testRegex": ".spec.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
+    "coverageDirectory": "../../coverage/backend",
     "testEnvironment": "node"
   },
   "prisma": {

@@ -1,8 +1,14 @@
 
 all: run
 
-run: clean
+run:
 	docker compose up
+
+backend:
+	docker compose up backend
+
+coverage:
+	docker compose up nginx
 
 re: clean
 	docker compose up
@@ -19,8 +25,9 @@ fclean: clean
 	- rm -r app/backend/dist
 	- rm -r app/frontend/.next
 	- rm -r app/node_modules
+	- rm -r app/coverage
 
 prune: fclean
 	docker system prune -af
 
-.PHONY:	all clean fclean re rebuild run prune
+.PHONY:	all clean fclean re rebuild run prune backend coverage
