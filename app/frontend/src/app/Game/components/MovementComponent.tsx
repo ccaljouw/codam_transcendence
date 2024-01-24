@@ -4,6 +4,7 @@ export class MovementComponent {
 	private direction: number	= 0;
 	private speedX: number		= 0;
 	private speedY: number		= 0;
+
 	public x: number			= 0;
 	public y: number			= 0;
 	

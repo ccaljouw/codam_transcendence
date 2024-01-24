@@ -1,6 +1,6 @@
+
 import { TextObject } from "./TextObject";
 import * as CON from "../utils/constants";
-
 
 export class Player {
 	private _id: string = "";	
@@ -15,9 +15,8 @@ export class Player {
 	constructor(name: string, side: string) {
 		this._name = name;
 		this._side = side;
-		this.nameField = new TextObject(this._name, CON.PLAYER_FONT, "white", CON.PLAYER_ALIGN, CON.PLAYER_BASELINE, CON.PLAYER_SIZE, CON.SCREEN_WIDTH / 2, CON.PLAYER_OFFSET_Y);
-		this.scoreField = new TextObject(this._score.toString(), CON.SCORE_FONT, CON.SCORE_COLOR , CON.SCORE_ALIGN, CON.SCORE_BASELINE, CON.SCORE_SIZE, CON.SCREEN_WIDTH / 2 - CON.SCORE_OFFSET_X, CON.SCORE_OFFSET_Y);
-
+		this.nameField = new TextObject("nameField", this._name, CON.PLAYER_FONT, "white", CON.PLAYER_ALIGN, CON.PLAYER_BASELINE, CON.PLAYER_SIZE, CON.SCREEN_WIDTH / 2, CON.PLAYER_OFFSET_Y);
+		this.scoreField = new TextObject("scoreField", this._score.toString(), CON.SCORE_FONT, CON.SCORE_COLOR , CON.SCORE_ALIGN, CON.SCORE_BASELINE, CON.SCORE_SIZE, CON.SCREEN_WIDTH / 2 - CON.SCORE_OFFSET_X, CON.SCORE_OFFSET_Y);
 
 		if (this._side == "Right") {
 			//this._bot = true;
@@ -28,12 +27,14 @@ export class Player {
 		}
 	}
 	
+
 	setRightPlayerFormat() {
 		this.nameField?.setX(CON.SCREEN_WIDTH - CON.PLAYER_OFFSET_X);
 		this.scoreField?.setX(CON.SCREEN_WIDTH / 2 + CON.SCORE_OFFSET_X);
 		this.nameField?.setColor(CON.PLAYER_2_COLOR);
 		this.scoreField?.setColor(CON.PLAYER_2_COLOR);
 	}
+
 
 	setLeftPlayerFormat() {
 		this.nameField?.setX(CON.PLAYER_OFFSET_X);
@@ -54,7 +55,7 @@ export class Player {
 		this._name = _name;
 	}
 
-	getName() {
+		getName() {
 		return this._name;
 	}
 
@@ -90,4 +91,3 @@ export class Player {
 		this._score = 0;
 	}
 }
-

@@ -1,18 +1,25 @@
 //define constant values
 export const GAME_NAME = "Pong";
 
-
 //screen
 export const SCREEN_WIDTH : number = 1280;
 export const SCREEN_HEIGHT : number = 720;
 export const BACKGROUND_COLOR = "black";
 export const BACKGROUND_IMAGE = "assets/background.png";
-export const MARGIN : number = 3;
+export const MARGIN : number = 4;
 
 
 //lines
 export const LINE_WIDTH : number = 6;
 export const LINE_COLOR = "white";
+
+
+//wall
+export const WALL_WIDTH : number = 20;
+export const WALL_COLOR = "blue";
+export const BACK_WALL_GAP : number = 100;
+export const BACK_WALL_COLOR = "red";
+
 
 //paddle
 export const PADDLE_BASE_SPEED : number = 15;
@@ -36,13 +43,6 @@ export const BALL_SPEED_INCREASE : number = 0.1;
 export const BALL_MAX_START_ANGLE : number = Math.PI / 6;
 export const BALL_MIN_START_ANGLE : number = -Math.PI / 6;
 export const MAX_BOUNCE_ANGLE : number = Math.PI / 4;
-
-
-//wall
-export const WALL_WIDTH : number = 20;
-export const WALL_COLOR = "blue";
-export const BACK_WALL_GAP : number = PADDLE_HEIGHT;
-export const BACK_WALL_COLOR = "red";
 
 
 //score
@@ -75,22 +75,40 @@ export const LEFT_PADDLE_UP_KEY = "w";
 export const LEFT_PADDLE_DOWN_KEY = "s";
 export const RIGHT_PADDLE_UP_KEY = "ArrowUp";
 export const RIGHT_PADDLE_DOWN_KEY = "ArrowDown";
-export const PAUSE_KEY = "p";
+export const PAUSE_KEY = 27;
 export const START_KEY = 32;
 
 
 //messages
-export const MESSAGE_COLOR = "white";
-export const MESSAGE_FONT = "Arial";
-export const MESSAGE_SIZE = 40;
-export const MESSAGE_OFFSET_X = 0
-export const MESSAGE_OFFSET_Y = 500;
-export const MESSAGE_ALIGN = "center";
-export const MESSAGE_BASELINE = "middle";
-
+//center message
+export const CENTER_MESSAGE_SIZE = 70;
+export const CENTER_MESSAGE_X = SCREEN_WIDTH / 2 - CENTER_MESSAGE_SIZE / 2;
+export const CENTER_MESSAGE_Y = SCREEN_HEIGHT - WALL_WIDTH -  CENTER_MESSAGE_SIZE - 200;
+export const CENTER_MESSAGE_ALIGN = "center";
+export const CENTER_MESSAGE_BASELINE = "middle";
+export const CENTER_MESSAGE_COLOR = "white";
+export const CENTER_MESSAGE_FONT = "Arial";
+//left and right messages (side)
+export const SIDE_MESSAGE_SIZE = 30;
+export const SIDE_MESSAGE_OFFSET_X = WALL_WIDTH + SIDE_MESSAGE_SIZE + 300;
+export const SIDE_MESSAGE_OFFSET_Y = SCREEN_HEIGHT - WALL_WIDTH + SIDE_MESSAGE_SIZE - 50;
+export const SIDE_MESSAGE_ALIGN = "center";
+export const SIDE_MESSAGE_BASELINE = "middle";
+export const SIDE_MESSAGE_COLOR = "white";
+export const SIDE_MESSAGE_FONT = "Arial";
+//top message
+export const TOP_MESSAGE_SIZE = 30;
+export const TOP_MESSAGE_OFFSET_X = SCREEN_WIDTH / 2 - TOP_MESSAGE_SIZE / 2;
+export const TOP_MESSAGE_OFFSET_Y = WALL_WIDTH + TOP_MESSAGE_SIZE + 100;
+export const TOP_MESSAGE_ALIGN = "center";
+export const TOP_MESSAGE_BASELINE = "middle";
+export const TOP_MESSAGE_COLOR = "white";
+export const TOP_MESSAGE_FONT = "Arial";
+//messages
 export const START_MESSAGE = "Press SPACE to start a game";
 export const PAUSE_MESSAGE = "Press SPACE to resume the game";
 export const WIN_MESSAGE = "Press SPACE to start a new match";
+
 
 export enum GameState {
 	ready,
@@ -99,9 +117,15 @@ export enum GameState {
 	end
 }
 
-
 export enum WallTypes {
 	horizontal,
 	vertical
+}
+
+export enum MessageFields {
+	center, 
+	left,
+	right,
+	top,
 }
 

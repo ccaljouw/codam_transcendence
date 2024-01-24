@@ -1,7 +1,7 @@
 
 import * as CON from "../utils/constants";
 import { Wall } from "../gameObjects/Wall";
-import { Line } from "../gameObjects/Line";
+import { GameObject } from "../gameObjects/GameObject";
 import { Paddle } from "../gameObjects/Paddle";
 import { Ball } from "../gameObjects/Ball";
 import { KeyListener } from "./KeyListener";
@@ -9,7 +9,7 @@ import { Player } from "./Player";
 import { TextObject } from "./TextObject";
 import { 
 		detectCollision, detectScore } from "./collisionDetection";
-import { endGame, updateMainMessage, checkWinCondition } from "../utils/utils";
+import { checkWinCondition } from "../utils/utils";
 import {
 	 	wallInitializer,
 		paddleInitializer,
@@ -21,42 +21,40 @@ import {
 		canvasInitializer } from "./initializers";
 
 
-export class Game {
+	export class Game {
+	private	_canvas: HTMLCanvasElement;
+	private	_ctx: CanvasRenderingContext2D;
+	private	_keyListener: KeyListener = new KeyListener();
+	private	_walls: Wall [] = [] ;
+	private	_paddels: Paddle [] = [];
+	private _lines: GameObject [] = [];
+
 	public gameState = CON.GameState.ready;
-	public messageField: TextObject | null = null;
+	public messageFields: TextObject [] = [];
 	public ball: Ball | null = null;
 	public players: Player [] = [];
 
-	private	_canvas: HTMLCanvasElement;
-	private	_ctx: CanvasRenderingContext2D;
-	private	_keyListener: KeyListener | null = null;
-	private	_walls: Wall [] = [] ;
-	private	_paddels: Paddle [] = [];
-	private _lines: Line [] = [];
-
 
 	constructor(newCanvas: HTMLCanvasElement) {
-		this._canvas=newCanvas;
-		canvasInitializer(this._canvas);
-		this._ctx = this._canvas.getContext("2d") as CanvasRenderingContext2D;
+		this._canvas = newCanvas;
 		this.initializeGameObjects();
+		this._ctx = this._canvas.getContext("2d") as CanvasRenderingContext2D;
 	}
 
 
 	initializeGameObjects() {
-		this.messageField = messageFieldInitializer();
+		canvasInitializer(this._canvas);
+		messageFieldInitializer(this.messageFields);
 		paddleInitializer(this._paddels);
 		wallInitializer(this._walls);
-		
-		this._lines.push(lineInitializer("Center"));
-		
-		this._keyListener = keyListenerInitializer(this);
+		lineInitializer(this._lines);
 		playerInitializer(this.players);
-		this.setBall()
+		keyListenerInitializer(this._keyListener, this);
+		this.resetBall()
 	}
+	
 
-
-	setBall() {
+	resetBall() {
 		this.ball = null;
 		this.ball = ballInitializer();
 	}
@@ -70,24 +68,21 @@ export class Game {
 		let goal = detectScore(this.ball as Ball, this.players)
 		let winner = checkWinCondition(this.players);
 		if (winner) {
-			endGame(this, winner);
+			this.endGame(winner);
 		} else if (goal) {
 			this.resetGame();
 		}
-	
-		if (this.messageField ) {
-			updateMainMessage(this.messageField, this.gameState);
-		}
+		this.messageFields.forEach(message => message.update());
 	}
-	
+
 	drawGameObjects() {
-		this._lines.forEach(line => line.draw(this._ctx));
-		this._walls.forEach(wall => wall.draw(this._ctx));
+		this.ball?.draw(this._ctx);
 		this._paddels.forEach(paddle => paddle.draw(this._ctx));
+		this._walls.forEach(wall => wall.draw(this._ctx));
 		this.players.forEach(player => player.scoreField?.draw(this._ctx));
 		this.players.forEach(player => player.nameField?.draw(this._ctx));
-		this.ball?.draw(this._ctx);
-		this.messageField?.draw(this._ctx);
+		this.messageFields.forEach(message => message.draw(this._ctx));
+		this._lines.forEach(line => line.draw(this._ctx));
 	}
 
 	//todo: add interpolation and implement pauze
@@ -108,17 +103,23 @@ export class Game {
 			player.resetScore();
 			player.scoreField?.setText(player.getScore().toString());
 		}
-		this.setBall();
+		this.resetBall();
+		this.messageFields[0].setText(CON.START_MESSAGE);
 		this.gameState = 0;
-		this.messageField?.setText(CON.START_MESSAGE);
 		this.gameLoop();
 	}
 
 
 	resetGame() {
 		this.gameState = 0;
-		this.setBall();
+		this.resetBall();
 	}
+
+
+	endGame(winner: string) {
+	this.messageFields[0].setText(winner + " won the match");
+	this.gameState = 3
+}
 
 
 	//to start the game

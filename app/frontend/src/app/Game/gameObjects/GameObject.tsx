@@ -1,6 +1,7 @@
 
 import { drawGameObject } from "../utils/utils";
 
+
 export class GameObject {
 
 	protected name: string = "";
@@ -31,22 +32,33 @@ export class GameObject {
 		this.color = color;
 	}
 
+	getName() { 
+		return this.name;
+	}
 
-	getName() { return this.name; }
+	getX() {
+		return this.x;
+	}
 
-	getX() { return this.x; }
+	getY() {
+		return this.y;
+	}
 
-	getY() { return this.y; }
+	setX(x: number) {
+		this.x = x;
+	}
 
-	setX(x: number) { this.x = x; }
+	setY(y: number) {
+		this.y = y;
+	}
 
-	setY(y: number) { this.y = y; }
+	getWidth() {
+		return this.width;
+	}
 
-	getWidth() { return this.width; }
-
-	getHeight() { return this.height; }
-
-	update() {}
+	getHeight() {
+		return this.height;
+	}
 
 	draw(ctx: CanvasRenderingContext2D) {
 		drawGameObject(ctx, this.x, this.y, this.width, this.height, this.color);

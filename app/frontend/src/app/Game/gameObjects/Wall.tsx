@@ -4,7 +4,6 @@ import { GameObject } from "./GameObject";
 
 //type 0  is horizontal, 1 is vertical
 export class Wall extends GameObject {
-	//set horizontal or vertical
 	private _type: CON.WallTypes
 
 	constructor(name: string, type: number, x: number, y: number, width: number, height: number, color: string) {

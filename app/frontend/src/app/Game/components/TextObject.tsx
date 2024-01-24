@@ -1,3 +1,4 @@
+
 import { GameObject } from "../gameObjects/GameObject";
 import * as CON from "../utils/constants";
 
@@ -9,9 +10,8 @@ export class TextObject extends GameObject {
 	private baseline: string = "";
 	private size: number = 0;
 
-
-	constructor(text: string, font: string, color: string, align: string, baseline: string, size: number, x: number, y: number) {
-		super("", x, y, 0, 0, color);
+	constructor(name: string, text: string, font: string, color: string, align: string, baseline: string, size: number, x: number, y: number) {
+		super(name, x, y, 0, 0, color);
 		this.text = text;
 		this.font = font;
 		this.color = color;
@@ -19,6 +19,7 @@ export class TextObject extends GameObject {
 		this.baseline = baseline;
 		this.size = size;
 	}
+
 	
 	public draw(ctx: CanvasRenderingContext2D) {
 		ctx.font = this.size + "px " + this.font;
@@ -27,6 +28,11 @@ export class TextObject extends GameObject {
 		ctx.textBaseline = this.baseline as CanvasTextBaseline;
 		ctx.fillText(this.text, this.x, this.y);
 	}
+
+	update() {
+		
+	}
+
 
 	public setText(text: string) {
 		this.text = text;
@@ -63,5 +69,5 @@ export class TextObject extends GameObject {
 	public getSize() {
 		return this.size;
 	}
-
 }
+

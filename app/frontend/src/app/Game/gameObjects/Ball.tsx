@@ -1,3 +1,4 @@
+
 import { GameObject } from "./GameObject";
 import { MovementComponent } from "../components/MovementComponent";
 import { getNormalizedDistance, switchDirectionForRightPaddle } from "../utils/utils";
@@ -29,6 +30,7 @@ export class Ball extends GameObject {
 		this.movementComponent.setSpeed(CON.BALL_BASE_SPEED + Math.random() * 2 - 1);		
 	}
 
+
 	public resetBall() {
 		this.movementComponent.resetMovementComponent();
 		this.movementComponent.x = CON.BALL_START_X;
@@ -46,11 +48,12 @@ export class Ball extends GameObject {
 		let newDirection = normalizedDistance * CON.MAX_BOUNCE_ANGLE;
 		let ballDirection = this.movementComponent.getXdiretcion();
 
+		let offset = this.movementComponent.getSpeedX() * 2;
 		if (ballDirection == 1) {
-			this.x -= this.movementComponent.getSpeed() * 2;
+			this.x -= offset
 			newDirection = switchDirectionForRightPaddle(newDirection, normalizedDistance);
 		}
-		this.x += this.movementComponent.getSpeed() * 2;
+		this.x += offset;
     	return newDirection;
     }
 

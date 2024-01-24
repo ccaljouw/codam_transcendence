@@ -1,6 +1,6 @@
 import { GameObject } from "../gameObjects/GameObject";
 import { Player } from "../components/Player";
-import { Game } from "../components/game";
+import { Game } from "../components/Game";
 import * as CON from "./constants";
 import { TextObject } from "../components/TextObject";
 
@@ -10,6 +10,7 @@ export function drawGameObject(ctx: CanvasRenderingContext2D, x: number, y: numb
 	ctx.fillRect(x, y, width, height);
 }
 
+
 export function getNormalizedDistance(ball: GameObject, paddle: GameObject) {
 	let paddleCenter = paddle.getY() + paddle.getHeight() / 2;
 	let ballCenter = ball.getY() + ball.getHeight() / 2;
@@ -17,6 +18,7 @@ export function getNormalizedDistance(ball: GameObject, paddle: GameObject) {
 	let normalizedDistance = distance / (paddle.getHeight() / 2);
 	return normalizedDistance;		
 }
+
 
 export function switchDirectionForRightPaddle(newDirection: number, normalizedDistance: number) {
 	if (normalizedDistance < 0) {
@@ -26,6 +28,7 @@ export function switchDirectionForRightPaddle(newDirection: number, normalizedDi
 	}
 }
 
+
 export function settleScore(players: Player[], scored: string) {
 	for (let player of players) {
 		if (player.getSide() == scored) {
@@ -34,6 +37,7 @@ export function settleScore(players: Player[], scored: string) {
 		}
 	}
 }
+
 
 export function checkWinCondition(players: Player[]) {
 	for (let player of players) {
@@ -45,9 +49,10 @@ export function checkWinCondition(players: Player[]) {
 }
 
 
-export function endGame(game: Game, winner: string) {
-	game.messageField.setText(winner + " won the match");
-	game.gameState = 3
+function clearMessageFields(messageFields: TextObject[]) {
+	for (let message of messageFields) {
+		message.setText("");
+	}
 }
 
 
@@ -58,10 +63,12 @@ export function startKeyPressed(game: Game) {
 	if (game.gameState == 3){
 		game.resetMatch();
 	} else {
+		clearMessageFields(game.messageFields);
 		game.gameState = 1;
 		game.ball?.startBall();
 	}
 }
+
 
 export function pauseKeyPressed(game: Game) {
 	if (game.gameState == 1) {
@@ -71,12 +78,3 @@ export function pauseKeyPressed(game: Game) {
 	}
 }
 
-export function updateMainMessage(messageField: TextObject, gameState: number) {
-	if (gameState == 0) {
-		messageField.setText(CON.START_MESSAGE);
-	} else if (gameState == 1) {
-		messageField.setText("");
-	} else if (gameState == 2) {
-		messageField.setText(CON.PAUSE_MESSAGE);
-	}
-}
