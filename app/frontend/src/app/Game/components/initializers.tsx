@@ -4,7 +4,7 @@ import { Wall } from "../gameObjects/Wall";
 import { Line } from "../gameObjects/Line";
 import { Ball } from "../gameObjects/Ball";
 import { Game } from "./game";
-import { KeyListener } from "./KeyListner";
+import { KeyListener } from "./KeyListener";
 import { TextObject } from "./TextObject";
 import { startKeyPressed, pauseKeyPressed } from "../utils/utils";
 import * as CON from "../utils/constants";

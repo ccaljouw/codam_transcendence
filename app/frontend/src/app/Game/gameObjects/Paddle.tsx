@@ -1,7 +1,7 @@
 
 import { GameObject } from "./GameObject";
 import { MovementComponent } from "../components/MovementComponent";
-import { KeyListener } from "../components/KeyListner";
+import { KeyListener } from "../components/KeyListener";
 import * as CON from "../utils/constants";
 
 export class Paddle extends GameObject {

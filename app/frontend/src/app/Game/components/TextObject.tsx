@@ -1,4 +1,5 @@
 import { GameObject } from "../gameObjects/GameObject";
+import * as CON from "../utils/constants";
 
 
 export class TextObject extends GameObject {

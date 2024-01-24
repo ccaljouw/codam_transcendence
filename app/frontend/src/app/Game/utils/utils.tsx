@@ -32,23 +32,24 @@ export function settleScore(players: Player[], scored: string) {
 			player.setScore(player.getScore() + 1);
 			player.scoreField?.setText(player.getScore().toString());
 		}
-		if (player.getScore() == CON.WINNING_SCORE) {
-			return player.getName() + " Wins!\n";
+	}
+}
+
+export function checkWinCondition(players: Player[]) {
+	for (let player of players) {
+		if (player.getScore() >= CON.WINNING_SCORE) {
+			return player.getName();
 		}
 	}
 	return null;
 }
 
+
 export function endGame(game: Game, winner: string) {
+	game.messageField.setText(winner + " won the match");
 	game.gameState = 3
-	game.messageField?.setText(winner + CON.WIN_MESSAGE);
 }
 
-// export function LoadBackground() {
-// 	const backGround = new Image();
-// 	backGround.src = CON.BACKGROUND_IMAGE;
-// 	return backGround;
-// }
 
 export function startKeyPressed(game: Game) {
 	if (game.gameState == 1 ) {
@@ -58,7 +59,6 @@ export function startKeyPressed(game: Game) {
 		game.resetMatch();
 	} else {
 		game.gameState = 1;
-		game.messageField?.setText("");
 		game.ball?.startBall();
 	}
 }
@@ -66,13 +66,12 @@ export function startKeyPressed(game: Game) {
 export function pauseKeyPressed(game: Game) {
 	if (game.gameState == 1) {
 		game.gameState = 2;
-		game.messageField?.setText(CON.PAUSE_MESSAGE);
 	} else if (game.gameState == 2) {
 		game.gameState = 1;
 	}
 }
 
-export function updateMessageField(messageField: TextObject, gameState: number) {
+export function updateMainMessage(messageField: TextObject, gameState: number) {
 	if (gameState == 0) {
 		messageField.setText(CON.START_MESSAGE);
 	} else if (gameState == 1) {
@@ -81,4 +80,3 @@ export function updateMessageField(messageField: TextObject, gameState: number) 
 		messageField.setText(CON.PAUSE_MESSAGE);
 	}
 }
-

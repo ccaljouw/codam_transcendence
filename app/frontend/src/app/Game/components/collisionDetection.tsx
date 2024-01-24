@@ -3,6 +3,8 @@ import { Wall } from "../gameObjects/Wall";
 import { Paddle } from "../gameObjects/Paddle";
 import { Ball } from "../gameObjects/Ball";
 import * as CON from "../utils/constants";
+import { Player } from "./Player";
+import { settleScore } from "../utils/utils";
 
 
 function checkWallCollisions(ball: Ball, walls: Wall[]) {
@@ -19,7 +21,7 @@ function checkWallCollisions(ball: Ball, walls: Wall[]) {
 }
 
 
-function checkPAddleCollisions(ball: Ball, paddles: Paddle[]) {
+function checkPaddleCollisions(ball: Ball, paddles: Paddle[]) {
 	for (let paddle of paddles) {
 		if (ball.getX() + ball.getWidth() + ball.movementComponent.getSpeedX() > paddle.getX() && ball.getX() - CON.MARGIN < paddle.getX() + paddle.getWidth()) {
 			if ((ball.getY() + ball.getHeight() + CON.MARGIN) > paddle.getY() && ball.getY() - CON.MARGIN < paddle.getY() + paddle.getHeight()) {
@@ -30,19 +32,22 @@ function checkPAddleCollisions(ball: Ball, paddles: Paddle[]) {
 }
 
 
-function checkGoalCollisions(ball: Ball, walls: Wall[]) {
+export function detectScore(ball: Ball, players: Player[]) {
+	let goal = false;
 	if (ball.getX() + ball.getWidth() < 0) {
-		return "Right";
+		settleScore(players, "Right");
+		return true;
 	}
 	else if (ball.getX() > CON.SCREEN_WIDTH) {
-		return "Left";
+		settleScore(players, "Left");
+		return true;
 	}
+	return false;
 }
 
 
 export function detectCollision(ball: Ball, paddles: Paddle[], walls: Wall[]) {
 	checkWallCollisions(ball, walls);
-	checkPAddleCollisions(ball, paddles);
-	return checkGoalCollisions(ball, walls);
+	checkPaddleCollisions(ball, paddles);
 }
   

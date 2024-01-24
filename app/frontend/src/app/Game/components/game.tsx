@@ -4,14 +4,12 @@ import { Wall } from "../gameObjects/Wall";
 import { Line } from "../gameObjects/Line";
 import { Paddle } from "../gameObjects/Paddle";
 import { Ball } from "../gameObjects/Ball";
-import { KeyListener } from "./KeyListner";
+import { KeyListener } from "./KeyListener";
 import { Player } from "./Player";
 import { TextObject } from "./TextObject";
-import { detectCollision } from "./collisionDetection";
-import {
-		settleScore,
-		endGame,
-		updateMessageField } from "../utils/utils";
+import { 
+		detectCollision, detectScore } from "./collisionDetection";
+import { endGame, updateMainMessage, checkWinCondition } from "../utils/utils";
 import {
 	 	wallInitializer,
 		paddleInitializer,
@@ -28,9 +26,8 @@ export class Game {
 	public ball: Ball | null = null;
 	public players: Player [] = [];
 
-	private	_canvas: HTMLCanvasElement;// = document.createElement("canvas");
+	private	_canvas: HTMLCanvasElement;
 	private	_ctx: CanvasRenderingContext2D;
-	// private _background = LoadBackground();
 	private	_keyListener: KeyListener | null = null;
 	private	_walls: Wall [] = [] ;
 	private	_paddels: Paddle [] = [];
@@ -41,10 +38,10 @@ export class Game {
 		this._canvas=newCanvas;
 		canvasInitializer(this._canvas);
 		this._ctx = this._canvas.getContext("2d") as CanvasRenderingContext2D;
-		// document.body.appendChild(this._canvas);
 		this.initializeGameObjects();
 	}
-	
+
+
 	initializeGameObjects() {
 		this.messageField = messageFieldInitializer();
 		this._paddels.push(paddleInitializer("Right"));
@@ -76,27 +73,22 @@ export class Game {
 	updateGameObjects() {
 		this._paddels.forEach(paddle => paddle.updatePaddle(this.gameState));
 		this.ball?.updateBall(this.gameState);
+		detectCollision(this.ball as Ball, this._paddels, this._walls);
 		
-		if (this.ball) {
-			const scored = detectCollision(this.ball, this._paddels, this._walls);
-			if (scored) {
-				let win = settleScore(this.players, scored);
-				if (win) {
-					endGame(this, win);
-				} else {
-					this.resetGame();
-				}
-			}
+		let goal = detectScore(this.ball as Ball, this.players)
+		let winner = checkWinCondition(this.players);
+		if (winner) {
+			endGame(this, winner);
+		} else if (goal) {
+			this.resetGame();
 		}
-			
+	
 		if (this.messageField ) {
-			updateMessageField(this.messageField, this.gameState);
+			updateMainMessage(this.messageField, this.gameState);
 		}
 	}
-
 	
 	drawGameObjects() {
-		// this._ctx.drawImage(this._background, 0, 0);
 		this._lines.forEach(line => line.draw(this._ctx));
 		this._walls.forEach(wall => wall.draw(this._ctx));
 		this._paddels.forEach(paddle => paddle.draw(this._ctx));
@@ -106,7 +98,7 @@ export class Game {
 		this.messageField?.draw(this._ctx);
 	}
 
-	//todo: add interpolation an dpauze
+	//todo: add interpolation and implement pauze
 	gameLoop() {
 		this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
 		this.updateGameObjects();
@@ -117,6 +109,7 @@ export class Game {
 			requestAnimationFrame(this.gameLoop.bind(this));
 		}
 	}
+
 
 	resetMatch() {
 		for (let player of this.players) {
@@ -129,10 +122,12 @@ export class Game {
 		this.gameLoop();
 	}
 
+
 	resetGame() {
 		this.gameState = 0;
 		this.setBall();
 	}
+
 
 	//to start the game
 	startGame() {
