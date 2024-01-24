@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthenticationService } from '../services/authentication.service';
-import { MockUsersService } from '../../database/users/tests/users.service.spec';
-import { UsersService } from '../../database/users/users.service';
+import { MockUsersService } from '../../users/tests/users.service.spec';
+import { UsersService } from '../../users/users.service';
 
 export class MockAuthenticationService {}
 

@@ -9,45 +9,45 @@ services:
       - POSTGRES_USER=me
       - POSTGRES_PASSWORD=pwd
       - POSTGRES_DB=postgres
-    # TODO: figure out how to keep data
+    # TODO: figure out how to start the container with existing data
     # volumes:
     #   - ./postgres_db:/var/lib/postgresql/data
     networks:
       - transcendence
 
-  app: 
+  backend: 
     build: 
-      context: .
-      dockerfile: Dockerfile 
+      context: ./app/backend
+      dockerfile: Dockerfile
     container_name: backend
     restart: always
     ports: 
+    # port for api
       - '3001:3000'
+    # port for prisma
       - '5555:5555'
     volumes:
-      - myApp:/app
+      - ./app:/app
     depends_on:
       - db
     networks:
       - transcendence
-
-  nginx:
-    image: nginx:1.23
-    container_name: testcoverage
-    restart: unless-stopped
+    
+  frontend:
+    depends_on:
+      - backend
+    build: 
+      context: ./app/frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: always
     ports:
-      - "8080:80"
+    # port for website
+      - '3000:3000'
     volumes:
-      - ./app/coverage/lcov-report:/usr/share/nginx/html
-      - .:/etc/nginx/conf.d/
+      - ./app:/app
+    networks:
+      - transcendence
 
 networks:
   transcendence:
-
-volumes:
-    myApp:
-      driver: local
-      driver_opts:
-        o: bind
-        type: none
-        device: ./app
