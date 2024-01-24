@@ -68,9 +68,9 @@ export class Ball extends GameObject {
 	public hitHorizontalWall() {
 		this.movementComponent.setSpeedY(this.movementComponent.getSpeedY() * -1);
 		if (this.movementComponent.getYdiretcion() < 0) {
-			this.y += this.movementComponent.getSpeedY() * 2;
+			this.y += this.movementComponent.getSpeed();
 		} else {
-			this.y -= this.movementComponent.getSpeedY() * 2;
+			this.y -= this.movementComponent.getSpeed();
 		}
 	}
 
@@ -78,9 +78,9 @@ export class Ball extends GameObject {
 	public hitVerticalWall() {
 		this.movementComponent.setSpeedX(this.movementComponent.getSpeedX() * -1);
 		if (this.movementComponent.getXdiretcion() < 0) {
-			this.x += this.movementComponent.getSpeedX() * 2;
+			this.x += this.movementComponent.getSpeed();
 		} else {
-			this.x -= this.movementComponent.getSpeedX() * 2;
+			this.x -= this.movementComponent.getSpeed();
 		}
 	}
 

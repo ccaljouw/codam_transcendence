@@ -7,21 +7,22 @@ import { Player } from "./Player";
 import { settleScore } from "../utils/utils";
 
 
-function checkWallCollisions(ball: Ball, walls: Wall[]) {
+function detectWallCollisions(ball: Ball, walls: Wall[]) {
 	for (let wall of walls) {
-		if (ball.getY() < wall.getY() + wall.getHeight() + CON.MARGIN && ball.getY() + ball.getHeight() > wall.getY() - CON.MARGIN) {
-			if (wall.getType() == 0) {
-				ball.hitHorizontalWall();
-			}
-			else {
-				ball.hitVerticalWall();
+		if (ball.getX() + ball.getWidth() > wall.getX() && ball.getX() < wall.getX() + wall.getWidth()) {
+			if (ball.getY() + ball.getHeight() > wall.getY() && ball.getY() < wall.getY() + wall.getHeight()) {
+				if (wall.getType() == 0) {
+					ball.hitHorizontalWall();
+				} else {
+					ball.hitVerticalWall();
+				}
 			}
 		}
 	}
 }
+	
 
-
-function checkPaddleCollisions(ball: Ball, paddles: Paddle[]) {
+function detectPaddleCollisions(ball: Ball, paddles: Paddle[]) {
 	for (let paddle of paddles) {
 		if (ball.getX() + ball.getWidth() + ball.movementComponent.getSpeedX() > paddle.getX() && ball.getX() - CON.MARGIN < paddle.getX() + paddle.getWidth()) {
 			if ((ball.getY() + ball.getHeight() + CON.MARGIN) > paddle.getY() && ball.getY() - CON.MARGIN < paddle.getY() + paddle.getHeight()) {
@@ -47,7 +48,7 @@ export function detectScore(ball: Ball, players: Player[]) {
 
 
 export function detectCollision(ball: Ball, paddles: Paddle[], walls: Wall[]) {
-	checkWallCollisions(ball, walls);
-	checkPaddleCollisions(ball, paddles);
+	detectPaddleCollisions(ball, paddles);
+	detectWallCollisions(ball, walls);
 }
   

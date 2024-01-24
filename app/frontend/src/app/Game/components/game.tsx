@@ -16,6 +16,7 @@ import {
 		ballInitializer,
 		keyListenerInitializer,
 		messageFieldInitializer,
+		playerInitializer,
 		lineInitializer,
 		canvasInitializer } from "./initializers";
 
@@ -44,16 +45,13 @@ export class Game {
 
 	initializeGameObjects() {
 		this.messageField = messageFieldInitializer();
-		this._paddels.push(paddleInitializer("Right"));
-		this._paddels.push(paddleInitializer("Left"));
+		paddleInitializer(this._paddels);
+		wallInitializer(this._walls);
 		
-		this._walls.push(wallInitializer("Top", 0));
-		this._walls.push(wallInitializer("Bottom", 0));
-
 		this._lines.push(lineInitializer("Center"));
 		
 		this._keyListener = keyListenerInitializer(this);
-		this.setPlayers()
+		playerInitializer(this.players);
 		this.setBall()
 	}
 
@@ -61,12 +59,6 @@ export class Game {
 	setBall() {
 		this.ball = null;
 		this.ball = ballInitializer();
-	}
-
-
-	setPlayers() {
-		this.players.push(new Player(CON.PLAYER_1_NAME, "Left"));
-		this.players.push(new Player(CON.PLAYER_2_NAME, "Right"));
 	}
 
 

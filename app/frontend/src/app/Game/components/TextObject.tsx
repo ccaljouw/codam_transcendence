@@ -19,7 +19,7 @@ export class TextObject extends GameObject {
 		this.baseline = baseline;
 		this.size = size;
 	}
-
+	
 	public draw(ctx: CanvasRenderingContext2D) {
 		ctx.font = this.size + "px " + this.font;
 		ctx.fillStyle = this.color;
@@ -63,4 +63,5 @@ export class TextObject extends GameObject {
 	public getSize() {
 		return this.size;
 	}
+
 }
