@@ -1,3 +1,4 @@
+
 //define constant values
 export const GAME_NAME = "Pong";
 
@@ -122,10 +123,10 @@ export enum WallTypes {
 	vertical
 }
 
-export enum MessageFields {
-	center, 
-	left,
-	right,
-	top,
-}
+// export enum MessageFields {
+// 	center, 
+// 	left,
+// 	right,
+// 	top,
+// }
 

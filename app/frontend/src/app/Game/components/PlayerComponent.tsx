@@ -1,22 +1,22 @@
 
-import { TextObject } from "./TextObject";
+import { TextComponent } from "./TextComponent";
 import * as CON from "../utils/constants";
 
-export class Player {
+export class PlayerComponent {
 	private _id: string = "";	
 	private _name: string = "";
 	private _side: string = "";
 	private _score: number = 0;
 	private _bot: boolean = false;
 
-	public nameField: TextObject | null = null;
-	public scoreField: TextObject | null = null;
+	public nameField: TextComponent | null = null;
+	public scoreField: TextComponent | null = null;
 
 	constructor(name: string, side: string) {
 		this._name = name;
 		this._side = side;
-		this.nameField = new TextObject("nameField", this._name, CON.PLAYER_FONT, "white", CON.PLAYER_ALIGN, CON.PLAYER_BASELINE, CON.PLAYER_SIZE, CON.SCREEN_WIDTH / 2, CON.PLAYER_OFFSET_Y);
-		this.scoreField = new TextObject("scoreField", this._score.toString(), CON.SCORE_FONT, CON.SCORE_COLOR , CON.SCORE_ALIGN, CON.SCORE_BASELINE, CON.SCORE_SIZE, CON.SCREEN_WIDTH / 2 - CON.SCORE_OFFSET_X, CON.SCORE_OFFSET_Y);
+		this.nameField = new TextComponent("nameField", this._name, CON.PLAYER_FONT, "white", CON.PLAYER_ALIGN, CON.PLAYER_BASELINE, CON.PLAYER_SIZE, CON.SCREEN_WIDTH / 2, CON.PLAYER_OFFSET_Y);
+		this.scoreField = new TextComponent("scoreField", this._score.toString(), CON.SCORE_FONT, CON.SCORE_COLOR , CON.SCORE_ALIGN, CON.SCORE_BASELINE, CON.SCORE_SIZE, CON.SCREEN_WIDTH / 2 - CON.SCORE_OFFSET_X, CON.SCORE_OFFSET_Y);
 
 		if (this._side == "Right") {
 			//this._bot = true;

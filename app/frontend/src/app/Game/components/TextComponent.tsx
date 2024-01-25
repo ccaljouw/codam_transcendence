@@ -1,9 +1,8 @@
 
 import { GameObject } from "../gameObjects/GameObject";
-import * as CON from "../utils/constants";
 
 
-export class TextObject extends GameObject {
+export class TextComponent extends GameObject {
 	private text: string = "";
 	private font: string = "";
 	private align: string = "";

@@ -1,4 +1,4 @@
-import { Game } from "../Game/components/Game.tsx";
+import { Game } from "../Game/components/GameComponent.tsx";
 import { useRef, useEffect, useState } from 'react';
 
 function GameComponent() {

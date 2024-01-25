@@ -1,20 +1,20 @@
 
 import { GameObject } from "./GameObject";
 import { MovementComponent } from "../components/MovementComponent";
-import { KeyListener } from "../components/KeyListener";
+import { KeyListenerComponent } from "../components/KeyListenerComponent";
 import * as CON from "../utils/constants";
 
 
 export class Paddle extends GameObject {
 	public	movementComponent: MovementComponent;
-	public	keyListener: KeyListener;
+	public	keyListener: KeyListenerComponent;
 
 	constructor(name: string, x: number, y: number, width: number, height: number, color: string) {
 		super(name, x, y, width, height, color);
 		this.movementComponent = new MovementComponent(0, 0, x, y);
-		this.keyListener = new KeyListener();
+		this.keyListener = new KeyListenerComponent();
 	}
-	
+
 	
 	public setKeyListerns(paddle: Paddle, keyUp: string, keyDown: string) {
 		if (paddle == null) {
@@ -37,7 +37,7 @@ export class Paddle extends GameObject {
 		this.y = CON.PADDLE_OFFSET_Y;
 		this.movementComponent.setSpeed(0);
 		this.movementComponent.setDirection(0);
-		this.movementComponent.y = CON.PADDLE_OFFSET_Y;
+		this.movementComponent.setY(CON.PADDLE_OFFSET_Y);
 	}
 
 	
@@ -64,7 +64,7 @@ export class Paddle extends GameObject {
 		}
 		if (this.keyListener.checkKeysPressed()) {
 			this.movementComponent.update();
-			this.y = this.movementComponent.y;
+			this.y = this.movementComponent.getY();
 			this.checkBounds();	
 		}
 	}

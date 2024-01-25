@@ -3,7 +3,6 @@ import { GameObject } from "./GameObject";
 import { MovementComponent } from "../components/MovementComponent";
 import { getNormalizedDistance, switchDirectionForRightPaddle } from "../utils/utils";
 import * as CON from "../utils/constants";
-import { detectCollision } from "../components/collisionDetection";
 
 
 export class Ball extends GameObject {
@@ -33,8 +32,8 @@ export class Ball extends GameObject {
 
 	public resetBall() {
 		this.movementComponent.resetMovementComponent();
-		this.movementComponent.x = CON.BALL_START_X;
-		this.movementComponent.y = CON.BALL_START_Y;
+		this.movementComponent.setX(CON.BALL_START_X);
+		this.movementComponent.setY(CON.BALL_START_Y);
 	}
 
 
@@ -93,7 +92,7 @@ export class Ball extends GameObject {
 			return;
 		}
 		this.movementComponent.update();
-		this.x = this.movementComponent.x;
-		this.y = this.movementComponent.y;
+		this.x = this.movementComponent.getX();
+		this.y = this.movementComponent.getY();
 	}
 }

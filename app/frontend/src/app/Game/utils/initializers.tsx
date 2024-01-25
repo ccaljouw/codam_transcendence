@@ -3,12 +3,12 @@ import { Paddle } from "../gameObjects/Paddle";
 import { Wall } from "../gameObjects/Wall";
 import { GameObject } from "../gameObjects/GameObject";
 import { Ball } from "../gameObjects/Ball";
-import { Player } from "./Player";
-import { Game } from "./Game";
-import { KeyListener } from "../components/KeyListener";
-import { TextObject } from "./TextObject";
-import { startKeyPressed, pauseKeyPressed } from "../utils/utils";
-import * as CON from "../utils/constants";
+import { PlayerComponent } from "../components/PlayerComponent";
+import { GameComponent } from "../components/GameComponent";
+import { KeyListenerComponent } from "../components/KeyListenerComponent";
+import { TextComponent } from "../components/TextComponent";
+import { startKeyPressed, pauseKeyPressed } from "./utils";
+import * as CON from "./constants";
 
 
 export function canvasInitializer (canvas: HTMLCanvasElement) {
@@ -60,7 +60,7 @@ export function ballInitializer () {
 }
 
 
-export function keyListenerInitializer (listener: KeyListener, game: Game) {
+export function keyListenerInitializer (listener: KeyListenerComponent, game: GameComponent) {
 	listener.addKeyCallback("CON.PAUSE_KEY", () => {
 		pauseKeyPressed(game);
 	});
@@ -71,16 +71,15 @@ export function keyListenerInitializer (listener: KeyListener, game: Game) {
 }
 
 
-export function messageFieldInitializer (messageFields: TextObject[]) {
-	//create a field for each location specifies in the constants file
-	messageFields.push(new TextObject("center", CON.START_MESSAGE, CON.CENTER_MESSAGE_FONT, CON.CENTER_MESSAGE_COLOR , CON.CENTER_MESSAGE_ALIGN, CON.CENTER_MESSAGE_BASELINE, CON.CENTER_MESSAGE_SIZE, CON.CENTER_MESSAGE_X, CON.CENTER_MESSAGE_Y));
-	messageFields.push(new TextObject("left", "LEFT MESSAGE", CON.SIDE_MESSAGE_FONT, CON.SIDE_MESSAGE_COLOR , CON.SIDE_MESSAGE_ALIGN, CON.SIDE_MESSAGE_BASELINE, CON.SIDE_MESSAGE_SIZE, CON.SIDE_MESSAGE_OFFSET_X, CON.SIDE_MESSAGE_OFFSET_Y));
-	messageFields.push(new TextObject("right", "RIGHT MESSAGE", CON.SIDE_MESSAGE_FONT, CON.SIDE_MESSAGE_COLOR , CON.SIDE_MESSAGE_ALIGN, CON.SIDE_MESSAGE_BASELINE, CON.SIDE_MESSAGE_SIZE, CON.SCREEN_WIDTH - CON.SIDE_MESSAGE_OFFSET_X, CON.SIDE_MESSAGE_OFFSET_Y));
-	messageFields.push(new TextObject("top", "TOP MESSAGE", CON.TOP_MESSAGE_FONT, CON.TOP_MESSAGE_COLOR , CON.TOP_MESSAGE_ALIGN, CON.TOP_MESSAGE_BASELINE, CON.TOP_MESSAGE_SIZE, CON.TOP_MESSAGE_OFFSET_X, CON.TOP_MESSAGE_OFFSET_Y));
+export function messageFieldInitializer (messageFields: TextComponent[]) {
+	messageFields.push(new TextComponent("center", CON.START_MESSAGE, CON.CENTER_MESSAGE_FONT, CON.CENTER_MESSAGE_COLOR , CON.CENTER_MESSAGE_ALIGN, CON.CENTER_MESSAGE_BASELINE, CON.CENTER_MESSAGE_SIZE, CON.CENTER_MESSAGE_X, CON.CENTER_MESSAGE_Y));
+	messageFields.push(new TextComponent("left", "LEFT MESSAGE", CON.SIDE_MESSAGE_FONT, CON.SIDE_MESSAGE_COLOR , CON.SIDE_MESSAGE_ALIGN, CON.SIDE_MESSAGE_BASELINE, CON.SIDE_MESSAGE_SIZE, CON.SIDE_MESSAGE_OFFSET_X, CON.SIDE_MESSAGE_OFFSET_Y));
+	messageFields.push(new TextComponent("right", "RIGHT MESSAGE", CON.SIDE_MESSAGE_FONT, CON.SIDE_MESSAGE_COLOR , CON.SIDE_MESSAGE_ALIGN, CON.SIDE_MESSAGE_BASELINE, CON.SIDE_MESSAGE_SIZE, CON.SCREEN_WIDTH - CON.SIDE_MESSAGE_OFFSET_X, CON.SIDE_MESSAGE_OFFSET_Y));
+	messageFields.push(new TextComponent("top", "TOP MESSAGE", CON.TOP_MESSAGE_FONT, CON.TOP_MESSAGE_COLOR , CON.TOP_MESSAGE_ALIGN, CON.TOP_MESSAGE_BASELINE, CON.TOP_MESSAGE_SIZE, CON.TOP_MESSAGE_OFFSET_X, CON.TOP_MESSAGE_OFFSET_Y));
 }
 
 
-export function playerInitializer (players: Player[]) {
-	players.push(new Player(CON.PLAYER_1_NAME, "Left"));
-	players.push(new Player(CON.PLAYER_2_NAME, "Right"));
+export function playerInitializer (players: PlayerComponent[]) {
+	players.push(new PlayerComponent(CON.PLAYER_1_NAME, "Left"));
+	players.push(new PlayerComponent(CON.PLAYER_2_NAME, "Right"));
 }

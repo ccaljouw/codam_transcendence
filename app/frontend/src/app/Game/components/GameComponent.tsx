@@ -4,12 +4,12 @@ import { Wall } from "../gameObjects/Wall";
 import { GameObject } from "../gameObjects/GameObject";
 import { Paddle } from "../gameObjects/Paddle";
 import { Ball } from "../gameObjects/Ball";
-import { KeyListener } from "./KeyListener";
-import { Player } from "./Player";
-import { TextObject } from "./TextObject";
+import { KeyListenerComponent } from "./KeyListenerComponent";
+import { PlayerComponent } from "./PlayerComponent";
+import { TextComponent } from "./TextComponent";
 import { 
-		detectCollision, detectScore } from "./collisionDetection";
-import { checkWinCondition } from "../utils/utils";
+		detectCollision } from "../utils/collisionDetection";
+import { detectScore, checkWinCondition } from "../utils/utils";
 import {
 	 	wallInitializer,
 		paddleInitializer,
@@ -18,21 +18,21 @@ import {
 		messageFieldInitializer,
 		playerInitializer,
 		lineInitializer,
-		canvasInitializer } from "./initializers";
+		canvasInitializer } from "../utils/initializers";
 
 
-	export class Game {
+export class GameComponent {
 	private	_canvas: HTMLCanvasElement;
 	private	_ctx: CanvasRenderingContext2D;
-	private	_keyListener: KeyListener = new KeyListener();
+	private	_keyListener: KeyListenerComponent = new KeyListenerComponent();
 	private	_walls: Wall [] = [] ;
 	private	_paddels: Paddle [] = [];
 	private _lines: GameObject [] = [];
+	private _players: PlayerComponent [] = [];
 
 	public gameState = CON.GameState.ready;
-	public messageFields: TextObject [] = [];
+	public messageFields: TextComponent [] = [];
 	public ball: Ball | null = null;
-	public players: Player [] = [];
 
 
 	constructor(newCanvas: HTMLCanvasElement) {
@@ -48,7 +48,7 @@ import {
 		paddleInitializer(this._paddels);
 		wallInitializer(this._walls);
 		lineInitializer(this._lines);
-		playerInitializer(this.players);
+		playerInitializer(this._players);
 		keyListenerInitializer(this._keyListener, this);
 		this.resetBall()
 	}
@@ -65,8 +65,8 @@ import {
 		this.ball?.updateBall(this.gameState);
 		detectCollision(this.ball as Ball, this._paddels, this._walls);
 		
-		let goal = detectScore(this.ball as Ball, this.players)
-		let winner = checkWinCondition(this.players);
+		let goal = detectScore(this.ball as Ball, this._players)
+		let winner = checkWinCondition(this._players);
 		if (winner) {
 			this.endGame(winner);
 		} else if (goal) {
@@ -79,8 +79,8 @@ import {
 		this.ball?.draw(this._ctx);
 		this._paddels.forEach(paddle => paddle.draw(this._ctx));
 		this._walls.forEach(wall => wall.draw(this._ctx));
-		this.players.forEach(player => player.scoreField?.draw(this._ctx));
-		this.players.forEach(player => player.nameField?.draw(this._ctx));
+		this._players.forEach(player => player.scoreField?.draw(this._ctx));
+		this._players.forEach(player => player.nameField?.draw(this._ctx));
 		this.messageFields.forEach(message => message.draw(this._ctx));
 		this._lines.forEach(line => line.draw(this._ctx));
 	}
@@ -99,7 +99,7 @@ import {
 
 
 	resetMatch() {
-		for (let player of this.players) {
+		for (let player of this._players) {
 			player.resetScore();
 			player.scoreField?.setText(player.getScore().toString());
 		}

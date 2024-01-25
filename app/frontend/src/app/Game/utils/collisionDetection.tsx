@@ -2,9 +2,7 @@
 import { Wall } from "../gameObjects/Wall";
 import { Paddle } from "../gameObjects/Paddle";
 import { Ball } from "../gameObjects/Ball";
-import * as CON from "../utils/constants";
-import { Player } from "./Player";
-import { settleScore } from "../utils/utils";
+import * as CON from "./constants";
 
 
 function detectWallCollisions(ball: Ball, walls: Wall[]) {
@@ -33,22 +31,7 @@ function detectPaddleCollisions(ball: Ball, paddles: Paddle[]) {
 }
 
 
-export function detectScore(ball: Ball, players: Player[]) {
-	let goal = false;
-	if (ball.getX() + ball.getWidth() < 0) {
-		settleScore(players, "Right");
-		return true;
-	}
-	else if (ball.getX() > CON.SCREEN_WIDTH) {
-		settleScore(players, "Left");
-		return true;
-	}
-	return false;
-}
-
-
 export function detectCollision(ball: Ball, paddles: Paddle[], walls: Wall[]) {
 	detectPaddleCollisions(ball, paddles);
 	detectWallCollisions(ball, walls);
 }
-  

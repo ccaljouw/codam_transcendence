@@ -1,8 +1,10 @@
+
 import { GameObject } from "../gameObjects/GameObject";
-import { Player } from "../components/Player";
-import { Game } from "../components/Game";
+import { Ball } from "../gameObjects/Ball";
+import { PlayerComponent } from "../components/PlayerComponent";
+import { GameComponent } from "../components/GameComponent";
 import * as CON from "./constants";
-import { TextObject } from "../components/TextObject";
+import { TextComponent } from "../components/TextComponent";
 
 
 export function drawGameObject(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, color: string) {
@@ -29,7 +31,7 @@ export function switchDirectionForRightPaddle(newDirection: number, normalizedDi
 }
 
 
-export function settleScore(players: Player[], scored: string) {
+export function settleScore(players: PlayerComponent[], scored: string) {
 	for (let player of players) {
 		if (player.getSide() == scored) {
 			player.setScore(player.getScore() + 1);
@@ -39,7 +41,7 @@ export function settleScore(players: Player[], scored: string) {
 }
 
 
-export function checkWinCondition(players: Player[]) {
+export function checkWinCondition(players: PlayerComponent[]) {
 	for (let player of players) {
 		if (player.getScore() >= CON.WINNING_SCORE) {
 			return player.getName();
@@ -49,14 +51,14 @@ export function checkWinCondition(players: Player[]) {
 }
 
 
-function clearMessageFields(messageFields: TextObject[]) {
+function clearMessageFields(messageFields: TextComponent[]) {
 	for (let message of messageFields) {
 		message.setText("");
 	}
 }
 
 
-export function startKeyPressed(game: Game) {
+export function startKeyPressed(game: GameComponent) {
 	if (game.gameState == 1 ) {
 		return;
 	} 
@@ -70,7 +72,7 @@ export function startKeyPressed(game: Game) {
 }
 
 
-export function pauseKeyPressed(game: Game) {
+export function pauseKeyPressed(game: GameComponent) {
 	if (game.gameState == 1) {
 		game.gameState = 2;
 	} else if (game.gameState == 2) {
@@ -78,3 +80,15 @@ export function pauseKeyPressed(game: Game) {
 	}
 }
 
+export function detectScore(ball: Ball, players: PlayerComponent[]) {
+	let goal = false;
+	if (ball.getX() + ball.getWidth() < 0) {
+		settleScore(players, "Right");
+		return true;
+	}
+	else if (ball.getX() > CON.SCREEN_WIDTH) {
+		settleScore(players, "Left");
+		return true;
+	}
+	return false;
+}
