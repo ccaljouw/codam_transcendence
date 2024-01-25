@@ -29,7 +29,7 @@ export class TextComponent extends GameObject {
 	}
 
 	update() {
-		
+	//todo: implement message changes here based on state	
 	}
 
 

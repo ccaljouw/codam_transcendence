@@ -76,7 +76,7 @@ export const LEFT_PADDLE_UP_KEY = "w";
 export const LEFT_PADDLE_DOWN_KEY = "s";
 export const RIGHT_PADDLE_UP_KEY = "ArrowUp";
 export const RIGHT_PADDLE_DOWN_KEY = "ArrowDown";
-export const PAUSE_KEY = 27;
+export const PAUSE_KEY = "p";
 export const START_KEY = 32;
 
 
@@ -98,8 +98,8 @@ export const SIDE_MESSAGE_BASELINE = "middle";
 export const SIDE_MESSAGE_COLOR = "white";
 export const SIDE_MESSAGE_FONT = "Arial";
 //top message
-export const TOP_MESSAGE_SIZE = 30;
-export const TOP_MESSAGE_OFFSET_X = SCREEN_WIDTH / 2 - TOP_MESSAGE_SIZE / 2;
+export const TOP_MESSAGE_SIZE = 40;
+export const TOP_MESSAGE_OFFSET_X = SCREEN_WIDTH / 2 - TOP_MESSAGE_SIZE - 200;
 export const TOP_MESSAGE_OFFSET_Y = WALL_WIDTH + TOP_MESSAGE_SIZE + 100;
 export const TOP_MESSAGE_ALIGN = "center";
 export const TOP_MESSAGE_BASELINE = "middle";
@@ -107,7 +107,7 @@ export const TOP_MESSAGE_COLOR = "white";
 export const TOP_MESSAGE_FONT = "Arial";
 //messages
 export const START_MESSAGE = "Press SPACE to start a game";
-export const PAUSE_MESSAGE = "Press SPACE to resume the game";
+export const PAUSE_MESSAGE = "Game Paused";
 export const WIN_MESSAGE = "Press SPACE to start a new match";
 
 
@@ -123,10 +123,10 @@ export enum WallTypes {
 	vertical
 }
 
-// export enum MessageFields {
-// 	center, 
-// 	left,
-// 	right,
-// 	top,
-// }
+export enum MessageFields {
+	center, 
+	left,
+	right,
+	top,
+}
 

@@ -55,14 +55,10 @@ export class Paddle extends GameObject {
 
 
 	public updatePaddle(state: number) {
-		if (state == 2) {
-			return;
-		}
 		if (state != 1) {
 			this.resetPaddle();
 			return;
-		}
-		if (this.keyListener.checkKeysPressed()) {
+		} else if (this.keyListener.checkKeysPressed()) {
 			this.movementComponent.update();
 			this.y = this.movementComponent.getY();
 			this.checkBounds();	

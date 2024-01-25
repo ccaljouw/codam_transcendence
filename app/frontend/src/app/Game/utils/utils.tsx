@@ -2,7 +2,7 @@
 import { GameObject } from "../gameObjects/GameObject";
 import { Ball } from "../gameObjects/Ball";
 import { PlayerComponent } from "../components/PlayerComponent";
-import { GameComponent } from "../components/GameComponent";
+import { Game } from "../components/Game";
 import * as CON from "./constants";
 import { TextComponent } from "../components/TextComponent";
 
@@ -31,26 +31,6 @@ export function switchDirectionForRightPaddle(newDirection: number, normalizedDi
 }
 
 
-export function settleScore(players: PlayerComponent[], scored: string) {
-	for (let player of players) {
-		if (player.getSide() == scored) {
-			player.setScore(player.getScore() + 1);
-			player.scoreField?.setText(player.getScore().toString());
-		}
-	}
-}
-
-
-export function checkWinCondition(players: PlayerComponent[]) {
-	for (let player of players) {
-		if (player.getScore() >= CON.WINNING_SCORE) {
-			return player.getName();
-		}
-	}
-	return null;
-}
-
-
 function clearMessageFields(messageFields: TextComponent[]) {
 	for (let message of messageFields) {
 		message.setText("");
@@ -58,11 +38,13 @@ function clearMessageFields(messageFields: TextComponent[]) {
 }
 
 
-export function startKeyPressed(game: GameComponent) {
+export function startKeyPressed(game: Game) {
 	if (game.gameState == 1 ) {
 		return;
-	} 
-	if (game.gameState == 3){
+	} else if (game.gameState == 2) {
+		clearMessageFields(game.messageFields);
+		game.gameState = 1;
+	} else if (game.gameState == 3){
 		game.resetMatch();
 	} else {
 		clearMessageFields(game.messageFields);
@@ -72,13 +54,35 @@ export function startKeyPressed(game: GameComponent) {
 }
 
 
-export function pauseKeyPressed(game: GameComponent) {
+export function pauseKeyPressed(game: Game) {
 	if (game.gameState == 1) {
+		game.messageFields[0].setText(CON.PAUSE_MESSAGE);
 		game.gameState = 2;
 	} else if (game.gameState == 2) {
+		clearMessageFields(game.messageFields);
 		game.gameState = 1;
 	}
 }
+
+
+export function checkWinCondition(players: PlayerComponent[]) {
+	for (let player of players) {
+		if (player.getScore() >= CON.WINNING_SCORE) {
+			return player;
+		}
+	}
+	return null;
+}
+
+export function settleScore(players: PlayerComponent[], scored: string) {
+	for (let player of players) {
+		if (player.getSide() == scored) {
+			player.setScore(player.getScore() + 1);
+			player.scoreField?.setText(player.getScore().toString());
+		}
+	}
+}
+
 
 export function detectScore(ball: Ball, players: PlayerComponent[]) {
 	let goal = false;

@@ -4,7 +4,7 @@ import { Wall } from "../gameObjects/Wall";
 import { GameObject } from "../gameObjects/GameObject";
 import { Ball } from "../gameObjects/Ball";
 import { PlayerComponent } from "../components/PlayerComponent";
-import { GameComponent } from "../components/GameComponent";
+import { Game } from "../components/Game";
 import { KeyListenerComponent } from "../components/KeyListenerComponent";
 import { TextComponent } from "../components/TextComponent";
 import { startKeyPressed, pauseKeyPressed } from "./utils";
@@ -14,7 +14,7 @@ import * as CON from "./constants";
 export function canvasInitializer (canvas: HTMLCanvasElement) {
 	canvas.width = CON.SCREEN_WIDTH;
 	canvas.height = CON.SCREEN_HEIGHT;
-	canvas.style.backgroundColor = "black";
+	canvas.style.backgroundColor = CON.BACKGROUND_COLOR;
 }
 
 
@@ -60,8 +60,8 @@ export function ballInitializer () {
 }
 
 
-export function keyListenerInitializer (listener: KeyListenerComponent, game: GameComponent) {
-	listener.addKeyCallback("CON.PAUSE_KEY", () => {
+export function keyListenerInitializer (listener: KeyListenerComponent, game: Game) {
+	listener.addKeyCallback("p", () => {
 		pauseKeyPressed(game);
 	});
 	

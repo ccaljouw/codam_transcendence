@@ -21,7 +21,7 @@ import {
 		canvasInitializer } from "../utils/initializers";
 
 
-export class GameComponent {
+export class Game {
 	private	_canvas: HTMLCanvasElement;
 	private	_ctx: CanvasRenderingContext2D;
 	private	_keyListener: KeyListenerComponent = new KeyListenerComponent();
@@ -61,12 +61,13 @@ export class GameComponent {
 
 
 	updateGameObjects() {
+
 		this._paddels.forEach(paddle => paddle.updatePaddle(this.gameState));
 		this.ball?.updateBall(this.gameState);
 		detectCollision(this.ball as Ball, this._paddels, this._walls);
 		
 		let goal = detectScore(this.ball as Ball, this._players)
-		let winner = checkWinCondition(this._players);
+		let winner = checkWinCondition(this._players) 
 		if (winner) {
 			this.endGame(winner);
 		} else if (goal) {
@@ -78,23 +79,30 @@ export class GameComponent {
 	drawGameObjects() {
 		this.ball?.draw(this._ctx);
 		this._paddels.forEach(paddle => paddle.draw(this._ctx));
+		this._lines.forEach(line => line.draw(this._ctx));
 		this._walls.forEach(wall => wall.draw(this._ctx));
 		this._players.forEach(player => player.scoreField?.draw(this._ctx));
 		this._players.forEach(player => player.nameField?.draw(this._ctx));
 		this.messageFields.forEach(message => message.draw(this._ctx));
-		this._lines.forEach(line => line.draw(this._ctx));
 	}
+
+
 
 	//todo: add interpolation and implement pauze
 	gameLoop() {
-		this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
-		this.updateGameObjects();
-		this.drawGameObjects();
-				
-		//request next frame
-		if (this.gameState == 1 || this.gameState == 0) {
-			requestAnimationFrame(this.gameLoop.bind(this));
+		if (this.gameState == 3) {
+			return;
 		}
+		
+
+		this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
+		
+		if (this.gameState == 1) {
+			this.updateGameObjects();
+		}
+		this.drawGameObjects();
+		
+		requestAnimationFrame(this.gameLoop.bind(this));
 	}
 
 
@@ -112,15 +120,21 @@ export class GameComponent {
 
 	resetGame() {
 		this.gameState = 0;
+		this._paddels.forEach(paddle => paddle.resetPaddle());
+		this.messageFields[3].setText("GOAL!");
+		this.messageFields[1].setText(CON.START_MESSAGE);
 		this.resetBall();
 	}
 
 
-	endGame(winner: string) {
-	this.messageFields[0].setText(winner + " won the match");
+	endGame(winner: PlayerComponent) {
+	if (winner) {
+		let i: CON.MessageFields = winner.getSide() == "left" ? 1 : 2;
+		let name = winner.getName();
+		this.messageFields[i].setText(name + " won the match!");
+	}
 	this.gameState = 3
 }
-
 
 	//to start the game
 	startGame() {

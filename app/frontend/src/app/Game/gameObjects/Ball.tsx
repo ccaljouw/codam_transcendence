@@ -58,7 +58,6 @@ export class Ball extends GameObject {
 
 
 	public hitPaddle(paddle: GameObject) {
-		
 		//get new direction based on where the ball hits the paddle
 		let newDirection = this.getNewDirection(paddle, this.movementComponent.getDirection());
 		this.movementComponent.setDirection(newDirection);
@@ -88,9 +87,6 @@ export class Ball extends GameObject {
 
 
 	public updateBall(state: number) {
-		if (state == 2) {
-			return;
-		}
 		this.movementComponent.update();
 		this.x = this.movementComponent.getX();
 		this.y = this.movementComponent.getY();
