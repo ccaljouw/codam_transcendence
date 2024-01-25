@@ -1,32 +1,31 @@
-'use client'
-import React, { useState } from 'react';
-import './CSS/menu.css';
-import './CSS/background.css';
-import MenuBar from "./MenuBar/MenuBar.tsx";
-import * as VARS from "./constants.tsx";
-
-function Page({currentPage}:{currentPage:number}) {
-	let page = VARS.PAGES[currentPage];
-
-	return (
-		<>
-			{page}
-		</>
-	);
-}
+import React from 'react';
+import MenuBar from "./Components/MenuBar/MenuBar.tsx";
+import SignUp from "./Components/SignUp/SignUp.tsx";
+import Welcome from "./Components/Welcome/Welcome.tsx";
+import GameComponent from './Components/Game/Game.tsx';
+import Chat from './Components/Chat/Chat.tsx';
+import Leaderboard from './Components/Leaderboard/Leaderboard.tsx';
+import Settings from './Components/Settings/Settings.tsx';
+import Users from './Components/Users/Users.tsx';
 
 export default function App() {
-	const [currentPage, setCurrentPage] = useState<number>(4);
-	const handleMenuClick = (index:number) => {
-		setCurrentPage(index);
-	}
-
 	return (
 		<>
-		<div className={"transcendence-" + VARS.MENU_BUTTONS[currentPage]}>
-			<MenuBar currentPage={currentPage} onClick={handleMenuClick}/>
+		<div className={"transcendence-Home"}>
+			<MenuBar />
 			<br />
-			<Page currentPage={currentPage}/>
+			<h1>Home page</h1>
+			<p>Here you can see the welcome text, leaderboard and users. Temp also: Settings and Chat</p>
+			<br />
+			<Welcome />
+			<br />
+			<Leaderboard />
+			<br />
+			<Users />
+			<br />
+			<Settings />
+			<br />
+			<Chat />
 		</div>
 		</>
 	);

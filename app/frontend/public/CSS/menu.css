@@ -1,0 +1,26 @@
+.menu {
+    background:rgb(165, 164, 164);
+    padding: 15px 32px;
+    /* width: 100% */
+}
+
+.menu-item-active,
+.menu-item-inactive {
+  padding: 15px 32px;
+  width: 33%;
+}
+
+.menu-item-inactive {
+  background: grey;
+  color: black;
+}
+
+.menu-item-inactive:hover {
+  background: rgba(16, 67, 109);
+  color: rgb(249, 241, 241);
+}
+
+.menu-item-active {
+  background: white;
+  color: grey;
+}
