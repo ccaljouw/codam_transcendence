@@ -3,7 +3,6 @@ import MenuBar from "./Components/MenuBar/MenuBar.tsx";
 import Welcome from "./Components/Welcome/Welcome.tsx";
 import Chat from './Components/Chat/Chat.tsx';
 import Leaderboard from './Components/Leaderboard/Leaderboard.tsx';
-import Settings from './Components/Settings/Settings.tsx';
 import Users from './Components/Users/Users.tsx';
 
 export default function App() {
