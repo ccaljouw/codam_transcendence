@@ -7,7 +7,7 @@ import Chat from "../Components/Chat/Chat.tsx";
 export default function App() {
 	return (
 		<>
-		<div className={"transcendence-SignUp"}>
+		<div className={"transcendence-Profile"}>
 			<MenuBar />
 			<br />
 			<h1>Profile page</h1>

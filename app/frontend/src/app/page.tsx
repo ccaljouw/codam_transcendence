@@ -1,8 +1,6 @@
 import React from 'react';
 import MenuBar from "./Components/MenuBar/MenuBar.tsx";
-import SignUp from "./Components/SignUp/SignUp.tsx";
 import Welcome from "./Components/Welcome/Welcome.tsx";
-import GameComponent from './Components/Game/Game.tsx';
 import Chat from './Components/Chat/Chat.tsx';
 import Leaderboard from './Components/Leaderboard/Leaderboard.tsx';
 import Settings from './Components/Settings/Settings.tsx';
@@ -10,7 +8,6 @@ import Users from './Components/Users/Users.tsx';
 
 export default function App() {
 	return (
-		<>
 		<div className={"transcendence-Home"}>
 			<MenuBar />
 			<br />
@@ -23,10 +20,7 @@ export default function App() {
 			<br />
 			<Users />
 			<br />
-			<Settings />
-			<br />
 			<Chat />
 		</div>
-		</>
 	);
 }
