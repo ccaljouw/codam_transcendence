@@ -1,5 +1,5 @@
 // import React from "react"; // This is not used
-import Profile from "../Components/ProfilePage.tsx";
+import Profile from "../Components/Profile.tsx";
 import Settings from "../Components/Settings.tsx";
 import Chat from "../Components/Chat.tsx";
 

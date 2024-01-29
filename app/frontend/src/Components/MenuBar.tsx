@@ -19,6 +19,7 @@ export default function MenuBar() {
 			<MenuItem href="/profile" title="Profile" />
 			<MenuItem href="/play" title="Play" />
 			<MenuItem href="/sign-up" title="Sign Up" />
+			<MenuItem href="/swagger" title="Swagger" />
 		</div>
 		</div>
 		{/* <div className="w3-bar w3-black">
