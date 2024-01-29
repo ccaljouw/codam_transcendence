@@ -1,5 +1,5 @@
-"use client"
-import { Game } from "./Game/components/game.tsx";
+// import React from 'react'; // This is not used
+import { Game } from "../Game/components/game";
 import { useRef, useEffect, useState } from 'react';
 
 export default function GameComponent() {

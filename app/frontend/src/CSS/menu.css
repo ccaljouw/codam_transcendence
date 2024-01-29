@@ -1,6 +1,5 @@
 .menu {
     background:rgb(165, 164, 164);
-    margin: 15px 15px;
     padding: 15px;
     width: 100%;
     border-radius: 5px;
@@ -10,7 +9,7 @@
 .menu-item-inactive {
   padding: 15px 30px;
   /* margin: 5px; */
-  /* width: 33%; */
+  /* width: 20%; */
 }
 
 .menu-item-inactive {
