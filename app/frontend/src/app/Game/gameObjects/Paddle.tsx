@@ -23,12 +23,12 @@ export class Paddle extends GameObject {
 
 		paddle.keyListener.addKeyCallback(keyUp, () => {
 			paddle.movementComponent.setDirection(1.5 * Math.PI);
-			paddle.movementComponent.setSpeed(5);
+			paddle.movementComponent.setSpeed(CON.PADDLE_BASE_SPEED);
 		});
 
 		paddle.keyListener.addKeyCallback(keyDown, () => {
 			paddle.movementComponent.setDirection(0.5 * Math.PI);
-			paddle.movementComponent.setSpeed(5);
+			paddle.movementComponent.setSpeed(CON.PADDLE_BASE_SPEED);
 		});
 	}
 
