@@ -1,32 +1,32 @@
-.transcendence-Home,
-.transcendence-Profile,
-.transcendence-Game,
-.transcendence-SignUp,
-.transcendence-Menu {
+.transcendenceHome,
+.transcendenceProfile,
+.transcendenceGame,
+.transcendenceSignUp,
+.transcendenceMenu {
   padding: 32px 32px;
 }
 
-.transcendence-Home {
+.transcendenceHome {
   background: red;
 }
 
-.transcendence-Profile {
+.transcendenceProfile {
   background: orange;
 }
 
-.transcendence-Game {
+.transcendenceGame {
   background: rgb(6, 148, 6);
 }
 
-.transcendence-SignUp {
+.transcendenceSignUp {
   background: purple;
 }
 
-.transcendence-Menu {
+.transcendenceMenu {
   background: rgb(65, 42, 130);
 }
 
-.transcendence-Swagger {
+.transcendenceSwagger {
   background: black;
   height: 100vh;
   width: 100vw;

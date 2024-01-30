@@ -1,13 +1,12 @@
-// import React from 'react'; // This is not used
-import Welcome from "../Components/Welcome.tsx";
-import Chat from '../Components/Chat.tsx';
-import Leaderboard from '../Components/Leaderboard.tsx';
-import Users from '../Components/Users.tsx';
+import Welcome from "../components/Welcome.tsx";
+import Leaderboard from '../components/Leaderboard.tsx';
+import Users from '../components/Users.tsx';
+import Chat from '../components/Chat.tsx';
 
-export default function App() {
+export default function Page() {
 	return (
 		<>
-			<div className="transcendence-Home">
+			<div className="transcendenceHome">
 				<br />
 				<h1>Home page</h1>
 				<p>Here you can see the welcome text, leaderboard and users. Chat on the bottom</p>
