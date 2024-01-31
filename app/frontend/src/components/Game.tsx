@@ -4,11 +4,11 @@ import { useRef, useEffect, useState } from 'react';
 
 export default function GameComponent() {
 	const [game, setGame] = useState<Game | null>(null);
-	const canvasRef = useRef<HTMLCanvasElement | null>(null);
+	const canvasRef = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
 		if (!game) {
-			setGame(new Game(canvasRef.current));
+			setGame(new Game(canvasRef.current!));
 		}
 	}, [canvasRef]);
 
