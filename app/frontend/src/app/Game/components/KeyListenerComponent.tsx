@@ -1,5 +1,5 @@
 
-export class KeyListener {
+export class KeyListenerComponent {
 	private _keyStates: Map<string, boolean>;
 	private _keyMap: Map<string, Function | undefined>;
 

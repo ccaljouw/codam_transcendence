@@ -4,8 +4,8 @@ export class MovementComponent {
 	private direction: number	= 0;
 	private speedX: number		= 0;
 	private speedY: number		= 0;
-	public x: number			= 0;
-	public y: number			= 0;
+	private x: number			= 0;
+	private y: number			= 0;
 	
 	//direction in radians
 	constructor(speed: number, direction: number, x: number, y: number) {   
@@ -21,7 +21,15 @@ export class MovementComponent {
 	  this.x += this.speedX;
 	  this.y += this.speedY;
 	}
-  
+
+	public setX(x: number) {
+			  this.x = x;
+	}
+	
+	public setY(y: number) {
+			  this.y = y;
+	}
+
 	public setSpeedX(speed: number) {
 	  this.speedX = speed;
 	  this.speed = Math.sqrt(this.speedX * this.speedX + this.speedY * this.speedY);
@@ -43,6 +51,14 @@ export class MovementComponent {
 	public setDirection(direction: number) {
 	  this.direction = direction;
 	  
+	}
+
+	public getX() {
+	  return this.x;
+	}
+
+	public getY() {
+	  return this.y;
 	}
 
 	public getDirection() {

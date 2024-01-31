@@ -1,16 +1,16 @@
+
 import { GameObject } from "../gameObjects/GameObject";
 
 
-export class TextObject extends GameObject {
+export class TextComponent extends GameObject {
 	private text: string = "";
 	private font: string = "";
 	private align: string = "";
 	private baseline: string = "";
 	private size: number = 0;
 
-
-	constructor(text: string, font: string, color: string, align: string, baseline: string, size: number, x: number, y: number) {
-		super("", x, y, 0, 0, color);
+	constructor(name: string, text: string, font: string, color: string, align: string, baseline: string, size: number, x: number, y: number) {
+		super(name, x, y, 0, 0, color);
 		this.text = text;
 		this.font = font;
 		this.color = color;
@@ -19,6 +19,7 @@ export class TextObject extends GameObject {
 		this.size = size;
 	}
 
+	
 	public draw(ctx: CanvasRenderingContext2D) {
 		ctx.font = this.size + "px " + this.font;
 		ctx.fillStyle = this.color;
@@ -26,6 +27,11 @@ export class TextObject extends GameObject {
 		ctx.textBaseline = this.baseline as CanvasTextBaseline;
 		ctx.fillText(this.text, this.x, this.y);
 	}
+
+	update() {
+	//todo: implement message changes here based on state	
+	}
+
 
 	public setText(text: string) {
 		this.text = text;
@@ -63,3 +69,4 @@ export class TextObject extends GameObject {
 		return this.size;
 	}
 }
+
