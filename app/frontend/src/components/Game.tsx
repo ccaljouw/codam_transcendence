@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from 'react';
 
 export default function GameComponent() {
 	const [game, setGame] = useState<Game | null>(null);
-	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
 	useEffect(() => {
 		if (!game) {
@@ -14,8 +14,8 @@ export default function GameComponent() {
 
 	useEffect(() => {
 		if (game) {
-			game.startGame();
-		}
+				game.startGame();
+			}
 	}, [game]);
 
 	return (
