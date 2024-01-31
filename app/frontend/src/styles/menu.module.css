@@ -1,0 +1,28 @@
+.menu {
+    background:rgb(165, 164, 164);
+    padding: 15px;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.menuItemActive,
+.menuItemInactive {
+  padding: 15px 30px;
+  /* margin: 5px; */
+  /* padding: 15px 20%; */
+}
+
+.menuItemInactive {
+  background: grey;
+  color: black;
+}
+
+.menuItemInactive:hover {
+  background: rgba(16, 67, 109);
+  color: rgb(249, 241, 241);
+}
+
+.menuItemActive {
+  background: white;
+  color: grey;
+}

@@ -1,33 +1,29 @@
-'use client'
-import React, { useState } from 'react';
-import './CSS/menu.css';
-import './CSS/background.css';
-import MenuBar from "./MenuBar/MenuBar.tsx";
-import * as VARS from "./constants.tsx";
+import Welcome from "../components/Welcome.tsx";
+import Leaderboard from '../components/Leaderboard.tsx';
+import Users from '../components/Users.tsx';
+import Chat from '../components/Chat.tsx';
 
-function Page({currentPage}:{currentPage:number}) {
-	let page = VARS.PAGES[currentPage];
-
+export default function Page() {
 	return (
 		<>
-			{page}
-		</>
-	);
-}
-
-export default function App() {
-	const [currentPage, setCurrentPage] = useState<number>(4);
-	const handleMenuClick = (index:number) => {
-		setCurrentPage(index);
-	}
-
-	return (
-		<>
-		<div className={"transcendence-" + VARS.MENU_BUTTONS[currentPage]}>
-			<MenuBar currentPage={currentPage} onClick={handleMenuClick}/>
-			<br />
-			<Page currentPage={currentPage}/>
-		</div>
+			<div className="transcendenceHome">
+				<br />
+				<h1>Home page</h1>
+				<p>Here you can see the welcome text, leaderboard and users. Chat on the bottom</p>
+				<br />
+				<Welcome />
+				<br />
+					<div className="row">
+						<div className="col-sm-6">
+							<Leaderboard />
+						</div>
+						<div className="col-sm-6">
+							<Users />
+						</div>
+					</div>
+				<br />
+				<Chat />
+			</div>
 		</>
 	);
 }
