@@ -1,8 +1,8 @@
+
 import { GameObject } from "./GameObject";
 import { MovementComponent } from "../components/MovementComponent";
 import { getNormalizedDistance, switchDirectionForRightPaddle } from "../utils/utils";
 import * as CON from "../utils/constants";
-import { detectCollision } from "../components/collisionDetection";
 
 
 export class Ball extends GameObject {
@@ -29,10 +29,11 @@ export class Ball extends GameObject {
 		this.movementComponent.setSpeed(CON.BALL_BASE_SPEED + Math.random() * 2 - 1);		
 	}
 
+
 	public resetBall() {
 		this.movementComponent.resetMovementComponent();
-		this.movementComponent.x = CON.BALL_START_X;
-		this.movementComponent.y = CON.BALL_START_Y;
+		this.movementComponent.setX(CON.BALL_START_X);
+		this.movementComponent.setY(CON.BALL_START_Y);
 	}
 
 
@@ -46,17 +47,17 @@ export class Ball extends GameObject {
 		let newDirection = normalizedDistance * CON.MAX_BOUNCE_ANGLE;
 		let ballDirection = this.movementComponent.getXdiretcion();
 
+		let offset = this.movementComponent.getSpeedX() * 2;
 		if (ballDirection == 1) {
-			this.x -= this.movementComponent.getSpeed() * 2;
+			this.x -= offset
 			newDirection = switchDirectionForRightPaddle(newDirection, normalizedDistance);
 		}
-		this.x += this.movementComponent.getSpeed() * 2;
+		this.x += offset;
     	return newDirection;
     }
 
 
 	public hitPaddle(paddle: GameObject) {
-		
 		//get new direction based on where the ball hits the paddle
 		let newDirection = this.getNewDirection(paddle, this.movementComponent.getDirection());
 		this.movementComponent.setDirection(newDirection);
@@ -68,9 +69,9 @@ export class Ball extends GameObject {
 	public hitHorizontalWall() {
 		this.movementComponent.setSpeedY(this.movementComponent.getSpeedY() * -1);
 		if (this.movementComponent.getYdiretcion() < 0) {
-			this.y += this.movementComponent.getSpeedY() * 2;
+			this.y += this.movementComponent.getSpeed();
 		} else {
-			this.y -= this.movementComponent.getSpeedY() * 2;
+			this.y -= this.movementComponent.getSpeed();
 		}
 	}
 
@@ -78,19 +79,16 @@ export class Ball extends GameObject {
 	public hitVerticalWall() {
 		this.movementComponent.setSpeedX(this.movementComponent.getSpeedX() * -1);
 		if (this.movementComponent.getXdiretcion() < 0) {
-			this.x += this.movementComponent.getSpeedX() * 2;
+			this.x += this.movementComponent.getSpeed();
 		} else {
-			this.x -= this.movementComponent.getSpeedX() * 2;
+			this.x -= this.movementComponent.getSpeed();
 		}
 	}
 
 
 	public updateBall(state: number) {
-		if (state == 2) {
-			return;
-		}
 		this.movementComponent.update();
-		this.x = this.movementComponent.x;
-		this.y = this.movementComponent.y;
+		this.x = this.movementComponent.getX();
+		this.y = this.movementComponent.getY();
 	}
 }

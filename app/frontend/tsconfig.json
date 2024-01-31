@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "ESNEXT",
     "removeComments": true,
     "lib": [
       "dom",
@@ -8,7 +9,6 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -28,6 +28,7 @@
         "./frontend/src/*"
       ]
     },
+    "strict": true,
   },
   "include": [
     "next-env.d.ts",

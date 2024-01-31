@@ -1,4 +1,4 @@
-import GameComponent from "../../components/Game/Game.tsx";
+import GameComponent from "../../components/Game.tsx";
 import Chat from "../../components/Chat.tsx";
 
 export default function Page() {

@@ -1,5 +1,5 @@
 "use client";
-import { Game } from "./Game/components/game";
+import { Game } from "../Game/components/Game.tsx";
 import { useRef, useEffect, useState } from 'react';
 
 export default function GameComponent() {
