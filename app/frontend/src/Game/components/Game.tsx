@@ -29,21 +29,20 @@ export class Game {
 	private	_paddels: Paddle [] = [];
 	private _lines: GameObject [] = [];
 	private _players: PlayerComponent [] = [];
-
 	public gameState = CON.GameState.ready;
 	public messageFields: TextComponent [] = [];
 	public ball: Ball | null = null;
 
-
-	constructor(newCanvas: HTMLCanvasElement) {
+	constructor(newCanvas: HTMLCanvasElement, width: number) {
 		this._canvas = newCanvas;
-		this.initializeGameObjects();
+		this.initializeGameObjects(width);
 		this._ctx = this._canvas.getContext("2d") as CanvasRenderingContext2D;
+		// this.updateSize(width);
 	}
 
 
-	initializeGameObjects() {
-		canvasInitializer(this._canvas);
+	initializeGameObjects(width: number) {
+		canvasInitializer(this._canvas, width);
 		messageFieldInitializer(this.messageFields);
 		paddleInitializer(this._paddels);
 		wallInitializer(this._walls);
@@ -61,7 +60,6 @@ export class Game {
 
 
 	updateGameObjects() {
-
 		this._paddels.forEach(paddle => paddle.updatePaddle(this.gameState));
 		this.ball?.updateBall(this.gameState);
 		detectCollision(this.ball as Ball, this._paddels, this._walls);
@@ -74,6 +72,7 @@ export class Game {
 			this.resetGame();
 		}
 		this.messageFields.forEach(message => message.update());
+
 	}
 
 	drawGameObjects() {
@@ -134,7 +133,14 @@ export class Game {
 		this.messageFields[i].setText(name + " won the match!");
 	}
 	this.gameState = 3
-}
+	}
+
+	updateSize(scale: number) { // this might not be needed, because it can be requested over here
+
+		this._canvas.width = this._canvas.width * scale;
+		this._canvas.height = this._canvas.height * scale;
+		this._ctx.scale(scale, scale);
+	}
 
 	//to start the game
 	startGame() {
