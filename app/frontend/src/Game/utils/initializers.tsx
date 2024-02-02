@@ -11,9 +11,9 @@ import { startKeyPressed, pauseKeyPressed } from "./utils";
 import * as CON from "./constants";
 
 
-export function canvasInitializer (canvas: HTMLCanvasElement, width: number) {
-	canvas.width = width;
-	canvas.height = width / 3 * 2;
+export function canvasInitializer (canvas: HTMLCanvasElement) {
+	canvas.width = CON.SCREEN_WIDTH;
+	canvas.height = CON.SCREEN_HEIGHT;
 	canvas.style.backgroundColor = CON.BACKGROUND_COLOR;
 }
 

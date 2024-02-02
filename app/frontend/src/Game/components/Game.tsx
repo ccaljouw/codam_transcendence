@@ -33,16 +33,15 @@ export class Game {
 	public messageFields: TextComponent [] = [];
 	public ball: Ball | null = null;
 
-	constructor(newCanvas: HTMLCanvasElement, width: number) {
+	constructor(newCanvas: HTMLCanvasElement) {
 		this._canvas = newCanvas;
-		this.initializeGameObjects(width);
+		this.initializeGameObjects();
 		this._ctx = this._canvas.getContext("2d") as CanvasRenderingContext2D;
-		// this.updateSize(width);
 	}
 
 
-	initializeGameObjects(width: number) {
-		canvasInitializer(this._canvas, width);
+	initializeGameObjects() {
+		canvasInitializer(this._canvas);
 		messageFieldInitializer(this.messageFields);
 		paddleInitializer(this._paddels);
 		wallInitializer(this._walls);
@@ -133,13 +132,6 @@ export class Game {
 		this.messageFields[i].setText(name + " won the match!");
 	}
 	this.gameState = 3
-	}
-
-	updateSize(scale: number) { // this might not be needed, because it can be requested over here
-
-		this._canvas.width = this._canvas.width * scale;
-		this._canvas.height = this._canvas.height * scale;
-		this._ctx.scale(scale, scale);
 	}
 
 	//to start the game

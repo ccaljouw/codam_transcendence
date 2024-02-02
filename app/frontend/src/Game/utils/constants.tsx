@@ -3,8 +3,8 @@
 var scale = 1;
 
 //screen
-export const SCREEN_WIDTH : number = 900 * scale;
-export const SCREEN_HEIGHT : number = 600 * scale;
+export const SCREEN_WIDTH : number = 1000 * scale;
+export const SCREEN_HEIGHT : number = 666 * scale;
 export const BACKGROUND_COLOR = "black";
 export const BACKGROUND_IMAGE = "assets/background.png";
 export const MARGIN : number = 5;

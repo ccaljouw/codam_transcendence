@@ -12,7 +12,12 @@
 
 .game {
 	text-align: center;
-	padding: 0;
+	padding: 0px;
+}
+
+.game canvas {
+	width: 100%;
+	display: block;
 }
 
 h1 {
