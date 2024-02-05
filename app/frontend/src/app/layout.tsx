@@ -1,12 +1,13 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './CSS/globals.css'
-
-const inter = Inter({ subsets: ['latin'] })
+import MenuBar from '../components/MenuBar.tsx';
+import { Metadata } from 'next';
+import '../styles/background.css';
+import '../styles/component.css';
+import '../styles/globals.css';
+import 'bootstrap/dist/css/bootstrap.css'
 
 export const metadata: Metadata = {
   title: 'Pong',
-  description: 'The platform to challenge your friends',
+  description: 'Challenge and meet new friends through a game of Pong',
 }
 
 export default function RootLayout({
@@ -16,7 +17,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body>
+        <div>
+          <div>
+            <MenuBar/>
+          </div>
+          <div>
+            {children}
+          </div>
+        </div>
+      </body>
     </html>
   )
 }
