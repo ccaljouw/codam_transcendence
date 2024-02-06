@@ -12,7 +12,7 @@ export class TestingService {
 
   async runBackendTests(): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      const jestProcess = exec('npm run test:cov', (error, stdout, stderr) => {
+      const jestProcess = exec('npm run test:cov_backend', (error, stdout, stderr) => {
         if (error) {
           console.error(`${error.message}`);
           reject(`${error.message}`);
@@ -32,7 +32,7 @@ export class TestingService {
 
   async runFrontendTests(): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      const jestProcess = exec('npm run test:cov', (error, stdout, stderr) => { //change test
+      const jestProcess = exec('npm run test:cov_frontend', (error, stdout, stderr) => { 
         if (error) {
           console.error(`${error.message}`);
           reject(`${error.message}`);
