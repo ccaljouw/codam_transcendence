@@ -13,7 +13,7 @@ export class TestingController {
     const seedMessage = await this.testingService.runSeed()
     const outputBackend = await this.testingService.runBackendTests();
     const outputFrontend = await this.testingService.runFrontendTests();
-    return outputBackend.replace(/\n/g, '<br>') + outputFrontend.replace(/\n/g, '<br>') + seedMessage.replace(/\n/g, '<br>');
+    return outputBackend + outputFrontend + seedMessage;
   }
 
   @Get('seed')
@@ -21,10 +21,9 @@ export class TestingController {
   async runSeed() {
     try {
       const outputMessage = await this.testingService.runSeed();
-      const returnMessage = outputMessage.replace(/\n/g, '<br>');
-      return returnMessage;
+      return { msg: outputMessage };
     } catch (error) {
-      return 'Error running seed'
+        return { msg: 'Error running seed' }
     }
   }
 
@@ -33,10 +32,9 @@ export class TestingController {
   async runBackendTests() {
   try {
     const outputMessage = await this.testingService.runBackendTests();
-    const returnMessage = outputMessage.replace(/\n/g, '<br>');
-    return returnMessage;
+    return { msg: outputMessage };
   } catch (error) {
-    return 'Error running backend tests'
+    return { msg: 'Error running backend tests' }
   }
   }
 
@@ -45,10 +43,9 @@ export class TestingController {
   async runfrontendTests() {
     try {
       const outputMessage = await this.testingService.runFrontendTests();
-      const returnMessage = outputMessage.replace(/\n/g, '<br>');
-      return returnMessage;
+      return { msg: outputMessage };
     } catch (error) {
-      return 'Error running backend tests'
+      return { msg: 'Error running frontend tests' }
     }
   }
 }

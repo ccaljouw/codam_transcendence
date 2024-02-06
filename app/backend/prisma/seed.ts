@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 // initialize Prisma Client
 const prisma = new PrismaClient();
 
-// create two dummy datarecords
+// create  dummy datarecords (records will only be added to the database if they do not exist yet (.upsert()))
 async function main() {
   // create dummy users
   const user1 = await prisma.user.upsert({

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TestingController } from './testing.controller';
-import { TestingService } from './services/testing.service';
 import { SeedService } from './services/seed.service';
 import { PrismaService } from 'src/database/prisma.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { TestingService } from './services/testing.service';
 
 @Module({
   imports: [

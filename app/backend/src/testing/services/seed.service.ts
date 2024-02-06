@@ -10,10 +10,10 @@ export class SeedService {
     return new Promise<string>((resolve, reject) => {
       const child = exec('npx prisma db seed', (error, stdout, stderr) => {
         if (error) {
-          console.error(`ERROR RUNNING PRISMA SEED: ${error.message}`);
-          reject(`ERROR RUNNING PRISMA SEED: ${error.message}\n\n`);
+          console.error(`${error.message}`);
+          reject(`${error.message}\n\n`);
         } else {
-          const outputMessage = `DATABASE SEEDED\n\n${stdout}\n\n`;
+          const outputMessage = `${stdout}`;
           console.log(stdout);
           resolve(outputMessage);
         }

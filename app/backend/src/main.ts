@@ -25,6 +25,7 @@ async function bootstrap() {
   // even if they are defined in the DTO.
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
+  app.enableCors()
   await app.listen(3000);
-}
+};
 bootstrap();
