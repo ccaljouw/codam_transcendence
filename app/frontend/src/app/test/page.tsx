@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, lazy, Suspense } from 'react';
 import styles from '../../styles/menu.module.css';
+import CodeCoverage from 'src/components/CodeCoverage';
 
 const BackendComponent = lazy(() => import('../../components/BackendTests'));
 const FrontendComponent = lazy(() => import('../../components/FrontendTests'));
@@ -16,24 +17,30 @@ const TestPage = () => {
   };
 
   return (
-    <div className="transcendenceProfile">
-      <button className={styles.menuItemActive} onClick={() => toggleComponentVisibility(setComponent1Visible)}>
-        {BackendComponentVisible ? 'Hide' : 'Run'} backend tests
-      </button>
-      <button className={styles.menuItemActive} onClick={() => toggleComponentVisibility(setComponent2Visible)}>
-        {FrontendComponentVisible ? 'Hide' : 'Run'} frontend tests
-      </button>
-      <button className={styles.menuItemActive} onClick={() => toggleComponentVisibility(setComponent3Visible)}>
-        {SeedComponentVisible ? 'Hide' : 'Run'} Seed
-      </button>
-
-      <Suspense fallback={<div>Loading...</div>}>
-        <div className="row">
-          {BackendComponentVisible && <BackendComponent />}
+    <div className="transcendenceTesting">
+      <div className="row">
+        <div className="col-sm">
+        <button className={styles.menuItemActive} onClick={() => toggleComponentVisibility(setComponent1Visible)}>
+          {BackendComponentVisible ? 'Hide' : 'Run'} backend tests
+        </button>
+          {BackendComponentVisible && <BackendComponent />}            
+        </div>
+        <div className="col-sm">
+        <button className={styles.menuItemActive} onClick={() => toggleComponentVisibility(setComponent2Visible)}>
+          {FrontendComponentVisible ? 'Hide' : 'Run'} frontend tests
+        </button>
           {FrontendComponentVisible && <FrontendComponent />}
+        </div>
+        <div className="col-sm">
+        <button className={styles.menuItemActive} onClick={() => toggleComponentVisibility(setComponent3Visible)}>
+          {SeedComponentVisible ? 'Hide' : 'Run'} Seed
+        </button>
           {SeedComponentVisible && <SeedComponent />}
         </div>
-      </Suspense>
+      </div>
+      <div>
+        <CodeCoverage />
+      </div>
     </div>
   );
 };

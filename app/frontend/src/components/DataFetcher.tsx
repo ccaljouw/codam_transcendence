@@ -5,7 +5,6 @@ interface DataFetcherProps<T> {
   renderLoading?:  React.ReactNode;
   renderError?: (error: any) => React.ReactNode;
   renderData: (data: T) => React.ReactNode;
-  onDataLoaded: (loadedData: any) => void;
 }
 
 function DataFetcher<T>({
@@ -13,7 +12,6 @@ function DataFetcher<T>({
   renderLoading,
   renderError = (error) => <p>Error: {error.message}</p>,
   renderData,
-  onDataLoaded,
 }: DataFetcherProps<T>): JSX.Element {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
@@ -26,7 +24,6 @@ function DataFetcher<T>({
         const response = await fetch(url);
         const result = await response.json();
         setData(result);
-        onDataLoaded(result);
       } catch (error) {
         console.error('Error fetching data:', error);
         setError(error);
@@ -36,7 +33,7 @@ function DataFetcher<T>({
     };
 
     fetchData();
-  }, [onDataLoaded]);
+  }, []);
 
   if (loading) {
     return  <>{renderLoading || <p>Loading...</p>}</>;

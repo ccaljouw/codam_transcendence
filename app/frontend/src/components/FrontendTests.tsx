@@ -10,12 +10,12 @@ function FrontendTests() {
   return (
     <div className="component">
       <h1>Frontend tests</h1>
-      {/* <DataFetcher<DataFormat>
+      <DataFetcher<DataFormat>
         url="http://localhost:3001/test/frontend"
         renderLoading={<p>Running tests...</p>}
         renderError={(error) => <p>Custom error message: {error.message}</p>}
         renderData={(data) => <pre>{ data.msg }</pre>}
-      /> */}
+      />
     </div>
   );
 }

@@ -6,7 +6,7 @@ import Chat from '../components/Chat.tsx';
 export default function Page() {
 	return (
 		<>
-			<div className="transcendenceHome">
+			<div>
 				<br />
 				<h1>Home page</h1>
 				<p>Here you can see the welcome text, leaderboard and users. Chat on the bottom</p>
