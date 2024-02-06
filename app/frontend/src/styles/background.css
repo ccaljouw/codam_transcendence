@@ -45,9 +45,11 @@
 
 .transcendenceCodeCoverage{
 	border: 15px solid green;
+  background: rgb(248, 130, 130);
 	border-radius: 5px;
 	height: 100vh;
-  width: 100vw;
+  /* width: 48vw; */
   display: flex;
   flex-direction: column;
 }
+

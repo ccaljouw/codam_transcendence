@@ -1,7 +1,6 @@
 'use client'
-import React, { useState, lazy, Suspense } from 'react';
+import React, { useState, lazy } from 'react';
 import styles from '../../styles/menu.module.css';
-import CodeCoverage from 'src/components/CodeCoverage';
 
 const BackendComponent = lazy(() => import('../../components/BackendTests'));
 const FrontendComponent = lazy(() => import('../../components/FrontendTests'));
@@ -37,9 +36,6 @@ const TestPage = () => {
         </button>
           {SeedComponentVisible && <SeedComponent />}
         </div>
-      </div>
-      <div>
-        <CodeCoverage />
       </div>
     </div>
   );
