@@ -29,11 +29,9 @@ export class Game {
 	private	_paddels: Paddle [] = [];
 	private _lines: GameObject [] = [];
 	private _players: PlayerComponent [] = [];
-
 	public gameState = CON.GameState.ready;
 	public messageFields: TextComponent [] = [];
 	public ball: Ball | null = null;
-
 
 	constructor(newCanvas: HTMLCanvasElement) {
 		this._canvas = newCanvas;
@@ -61,7 +59,6 @@ export class Game {
 
 
 	updateGameObjects() {
-
 		this._paddels.forEach(paddle => paddle.updatePaddle(this.gameState));
 		this.ball?.updateBall(this.gameState);
 		detectCollision(this.ball as Ball, this._paddels, this._walls);
@@ -74,6 +71,7 @@ export class Game {
 			this.resetGame();
 		}
 		this.messageFields.forEach(message => message.update());
+
 	}
 
 	drawGameObjects() {
@@ -134,7 +132,7 @@ export class Game {
 		this.messageFields[i].setText(name + " won the match!");
 	}
 	this.gameState = 3
-}
+	}
 
 	//to start the game
 	startGame() {
