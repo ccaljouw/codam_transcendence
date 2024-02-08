@@ -6,13 +6,13 @@ import Chat from '../components/Chat.tsx';
 export default function Page() {
 	return (
 		<>
-			<div className="transcendenceHome">
-				<br />
+			{/* <div className="transcendenceHome"> */}
+				{/* <br /> */}
 				<h1>Home page</h1>
 				<p>Here you can see the welcome text, leaderboard and users. Chat on the bottom</p>
-				<br />
+				{/* <br /> */}
 				<Welcome />
-				<br />
+				{/* <br /> */}
 					<div className="row">
 						<div className="col-sm-6">
 							<Leaderboard />
@@ -21,9 +21,7 @@ export default function Page() {
 							<Users />
 						</div>
 					</div>
-				<br />
-				<Chat />
-			</div>
+			{/* </div> */}
 		</>
 	);
 }

@@ -1,0 +1,83 @@
+.transcendence {
+	background: rgb(17, 137, 164);
+	width: 100vw;
+	height: 100vh;
+	padding: 32px;
+}
+
+.swagger {
+  background: black;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 
+.menu {
+	background:rgb(165, 164, 164);
+	padding: 15px;
+	width: 100%;
+	height: 30px;
+	border-radius: 5px;
+} */
+
+/* .navbar {
+	padding: -10px;
+} */
+
+.nav-link:hover {
+	background:pink;
+}
+
+/* .menuItemActive,
+.menuItemInactive {
+	width:10%;
+	padding: 15px;
+}
+
+.menuItemInactive {
+background: grey;
+color: black;
+}
+
+.menuItemInactive:hover {
+background: rgba(16, 67, 109);
+color: rgb(249, 241, 241);
+}
+
+.menuItemActive {
+background: white;
+color: grey;
+} */
+
+.component {
+	background: rgb(248, 130, 130);
+	border: 15px solid green;
+	padding: 50px;
+	border-radius: 5px;
+	width: 100%;
+}
+
+.game {
+	text-align: center;
+	padding: 0px;
+	/* width: 100%; */
+	height: 50vh;
+}
+
+.game canvas {
+	/* width: 100%; */
+	/* max-height: 50vw; */
+	height: 100%;
+	display: block;
+}
+
+.footer {
+	position: fixed;
+  	left: 0;
+  	bottom: 0;
+	width: 100%;
+	background-color: rgb(190, 113, 18);
+}
+

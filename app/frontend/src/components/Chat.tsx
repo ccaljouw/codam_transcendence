@@ -1,6 +1,6 @@
 export default function Chat() {
 	return (
-		<div className="component">
+		<div className="footer">
 			<h1>Start a new chat</h1>
 		</div>
 	);
