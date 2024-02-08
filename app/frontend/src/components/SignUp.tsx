@@ -12,7 +12,7 @@ async function PostNewUser(formData: FormData) {
 		const response = await fetch('http://localhost:3001/authentication/register', requestOptions);
 		const data = await response?.json();
 		console.log(data.id);
-		sessionStorage.setItem("userId", data.id);
+		sessionStorage.setItem("userId", data.id); // todo: change this to easily store token
 		if (!response?.ok)
 			return ("Error creating new user: " + data.message); // messages coherent
 		return ("Succesfully created new user: " + String(data.id));
