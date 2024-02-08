@@ -11,7 +11,7 @@ function Seed() {
     <div className="component">
       <h1>Seed database</h1>
       <DataFetcher<DataFormat>
-        url="http://localhost:3001/test/seed"
+        url="http://localhost:3001/seed"
         renderLoading={<p>Seeding database...</p>}
         renderError={(error) => <p>Custom error message: {error.message}</p>}
         renderData={(data) => <pre>{ data.msg }</pre>}

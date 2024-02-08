@@ -6,27 +6,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 @ApiTags('testing')
 export class TestingController {
   constructor(private readonly testingService: TestingService) {}
-
-  @Get()
-  @ApiOperation({ summary: '(Runs seed and all tests)'})
-  async runTests() {
-    const seedMessage = await this.testingService.runSeed()
-    const outputBackend = await this.testingService.runBackendTests();
-    const outputFrontend = await this.testingService.runFrontendTests();
-    return outputBackend + outputFrontend + seedMessage;
-  }
-
-  @Get('seed')
-  @ApiOperation({ summary: '(Runs seed)'})
-  async runSeed() {
-    try {
-      const outputMessage = await this.testingService.runSeed();
-      return { msg: outputMessage };
-    } catch (error) {
-        return { msg: 'Error running seed' }
-    }
-  }
-
+  
   @Get('backend')
   @ApiOperation({ summary: '(Runs backend tests)'})
   async runBackendTests() {

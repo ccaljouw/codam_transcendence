@@ -1,18 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { exec } from 'child_process';
-import { SeedService } from './seed.service';
 
 @Injectable()
 export class TestingService {
-  constructor(private readonly seedService: SeedService) {}
-  
-  async runSeed(): Promise<string> {
-    return await this.seedService.runSeed();
-  }
+  private runnungTests: boolean = false;
 
   async runBackendTests(): Promise<string> {
+    
+    const command: string = 'npm run test:cov_backend';
+    
     return new Promise<string>((resolve, reject) => {
-      const jestProcess = exec('npm run test:cov_backend', (error, stdout, stderr) => {
+      
+      if (this.runnungTests == true) {
+        reject('allready running tests');
+        return;
+      }
+      
+      this.runnungTests = true;
+      const jestProcess = exec(command, (error, stdout, stderr) => {
+        this.runnungTests = false;
         if (error) {
           console.error(`${error.message}`);
           reject(`${error.message}`);
@@ -31,8 +37,19 @@ export class TestingService {
   }
 
   async runFrontendTests(): Promise<string> {
+    
+    const command: string = 'npm run test:cov_frontend';
+
     return new Promise<string>((resolve, reject) => {
-      const jestProcess = exec('npm run test:cov_frontend', (error, stdout, stderr) => { 
+      
+      if (this.runnungTests == true) {
+        reject('allready running tests');
+        return;
+      }
+      
+      this.runnungTests = true;
+      const jestProcess = exec(command, (error, stdout, stderr) => {
+        this.runnungTests = false;
         if (error) {
           console.error(`${error.message}`);
           reject(`${error.message}`);
@@ -47,7 +64,7 @@ export class TestingService {
 
       jestProcess.stdout.pipe(process.stdout);
       jestProcess.stderr.pipe(process.stderr);
+      
     });
   }
-
 }

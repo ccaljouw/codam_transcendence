@@ -5,6 +5,7 @@ import { PrismaService } from 'src/database/prisma.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { TestingService } from './services/testing.service';
+import { SeedController } from './seed.controller';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { TestingService } from './services/testing.service';
       serveRoot: '/test/frontend/report',
     })
   ],
-  controllers: [TestingController],
+  controllers: [TestingController, SeedController],
   providers: [SeedService, TestingService, PrismaService],
 })
 
