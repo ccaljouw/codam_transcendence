@@ -2,22 +2,27 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../database/prisma.service';
+import { UserProfileDto } from './dto/user-profile.dto';
 
 @Injectable()
 export class UsersService {
 
   constructor(private db: PrismaService) {}
 
-  private removeHash(userToModify: CreateUserDto | UpdateUserDto) {
-    const modifiedUser = { ...userToModify };
+  private removeHash(userToModify: UserProfileDto) {
 
-    delete modifiedUser.hash;
-    return modifiedUser;
+    delete userToModify.hash;
+    return userToModify;
   }
 
   async create(createUserDto: CreateUserDto) {
+    if (!createUserDto.userName)
+      createUserDto.userName = createUserDto.loginName;
     console.log(createUserDto);
-    return this.db.user.create({ data: createUserDto });
+    const newUser = await this.db.user.create({ data: createUserDto });
+    const initState = { userId: newUser.id, online: 1}; //add token to create user and userState?
+    await this.db.userState.create({ data: initState })
+    return newUser.id;
   }
 
   findAll() {
@@ -37,7 +42,8 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    const deletedUser = await this.db.user.delete({ where: { id } });
-    return this.removeHash(deletedUser);
+    // check return types
+    return this.db.user.delete({ where: { id } });
   }
+
 }

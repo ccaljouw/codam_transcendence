@@ -1,6 +1,16 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// ***************************************************************** //
+// INSTRUCTION FOR CHANGING DATABASE MODEL
+// ***************************************************************** //
+// 1. add new model of change existing model in this file
+// 2. migrate the database by running this command in a running container
+//    $ docker exec -it backend prisma migrate dev --name [give the migration a name]
+// 3. Adjust seed.ts if necessary so that the dummy data can be loaded
+//    conform data definition.
+// Note: after migration, the database is empty.
+
 generator client {
   provider = "prisma-client-js"
   binaryTargets = ["native", "linux-arm64-openssl-3.0.x", "darwin-arm64"]
@@ -16,31 +26,31 @@ model User {
   loginName String      @unique
 	hash		  String
 
-  userName  String? //is no userName is provided loginName is used
+  userName  String? //if no userName is provided loginName is used
 	email	    String?    
 	firstName	String?
 	lastName	String?
 
   avatarId  Int?
 
-  state     UserState?
-
 	createdAt	DateTime  @default(now())
 	updatedAt	DateTime  @updatedAt
+
+  userState UserState? @relation("UserState_userId") 
 }
 
 
 model UserState {
-  id			  Int         @id @default(autoincrement())
-  userId    Int         @unique
+  id			  Int        @id @default(autoincrement())
+  userId    Int        @unique
 
-  token     String
-  online    Int
-  rank      Int
-
-  user      User      @relation(fields: [userId], references: [id])
+  token     String?
+  online    Int        @default(1) // when created user is online
+  rank      Int?
 
   createdAt	DateTime  @default(now())
 	updatedAt	DateTime  @updatedAt
+
+  user      User     @relation("UserState_userId", fields: [userId], references: [id], onDelete: Cascade)
 }
 
