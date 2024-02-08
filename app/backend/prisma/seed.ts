@@ -1,15 +1,16 @@
 import { PrismaClient } from '@prisma/client';
 
-// initialize Prisma Client
+// // initialize Prisma Client
 const prisma = new PrismaClient();
 
-// create two dummy datarecords
+// // create two dummy datarecords
 async function main() {
-  // create dummy users
+//   // create dummy users
   const user1 = await prisma.user.upsert({
-    where: { email: 'ccaljouw@student.codam.nl' },
+    where: { loginName: 'ccaljouw' },
     update: {},
     create: {
+      loginName: 'ccaljouw',
       email: 'ccaljouw@student.codam.nl',
       hash: 'this is my pwd',
       firstName: 'Carien',
@@ -17,9 +18,10 @@ async function main() {
     },
   });
   const user2 = await prisma.user.upsert({
-    where: { email: 'aap@student.codam.nl' },
+    where: { loginName: 'aap' },
     update: {},
     create: {
+      loginName: 'aap',
       email: 'aap@student.codam.nl',
       hash: 'this is my pwd',
       firstName: 'Aap',

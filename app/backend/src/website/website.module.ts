@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { WebsiteController } from './website.controller';
 import { join } from 'path';
 
 @Module({
@@ -14,6 +13,5 @@ import { join } from 'path';
       serveRoot: '/tests/frontend',
     })
   ],
-  controllers: [WebsiteController],
 })
 export class WebsiteModule {}
