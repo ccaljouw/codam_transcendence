@@ -1,6 +1,17 @@
 "use client";
 import {useState} from 'react';
 
+function formFieldText({description, name}:{description:string, name:string}) {
+	return (
+		<>
+			<label>{description}
+				<input type="text" name={name} /><br />
+			</label>
+			<br/>
+		</>
+	);
+}
+
 async function PostNewUser(formData: FormData) {
 	const requestOptions = {
 		method: 'POST',
@@ -33,6 +44,15 @@ export default function SignUp() {
 			<div className="component">
 				<h1>Sign up to play</h1>
 				<form className="form" action={handleSubmit}>
+					{/* <formFieldText description="Username" name="userName" />
+					<formFieldText description="First name" name="firstName" />
+					<formFieldText description="Last name" name="lastName" />
+					<formFieldText description="Email" name="email" />
+					<formFieldText description="Password" name="hash" /> */}
+					<label>Username:
+						<input type="text" name="userName" /><br />
+					</label>
+					<br/>
 					<label>Email:
 						<input type="text" name="email" /><br />
 					</label>
@@ -45,8 +65,7 @@ export default function SignUp() {
 						<input type="text" name="firstName" /><br />
 					</label>
 					<br/>
-					<label>Last Name:
-						<input type="text" name="lastName" /><br />
+					<label>Sign up:
 						<input type="submit" value="Submit" />
 					</label>
 				</form>
