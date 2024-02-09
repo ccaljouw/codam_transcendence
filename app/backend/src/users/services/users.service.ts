@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { PrismaService } from '../../database/prisma.service';
 import { UserProfileDto } from '../dto/user-profile.dto';
+import { CreateUserDto } from '../dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
 
   constructor(private db: PrismaService) {}
 
-  private getUserProfile(user: CreateUserDto | UpdateUserDto ) {
-    const profile = { ...user }
-    delete profile.hash;
+  private getUserProfile(user: CreateUserDto | UpdateUserDto ) : UserProfileDto {
+    // creates a new object profile that excluded the attributs before  ...
+    const { hash, ...profile } = user;
     return profile;
   }
 

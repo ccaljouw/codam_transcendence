@@ -1,25 +1,28 @@
-import { IsOptional } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class UserProfileDto {
 
-  @IsOptional()
-  loginName: string;
+  @ApiProperty({ required: false})
+  loginName?: string;
 
-  @IsOptional()
-  userName: string;
+  @ApiProperty({ required: false})
+  userName?: string;
 
-  @IsOptional()
-  email: string;
+  @ApiProperty({ required: false})
+  email?: string;
 
-  @IsOptional()
-  firstName: string;
+  @ApiProperty({ required: false})
+  firstName?: string;
 
-  @IsOptional()
-  lastName: string;
+  @ApiProperty({ required: false})
+  lastName?: string;
 
-  @IsOptional()
-  avatarId: number;
+  @ApiProperty({ required: false})
+  avatarId?: number;
 
-  @IsOptional()
-  online: number;
+  @ApiProperty({ required: false})
+  online?: number;
+
+  @ApiProperty({ required: false})
+  rank?: number;
 }

@@ -54,6 +54,7 @@ export class CreateUserDto {
   avatarId: number;
 
   @IsNumber()  // change to enum
+  @IsOptional()
   @ApiProperty({ required: true })
   online: number;
 
