@@ -34,7 +34,7 @@ model User {
 
   avatarId  Int?
   
-  online    Int        
+  online    Int?        
   rank      Int?
 
 	createdAt	DateTime  @default(now())

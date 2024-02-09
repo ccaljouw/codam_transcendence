@@ -14,9 +14,14 @@ export default function Stats() {
             <div className="component">
                 <h1>User stats</h1>
                 {isClient && <table>
-                    <InfoField name="Friends" data="Amount of friends" />
+                    <p>
+                        Friends             12 <br/>
+                        Win/Loss ratio      1.0 <br/>
+                        Achievements        Noob, Diehard, 3 Wins in a row<br/>
+                    </p>
+                    {/* <InfoField name="Friends" data="Amount of friends" />
                     <InfoField name="Win/Loss ratio" data="1.0" />
-                    <InfoField name="Achievements" data="Noob, Diehard, 3 Wins in a row" />
+                    <InfoField name="Achievements" data="Noob, Diehard, 3 Wins in a row" /> */}
                 </table>}
             </div>
         </>

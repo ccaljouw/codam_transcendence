@@ -20,13 +20,14 @@ async function PostNewUser(formData: FormData) {
 	};
 	console.log(requestOptions);
 	try {
-		const response = await fetch('http://localhost:3001/authentication/register', requestOptions);
-		const data = await response?.json();
-		console.log(data.id);
-		sessionStorage.setItem("userId", data.id); // todo: change this to easily store token
+		const response = await fetch('http://localhost:3001/users/register', requestOptions);
+		const id = await response?.json();
+		console.log(response);
+		console.log(id);
+		sessionStorage.setItem("userId", id); // todo: change this to easily store token
 		if (!response?.ok)
-			return ("Error creating new user: " + data.message); // messages coherent
-		return ("Succesfully created new user: " + String(data.id));
+			return ("Error creating new user: " + response.status + ": " + response.statusText); // messages coherent
+		return ("Succesfully created new user: " + String(id));
 	} catch (error) {
 		console.error(error);
 	}
@@ -53,18 +54,30 @@ export default function SignUp() {
 						<input type="text" name="userName" /><br />
 					</label>
 					<br/>
+					<label>First Name:
+						<input type="text" name="firstName" /><br />
+					</label>
+					<br/>
+					<label>Last Name:
+						<input type="text" name="lastName" /><br />
+					</label>
+					<br/>
+					<label>Login name:
+						<input type="text" name="loginName" /><br />
+					</label>
+					<br/>
 					<label>Email:
 						<input type="text" name="email" /><br />
 					</label>
 					<br/>
 					<label>Password:
-						<input type="text" name="password" /><br />
+						<input type="text" name="hash" /><br />
 					</label>
 					<br/>
-					<label>First Name:
-						<input type="text" name="firstName" /><br />
+					{/* <label>Online:
+						<input type="number" name="online" /><br />
 					</label>
-					<br/>
+					<br/> */}
 					<label>Sign up:
 						<input type="submit" value="Submit" />
 					</label>
