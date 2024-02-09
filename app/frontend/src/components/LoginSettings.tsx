@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import InfoField from "./utils/InfoField";
-import FetchUser from "./utils/FetchUserInfo";
+import FetchUser from "./utils/FetchUser";
 
 export default function LoginSettings() {
 	const [loginName, setLoginName] = useState<string>("");

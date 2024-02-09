@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import InfoField from './utils/InfoField';
-import fetchUser from './utils/FetchUserInfo';
+import fetchUser from './utils/FetchUser';
 
 export default function UserInfo() {
 	// const [data, setData] = useState< JSON | null >(null);
