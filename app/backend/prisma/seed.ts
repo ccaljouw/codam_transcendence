@@ -3,9 +3,8 @@ import { PrismaClient } from '@prisma/client';
 // // initialize Prisma Client
 const prisma = new PrismaClient();
 
-// // create two dummy datarecords
-async function main() {
-//   // create dummy users
+async function addDummyUsers() {
+  //   // create dummy users
   const user1 = await prisma.user.upsert({
     where: { loginName: 'ccaljouw' },
     update: {},
@@ -15,6 +14,7 @@ async function main() {
       hash: 'this is my pwd',
       firstName: 'Carien',
       lastName: 'Caljouw',
+      online: 1
     },
   });
   const user2 = await prisma.user.upsert({
@@ -26,10 +26,16 @@ async function main() {
       hash: 'this is my pwd',
       firstName: 'Aap',
       lastName: 'Je',
+      online: 1
     },
   });
-
   console.log({ user1, user2 });
+}
+
+// todo: add userState to dummy data
+
+async function main() {
+  addDummyUsers();
 }
 
 // execute

@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -12,7 +13,6 @@ import {
 export class CreateUserDto {
 
   // using class-validator and validationPipe to validate input data
-  
   // Everthing starting with @Api fills the api documetation. It does not enforce
   // the format specified or update automatically when validation rules are changed 
   @IsNotEmpty()
@@ -52,4 +52,9 @@ export class CreateUserDto {
   @IsOptional()
   @ApiProperty({ required: false })
   avatarId: number;
+
+  @IsNumber()  // change to enum
+  @ApiProperty({ required: true })
+  online: number;
+
 }

@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 // ***************************************************************** //
-// INSTRUCTION FOR CHANGING DATABASE MODEL
+//            INSTRUCTION FOR CHANGING DATABASE MODEL
 // ***************************************************************** //
 // 1. add new model of change existing model in this file
 // 2. migrate the database by running this command in a running container
@@ -30,27 +30,15 @@ model User {
 	email	    String?    
 	firstName	String?
 	lastName	String?
+  token     String?
 
   avatarId  Int?
+  
+  online    Int        
+  rank      Int?
 
 	createdAt	DateTime  @default(now())
 	updatedAt	DateTime  @updatedAt
-
-  userState UserState? @relation("UserState_userId") 
 }
 
-
-model UserState {
-  id			  Int        @id @default(autoincrement())
-  userId    Int        @unique
-
-  token     String?
-  online    Int        @default(1) // when created user is online
-  rank      Int?
-
-  createdAt	DateTime  @default(now())
-	updatedAt	DateTime  @updatedAt
-
-  user      User     @relation("UserState_userId", fields: [userId], references: [id], onDelete: Cascade)
-}
 

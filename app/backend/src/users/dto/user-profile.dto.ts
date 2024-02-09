@@ -1,7 +1,25 @@
-import { IntersectionType } from "@nestjs/swagger";
-import { CreateUserDto } from "./create-user.dto";
-import { UpdateUserStateDto } from "./update-userState.dto";
+import { IsOptional } from "class-validator";
 
-export class UserProfileDto extends IntersectionType(CreateUserDto, UpdateUserStateDto) {
-  // Retreves properties from both User and UserState
+export class UserProfileDto {
+
+  @IsOptional()
+  loginName: string;
+
+  @IsOptional()
+  userName: string;
+
+  @IsOptional()
+  email: string;
+
+  @IsOptional()
+  firstName: string;
+
+  @IsOptional()
+  lastName: string;
+
+  @IsOptional()
+  avatarId: number;
+
+  @IsOptional()
+  online: number;
 }

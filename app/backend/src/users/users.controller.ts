@@ -10,9 +10,10 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UsersService } from './users.service';
+import { UsersService } from './services/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserProfileDto } from './dto/user-profile.dto';
 
 @Controller('users')
 @ApiTags('users')
@@ -28,7 +29,7 @@ export class UsersController {
     return this.usersService.create(CreateUserDto);
   }
 
-  @Get('all')
+  @Get('all')  /// remove this endpoint?
   @ApiOperation({ summary: 'Returns all users currently in the database'})
   @ApiOkResponse({ type: [CreateUserDto] })
   @ApiNotFoundResponse({ description: "No users in the database" })
@@ -38,7 +39,7 @@ export class UsersController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Returns user with specified id'})
-  @ApiOkResponse({ type: CreateUserDto }) // change type!!
+  @ApiOkResponse({ type: UserProfileDto }) // change type!!
   @ApiNotFoundResponse({ description: 'User with #${id} does not exist' })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const user = await this.usersService.findOne(id);
@@ -50,7 +51,7 @@ export class UsersController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Updates user with specified id'})
-  @ApiOkResponse({ type: CreateUserDto }) // change type!!
+  @ApiOkResponse({ type: UserProfileDto })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
@@ -60,7 +61,7 @@ export class UsersController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Deletes user with specified id'})
-  @ApiOkResponse({ description: 'User successfully deleted', type: CreateUserDto }) // change type!!
+  @ApiOkResponse({ description: 'User successfully deleted', type: UserProfileDto })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(id);
   }
