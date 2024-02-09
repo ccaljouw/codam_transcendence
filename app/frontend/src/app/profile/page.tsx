@@ -23,7 +23,7 @@ export default function Page() {
 				<Blocked />
 				<br />
 				<Chat />
-			</div>
+			{/* </div> */}
 		</>
 	);
 }
