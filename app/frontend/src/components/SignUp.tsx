@@ -1,16 +1,16 @@
 "use client";
 import {useState} from 'react';
 
-function formFieldText({description, name}:{description:string, name:string}) {
-	return (
-		<>
-			<label>{description}
-				<input type="text" name={name} /><br />
-			</label>
-			<br/>
-		</>
-	);
-}
+// function formFieldText({description, name}:{description:string, name:string}) {
+// 	return (
+// 		<>
+// 			<label>{description}
+// 				<input type="text" name={name} /><br />
+// 			</label>
+// 			<br/>
+// 		</>
+// 	);
+// }
 
 async function PostNewUser(formData: FormData) {
 	const requestOptions = {
