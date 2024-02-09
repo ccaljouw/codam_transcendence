@@ -1,6 +1,17 @@
 "use client";
 import {useState} from 'react';
 
+// function formFieldText({description, name}:{description:string, name:string}) {
+// 	return (
+// 		<>
+// 			<label>{description}
+// 				<input type="text" name={name} /><br />
+// 			</label>
+// 			<br/>
+// 		</>
+// 	);
+// }
+
 async function PostNewUser(formData: FormData) {
 	const requestOptions = {
 		method: 'POST',
@@ -9,13 +20,14 @@ async function PostNewUser(formData: FormData) {
 	};
 	console.log(requestOptions);
 	try {
-		const response = await fetch('http://localhost:3001/authentication/register', requestOptions);
-		const data = await response?.json();
-		console.log(data.id);
-		sessionStorage.setItem("userId", data.id);
+		const response = await fetch('http://localhost:3001/users/register', requestOptions);
+		const id = await response?.json();
+		console.log(response);
+		console.log(id);
+		sessionStorage.setItem("userId", id); // todo: change this to easily store token
 		if (!response?.ok)
-			return ("Error creating new user: " + data.message); // messages coherent
-		return ("Succesfully created new user: " + String(data.id));
+			return ("Error creating new user: " + response.status + ": " + response.statusText); // messages coherent
+		return ("Succesfully created new user: " + String(id));
 	} catch (error) {
 		console.error(error);
 	}
@@ -33,12 +45,13 @@ export default function SignUp() {
 			<div className="component">
 				<h1>Sign up to play</h1>
 				<form className="form" action={handleSubmit}>
-					<label>Email:
-						<input type="text" name="email" /><br />
-					</label>
-					<br/>
-					<label>Password:
-						<input type="text" name="password" /><br />
+					{/* <formFieldText description="Username" name="userName" />
+					<formFieldText description="First name" name="firstName" />
+					<formFieldText description="Last name" name="lastName" />
+					<formFieldText description="Email" name="email" />
+					<formFieldText description="Password" name="hash" /> */}
+					<label>Username:
+						<input type="text" name="userName" /><br />
 					</label>
 					<br/>
 					<label>First Name:
@@ -47,6 +60,25 @@ export default function SignUp() {
 					<br/>
 					<label>Last Name:
 						<input type="text" name="lastName" /><br />
+					</label>
+					<br/>
+					<label>Login name:
+						<input type="text" name="loginName" /><br />
+					</label>
+					<br/>
+					<label>Email:
+						<input type="text" name="email" /><br />
+					</label>
+					<br/>
+					<label>Password:
+						<input type="text" name="hash" /><br />
+					</label>
+					<br/>
+					{/* <label>Online:
+						<input type="number" name="online" /><br />
+					</label>
+					<br/> */}
+					<label>Sign up:
 						<input type="submit" value="Submit" />
 					</label>
 				</form>

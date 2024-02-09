@@ -10,6 +10,10 @@
 	width: 100%;
 }
 
+.component table {
+	width: 100%;
+}
+
 .game {
 	text-align: center;
 	padding: 0px;
