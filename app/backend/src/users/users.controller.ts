@@ -9,36 +9,49 @@ import {
   Patch,
   Delete,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { UsersService } from './users.service';
-import { UserEntity } from './dto/user.entity';
+import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { UsersService } from './services/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserProfileDto } from './dto/user-profile.dto';
 
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
+  
   // TODO: update endpoints to include access token
+  
+  @Post('register')
+  @ApiOperation({ summary: 'Adds user to database and returns id for this user'})
+  @ApiCreatedResponse({ description: 'User successfully created', type: Number }) // change type!!
+  async register(@Body() CreateUserDto: CreateUserDto) {
+    return this.usersService.create(CreateUserDto);
+  }
 
-  @Get('all')
+  @Get('all')  /// remove this endpoint?
+  @ApiOperation({ summary: 'Returns all users currently in the database'})
+  @ApiOkResponse({ type: [CreateUserDto] })
+  @ApiNotFoundResponse({ description: "No users in the database" })
   findAll() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: UserEntity })
+  @ApiOperation({ summary: 'Returns user with specified id'})
+  @ApiOkResponse({ type: UserProfileDto }) // change type!!
+  @ApiNotFoundResponse({ description: 'User with #${id} does not exist' })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const user = await this.usersService.findOne(id);
     if (!user) {
       throw new NotFoundException(`User with #${id} does not exist.`);
     }
-    return await this.usersService.findOne(id);
+    return user;
   }
 
   @Patch(':id')
-  @ApiOkResponse({ type: UserEntity })
+  @ApiOperation({ summary: 'Updates user with specified id'})
+  @ApiOkResponse({ type: UserProfileDto })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
@@ -47,7 +60,8 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @ApiOkResponse({ type: UserEntity })
+  @ApiOperation({ summary: 'Deletes user with specified id'})
+  @ApiOkResponse({ description: 'User successfully deleted', type: UserProfileDto })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(id);
   }
