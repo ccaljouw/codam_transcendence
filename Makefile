@@ -7,9 +7,6 @@ run:
 backend:
 	docker compose up backend
 
-coverage:
-	docker compose up nginx
-
 re: clean
 	docker compose up
 
@@ -30,4 +27,4 @@ fclean: clean
 prune: fclean
 	docker system prune -af
 
-.PHONY:	all clean fclean re rebuild run prune backend coverage
+.PHONY:	all clean fclean re rebuild run prune backend
