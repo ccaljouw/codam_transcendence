@@ -24,6 +24,12 @@ model User {
 
 }
 
+model Game {
+	id 			Int @id @default(autoincrement())
+	user1_id	Int
+	user2_id	Int
+}
+
 // relation
   // In user
    // articles  Bookmark[]
