@@ -1,46 +1,31 @@
 "use client"
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-// import styles from '../styles/menu.module.css';
-
-// function MenuItem({href, title}:{href:string, title:string}){
-// 	const pathname = usePathname();
-// 	const menuClass = pathname === href ? "menuItemActive" : "menuItemInactive";
-// 	return (
-// 		<Link className={menuClass} href={href}>{title}</Link>
-// 	);
-// }
 
 function MenuItem({href, title}:{href:string, title:string}){
 	const pathname = usePathname();
-	// const menuClass = pathname === href ? "menuItemActive" : "menuItemInactive";
+	const background = pathname === href ? "active" : "inactive";
 	return (
 		<li className="nav-item">
-			<a className="nav-link" href={href}>{title}</a>
+			<a className={"nav-link " + {background}} href={href}>{title}</a>
 		</li>
-		// <Link className={menuClass} href={href}>{title}</Link>
 	);
 }
 
 export default function MenuBar() {
 	return (
 		<>
-			{/* <div className="menu">
-				<MenuItem href="/" title="Home" />
-				<MenuItem href="/profile" title="Profile" />
-				<MenuItem href="/play" title="Play" />
-				<MenuItem href="/sign-up" title="Sign Up" />
-				<MenuItem href="/swagger" title="Swagger" />
-			</div> */}
-		<nav className="navbar navbar-expand-sm bg-light">
+		<nav className="navbar navbar-expand-md navbar-dark bg-dark rounded">
 			<div className="container-fluid">
-			<ul className="navbar-nav">
-				<MenuItem href="/" title="Home" />
-				<MenuItem href="/profile" title="Profile" />
-				<MenuItem href="/play" title="Play" />
-				<MenuItem href="/sign-up" title="Sign Up" />
-				<MenuItem href="/swagger" title="Swagger" />
-			</ul>
+				<a className="navbar-brand" href="/">PONG</a>
+				<div className="collapse navbar-collapse">
+					<ul className="navbar-nav me-auto mb-2 mb-md-0">
+						<MenuItem href="/" title="Home" />
+						<MenuItem href="/profile" title="Profile" />
+						<MenuItem href="/play" title="Play" />
+						<MenuItem href="/sign-up" title="Sign Up" />
+						<MenuItem href="/swagger" title="Swagger" />
+					</ul>
+				</div>
 			</div>
 		</nav>
 		</>

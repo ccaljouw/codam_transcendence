@@ -20,8 +20,12 @@ export default function GameComponent() {
 	}, [game]);
 
 	return (
-		<div className="component game">
-			<canvas ref={canvasRef} />
-		</div>
+		<>
+			<div className="row d-flex justify-content-center">
+				<div className="component game game-component col-lg-9">
+					<canvas ref={canvasRef} />
+				</div>
+			</div>
+		</>
 	);
 }

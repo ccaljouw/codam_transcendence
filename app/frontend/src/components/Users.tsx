@@ -1,8 +1,8 @@
 export default function Users() {
 	return (
-        <div className="component text-center">
-		    <h1>Users</h1>
-			<p> An overview of all users and their username, rank, avatar, online status</p>
+        <div className="component text-center border rounded">
+				<h1>Users</h1>
+				<p>User1<br/>User2<br/>Bobbie<br/></p>
         </div>
 	);
 }

@@ -12,20 +12,18 @@ export const metadata: Metadata = {
   description: 'Challenge and meet new friends through a game of Pong',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang="en">
       <body>
         <div className="transcendence">
-            <MenuBar/>
-            {children}
-            <Chat />
+          <div className="container">
+              <MenuBar/>
+              {children}
+              <Chat />
+          </div>
         </div>
       </body>
     </html>
-  )
+  );
 }
