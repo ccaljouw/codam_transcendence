@@ -3,9 +3,9 @@ import GameComponent from "../../components/Game.tsx";
 export default function Page() {
 	return (
 		<>
+			<div className="row mt-3">
 					<h1>Game page</h1>
 					<p>Here you can play a game and chat</p>
-			{/* <div className="row mt-3"> */}
 				{/* <div className="col-3">
 
 				</div> */}
@@ -15,7 +15,7 @@ export default function Page() {
 				{/* <div className="col-3">
 					
 				</div>	 */}
-			{/* </div> */}
+			</div>
 		</>
 	);
 }

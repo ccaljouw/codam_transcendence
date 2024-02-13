@@ -1,11 +1,10 @@
 import MenuBar from '../components/MenuBar.tsx';
 import Chat from '../components/Chat.tsx';
 import { Metadata } from 'next';
-// import '../styles/background.css';
-// import '../styles/component.css';
-import '../styles/globals.css';
 import 'bootstrap/dist/css/bootstrap.css'
-import '../styles/style1.css';
+import '../styles/globals.css';
+import '../styles/styleCloudySky.css';
+// import '../styles/styleNeonDark.css';
 
 export const metadata: Metadata = {
   title: 'Pong',

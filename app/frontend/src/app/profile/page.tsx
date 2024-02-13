@@ -10,30 +10,30 @@ export default function Page() {
 	return (
 		<>
 			{/* <div className="transcendenceProfile"> */}
+				<div className="row mt-3">
 				<br />
 				<h1>Profile page</h1>
 				<p>The information below is public:</p>
-				<div className="row">
-					<div className="col col-lg-4 col-md-6 col-sm-12 border rounded mt-3">
+					<div className="col col-lg-4 col-sm-12 col-12 border rounded mt-3">
 						<UserInfo />
 					</div>
-					<div className="col col-lg-4 col-md-6 col-sm-12 border rounded mt-3">
+					<div className="col col-lg-4 col-sm-12 col-12  border rounded mt-3">
 						<Stats />
 					</div>
-					<div className="col col-lg-4 col-md-6 col-sm-12 border rounded mt-3">
+					<div className="col col-lg-4 col-sm-12 col-12  border rounded mt-3">
 						<MatchHistory />
 					</div>
 				</div>
 				<br />
 				<p>The information below is only visible to you:</p>
 				<div className="row">
-					<div className="col-4 border rounded">
+					<div className="col col-lg-4 col-sm-12 col-12 border rounded mt-3">
 						<GameSettings />
 					</div>
-					<div className="col-4 border rounded">
+					<div className="col col-lg-4 col-sm-12 col-12 border rounded mt-3">
 						<LoginSettings />
 					</div>
-					<div className="col-4 border rounded">
+					<div className="col col-lg-4 col-sm-12 col-12 border rounded mt-3">
 						<Blocked />
 					</div>
 				</div>
