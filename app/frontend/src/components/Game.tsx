@@ -10,7 +10,7 @@ export default function GameComponent() {
 		if (!game) {
 			setGame(new Game(canvasRef.current!));
 		}
-	}, []); // canvasRef not needed? [canvasRef]
+	}, []);
 
 	useEffect(() => {
 		if (game) {
@@ -22,7 +22,7 @@ export default function GameComponent() {
 	return (
 		<>
 			<div className="row d-flex justify-content-center">
-				<div className="component game game-component col-lg-9">
+				<div className="content game col-lg-9">
 					<canvas ref={canvasRef} />
 				</div>
 			</div>

@@ -18,12 +18,9 @@
 	width: 100%;
 }
 
-.rounded {
-	background: rgba(232, 238, 240, 0.683);
+.navbar,
+.content {
+	background: rgba(232, 238, 240, 0.683) !important;
+	border-radius: 10px;
 	box-shadow: 0 0 50px 15px #ffffff99;
-	/* border-radius: 1000 !important; */
 }
-
-:root {
-	--navbar-background: #b0bac5 !important; /* Dark background color for the navbar */
-  }

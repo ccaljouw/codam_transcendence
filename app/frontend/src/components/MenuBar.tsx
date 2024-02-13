@@ -20,12 +20,12 @@ export default function MenuBar() {
 	};
 	return (
 		<>
-		<nav className="navbar navbar-expand-md rounded">
+		<nav className="navbar navbar-expand-md">
 			<a className="navbar-brand" href="/">PONG</a>
 			<button className="navbar-toggler" type="button" onClick={toggleMenu}>
 				<span className="navbar-toggler-icon"></span>
 			</button>
-			<div className={`collapse navbar-collapse ${isMenuOpen ? 'show' : ''}`}>
+			<div className={"collapse navbar-collapse " + isMenuOpen ? "show" : ""}>
 				<ul className="navbar-nav me-auto mb-2 mb-md-0">
 					<MenuItem href="/" title="Home" />
 					<MenuItem href="/profile" title="Profile" />

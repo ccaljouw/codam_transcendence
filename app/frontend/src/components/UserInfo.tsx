@@ -23,7 +23,7 @@ export default function UserInfo() {
 	}
 
 	return (
-		<div className="component">
+		<div className="content">
 			<h1>User information</h1>
 			<p>
 				<InfoField name="Avatar" data={avatarId} />
@@ -34,7 +34,5 @@ export default function UserInfo() {
 	</div>
 	);
 }
-			// {data ? (<pre>{JSON.stringify(data, null, 2)}</pre>) : (<p>Loading data...</p>)}
 
-// Profile vraags user aan aan de hand van de session token.
-// Backend vergelijkt in de backend de session token met de actieve users en stuurt de juiste user terug.
+// {data ? (<pre>{JSON.stringify(data, null, 2)}</pre>) : (<p>Loading data...</p>)}

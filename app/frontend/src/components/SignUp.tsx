@@ -42,8 +42,8 @@ export default function SignUp() {
 	}
 	return (
 		<>
-			<div className="component">
-				<form action={handleSubmit} >
+			<div className="content">
+				<form action={handleSubmit}>
 					<h1 className="mb-3">Sign up to play</h1>
 					{/* The below placeholders are never visible */}
 					<FormField types="text" text="First Name" theName="firstName"/>
@@ -54,7 +54,6 @@ export default function SignUp() {
 					<FormField types="text" text="Password" theName="hash"/>	
 					<button className="btn btn-dark w-10 py-2 mt-3" type="submit" >Sign up</button>
 				</form>
-
 				<p>{message}</p>
 			</div>
 		</>

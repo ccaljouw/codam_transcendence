@@ -20,7 +20,7 @@ export default function LoginSettings() {
 		setLastName(result.lastName);
 	}
 	return (
-		<div className="component">
+		<div className="content">
 			<h1>Login settings</h1>
 			<InfoField name="Login name" data={loginName} />
 			<InfoField name="First name" data={firstName} />

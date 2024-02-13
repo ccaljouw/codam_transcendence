@@ -21,11 +21,11 @@
 .navbar {
 	background: #ff00ff !important;
 	box-shadow: 0 0 50px 15px #ff00ff76 !important;
+	border-radius: 2px !important;
 }
 
-.rounded {
+.content {
 	background-color:#f7ee04;
-	/* background: lightpink; */
 	border-radius: 2px !important;
 	border: 0;
 	box-shadow: 0 0 50px 15px #f7ee0476;

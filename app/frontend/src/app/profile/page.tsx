@@ -14,26 +14,26 @@ export default function Page() {
 				<br />
 				<h1>Profile page</h1>
 				<p>The information below is public:</p>
-					<div className="col col-lg-4 col-sm-12 col-12 border rounded mt-3">
+					<div className="col col-lg-4 col-sm-12 col-12 mt-3 content">
 						<UserInfo />
 					</div>
-					<div className="col col-lg-4 col-sm-12 col-12  border rounded mt-3">
+					<div className="col col-lg-4 col-sm-12 col-12  mt-3 content">
 						<Stats />
 					</div>
-					<div className="col col-lg-4 col-sm-12 col-12  border rounded mt-3">
+					<div className="col col-lg-4 col-sm-12 col-12  mt-3 content">
 						<MatchHistory />
 					</div>
 				</div>
 				<br />
 				<p>The information below is only visible to you:</p>
 				<div className="row">
-					<div className="col col-lg-4 col-sm-12 col-12 border rounded mt-3">
+					<div className="col col-lg-4 col-sm-12 col-12 mt-3 content">
 						<GameSettings />
 					</div>
-					<div className="col col-lg-4 col-sm-12 col-12 border rounded mt-3">
+					<div className="col col-lg-4 col-sm-12 col-12 mt-3 content">
 						<LoginSettings />
 					</div>
-					<div className="col col-lg-4 col-sm-12 col-12 border rounded mt-3">
+					<div className="col col-lg-4 col-sm-12 col-12 mt-3 content">
 						<Blocked />
 					</div>
 				</div>

@@ -1,5 +1,5 @@
 "use client";
-import InfoField from "./utils/InfoField";
+// import InfoField from "./utils/InfoField";
 import { useState, useEffect }from 'react';
 
 export default function Stats() {
@@ -9,9 +9,10 @@ export default function Stats() {
         setIsClient(true)
     }, [])
 
+    // todo: change from table to row with cols 
     return (
         <>
-            <div className="component">
+            <div className="content">
                 <h1>User stats</h1>
                 {isClient && <table>
                     <p>
