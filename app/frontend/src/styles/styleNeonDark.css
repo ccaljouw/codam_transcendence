@@ -1,33 +1,16 @@
-.transcendence {
+.body {
 	background: rgb(28, 2, 52);
-	width: 100vw;
-	height: 100vh;
-	padding: 32px;
-}
-
-.swagger {
-  background: black;
-  height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  border-radius: 5px;
-}
-
-.game canvas {
-	width: 100%;
 }
 
 .navbar {
 	background: #ff00ff !important;
-	box-shadow: 0 0 50px 15px #ff00ff76 !important;
 	border-radius: 2px !important;
+	box-shadow: 0 0 50px 15px #ff00ff76 !important;
 }
 
 .content {
 	background-color:#f7ee04;
-	border-radius: 2px !important;
-	border: 0;
+	/* border: 0; */
 	box-shadow: 0 0 50px 15px #f7ee0476;
-	color: rgb(28, 2, 52);
+	/* color: rgb(28, 2, 52); */
 }

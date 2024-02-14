@@ -1,4 +1,3 @@
-import Chat from "../../components/Chat.tsx";
 import UserInfo from "../../components/UserInfo.tsx";
 import Stats from "../../components/Stats.tsx";
 import MatchHistory from "../../components/MatchHistory.tsx";
@@ -9,37 +8,31 @@ import LoginSettings from "../../components/LoginSettings.tsx";
 export default function Page() {
 	return (
 		<>
-			{/* <div className="transcendenceProfile"> */}
-				<div className="row mt-3">
-				<br />
-				<h1>Profile page</h1>
+			<h1>Profile page</h1>
+			<div className="row">
 				<p>The information below is public:</p>
-					<div className="col col-lg-4 col-sm-12 col-12 mt-3 content">
-						<UserInfo />
-					</div>
-					<div className="col col-lg-4 col-sm-12 col-12  mt-3 content">
-						<Stats />
-					</div>
-					<div className="col col-lg-4 col-sm-12 col-12  mt-3 content">
-						<MatchHistory />
-					</div>
+				<div className="col col-lg-4 col-sm-12 col-12 mt-3 component">
+					<UserInfo />
 				</div>
-				<br />
+				<div className="col col-lg-4 col-sm-12 col-12  mt-3 component">
+					<Stats />
+				</div>
+				<div className="col col-lg-4 col-sm-12 col-12  mt-3 component">
+					<MatchHistory />
+				</div>
+			</div>
+			<div className="row">
 				<p>The information below is only visible to you:</p>
-				<div className="row">
-					<div className="col col-lg-4 col-sm-12 col-12 mt-3 content">
-						<GameSettings />
-					</div>
-					<div className="col col-lg-4 col-sm-12 col-12 mt-3 content">
-						<LoginSettings />
-					</div>
-					<div className="col col-lg-4 col-sm-12 col-12 mt-3 content">
-						<Blocked />
-					</div>
+				<div className="col col-lg-4 col-sm-12 col-12 mt-3 component">
+					<GameSettings />
 				</div>
-				<br />
-				<Chat />
-			{/* </div> */}
+				<div className="col col-lg-4 col-sm-12 col-12 mt-3 component">
+					<LoginSettings />
+				</div>
+				<div className="col col-lg-4 col-sm-12 col-12 mt-3 component">
+					<Blocked />
+				</div>
+			</div>
 		</>
 	);
 }

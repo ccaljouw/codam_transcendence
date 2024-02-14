@@ -1,26 +1,9 @@
-.transcendence {
+/* .body {
 	background: rgb(162, 169, 170);
-	width: 100vw;
-	height: 100vh;
-	padding: 32px;
-}
-
-.swagger {
-  background: black;
-  height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  border-radius: 5px;
-}
-
-.game canvas {
-	width: 100%;
-}
+} */
 
 .navbar,
 .content {
 	background: rgba(232, 238, 240, 0.683) !important;
-	border-radius: 10px;
 	box-shadow: 0 0 50px 15px #ffffff99;
 }

@@ -20,7 +20,7 @@ export default function LoginSettings() {
 		setLastName(result.lastName);
 	}
 	return (
-		<div className="content">
+		<>
 			<h1>Login settings</h1>
 			<InfoField name="Login name" data={loginName} />
 			<InfoField name="First name" data={firstName} />
@@ -28,6 +28,6 @@ export default function LoginSettings() {
 			<p>
 				Button to Enable two-factor authentication, link to change password
 			</p>
-		</div>
+		</>
 	);
 }

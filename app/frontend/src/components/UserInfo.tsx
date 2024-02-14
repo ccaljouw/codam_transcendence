@@ -23,7 +23,7 @@ export default function UserInfo() {
 	}
 
 	return (
-		<div className="content">
+		<>
 			<h1>User information</h1>
 			<p>
 				<InfoField name="Avatar" data={avatarId} />
@@ -31,7 +31,7 @@ export default function UserInfo() {
 				<InfoField name="Online" data={online} />
 				<InfoField name="Rank" data={"#" + rank} />
 			</p>
-	</div>
+		</>
 	);
 }
 

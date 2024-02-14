@@ -12,19 +12,17 @@ export default function Stats() {
     // todo: change from table to row with cols 
     return (
         <>
-            <div className="content">
-                <h1>User stats</h1>
-                {isClient && <table>
-                    <p>
-                        Friends             12 <br/>
-                        Win/Loss ratio      1.0 <br/>
-                        Achievements        Noob, Diehard, 3 Wins in a row<br/>
-                    </p>
-                    {/* <InfoField name="Friends" data="Amount of friends" />
-                    <InfoField name="Win/Loss ratio" data="1.0" />
-                    <InfoField name="Achievements" data="Noob, Diehard, 3 Wins in a row" /> */}
-                </table>}
-            </div>
+            <h1>User stats</h1>
+            {isClient && <table>
+                <p>
+                    Friends             12 <br/>
+                    Win/Loss ratio      1.0 <br/>
+                    Achievements        Noob, Diehard, 3 Wins in a row<br/>
+                </p>
+                {/* <InfoField name="Friends" data="Amount of friends" />
+                <InfoField name="Win/Loss ratio" data="1.0" />
+                <InfoField name="Achievements" data="Noob, Diehard, 3 Wins in a row" /> */}
+            </table>}
         </>
     );
 }

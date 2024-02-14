@@ -1,17 +1,20 @@
 import Welcome from "../components/Welcome.tsx";
 import Leaderboard from '../components/Leaderboard.tsx';
 import Users from '../components/Users.tsx';
-import Chat from '../components/Chat.tsx';
 
 export default function Page() {
 	return (
 		<>
-			<Welcome />
 			<div className="row">
-				<div className="col col-md-6 mt-3">
+				<div className="col component">
+					<Welcome />
+				</div>
+			</div>
+			<div className="row">
+				<div className="col component">
 					<Leaderboard />
 				</div>
-				<div className="col col-md-6 mt-3">
+				<div className="col component">
 					<Users />
 				</div>
 			</div>

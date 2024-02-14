@@ -20,21 +20,21 @@ export default function MenuBar() {
 	};
 	return (
 		<>
-		<nav className="navbar navbar-expand-md">
-			<a className="navbar-brand" href="/">PONG</a>
-			<button className="navbar-toggler" type="button" onClick={toggleMenu}>
-				<span className="navbar-toggler-icon"></span>
-			</button>
-			<div className={"collapse navbar-collapse " + isMenuOpen ? "show" : ""}>
-				<ul className="navbar-nav me-auto mb-2 mb-md-0">
-					<MenuItem href="/" title="Home" />
-					<MenuItem href="/profile" title="Profile" />
-					<MenuItem href="/play" title="Play" />
-					<MenuItem href="/sign-up" title="Sign Up" />
-					<MenuItem href="/swagger" title="Swagger" />
-				</ul>
-			</div>
-		</nav>
+			<nav className="navbar navbar-expand-md">
+				<a className="navbar-brand" href="/">PONG</a>
+				<button className="navbar-toggler" type="button" onClick={toggleMenu} data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+					<span className="navbar-toggler-icon"></span>
+				</button>
+				<div className={"collapse navbar-collapse " + isMenuOpen ? "show" : "" } id="navbarNavAltMarkup">
+					<ul className="navbar-nav  ">
+						<MenuItem href="/" title="Home" />
+						<MenuItem href="/profile" title="Profile" />
+						<MenuItem href="/play" title="Play" />
+						<MenuItem href="/sign-up" title="Sign Up" />
+						<MenuItem href="/swagger" title="Swagger" />
+					</ul>
+				</div>
+			</nav>
 		</>
 	);
 }

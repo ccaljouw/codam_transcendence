@@ -1,0 +1,65 @@
+html {
+    width: 100vw;
+    height: 100vh;
+}
+
+body {
+    background: red !important;
+	padding: 32px;
+    height: 100%;
+}
+
+.row {
+    height: 100%;
+}
+
+.container-fluid {
+    width: 100%;
+    /* height: 100%; */
+    background: orange !important;    
+}
+
+.navbar {
+    border-radius: 10px;
+    background: yellow;
+}
+
+.page {
+    margin: 0;
+    /* padding:0; */
+    height: 100%;
+    background: green;
+    /* find something to make the page fit perfectly inside the container-fluid */
+}
+
+.tile {
+    height:100vh;
+    /* padding:10px; */
+    border: 1px solid pink;
+    /* background: green; */
+}
+
+.component {
+    /* width: 100%; */
+    height: 100%;
+    border: 1px solid white;
+    /* background:purple; */
+    /* padding: 0; */
+}
+
+
+
+
+/* to move to another file*/
+.game canvas {
+	width: 100%;
+}
+
+.swagger {
+    background: black;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+}
