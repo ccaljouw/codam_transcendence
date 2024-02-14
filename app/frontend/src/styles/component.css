@@ -10,6 +10,15 @@
 	width: 100%;
 }
 
+.userlist{
+	font-family: sans-serif
+}
+
+.userlist li:hover {
+	font-weight: bold;
+}
+
+
 .game {
 	text-align: center;
 	padding: 0px;

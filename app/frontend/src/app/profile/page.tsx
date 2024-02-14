@@ -13,7 +13,7 @@ export default function Page() {
 				<br />
 				<Settings />
 				<br />
-				<Chat />
+				{/* <Chat /> */}
 			</div>
 		</>
 	);

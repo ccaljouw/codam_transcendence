@@ -5,6 +5,7 @@ export default function Profile() {
   const [data, setData] = useState< JSON | null >(null);
 
   useEffect(() => {
+	console.log("profile called");
     fetchData();
   }, []);
 

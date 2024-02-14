@@ -11,19 +11,39 @@ async function main() {
     update: {},
     create: {
       email: 'ccaljouw@student.codam.nl',
-      hash: 'this is my pwd',
+      hash: 'pwd',
       firstName: 'Carien',
       lastName: 'Caljouw',
     },
   });
   const user2 = await prisma.user.upsert({
-    where: { email: 'aap@student.codam.nl' },
+    where: { email: 'avan_and@student.codam.nl' },
     update: {},
     create: {
-      email: 'aap@student.codam.nl',
-      hash: 'this is my pwd',
-      firstName: 'Aap',
-      lastName: 'Je',
+      email: 'avan_and@student.codam.nl',
+      hash: 'pwd',
+      firstName: 'Albert',
+      lastName: 'van Andel',
+    },
+  });
+  const user3 = await prisma.user.upsert({
+    where: { email: 'jaberkro@student.codam.nl' },
+    update: {},
+    create: {
+      email: 'jaberkro@student.codam.nl',
+      hash: 'pwd',
+      firstName: 'Jorien',
+      lastName: 'Aberkro',
+    },
+  });
+  const user4 = await prisma.user.upsert({
+    where: { email: 'cwesseli@student.codam.nl' },
+    update: {},
+    create: {
+      email: 'cwesseli@student.codam.nl',
+      hash: 'pwd',
+      firstName: 'Carlo',
+      lastName: 'Wesseling',
     },
   });
 

@@ -2,6 +2,7 @@ import Welcome from "../components/Welcome.tsx";
 import Leaderboard from '../components/Leaderboard.tsx';
 import Users from '../components/Users.tsx';
 import Chat from '../components/Chat.tsx';
+import { useEffect } from "react";
 
 export default function Page() {
 	return (
@@ -22,7 +23,7 @@ export default function Page() {
 						</div>
 					</div>
 				<br />
-				<Chat />
+				{/* <Chat /> */}
 			</div>
 		</>
 	);
