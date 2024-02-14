@@ -15,30 +15,50 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
+    "test:all": "jest",
     "test:watch": "jest --watchAll",
-    "test:cov": "jest --coverage",
+    "test:backend": "jest --selectProjects backend",
+    "test:frontend": "jest --selectProjects frontend",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".spec.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../../coverage/backend",
-    "testEnvironment": "node"
-  },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
+  },
+  "jest": {
+    "testFailureExitCode": 0,
+    "projects": [
+      {
+        "displayName": "backend",
+        "moduleFileExtensions": [
+          "js",
+          "json",
+          "ts"
+        ],
+        "rootDir": "src",
+        "testEnvironment": "node",
+        "testRegex": ".spec.ts$",
+        "transform": {
+          "^.+\\.(t|j)s$": "ts-jest"
+        },
+        "collectCoverageFrom": [
+          "**/*.(t|j)s"
+        ],
+        "coverageDirectory": "../../coverage/backend"
+      },
+      {
+        "displayName": "frontend",
+        "testEnvironment": "jsdom",
+        "rootDir": "../frontend/src",
+        "coverageDirectory": "../../coverage/frontend"
+      }
+    ],
+    "reporters": [
+      "default",
+      ["../node_modules/jest-html-reporter", {
+        "pageTitle": "Test Report",
+        "outputPath": "../coverage/test_output.html"
+      }]
+    ]
   }
 }

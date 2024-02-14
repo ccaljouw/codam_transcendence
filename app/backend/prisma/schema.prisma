@@ -1,6 +1,16 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// ***************************************************************** //
+//            INSTRUCTION FOR CHANGING DATABASE MODEL
+// ***************************************************************** //
+// 1. add new model or change existing model in this file
+// 2. migrate the database by running this command in a running container
+//    $ docker exec -it backend prisma migrate dev --name [give the migration a name]
+// 3. Adjust seed.ts if necessary so that the dummy data can be loaded
+//    conform data definition.
+// Note: after migration, the database is empty.
+
 generator client {
   provider = "prisma-client-js"
   binaryTargets = ["native", "linux-arm64-openssl-3.0.x", "darwin-arm64"]
@@ -12,20 +22,23 @@ datasource db {
 }
 
 model User {
-	id			Int         @id @default(autoincrement())
-	email		String      @unique
-	
-  hash		  String
+	id			  Int         @id @default(autoincrement())
+  loginName String      @unique
+	hash		  String
+
+  userName  String? //if no userName is provided loginName is used
+	email	    String?    
 	firstName	String?
 	lastName	String?
+  token     String?
+
+  avatarId  Int       @default(0)
+  
+  online    Int       @default(1)     
+  rank      Int?
 
 	createdAt	DateTime  @default(now())
 	updatedAt	DateTime  @updatedAt
-
 }
 
-// relation
-  // In user
-   // articles  Bookmark[]
-  // In bookmark
-  // owner      User?    @relation(fields: [ownerId], references: [id])
+

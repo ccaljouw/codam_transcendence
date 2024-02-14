@@ -1,56 +1,57 @@
-import {
-  Controller,
-  ParseIntPipe,
-  NotFoundException,
-  Body,
-  Param,
-  Get,
-  Post,
-  Patch,
-  Delete,
-} from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, ParseIntPipe, Body, Param, Get, Post, Patch, Delete } from '@nestjs/common';
+import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { UserEntity } from './dto/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserProfileDto } from './dto/user-profile.dto';
+
 
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
+  
   // TODO: update endpoints to include access token
+  @Post('register')
+  @ApiOperation({ summary: 'Adds user to database and returns id for this user'})
+  @ApiCreatedResponse({ description: 'User successfully created', type: Number })
+
+  register(@Body() createUser: CreateUserDto) : Promise<Number> {
+    return this.usersService.create(createUser);
+  }
+
 
   @Get('all')
-  findAll() {
+  @ApiOperation({ summary: 'Returns all users currently in the database'})
+  @ApiOkResponse({ type: [UserProfileDto] })
+  @ApiNotFoundResponse({ description: "No users in the database" })
+
+  findAll() : Promise<UserProfileDto[]> {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: UserEntity })
-  async findOne(@Param('id', ParseIntPipe) id: number) {
-    const user = await this.usersService.findOne(id);
-    if (!user) {
-      throw new NotFoundException(`User with #${id} does not exist.`);
-    }
-    return await this.usersService.findOne(id);
+  @ApiOperation({ summary: 'Returns user with specified id'})
+  @ApiOkResponse({ type: UserProfileDto }) 
+  @ApiNotFoundResponse({ description: 'User with #${id} does not exist' })
+
+  findOne(@Param('id', ParseIntPipe) id: number) : Promise<UserProfileDto> {
+    return this.usersService.findOne(id);
   }
 
   @Patch(':id')
-  @ApiOkResponse({ type: UserEntity })
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
+  @ApiOperation({ summary: 'Updates user with specified id'})
+  @ApiOkResponse({ type: UserProfileDto })
+
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) : Promise<UserProfileDto> {
     return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  @ApiOkResponse({ type: UserEntity })
-  remove(@Param('id', ParseIntPipe) id: number) {
+  @ApiOperation({ summary: 'Deletes user with specified id'})
+  @ApiOkResponse({ description: 'User successfully deleted', type: UserProfileDto })
+
+  remove(@Param('id', ParseIntPipe) id: number) : Promise<UserProfileDto> {
     return this.usersService.remove(id);
   }
-
-  // TODO: update password?
 }

@@ -1,6 +1,7 @@
 # compiled output
 /backend/dist
 /frontend/.next
+/frontend/.swc
 /node_modules
 
 # Logs

@@ -1,6 +1,10 @@
-import Profile from "../../components/Profile.tsx";
-import Settings from "../../components/Settings.tsx";
 import Chat from "../../components/Chat.tsx";
+import UserInfo from "../../components/UserInfo.tsx";
+import Stats from "../../components/Stats.tsx";
+import MatchHistory from "../../components/MatchHistory.tsx";
+import Blocked from "../../components/Blocked.tsx";
+import GameSettings from "../../components/GameSettings.tsx";
+import LoginSettings from "../../components/LoginSettings.tsx";
 
 export default function Page() {
 	return (
@@ -8,10 +12,15 @@ export default function Page() {
 			<div className="transcendenceProfile">
 				<br />
 				<h1>Profile page</h1>
-				<p>Here you can look at your profile and change settings</p>
-				<Profile />
+				<p>The information below is public:</p>
+				<UserInfo />
+				<Stats />
+				<MatchHistory />
 				<br />
-				<Settings />
+				<p>The information below is only visible to you:</p>
+				<GameSettings />
+				<LoginSettings />
+				<Blocked />
 				<br />
 				<Chat />
 			</div>
