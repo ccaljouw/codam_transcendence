@@ -1,6 +1,7 @@
 "use client";
-import { Game } from "../Game/components/Game.tsx";
 import { useRef, useEffect, useState } from 'react';
+import { Game } from "../../../Game/components/Game.tsx";
+import styles from '../styles.module.css';
 
 export default function GameComponent() {
 	const [game, setGame] = useState< Game | null >(null);
@@ -21,10 +22,8 @@ export default function GameComponent() {
 
 	return (
 		<>
-			<div className="row d-flex justify-content-center">
-				<div className="content game col-lg-9">
-					<canvas ref={canvasRef} />
-				</div>
+			<div className={styles.game}>
+				<canvas ref={canvasRef} />
 			</div>
 		</>
 	);

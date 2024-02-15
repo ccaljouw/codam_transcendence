@@ -1,0 +1,15 @@
+.game {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.game canvas {
+    position: absolute;
+    display: block;
+    left: 50%;
+    transform: translate(-50%);
+    max-width: 100%;
+    /* find out how to scale height when screen gets smaller. probably something like the line below. Probably also useful for the page element */
+    /* max-height: calc(100% - var(--nav-link-height) - var(--nav-link-padding-y * 2)) !important; */
+}

@@ -1,9 +1,9 @@
-import SignUp from "../../components/SignUp.tsx";
+import SignUp from "./components/SignUp.tsx";
 
 export default function Page() {
 	return (
 		<>
-			<div className="mt-3">
+			<div className="">
 				<SignUp />
 			</div>
 		</>

@@ -1,5 +1,6 @@
-.body {
+html, body {
 	background: rgb(28, 2, 52);
+	color: white;
 }
 
 .navbar {
@@ -8,9 +9,8 @@
 	box-shadow: 0 0 50px 15px #ff00ff76 !important;
 }
 
-.content {
-	background-color:#f7ee04;
-	/* border: 0; */
-	box-shadow: 0 0 50px 15px #f7ee0476;
-	/* color: rgb(28, 2, 52); */
+.chat {
+	background: yellow;
+	color: rgb(28, 2, 52);
+	box-shadow: 0 0 50px 15px #ffff0067 !important;
 }

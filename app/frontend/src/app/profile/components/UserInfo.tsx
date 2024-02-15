@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import InfoField from './utils/InfoField';
-import fetchUser from './utils/FetchUser';
+import DataField from '../../../components/DataField';
+import fetchUser from '../../../components/FetchUser';
 
 export default function UserInfo() {
 	// const [data, setData] = useState< JSON | null >(null);
@@ -25,12 +25,12 @@ export default function UserInfo() {
 	return (
 		<>
 			<h1>User information</h1>
-			<p>
-				<InfoField name="Avatar" data={avatarId} />
-				<InfoField name="Username" data={userName}/>
-				<InfoField name="Online" data={online} />
-				<InfoField name="Rank" data={"#" + rank} />
-			</p>
+			<p>From database:</p>
+			<DataField name="Avatar" data={avatarId} />
+			<DataField name="Username" data={userName}/>
+			<DataField name="Online" data={online} />
+			<DataField name="Rank" data={"#" + rank} />
+			
 		</>
 	);
 }
