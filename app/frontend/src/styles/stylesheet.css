@@ -16,17 +16,28 @@
     overflow: auto;
 }
 
+.page, 
+.chat {
+    overflow-y: auto !important;
+    scrollbar-width: none !important; /* disable inner scrollbar in firefox */
+    -ms-overflow-style: none; /* disable inner scrollbar in IE and Edge */
+}
+
+/* Turn off the inner scrollbar in chrome, safari and opera */
+.page::-webkit-scrollbar,
+.chat::-webkit-scrollbar {
+    display: none;
+}
+
 /* This is where a page.tsx is placed */
 .page {
     width: 75%;
-    overflow-y: auto !important;
     border: 3px solid green;
 }
 
 /* This is where the chat component is placed */
 .chat {
     width: 25%;
-    overflow-y: auto !important;
     border: 3px solid blue;
 }
 
