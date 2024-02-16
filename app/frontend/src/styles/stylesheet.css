@@ -1,37 +1,46 @@
-/* Settings that apply to the whole site */
-html, body {
-    height: 100%;
-    /* background: 0; */
-    /* background:red; */
+/* This applies to the whole site */
+.root-layout {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
 }
 
-/* This is the menubar */
-.navbar {
-    position: fixed;
-    width: 100%;
-    /* background:orange; */
-}
-
-/* This is all the space under the menubar */
-.container-fluid {
-    position: fixed;
-    /* background:yellow; */
+/* This is the whole area under the menubar */
+.content-area {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    border: 3px solid red;
+    overflow: auto;
 }
 
 /* This is where a page.tsx is placed */
-/* .page {
-    background:green;
-} */
+.page {
+    width: 75%;
+    overflow-y: scroll !important;
+    border: 3px solid green;
+}
 
 /* This is where the chat component is placed */
-/* .chat {
-    background: blue;
-} */
+.chat {
+    width: 25%;
+    overflow-y: scroll !important;
+    border: 3px solid blue;
+}
 
 .row {
-    border: 1px solid red;
+    padding: 0;
+    margin: 0;
 }
 
 .col {
-    border: 1px solid blue;
+    border: 3px solid purple;
+}
+
+@media screen and (max-width: 992px) {
+    .page, .chat {
+        width: 50% !important;
+    }
 }
