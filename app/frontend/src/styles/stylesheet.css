@@ -19,14 +19,14 @@
 /* This is where a page.tsx is placed */
 .page {
     width: 75%;
-    overflow-y: scroll !important;
+    overflow-y: auto !important;
     border: 3px solid green;
 }
 
 /* This is where the chat component is placed */
 .chat {
     width: 25%;
-    overflow-y: scroll !important;
+    overflow-y: auto !important;
     border: 3px solid blue;
 }
 
