@@ -5,12 +5,14 @@ import Users from './components/Users.tsx';
 export default function Page() {
 	return (
 		<>
-			<Welcome />
 			<div className="row">
-				<div className="col col-sm-6 col-12">
+				<div className="col col-12">
+					<Welcome />
+				</div>
+				<div className="col col-12 col-lg-6">
 					<Leaderboard />
 				</div>
-				<div className="col col-sm-6 col-12">
+				<div className="col col-12 col-lg-6">
 					<Users />
 				</div>
 			</div>

@@ -23,6 +23,8 @@ export default function GameComponent() {
 	return (
 		<>
 			<div className={styles.game}>
+				{/* <h1>Game page</h1>
+				<p>Here you can play a game and chat</p> */}
 				<canvas ref={canvasRef} />
 			</div>
 		</>
