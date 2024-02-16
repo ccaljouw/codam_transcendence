@@ -1,6 +1,9 @@
+import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform, Type } from 'class-transformer';
 import {
   IsEmail,
+  IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -9,24 +12,52 @@ import {
 } from 'class-validator';
 
 export class CreateUserDto {
-  @IsEmail()
-  @IsNotEmpty()
-  @ApiProperty({ uniqueItems: true, nullable: false })
-  email: string;
 
-  @IsString()
+  // using class-validator and validationPipe to validate input data
+  // Everthing starting with @Api fills the api documetation. It does not enforce
+  // the format specified or update automatically when validation rules are changed 
   @IsNotEmpty()
-  @MinLength(3)
-  @ApiProperty({ nullable: false })
+  @MinLength(3)                       //todo: define min length
+  @MaxLength(30)                      //todo: define max legth  
+  @ApiProperty({ uniqueItems: true, nullable: false, minLength: 3, maxLength:30 })
+  loginName: string;
+
+  @IsNotEmpty()
+  @MinLength(3)                       //todo: define min length
+  @MaxLength(30)                      //todo: define max legth  
+  @ApiProperty({ nullable: false, minLength: 3, maxLength:30  })
   hash: string;
-
-  @MaxLength(30)
+  
   @IsOptional()
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: true })
+  userName: string;
+
+  @IsEmail()
+  @IsOptional()
+  @ApiProperty({ required: false, format: 'email' })
+  email: string;
+  
+  @IsString()
+  @MaxLength(30)                      //todo: define max legth   
+  @IsOptional()
+  @ApiProperty({ required: false, maxLength: 30 })
   firstName: string;
 
-  @MaxLength(30)
+  @IsString()
+  @MaxLength(30)                      //todo: define max legth  
   @IsOptional()
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, maxLength: 30 })
   lastName: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  avatarId: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  online: number;
 }

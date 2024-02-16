@@ -8,7 +8,7 @@ interface DataFormat {
 
 function Seed() {
   return (
-    <div className="component">
+    <div>
       <h1>Seed database</h1>
       <DataFetcher<DataFormat>
         url="http://localhost:3001/seed"

@@ -1,7 +1,8 @@
 "use client"
 import { useEffect, useState } from 'react';
 import UserList from 'src/components/UserList';
-import { UserEntity } from '../../../../backend/src/users/dto/user.entity';
+// import { UserProfileDto } from '../../../../backend/src/users/dto/user.entity';
+import { UserProfileDto } from '../../../../backend/src/users/dto/user-profile.dto'
 import Chat from '../../components/Chat'
 
 export default function Page() {
@@ -15,7 +16,7 @@ export default function Page() {
 			setCurrentUser(parseInt(sessionUserId))
 	})
 
-	function setCurrentUserDisplayFunc(user: UserEntity) {
+	function setCurrentUserDisplayFunc(user: UserProfileDto) {
 		return (
 			<li key={user.id} onClick={() => { sessionStorage.setItem('userId', user.id.toString()); setCurrentUser(user.id); setFilterUserIds([user.id]); console.log(`User set to ${user.id}`) }}>
 				{user.firstName} {user.lastName} - {user.email}
@@ -23,7 +24,7 @@ export default function Page() {
 		)
 	}
 
-	function selectSecondUserDisplayFunc(user: UserEntity) {
+	function selectSecondUserDisplayFunc(user: UserProfileDto) {
 		return (
 			<li key={user.id} onClick={() => {  setSecondUser(user.id); console.log(`Second user set to ${user.id}`) }}>
 				{user.firstName} {user.lastName} - {user.email}

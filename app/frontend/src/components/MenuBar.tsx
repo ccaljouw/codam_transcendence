@@ -22,8 +22,7 @@ export default function MenuBar() {
 				<MenuItem href="/sign-up" title="Sign Up" />
 				<MenuItem href="/swagger" title="Swagger" />
 				<MenuItem href="/chat_test" title="Chat Test" />
-        		<MenuItem href="/test" title="Test" />
-				<MenuItem href="/test_coverage" title="Test Coverage" />
+        <MenuItem href="/test" title="Test" />
 			</div>
 		</div>
 		{/* <nav className="navbar navbar-expand-sm bg-light">

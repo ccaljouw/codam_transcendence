@@ -1,10 +1,11 @@
 // import
 
 import { useEffect, useRef, useState } from "react"
-import {UserEntity} from '../../../backend/src/users/dto/user.entity'
+// import {UserProfileDto} from '../../../backend/src/users/dto/user.entity'
+import { UserProfileDto } from '../../../backend/src/users/dto/user-profile.dto'
 import {constants} from  '../globals/constants.globalvar'
 
-const UserList = ({userDisplayFunction, filterUserIds, includeFilteredUserIds=false} : {userDisplayFunction: (user: UserEntity) => JSX.Element; filterUserIds?: number[]; includeFilteredUserIds?: boolean;}) => {
+const UserList = ({userDisplayFunction, filterUserIds, includeFilteredUserIds=false} : {userDisplayFunction: (user: UserProfileDto) => JSX.Element; filterUserIds?: number[]; includeFilteredUserIds?: boolean;}) => {
 	const [userListFromDb, setUserListFromDb] = useState([]);
 	const [processedUserList, setProcessedUserList] = useState([]);
 	const firstRender = useRef(true);
@@ -20,7 +21,7 @@ const UserList = ({userDisplayFunction, filterUserIds, includeFilteredUserIds=fa
 	}, []);
 
 	useEffect(() => {
-		console.log(`function ${userDisplayFunction}, array ${filterUserIds}, show ${includeFilteredUserIds}`)
+		// console.log(`function ${userDisplayFunction}, array ${filterUserIds}, show ${includeFilteredUserIds}`)
 		if (userListFromDb.length == 0)
 			return ;
 		let filtered;

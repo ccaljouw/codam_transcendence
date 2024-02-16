@@ -1,5 +1,5 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { NotFoundException, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { PrismaClientExceptionFilter } from './errorHandling/prisma-client-exception/prisma-client-exception.filter';

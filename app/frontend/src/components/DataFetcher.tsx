@@ -15,25 +15,25 @@ function DataFetcher<T>({
 }: DataFetcherProps<T>): JSX.Element {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<any>(null);
+  const [error, setError] = useState<any | null>(null);
 
   useEffect(() => {
-      
     const fetchData = async () => {
       try {
         const response = await fetch(url);
         const result = await response.json();
         setData(result);
       } catch (error) {
-        console.error('Error fetching data:', error);
         setError(error);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchData();
-  }, []);
+  
+    if (url && !data) {
+      fetchData();
+    }
+  }, [url]); 
 
   if (loading) {
     return  <>{renderLoading || <p>Loading...</p>}</>;

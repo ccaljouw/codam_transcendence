@@ -1,24 +1,42 @@
-// 'use client'
-import React from 'react';
-import DataFetcher from './DataFetcher';
+'use client'
+import React, { useEffect, useState } from 'react';
+import TestOutput from './TestOutput';
 
 interface DataFormat {
   msg: string;
 }
 
 function BackendTests() {
-  
+  const [data, setData] = useState<DataFormat | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/test/backend');
+        const data = await response.json();
+        setData(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    if (data === null) {
+      fetchData();
+    }
+  }, []);
+
   return (
-    <div className="component">
+    <div>
       <h1>Backend tests</h1>
-      <DataFetcher<DataFormat>
-        url="http://localhost:3001/test/backend"
-        renderLoading={<p>Running tests...</p>}
-        renderError={(error) => <p>Custom error message: {error.message}</p>}
-        renderData={(data) => <pre>{ data.msg }</pre>}
-      />
+      {data === null ? (
+        <p>Running tests...</p>
+      ) : (
+        <>
+          <TestOutput />
+        </>
+      )}
     </div>
   );
-};
+}
 
 export default BackendTests;
