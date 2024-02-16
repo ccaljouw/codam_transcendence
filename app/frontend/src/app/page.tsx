@@ -1,10 +1,17 @@
+"use client"
+
 import Welcome from "../components/Welcome.tsx";
 import Leaderboard from '../components/Leaderboard.tsx';
 import Users from '../components/Users.tsx';
 import Chat from '../components/Chat.tsx';
 import { useEffect } from "react";
+import { transcendenceSocket } from "../globals/socket.globalvar.tsx";
 
 export default function Page() {
+	useEffect(() => {
+		console.log("connector called");
+		transcendenceSocket.connect();
+	},[])
 	return (
 		<>
 			<div>

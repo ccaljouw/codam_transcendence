@@ -1,16 +1,17 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AuthenticationModule } from './authentication/authentication.module';
-// import { WebsiteModule } from './website/website.module';
-// import { WebsocketTestGateway } from './websocket_test/websocket_test.gateway';
-import { GameSocketModule } from './gameSocket/gamesocket.module';
+import { ChatSocketModule } from './sockets/chatsocket/chatsocket.module';
 import { TestingModule } from './testing/testing.module';
 import { UsersModule } from './users/users.module';
+import { GamesocketModule } from './sockets/gamesocket/gamesocket.module';
+
 
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), AuthenticationModule, GameSocketModule, TestingModule, UsersModule],
-//   providers: [],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), AuthenticationModule, ChatSocketModule, TestingModule, UsersModule, GamesocketModule],
+//   providers: [SocketServerProvider],	
+//   exports: [SocketServerProvider]
 
 // @Module({
 //   imports: [ConfigModule.forRoot({ isGlobal: true }), AuthenticationModule, TestingModule, UsersModule],

@@ -15,7 +15,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-	console.log("root re-render");
+	// console.log("root re-render");
   return (
     <html lang="en">
       <body>
