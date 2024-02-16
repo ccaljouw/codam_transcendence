@@ -1,9 +1,9 @@
 "use client"
 import { useEffect, useState } from 'react';
 import UserList from 'src/components/UserList';
-// import { UserProfileDto } from '../../../../backend/src/users/dto/user.entity';
 import { UserProfileDto } from '../../../../backend/src/users/dto/user-profile.dto'
 import Chat from '../../components/Chat'
+// import {setCurrentUserDisplayFunc,} from '../../globals/userdisplay.globalfunctions'
 
 export default function Page() {
 	const [secondUser, setSecondUser] = useState(0);

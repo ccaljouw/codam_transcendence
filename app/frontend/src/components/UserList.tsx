@@ -1,18 +1,21 @@
-// import
-
 import { useEffect, useRef, useState } from "react"
-// import {UserProfileDto} from '../../../backend/src/users/dto/user.entity'
 import { UserProfileDto } from '../../../backend/src/users/dto/user-profile.dto'
-import {constants} from  '../globals/constants.globalvar'
+import { constants } from '../globals/constants.globalvar'
 
-const UserList = ({userDisplayFunction, filterUserIds, includeFilteredUserIds=false} : {userDisplayFunction: (user: UserProfileDto) => JSX.Element; filterUserIds?: number[]; includeFilteredUserIds?: boolean;}) => {
+/**
+ * 
+ * @param  userDisplayFunction (function(UserProfileDto) => JSX.Element): pointer to function to make the list items with
+ * @param filterUserIds (number[]): array with userids to filter the whole list with
+ * @param includeFilteredUserIds (bool): true if the array of filtered users should be the only one shown, false if they are the only ones to not show
+ * @returns 
+ */
+const UserList = ({ userDisplayFunction, filterUserIds, includeFilteredUserIds = false }: { userDisplayFunction: (user: UserProfileDto) => JSX.Element; filterUserIds?: number[]; includeFilteredUserIds?: boolean; }) => {
 	const [userListFromDb, setUserListFromDb] = useState([]);
 	const [processedUserList, setProcessedUserList] = useState([]);
 	const firstRender = useRef(true);
 
 	useEffect(() => {
-		if (firstRender.current)
-		{
+		if (firstRender.current) {
 			firstRender.current = false;
 			fetchUsers();
 		}
@@ -21,16 +24,14 @@ const UserList = ({userDisplayFunction, filterUserIds, includeFilteredUserIds=fa
 	}, []);
 
 	useEffect(() => {
-		// console.log(`function ${userDisplayFunction}, array ${filterUserIds}, show ${includeFilteredUserIds}`)
 		if (userListFromDb.length == 0)
-			return ;
+			return;
 		let filtered;
-		if (filterUserIds && filterUserIds.length > 0)
-		{
+		if (filterUserIds && filterUserIds.length > 0) {
 			if (includeFilteredUserIds)
-				filtered = userListFromDb.filter((user: {id: number}) => filterUserIds.includes(user.id));
+				filtered = userListFromDb.filter((user: { id: number }) => filterUserIds.includes(user.id));
 			else
-				filtered = userListFromDb.filter((user: {id: number}) => !filterUserIds.includes(user.id));
+				filtered = userListFromDb.filter((user: { id: number }) => !filterUserIds.includes(user.id));
 		} else
 			filtered = userListFromDb;
 		setProcessedUserList(filtered);
@@ -52,10 +53,11 @@ const UserList = ({userDisplayFunction, filterUserIds, includeFilteredUserIds=fa
 	return (
 		<div className='component userlist'>
 			<ul>
-					{processedUserList.map(userDisplayFunction)}
+				{processedUserList.map(userDisplayFunction)}
 			</ul>
 		</div>
-	);}
+	);
+}
 
 
 export default UserList
