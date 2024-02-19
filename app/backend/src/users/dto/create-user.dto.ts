@@ -1,7 +1,9 @@
+import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform, Type } from 'class-transformer';
 import {
   IsEmail,
-  IsEnum,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -39,23 +41,24 @@ export class CreateUserDto {
   @IsString()
   @MaxLength(30)                      //todo: define max legth   
   @IsOptional()
-  @ApiProperty({ required: false, maxLength:30  })
+  @ApiProperty({ required: false, maxLength: 30 })
   firstName: string;
 
   @IsString()
   @MaxLength(30)                      //todo: define max legth  
   @IsOptional()
-  @ApiProperty({ required: false, maxLength:30  })
+  @ApiProperty({ required: false, maxLength: 30 })
   lastName: string;
 
-  @IsNumber()
-  @IsOptional()
   @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
   avatarId: number;
 
-  @IsNumber()  // change to enum
+  @ApiProperty({ required: false })
   @IsOptional()
-  @ApiProperty({ required: true })
+  @Type(() => Number)
+  @IsInt()
   online: number;
-
 }

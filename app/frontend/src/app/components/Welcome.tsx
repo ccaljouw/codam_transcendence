@@ -1,14 +1,10 @@
-export default function Welcome() {
+export default function Welcome({name} : {name:string}) {
 	return (
         <>
-            <h1>Welcome</h1>
+        {/* // <div className="component"> */}
+            <h1>Welcome {name}</h1>
             <p>Challenge your friends to play pong and make new ones on the way!</p>
-            <p>test text that is very long:
-                werwerwerertertdu
-                erewrwertertertertertdrt
-                werwerwrewterterrdytytrre
-                ert ertert erte rtert etertert ert ert ert ert ertert ert ert 
-            </p>
+        {/* // </div> */}
         </>
 	);
 }

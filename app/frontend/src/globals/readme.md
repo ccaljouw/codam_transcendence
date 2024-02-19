@@ -1,0 +1,1 @@
+This dir is for global variables and functions in the frontend. Constants (like server addresses) to be added to constants.globalvar.tsx, other stuff in their own respective files. Functions in ***.globalfunction.tsx, vars in ***.globalvar.tsx

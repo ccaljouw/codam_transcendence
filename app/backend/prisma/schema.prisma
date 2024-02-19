@@ -32,13 +32,19 @@ model User {
 	lastName	String?
   token     String?
 
-  avatarId  Int?
+  avatarId  Int       @default(0)
   
-  online    Int?        
+  online    Int       @default(1)     
   rank      Int?
 
 	createdAt	DateTime  @default(now())
 	updatedAt	DateTime  @updatedAt
+}
+
+model Game {
+	id 			Int @id @default(autoincrement())
+	user1_id	Int
+	user2_id	Int
 }
 
 

@@ -1,28 +1,44 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
+import { User } from "@prisma/client";
 
-export class UserProfileDto {
+export class UserProfileDto implements User {
 
-  @ApiProperty({ required: false})
-  loginName?: string;
-
-  @ApiProperty({ required: false})
-  userName?: string;
+  hash: string;
 
   @ApiProperty({ required: false})
-  email?: string;
+  token: string;
 
   @ApiProperty({ required: false})
-  firstName?: string;
+  id: number;
 
   @ApiProperty({ required: false})
-  lastName?: string;
+  loginName: string;
 
   @ApiProperty({ required: false})
-  avatarId?: number;
+  userName: string;
 
   @ApiProperty({ required: false})
-  online?: number;
+  email: string;
 
   @ApiProperty({ required: false})
-  rank?: number;
+  firstName: string;
+
+  @ApiProperty({ required: false})
+  lastName: string;
+
+  @ApiProperty({ required: false})
+  avatarId: number;
+
+  @ApiProperty({ required: false})
+  online: number;
+
+  @ApiProperty({ required: false})
+  rank: number;
+
+  @ApiProperty({ required: false})
+  createdAt: Date;
+
+  @ApiProperty({ required: false})
+  updatedAt: Date;
+
 }
