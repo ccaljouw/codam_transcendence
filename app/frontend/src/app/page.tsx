@@ -30,8 +30,8 @@ export default function Page() {
 					<div className="col col-12">
 						{typeof window === 'undefined' || !window.sessionStorage || sessionStorage.getItem('userId') == null ?
 							(<UserList userDisplayFunction={setCurrentUserDisplayFunc} />)
-							:
-				 			(<Welcome name={username} />) }
+							: 
+				 			(<Welcome name={username} />)}
 				 	</div>
 					<div className="col col-12 col-lg-6">
 						<Leaderboard />
