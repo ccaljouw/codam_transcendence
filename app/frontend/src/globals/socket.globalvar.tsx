@@ -1,0 +1,10 @@
+
+import io from 'socket.io-client'
+import {constants} from './constants.globalvar'
+
+
+/**
+ * This sweet baby is our page-wide websocket-server
+ */
+export const transcendenceSocket = io(constants.BACKEND_ADRESS_FOR_WEBSOCKET, {autoConnect: false});
+

@@ -22,7 +22,7 @@ export default function Page() {
 				<LoginSettings />
 				<Blocked />
 				<br />
-				<Chat />
+				{/* <Chat /> */}
 			</div>
 		</>
 	);

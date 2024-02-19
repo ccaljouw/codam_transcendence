@@ -21,6 +21,7 @@ export default function MenuBar() {
 				<MenuItem href="/play" title="Play" />
 				<MenuItem href="/sign-up" title="Sign Up" />
 				<MenuItem href="/swagger" title="Swagger" />
+				<MenuItem href="/chat_test" title="Chat Test" />
         <MenuItem href="/test" title="Test" />
 			</div>
 		</div>

@@ -9,7 +9,7 @@ export default function Page() {
 				<p>Here you can play a game and chat</p>
 				<GameComponent />
 				<br />
-				<Chat />
+				{/* <Chat /> */}
 			</div>
 		</>
 	);
