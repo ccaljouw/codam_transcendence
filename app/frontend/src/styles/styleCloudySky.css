@@ -1,8 +1,24 @@
-html, body {
-	background: rgb(166, 180, 181);
+.root-layout {
+	background: rgb(166, 180, 181) !important;
 }
 
 .navbar{
 	background: rgba(232, 238, 240, 0.683) !important;
 	box-shadow: 0 0 50px 15px #ffffff99;
+}
+
+.content-area {
+    border: 0;
+}
+
+.page {
+    border: 0;
+}
+
+.chat {
+    border: 0;
+}
+
+.col {
+    border: 0;
 }

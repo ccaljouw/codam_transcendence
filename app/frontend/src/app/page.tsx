@@ -28,7 +28,7 @@ export default function Page() {
 			<div>
 				<div className="row">
 					<div className="col col-12">
-						{sessionStorage.getItem('userId') == null ?
+						{typeof window === 'undefined' || !window.sessionStorage || sessionStorage.getItem('userId') == null ?
 							(<UserList userDisplayFunction={setCurrentUserDisplayFunc} />)
 							:
 				 			(<Welcome name={username} />) }

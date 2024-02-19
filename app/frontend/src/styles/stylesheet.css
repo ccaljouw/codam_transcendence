@@ -5,7 +5,6 @@
     flex-direction: column;
     height: 100vh;
     width: 100vw;
-    background: white;
 }
 
 /* This is the whole area under the menubar */
@@ -13,7 +12,6 @@
     flex: 1;
     display: flex;
     flex-direction: row;
-    border: 3px solid red;
     overflow: auto;
 }
 
@@ -33,22 +31,16 @@
 /* This is where a page.tsx is placed */
 .page {
     width: 75%;
-    border: 3px solid green;
 }
 
 /* This is where the chat component is placed */
 .chat {
     width: 25%;
-    border: 3px solid blue;
 }
 
 .row {
     padding: 0;
     margin: 0;
-}
-
-.col {
-    border: 3px solid purple;
 }
 
 @media screen and (max-width: 992px) {

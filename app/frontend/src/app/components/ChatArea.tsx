@@ -49,7 +49,12 @@ export default function ChatArea() {
 		)
 	if (currentUser && secondUser)
 	{return (
-		<Chat user1={currentUser} user2={secondUser}/>
+        <>
+            <h3>Hello {currentUser}, Who do you wanna chat with?</h3>
+			<UserList userDisplayFunction={selectSecondUserDisplayFunc} filterUserIds={[currentUser]} />
+            <h1>Chat with {secondUser}:</h1>
+		    <Chat user1={currentUser} user2={secondUser}/>
+        </>
 	)}
     // return (
 	// 	<>

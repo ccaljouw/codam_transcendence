@@ -2,6 +2,9 @@ import MenuBar from './components/MenuBar.tsx';
 import ChatArea from './components/ChatArea.tsx';
 import 'bootstrap/dist/css/bootstrap.css'
 import '../styles/stylesheet.css';
+import '../styles/styleSimpleGrid.css';
+// import '../styles/styleCloudySky.css';
+// import '../styles/styleNeonDark.css';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (

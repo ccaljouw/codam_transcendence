@@ -1,0 +1,19 @@
+.root-layout {
+    background: white;
+}
+
+.content-area {
+    border: 3px solid red;
+}
+
+.page {
+    border: 3px solid green;
+}
+
+.chat {
+    border: 3px solid blue;
+}
+
+.col {
+    border: 3px solid purple;
+}
