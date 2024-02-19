@@ -56,3 +56,11 @@
         width: 50% !important;
     }
 }
+
+.userlist{
+	font-family: sans-serif
+}
+
+.userlist li:hover {
+	font-weight: bold;
+}

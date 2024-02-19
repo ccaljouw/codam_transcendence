@@ -1,15 +1,12 @@
 "use client";
 import { useRef, useEffect, useState } from 'react';
-<<<<<<< HEAD:app/frontend/src/app/play/components/Game.tsx
 import { Game } from "../../../Game/components/Game.tsx";
 import styles from '../styles.module.css';
-=======
-import {transcendenceSocket} from '../globals/socket.globalvar.tsx' // websocket global
+import {transcendenceSocket} from '../../../globals/socket.globalvar.tsx'; // websocket global
 
 
 // assign global websocket to local var for clarity
 const gameSocket = transcendenceSocket;
->>>>>>> origin:app/frontend/src/components/Game.tsx
 
 export default function GameComponent() {
 	const [game, setGame] = useState< Game | null >(null);
@@ -19,9 +16,6 @@ export default function GameComponent() {
 		if (!game) {
 			setGame(new Game(canvasRef.current!));
 		}
-<<<<<<< HEAD:app/frontend/src/app/play/components/Game.tsx
-	}, []);
-=======
 
 		// websocket test stuff //
 		gameSocket.connect(); // this oughta be done on signin, but it doesn't hurt to do it twice as it will be ignored when there is already a connection
@@ -35,7 +29,6 @@ export default function GameComponent() {
 			gameSocket.off('game/message'); // removes the listener. NB: remove all listeners or the compent will not return this function cleanly.
 		}
 	}, []); // canvasRef not needed? [canvasRef]
->>>>>>> origin:app/frontend/src/components/Game.tsx
 
 	useEffect(() => {
 		if (game) {
