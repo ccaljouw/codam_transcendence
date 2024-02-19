@@ -1,5 +1,5 @@
 import MenuBar from './components/MenuBar.tsx';
-import Chat from './components/Chat.tsx';
+import ChatArea from './components/ChatArea.tsx';
 import 'bootstrap/dist/css/bootstrap.css'
 import '../styles/stylesheet.css';
 
@@ -14,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 							{children}
 						</div>
 						<div className="chat">
-							<Chat />
+							<ChatArea />
 						</div>
 					</div>
 				</div>
