@@ -1,33 +1,27 @@
-import MenuBar from '../components/MenuBar.tsx';
-import { Metadata } from 'next';
-import '../styles/background.css';
-import '../styles/component.css';
-import '../styles/globals.css';
+import MenuBar from './components/MenuBar.tsx';
+import ChatArea from './components/ChatArea.tsx';
 import 'bootstrap/dist/css/bootstrap.css'
+import '../styles/stylesheet.css';
+import '../styles/styleSimpleGrid.css';
+// import '../styles/styleCloudySky.css';
+// import '../styles/styleNeonDark.css';
 
-export const metadata: Metadata = {
-  title: 'Pong',
-  description: 'Challenge and meet new friends through a game of Pong',
-}
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-	// console.log("root re-render");
-  return (
-    <html lang="en">
-      <body>
-        <div>
-          <div>
-            <MenuBar/>
-          </div>
-          <div>
-            {children}
-          </div>
-        </div>
-      </body>
-    </html>
-  )
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+    return (
+		<html lang="en">
+			<body>
+				<div className="root-layout">
+					<MenuBar />
+					<div className="content-area">
+						<div className="page">
+							{children}
+						</div>
+						<div className="chat">
+							<ChatArea />
+						</div>
+					</div>
+				</div>
+			</body>
+		</html>
+    );
 }

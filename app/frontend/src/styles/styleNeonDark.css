@@ -1,0 +1,31 @@
+html, body, .root-layout {
+	background: rgb(187, 151, 221);
+}
+
+.navbar {
+	background: #ff00ff !important;
+	border-radius: 2px !important;
+	box-shadow: 0 0 50px 15px #ff00ff76 !important;
+}
+
+.content-area {
+	border: 0;
+}
+
+.page {
+	border: 0;
+}
+
+.chat {
+	background: yellow;
+	color: rgb(28, 2, 52);
+	box-shadow: 0 0 50px 15px #ffff0067 !important;
+    border: 0;
+}
+
+.col {
+    border: 0;
+	margin-top: 15px;
+	border-radius: 20px;
+	background: #a34bc9;
+}

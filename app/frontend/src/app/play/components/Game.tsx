@@ -1,7 +1,8 @@
 "use client";
-import { Game } from "../Game/components/Game.tsx";
 import { useRef, useEffect, useState } from 'react';
-import {transcendenceSocket} from '../globals/socket.globalvar.tsx' // websocket global
+import { Game } from "../../../Game/components/Game.tsx";
+import styles from '../styles.module.css';
+import {transcendenceSocket} from '../../../globals/socket.globalvar.tsx'; // websocket global
 
 
 // assign global websocket to local var for clarity
@@ -37,8 +38,12 @@ export default function GameComponent() {
 	}, [game]);
 
 	return (
-		<div className="component game">
-			<canvas ref={canvasRef} />
-		</div>
+		<>
+			<div className={styles.game}>
+				{/* <h1>Game page</h1>
+				<p>Here you can play a game and chat</p> */}
+				<canvas ref={canvasRef} />
+			</div>
+		</>
 	);
 }

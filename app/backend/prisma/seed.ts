@@ -35,7 +35,7 @@ async function addDummyUsers() {
 			email: 'jaberkro@student.codam.nl',
 			hash: 'pwd',
 			firstName: 'Jorien',
-			lastName: 'Aberkro',
+			lastName: 'Aberkrom',
 		},
 	});
 	const user4 = await prisma.user.upsert({
@@ -55,7 +55,7 @@ async function addDummyUsers() {
 // todo: add userState to dummy data
 
 async function main() {
-	addDummyUsers();
+  addDummyUsers();
 }
 
 // execute

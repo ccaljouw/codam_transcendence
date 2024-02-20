@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import InfoField from './utils/InfoField';
-import fetchUser from './utils/FetchUser';
+import DataField from '../../../components/DataField';
+import fetchUser from '../../../components/FetchUser';
 
 export default function UserInfo() {
 	// const [data, setData] = useState< JSON | null >(null);
@@ -23,18 +23,16 @@ export default function UserInfo() {
 	}
 
 	return (
-		<div className="component">
+		<>
 			<h1>User information</h1>
-			<p>
-				<InfoField name="Avatar" data={avatarId} />
-				<InfoField name="Username" data={userName}/>
-				<InfoField name="Online" data={online} />
-				<InfoField name="Rank" data={"#" + rank} />
-			</p>
-	</div>
+			<p>From database:</p>
+			<DataField name="Avatar" data={avatarId} />
+			<DataField name="Username" data={userName}/>
+			<DataField name="Online" data={online} />
+			<DataField name="Rank" data={"#" + rank} />
+			
+		</>
 	);
 }
-			// {data ? (<pre>{JSON.stringify(data, null, 2)}</pre>) : (<p>Loading data...</p>)}
 
-// Profile vraags user aan aan de hand van de session token.
-// Backend vergelijkt in de backend de session token met de actieve users en stuurt de juiste user terug.
+// {data ? (<pre>{JSON.stringify(data, null, 2)}</pre>) : (<p>Loading data...</p>)}

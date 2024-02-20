@@ -59,5 +59,4 @@ const UserList = ({ userDisplayFunction, filterUserIds, includeFilteredUserIds =
 	);
 }
 
-
 export default UserList

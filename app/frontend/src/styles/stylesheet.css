@@ -1,0 +1,58 @@
+/* This applies to the whole site */
+.root-layout {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* This is the whole area under the menubar */
+.content-area {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+}
+
+.page, 
+.chat {
+    overflow-y: auto !important;
+    scrollbar-width: none !important; /* disable inner scrollbar in firefox */
+    -ms-overflow-style: none; /* disable inner scrollbar in IE and Edge */
+}
+
+/* Turn off the inner scrollbar in chrome, safari and opera */
+.page::-webkit-scrollbar,
+.chat::-webkit-scrollbar {
+    display: none;
+}
+
+/* This is where a page.tsx is placed */
+.page {
+    width: 75%;
+}
+
+/* This is where the chat component is placed */
+.chat {
+    width: 25%;
+}
+
+.row {
+    padding: 0;
+    margin: 0;
+}
+
+@media screen and (max-width: 992px) {
+    .page, .chat {
+        width: 50% !important;
+    }
+}
+
+.userlist{
+	font-family: sans-serif
+}
+
+.userlist li:hover {
+	font-weight: bold;
+}

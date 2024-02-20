@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import DataFetcher from './DataFetcher';
+import DataFetcher from '../../../components/DataFetcher';
 
 interface DataFormat {
   msg: string;

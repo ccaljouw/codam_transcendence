@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useRef, useState } from 'react';
-import {transcendenceSocket} from '../globals/socket.globalvar'
+import {transcendenceSocket} from '../../globals/socket.globalvar'
 
 
 const chatSocket = transcendenceSocket;

@@ -1,8 +1,7 @@
 "use client";
-
 import { useEffect, useState } from 'react';
-import InfoField from "./utils/InfoField";
-import FetchUser from "./utils/FetchUser";
+import InfoField from "../../../components/DataField";
+import FetchUser from "../../../components/FetchUser";
 
 export default function LoginSettings() {
 	const [loginName, setLoginName] = useState<string>("");
@@ -20,14 +19,15 @@ export default function LoginSettings() {
 		setLastName(result.lastName);
 	}
 	return (
-		<div className="component">
+		<>
 			<h1>Login settings</h1>
+			<p>From database:</p>
 			<InfoField name="Login name" data={loginName} />
 			<InfoField name="First name" data={firstName} />
 			<InfoField name="Last name" data={lastName} />
 			<p>
 				Button to Enable two-factor authentication, link to change password
 			</p>
-		</div>
+		</>
 	);
 }

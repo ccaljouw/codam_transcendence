@@ -5,8 +5,6 @@ import { TestingModule } from './testing/testing.module';
 import { UsersModule } from './users/users.module';
 import { GamesocketModule } from './sockets/gamesocket/gamesocket.module';
 
-
-
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true }), ChatSocketModule, TestingModule, UsersModule, GamesocketModule],
 
