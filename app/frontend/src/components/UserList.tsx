@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { UserProfileDto } from '../../../backend/src/users/dto/user-profile.dto'
 import { constants } from '../globals/constants.globalvar'
+import { TranscendenceContext } from "src/globals/contextprovider.globalvar"
 
 /**
  * 
@@ -12,16 +13,13 @@ import { constants } from '../globals/constants.globalvar'
 const UserList = ({ userDisplayFunction, filterUserIds, includeFilteredUserIds = false }: { userDisplayFunction: (user: UserProfileDto) => JSX.Element; filterUserIds?: number[]; includeFilteredUserIds?: boolean; }) => {
 	const [userListFromDb, setUserListFromDb] = useState([]);
 	const [processedUserList, setProcessedUserList] = useState([]);
-	const firstRender = useRef(true);
+	const {someUserUpdatedTheirStatus} = useContext(TranscendenceContext);
 
+	
 	useEffect(() => {
-		if (firstRender.current) {
-			firstRender.current = false;
-			fetchUsers();
-		}
-
-
-	}, []);
+		console.log("render userList: ");
+		fetchUsers();
+	}, [someUserUpdatedTheirStatus]);
 
 	useEffect(() => {
 		if (userListFromDb.length == 0)
@@ -39,6 +37,7 @@ const UserList = ({ userDisplayFunction, filterUserIds, includeFilteredUserIds =
 	}, [userListFromDb, filterUserIds, includeFilteredUserIds])
 
 	async function fetchUsers() {
+		console.log("fetching users");
 		try {
 			const response = await fetch(constants.API_ALL_USERS);
 			if (!response.ok) {

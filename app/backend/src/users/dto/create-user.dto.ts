@@ -1,5 +1,6 @@
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
+import { OnlineStatus } from '@prisma/client';
 import { Transform, Type } from 'class-transformer';
 import {
   IsEmail,
@@ -58,7 +59,10 @@ export class CreateUserDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @Type(() => Number)
+//   @Type(() => Number)
   @IsInt()
-  online: number;
+  online: OnlineStatus;
+
+//   @ApiProperty
+token: string;
 }

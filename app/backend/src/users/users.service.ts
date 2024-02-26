@@ -65,4 +65,21 @@ export class UsersService {
       throw new NotFoundException(`User with id ${id} does not exist.`);
     }
   }
+
+  async findUserIdByToken(token: string): Promise<number | null> {
+    try {
+      const user = await this.db.user.findFirst({
+        where: {
+          token: token,
+        },
+        select: {
+          id: true,
+        },
+      });
+      return user?.id || null;
+    } catch (error) {
+      console.error('Error finding user by token:', error);
+      throw error;
+    }
+  }
 }

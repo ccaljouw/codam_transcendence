@@ -6,13 +6,13 @@
 // ***************************************************************** //
 // 1. add new model of change existing model in this file
 // 2. migrate the database by running this command in a running container
-//    $ docker exec -it backend prisma migrate dev --name [give the migration a name]
+//    $ docker exec -it backend prisma db push
 // 3. Adjust seed.ts if necessary so that the dummy data can be loaded
 //    conform data definition.
 // Note: after migration, the database is empty.
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-arm64-openssl-3.0.x", "darwin-arm64"]
 }
 
@@ -21,30 +21,76 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum OnlineStatus {
+	OFFLINE
+	ONLINE
+	IN_GAME
+}
+
 model User {
-	id			  Int         @id @default(autoincrement())
-  loginName String      @unique
-	hash		  String
+  id        Int    @id @default(autoincrement())
+  loginName String @unique
+  hash      String
 
   userName  String? //if no userName is provided loginName is used
-	email	    String?    
-	firstName	String?
-	lastName	String?
+  email     String?
+  firstName String?
+  lastName  String?
   token     String?
 
-  avatarId  Int       @default(0)
-  
-  online    Int       @default(1)     
-  rank      Int?
+  avatarId Int  @default(0)
+  online   OnlineStatus  @default(OFFLINE)
+  rank     Int?
 
-	createdAt	DateTime  @default(now())
-	updatedAt	DateTime  @updatedAt
+  chats ChatUsers[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model Game {
-	id 			Int @id @default(autoincrement())
-	user1_id	Int
-	user2_id	Int
+enum ChatType {
+	DM
+	PRIVATE
+	PROTECTED
+	PUBLIC
 }
 
+enum ChatUserRole {
+	DEFAULT
+	ADMIN
+	OWNER
+}
+model Chat {
+  id      Int @id @default(autoincrement())
+  ownerId Int @default(-1)
+  visibility ChatType @default(PUBLIC)
 
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  users     ChatUsers[]
+  berichten ChatMessages[]
+}
+
+model ChatUsers {
+  id       Int      @id @default(autoincrement())
+  chatId   Int
+  userId   Int
+  lastRead DateTime
+  role	ChatUserRole @default(DEFAULT)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  chat      Chat     @relation(fields: [chatId], references: [id])
+}
+
+model ChatMessages {
+  id      Int    @id @default(autoincrement())
+  content String
+  chatId  Int
+  userId  Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  chat      Chat     @relation(fields: [chatId], references: [id])
+}

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ChatSocketService } from './chatsocket.service';
 import { ChatSocketGateway } from './chatsocket.gateway';
 import { PrismaService } from 'src/database/prisma.service';
-import { SocketServerModule } from '../socketserver.module';
+import { SocketServerModule } from '../socket/socketserver.module';
 
 @Module({
   imports: [SocketServerModule],

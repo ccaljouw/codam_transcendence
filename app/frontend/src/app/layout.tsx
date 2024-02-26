@@ -1,26 +1,21 @@
+"use server"
+
 import MenuBar from './components/MenuBar.tsx';
-import ChatArea from './components/ChatArea.tsx';
 import 'bootstrap/dist/css/bootstrap.css'
 import '../styles/stylesheet.css';
 import '../styles/styleSimpleGrid.css';
-// import '../styles/styleCloudySky.css';
-// import '../styles/styleNeonDark.css';
+import { ContextProvider } from '../globals/contextprovider.globalvar.tsx';
+// import ClientComponentWrapper from './componentwrapper.tsx';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function  RootLayout({ children }: { children: React.ReactNode }) {
+	console.log("root rerender");
     return (
 		<html lang="en">
 			<body>
-				<div className="root-layout">
-					<MenuBar />
-					<div className="content-area">
-						<div className="page">
-							{children}
-						</div>
-						<div className="chat">
-							<ChatArea />
-						</div>
-					</div>
-				</div>
+			<div className="root-layout">
+				<MenuBar />
+			<ContextProvider>{children}</ContextProvider>
+			</div>
 			</body>
 		</html>
     );

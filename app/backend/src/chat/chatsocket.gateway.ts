@@ -3,7 +3,7 @@ import { ChatSocketService } from './chatsocket.service';
 import { CreateChatSocketDto } from './dto/create-gamesocket.dto';
 import { UpdateChatSocketDto } from './dto/update-gamesocket.dto';
 import { Server } from 'socket.io';
-import { SocketServerProvider } from '../socketserver.gateway';
+import { SocketServerProvider } from '../socket/socketserver.gateway';
 
 @WebSocketGateway()
 export class ChatSocketGateway {
@@ -23,9 +23,9 @@ export class ChatSocketGateway {
 		this.chat_io.emit('chat/message', payload);
 	}
 
-	@SubscribeMessage('chat/create')
-	async create(@MessageBody() createGameDto: CreateChatSocketDto) {
-		const gameId = await this.chatService.create(createGameDto);
+	@SubscribeMessage('chat/createDM')
+	async createDM(@MessageBody() createGameDto: CreateChatSocketDto) {
+		const gameId = await this.chatService.createDM(createGameDto);
 		this.chat_io.emit('chat/create', `${gameId}`);
 		return;
 	}

@@ -1,38 +1,57 @@
 "use client"
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import UserList from 'src/components/UserList';
 import { UserProfileDto } from '../../../../backend/src/users/dto/user-profile.dto'
 import Chat from '../components/Chat'
-// import {setCurrentUserDisplayFunc,} from '../../globals/userdisplay.globalfunctions'
+import {transcendenceSocket, transcendenceConnect} from '../../globals/socket.globalvar'
+import { OnlineStatus } from '@prisma/client';
+import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
 
-export default function ChatArea() {
+export default function  ChatArea() {
 	const [secondUser, setSecondUser] = useState(0);
-	const [currentUser, setCurrentUser] = useState(0);
-	const [filterUserIds, setFilterUserIds] = useState<number[]>([]);
+	const {currentUserId, setCurrentUserId, currentUserName, setCurrentUserName} = useContext(TranscendenceContext)
+	
 	useEffect(() => {
+		console.log("chatarea rendered");
 		console.log(`userId ${sessionStorage.getItem('userId')}`)
-		const sessionUserId = sessionStorage.getItem('userId');
-		if (sessionUserId && sessionUserId != '')
-			setCurrentUser(parseInt(sessionUserId))
-	})
+		if (typeof window !== 'undefined' && sessionStorage && sessionStorage.getItem != null) {
+			const userIdFromSession = sessionStorage.getItem('userId');
+			if (userIdFromSession && userIdFromSession != '')
+				setCurrentUserId(parseInt(userIdFromSession));
+		}
 
-	function setCurrentUserDisplayFunc(user: UserProfileDto) {
+
+	},[currentUserId])
+
+
+	const setConnectionStatus = (user: UserProfileDto) => {
+		console.log("I should do something with my connection status");
+		sessionStorage.setItem('loginName', user.loginName); 
+		sessionStorage.setItem('userId', user.id.toString());
+		setCurrentUserId(user.id); 
+		setCurrentUserName(user.loginName);
+		console.log(`User set to ${user.id}`)
+	}
+	
+
+	const setCurrentUserDisplayFunc = (user: UserProfileDto) => {
 		return (
-			<li key={user.id} onClick={() => { sessionStorage.setItem('userId', user.id.toString()); setCurrentUser(user.id); setFilterUserIds([user.id]); console.log(`User set to ${user.id}`) }}>
+			<li key={user.id} onClick={() => { setConnectionStatus(user);   }}>
 				{user.firstName} {user.lastName} - {user.email}
 			</li>
 		)
 	}
 
-	function selectSecondUserDisplayFunc(user: UserProfileDto) {
+	const selectSecondUserDisplayFunc = (user: UserProfileDto) => {
 		return (
 			<li key={user.id} onClick={() => {  setSecondUser(user.id); console.log(`Second user set to ${user.id}`) }}>
+				{user.online == OnlineStatus.ONLINE ? ("[on]]") : ("[off]")}
 				{user.firstName} {user.lastName} - {user.email}
 			</li>
 		)
 	}
 
-	if (!currentUser) {
+	if (!currentUserId) {
 		return (
 			<>
 			<h3>Who are you?</h3>
@@ -40,52 +59,18 @@ export default function ChatArea() {
 			</>
 		)
 	}
-	if (currentUser && !secondUser)
+	if (currentUserId && !secondUser)
 		return (
 			<>
-			<h3>Hello {currentUser}, Who do you wanna chat with?</h3>
-			<UserList userDisplayFunction={selectSecondUserDisplayFunc} filterUserIds={[currentUser]} />
+			<h3>Hello {currentUserName}, Who do you wanna chat with?</h3>
+			<UserList userDisplayFunction={selectSecondUserDisplayFunc} filterUserIds={[currentUserId]} />
 			</>
 		)
-	if (currentUser && secondUser)
+	if (currentUserId && secondUser)
 	{return (
-        <>
-            <h3>Hello {currentUser}, Who do you wanna chat with?</h3>
-			<UserList userDisplayFunction={selectSecondUserDisplayFunc} filterUserIds={[currentUser]} />
-            <h1>Chat with {secondUser}:</h1>
-		    <Chat user1={currentUser} user2={secondUser}/>
-        </>
+		<>
+		<Chat user1={currentUserId} user2={secondUser}/>
+		<UserList userDisplayFunction={selectSecondUserDisplayFunc} filterUserIds={[currentUserId]} />
+		</>
 	)}
-    // return (
-	// 	<>
-	// 		<div className="component">
-	// 			<br />
-	// 			<h1>Websocket test space</h1>
-	// 		</div>
-	// 		{/* <UserList userDisplayFunction={setCurrentUserDisplayFunc} filterUserIds={[1, 2, 3]} includeFilteredUserIds /> */}
-	// 		{/* <UserList userDisplayFunction={setCurrentUserDisplayFunc} /> */}
-	// 		{
-	// 			!currentUser ?
-	// 				(
-	// 				<>
-	// 					<h4>Who are you?</h4>
-	// 					<UserList userDisplayFunction={setCurrentUserDisplayFunc}/>
-	// 				</>
-	// 				) : (
-	// 					!secondUser ?
-	// 						(
-	// 						<>
-	// 						<h4>Who do you want to chat with?</h4>
-	// 						<UserList userDisplayFunction={setCurrentUserDisplayFunc} filterUserIds={[1]}/>
-	// 						</>
-	// 						):(
-	// 						<>
-	// 						<h4>Nothing</h4>
-	// 						</>
-	// 						)
-	// 				)
-	// 		}
-
-	// 	</>
-	// );
 }

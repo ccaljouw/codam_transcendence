@@ -2,7 +2,7 @@ import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer } from
 import { GamesocketService } from './gamesocket.service';
 import { CreateGamesocketDto } from './dto/create-gamesocket.dto';
 import { UpdateGamesocketDto } from './dto/update-gamesocket.dto';
-import { SocketServerProvider } from '../socketserver.gateway';
+import { SocketServerProvider } from '../socket/socketserver.gateway';
 import { Server } from 'socket.io';
 
 @WebSocketGateway()
