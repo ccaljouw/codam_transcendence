@@ -1,38 +1,37 @@
 'use client'
 import React, { useState, useEffect } from 'react';
+import { UserProfileDto } from '../../../../../backend/src/users/dto/user-profile.dto';
+import DataFetcherJson from '../../../components/DataFetcherJson';
 import DataField from '../../../components/DataField';
-import fetchUser from '../../../components/FetchUser';
 
 export default function UserInfo() {
-	// const [data, setData] = useState< JSON | null >(null);
-	const [userName, setUserName] = useState<string>("");
-	const [avatarId, setAvatarId] = useState<string>("");
-	const [online, setOnline] = useState<string>("");
-	const [rank, setRank] = useState<string>("");
+	const [user, setUser] = useState< UserProfileDto | null >(null);
 
 	useEffect(() => {
 		getData();
 	}, []);
 
 	async function getData(){
-		const result = await fetchUser();
-		setUserName(result.userName);
-		setAvatarId(result.avatarId);
-		setOnline(result.online);
-		setRank(result.rank);
+		try {
+			const userId = sessionStorage.getItem('userId'); // todo: change to token
+			const result = await DataFetcherJson({url: 'http://localhost:3001/users/' + userId});
+			setUser(result);
+			if (!result) //todo: check if needed
+				console.log('Error: UserInfo fetch result not ok');
+		}
+		catch (error) {
+			console.error('Error fetching data:', error);
+		}
 	}
 
 	return (
 		<>
 			<h1>User information</h1>
 			<p>From database:</p>
-			<DataField name="Avatar" data={avatarId} />
-			<DataField name="Username" data={userName}/>
-			<DataField name="Online" data={online} />
-			<DataField name="Rank" data={"#" + rank} />
-			
+			<DataField name="Avatar" data={user?.avatarId} />
+			<DataField name="Username" data={user?.userName}/>
+			<DataField name="Online" data={user?.online} />
+			<DataField name="Rank" data={"#" + user?.rank} />
 		</>
 	);
 }
-
-// {data ? (<pre>{JSON.stringify(data, null, 2)}</pre>) : (<p>Loading data...</p>)}

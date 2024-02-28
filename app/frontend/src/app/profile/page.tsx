@@ -11,28 +11,30 @@ export default function Page() {
 			<h1>Profile page</h1>
 			<div className="row">
 				<p>The information below is public:</p>
-				<div className="col col-lg-4 col-sm-12 col-12 component">
+				<div className="col col-lg-4 col-md-6 col-12 component">
 					<UserInfo />
 				</div>
-				<div className="col col-lg-4 col-sm-12 col-12 component">
+				<div className="col col-lg-4 col-md-6 col-12 component">
 					<Stats />
 				</div>
-				<div className="col col-lg-4 col-sm-12 col-12 component">
+				<div className="col col-lg-4 col-md-6 col-12 component">
 					<MatchHistory />
 				</div>
 			</div>
 			<div className="row">
 				<p>The information below is only visible to you:</p>
-				<div className="col col-lg-4 col-sm-12 col-12 component">
+				<div className="col col-lg-4 col-md-6 col-12 component">
 					<GameSettings />
 				</div>
-				<div className="col col-lg-4 col-sm-12 col-12 component">
+				<div className="col col-lg-4 col-md-6 col-12 component">
 					<LoginSettings />
 				</div>
-				<div className="col col-lg-4 col-sm-12 col-12 component">
+				<div className="col col-lg-4 col-md-6 col-12 component">
 					<Blocked />
 				</div>
 			</div>
 		</>
 	);
 }
+
+//todo: consider to make this page client-side rendered to not have double fetch in UserInfo and LoginSettings, or consider to make user information all available in contextprovider
