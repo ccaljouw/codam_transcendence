@@ -38,9 +38,9 @@ model User {
   lastName  String?
   token     String?
 
-  avatarId Int  @default(0)
+  avatarId Int  @default(1)
   online   OnlineStatus  @default(OFFLINE)
-  rank     Int?
+  rank     Int? @default(-1)
 
   chats ChatUsers[]
 
