@@ -36,6 +36,7 @@ const UserList = ({ userDisplayFunction, filterUserIds, includeFilteredUserIds =
 
 	}, [userListFromDb, filterUserIds, includeFilteredUserIds])
 
+	//todo: use generic data fetcher
 	async function fetchUsers() {
 		console.log("fetching users");
 		try {
