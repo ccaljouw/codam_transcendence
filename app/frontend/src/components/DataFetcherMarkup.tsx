@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import DataFetcherJson from './DataFetcherJson';
 
-interface DataFetcherProps<T> {
+interface DataFetcherMarkupProps<T> {
   url: string;
   renderLoading?:  React.ReactNode;
   renderError?: (error: any) => React.ReactNode;
   renderData: (data: T) => React.ReactNode;
 }
 
-function DataFetcher<T>({
+function DataFetcherMarkup<T>({
   url,
   renderLoading,
   renderError = (error) => <p>Error: {error.message}</p>,
   renderData,
-}: DataFetcherProps<T>): JSX.Element {
+}: DataFetcherMarkupProps<T>): JSX.Element {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any | null>(null);
@@ -20,8 +21,7 @@ function DataFetcher<T>({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(url);
-        const result = await response.json();
+        const result = await DataFetcherJson({url: url});
         setData(result);
       } catch (error) {
         setError(error);
@@ -49,4 +49,4 @@ function DataFetcher<T>({
   return <></>;
 }
 
-export default DataFetcher;
+export default DataFetcherMarkup;
