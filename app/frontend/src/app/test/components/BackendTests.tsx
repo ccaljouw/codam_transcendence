@@ -10,6 +10,7 @@ function BackendTests() {
   const [data, setData] = useState<DataFormat | null>(null);
 
   useEffect(() => {
+    //todo: use generic data fetcher
     const fetchData = async () => {
       try {
         const response = await fetch('http://localhost:3001/test/backend');

@@ -59,10 +59,11 @@ export class CreateUserDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
-//   @Type(() => Number)
-  @IsInt()
   online: OnlineStatus;
 
 //   @ApiProperty
+@ApiProperty({ required: false })
+  @IsOptional()
+@IsString()
 token: string;
 }

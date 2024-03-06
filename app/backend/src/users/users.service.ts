@@ -50,7 +50,7 @@ export class UsersService {
       return user;
     }
     catch (error) {
-      throw new NotFoundException(`User with id ${id} does not exist.`);
+      throw new NotFoundException(`Error upadting user with id ${id}: ${error}`);
     }
   
   }
@@ -64,6 +64,24 @@ export class UsersService {
     catch (error) {
       throw new NotFoundException(`User with id ${id} does not exist.`);
     }
+  }
+
+async findUserByToken(token: string): Promise<UserProfileDto | null> {
+	try {
+	  const user = await this.db.user.findFirst({
+		where: {
+		  token: token,
+		},
+	  });
+	  if (user) {
+		// delete user.hash;
+		return user;
+	  }
+	  return null;
+	} catch (error) {
+	  console.error('Error finding user by token:', error);
+	  throw error;
+	}
   }
 
   async findUserIdByToken(token: string): Promise<number | null> {

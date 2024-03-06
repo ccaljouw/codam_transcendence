@@ -9,6 +9,7 @@ async function addDummyUsers() {
 		where: { loginName: 'Carien' },
 		update: {},
 		create: {
+			userName: 'AwesomeBackendCreator',
 			loginName: 'Carien',
 			email: 'ccaljouw@student.codam.nl',
 			hash: 'pwd',
@@ -20,6 +21,7 @@ async function addDummyUsers() {
 		where: { loginName: 'Albert' },
 		update: {},
 		create: {
+			userName: 'AwesomeSocketCreator',
 			loginName: 'Albert',
 			email: 'avan_and@student.codam.nl',
 			hash: 'pwd',
@@ -31,6 +33,7 @@ async function addDummyUsers() {
 		where: { loginName: 'Jorien' },
 		update: {},
 		create: {
+			userName: 'AwesomeFrontendCreator',
 			loginName: 'Jorien',
 			email: 'jaberkro@student.codam.nl',
 			hash: 'pwd',
@@ -42,6 +45,7 @@ async function addDummyUsers() {
 		where: { loginName: 'Carlo' },
 		update: {},
 		create: {
+			userName: 'AwesomeGameCreator',
 			loginName: 'Carlo',
 			email: 'cwesseli@student.codam.nl',
 			hash: 'pwd',
@@ -49,7 +53,7 @@ async function addDummyUsers() {
 			lastName: 'Wesseling',
 		},
 	});
-	console.log({ user1, user2 });
+	console.log({ user1, user2, user3, user4 });
 }
 
 // todo: add userState to dummy data

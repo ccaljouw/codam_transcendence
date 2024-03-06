@@ -21,7 +21,7 @@ export default function  ChatArea() {
 		}
 
 
-	},[currentUserId])
+	},[currentUserId, secondUser])
 
 
 	const setConnectionStatus = (user: UserProfileDto) => {
@@ -33,11 +33,11 @@ export default function  ChatArea() {
 		console.log(`User set to ${user.id}`)
 	}
 	
-
+	const test = "testttt";
 	const setCurrentUserDisplayFunc = (user: UserProfileDto) => {
 		return (
 			<li key={user.id} onClick={() => { setConnectionStatus(user);   }}>
-				{user.firstName} {user.lastName} - {user.email}
+				{user.firstName} {user.lastName} - {user.email} - {user.id < 3 ? test : "nope"}
 			</li>
 		)
 	}
@@ -45,8 +45,8 @@ export default function  ChatArea() {
 	const selectSecondUserDisplayFunc = (user: UserProfileDto) => {
 		return (
 			<li key={user.id} onClick={() => {  setSecondUser(user.id); console.log(`Second user set to ${user.id}`) }}>
-				{user.online == OnlineStatus.ONLINE ? ("[on]]") : ("[off]")}
-				{user.firstName} {user.lastName} - {user.email}
+				{user.online == OnlineStatus.ONLINE ? ("[on]") : ("[off]")}
+				{user.firstName} {user.lastName} - {user.email} - {user.id < 3 ? test : "nope"}
 			</li>
 		)
 	}

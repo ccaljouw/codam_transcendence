@@ -1,30 +1,31 @@
 "use client";
 import { useEffect, useState } from 'react';
-import InfoField from "../../../components/DataField";
-import FetchUser from "../../../components/FetchUser";
+import { UserProfileDto } from '../../../../../backend/src/users/dto/user-profile.dto';
+import DataFetcherJson from "../../../components/DataFetcherJson";
+import DataField from "../../../components/DataField";
 
 export default function LoginSettings() {
-	const [loginName, setLoginName] = useState<string>("");
-	const [firstName, setFirstName] = useState<string>("");
-	const [lastName, setLastName] = useState<string>("");
+	const [user, setUser] = useState< UserProfileDto | null >(null);
 
 	useEffect(() => {
 		getData();
 	}, []);
 
 	async function getData(){
-		const result = await FetchUser();
-		setLoginName(result.loginName);
-		setFirstName(result.firstName);
-		setLastName(result.lastName);
+		const userId = sessionStorage.getItem('userId'); // todo: change to token
+		const result = await DataFetcherJson({url: 'http://localhost:3001/users/' + userId});
+		setUser(result);
+		if (!result) // todo: check if needed
+			console.log('Error: LoginSettings fetch result null'); 
 	}
+
 	return (
 		<>
 			<h1>Login settings</h1>
 			<p>From database:</p>
-			<InfoField name="Login name" data={loginName} />
-			<InfoField name="First name" data={firstName} />
-			<InfoField name="Last name" data={lastName} />
+			<DataField name="Login name" data={user?.loginName} />
+			<DataField name="First name" data={user?.firstName} />
+			<DataField name="Last name" data={user?.lastName} />
 			<p>
 				Button to Enable two-factor authentication, link to change password
 			</p>

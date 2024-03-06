@@ -1,4 +1,4 @@
-export default function DataField({name, data}: {name:string, data:string}) {
+export default function DataField({name, data}: {name:string, data: any}) {
 	return (
 		<>
 			<div className="row">
