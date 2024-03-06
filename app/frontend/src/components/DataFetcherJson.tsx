@@ -1,17 +1,22 @@
 export default async function DataFetcherJson<T>(
-    {url} : {url:string}
+    {url, method, payload} : {url:URL, method?:string, payload:string} //todo: add method, payload
 ) : Promise<T> {
 	try {
-		const response: Response = await fetch(url);
-		if (!response.ok) // todo: check if needed here
+		const requestOptions : RequestInit = {
+			method: `${method}`,
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({payload}),
+		};
+		const response: Response = await fetch(url, requestOptions);
+		if (!response.ok)
 		{
-			console.log('Error in DataFetcherJson: response not ok')
+			console.log('Error in DataFetcherJson: response not ok');
 			throw new Error(`Error in DataFetcherJson: response not ok`);
 		}
 		const result = await response.json() as T;
-		return (result);
+		return (result); //todo: return data, isLoading, error
 	} catch (error) {
 		console.error('Error in DataFetcherJson:', error);
-		throw new Error('Error in DataFetcherJson' + error);
+		throw new Error('Error in DataFetcherJson' + error); //todo: return data=null, isLoading, error
 	}
 }
