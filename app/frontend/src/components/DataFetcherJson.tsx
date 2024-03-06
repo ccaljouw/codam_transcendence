@@ -1,5 +1,5 @@
 export default async function DataFetcherJson<T>(
-    {url, method, payload} : {url:URL, method?:string, payload:string} //todo: add method, payload
+    {url, method, payload} : {url:string, method?:string, payload?:string} //todo: consider makng url a URL instead of string
 ) : Promise<T> {
 	try {
 		const requestOptions : RequestInit = {
