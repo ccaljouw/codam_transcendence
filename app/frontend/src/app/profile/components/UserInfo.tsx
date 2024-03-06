@@ -14,14 +14,22 @@ export default function UserInfo() {
 	async function getData(){
 		try {
 			const userId = sessionStorage.getItem('userId'); // todo: change to token
-			const result = await DataFetcherJson({url: 'http://localhost:3001/users/' + userId});
+			const result = await DataFetcherJson({url: 'http://localhost:3001/users/' + userId}) as UserProfileDto;
 			setUser(result);
-			if (!result) //todo: check if needed
-				console.log('Error: UserInfo fetch result not ok');
 		}
 		catch (error) {
-			console.error('Error fetching data:', error);
+			console.error('Error in UserInfo getData:', error);
 		}
+	}
+
+	if (user == null)
+	{
+		return (
+			<>
+				<h1>User information</h1>
+				<p>Loading...</p>
+			</>
+		);
 	}
 
 	return (

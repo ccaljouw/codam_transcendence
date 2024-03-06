@@ -11,12 +11,25 @@ export default function LoginSettings() {
 		getData();
 	}, []);
 
-	async function getData(){
-		const userId = sessionStorage.getItem('userId'); // todo: change to token
-		const result = await DataFetcherJson({url: 'http://localhost:3001/users/' + userId});
-		setUser(result);
-		if (!result) // todo: check if needed
-			console.log('Error: LoginSettings fetch result null'); 
+	async function getData(){ // todo: add return type
+		try {
+
+			const userId = sessionStorage.getItem('userId'); // todo: change to token
+			const userData = await DataFetcherJson({url: 'http://localhost:3001/users/' + userId}) as UserProfileDto;
+			setUser(userData);
+		} catch (error) {
+			console.error('Error in LoginSettings:', error);
+		}
+	}
+
+	if (user == null)
+	{
+		return (
+			<>
+				<h1>Login settings</h1>
+				<p>Loading...</p>
+			</>
+		);
 	}
 
 	return (

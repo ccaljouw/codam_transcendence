@@ -21,7 +21,7 @@ function DataFetcherMarkup<T>({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await DataFetcherJson({url: url});
+        const result = await DataFetcherJson({url: url}) as T;
         setData(result);
       } catch (error) {
         setError(error);

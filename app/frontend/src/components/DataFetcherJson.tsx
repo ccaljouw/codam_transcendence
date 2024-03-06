@@ -1,14 +1,17 @@
-export default async function DataFetcherJson(
+export default async function DataFetcherJson<T>(
     {url} : {url:string}
-) {
+) : Promise<T> {
 	try {
 		const response: Response = await fetch(url);
-		if (!response.ok) // todo: check if needed here
-			console.log('Error in DataFetcherJson: response not ok')
-		const result = await response.json();
+		if (!response.ok)
+		{
+			console.log('Error in DataFetcherJson: Response not ok')
+			throw new Error('Error in DataFetcherJson: Response not ok');
+		}
+		const result = await response.json() as T;
 		return (result);
 	} catch (error) {
 		console.error('Error in DataFetcherJson:', error);
-		return (error);
+		throw new Error('Error in DataFetcherJson: ' + error);
 	}
 }
