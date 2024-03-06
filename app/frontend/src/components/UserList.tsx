@@ -2,6 +2,8 @@ import { useContext, useEffect, useRef, useState } from "react"
 import { UserProfileDto } from '../../../backend/src/users/dto/user-profile.dto'
 import { constants } from '../globals/constants.globalvar'
 import { TranscendenceContext } from "src/globals/contextprovider.globalvar"
+import DataFetcherJson from "./DataFetcherJson"
+import { User } from "@prisma/client"
 
 /**
  * 
@@ -11,8 +13,8 @@ import { TranscendenceContext } from "src/globals/contextprovider.globalvar"
  * @returns 
  */
 const UserList = ({ userDisplayFunction, filterUserIds, includeFilteredUserIds = false }: { userDisplayFunction: (user: UserProfileDto) => JSX.Element; filterUserIds?: number[]; includeFilteredUserIds?: boolean; }) => {
-	const [userListFromDb, setUserListFromDb] = useState([]);
-	const [processedUserList, setProcessedUserList] = useState([]);
+	const [userListFromDb, setUserListFromDb] = useState<UserProfileDto[]>([]);
+	const [processedUserList, setProcessedUserList] = useState<UserProfileDto[]>([]);
 	const {someUserUpdatedTheirStatus} = useContext(TranscendenceContext);
 
 	
@@ -40,12 +42,19 @@ const UserList = ({ userDisplayFunction, filterUserIds, includeFilteredUserIds =
 	async function fetchUsers() {
 		console.log("fetching users");
 		try {
-			const response = await fetch(constants.API_ALL_USERS);
-			if (!response.ok) {
-				throw new Error('Failed to fetch users');
+			// const response = await fetch(constants.API_ALL_USERS);
+			// if (!response.ok) {
+			// 	throw new Error('Failed to fetch users');
+			// }
+			// const data = await response.json();
+			// setUserListFromDb(data);
+			const response = await DataFetcherJson({url: constants.API_ALL_USERS});
+			console.log("response: ", response);
+			if (response instanceof Error) {
+				console.log('Failed to fetch users');
+				return;
 			}
-			const data = await response.json();
-			setUserListFromDb(data);
+			setUserListFromDb(response);
 		} catch (error) {
 			console.error(error);
 		}

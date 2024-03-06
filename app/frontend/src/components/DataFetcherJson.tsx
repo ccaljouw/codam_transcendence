@@ -3,15 +3,15 @@ export default async function DataFetcherJson<T>(
 ) : Promise<T> {
 	try {
 		const response: Response = await fetch(url);
-		if (!response.ok)
+		if (!response.ok) // todo: check if needed here
 		{
-			console.log('Error in DataFetcherJson: Response not ok');
-			throw new Error('Error in DataFetcherJson: Response not ok' + response.status + ': ' + response.statusText); //todo: eigen error
+			console.log('Error in DataFetcherJson: response not ok')
+			throw new Error(`Error in DataFetcherJson: response not ok`);
 		}
 		const result = await response.json() as T;
 		return (result);
 	} catch (error) {
 		console.error('Error in DataFetcherJson:', error);
-		throw new Error('Error in DataFetcherJson: ' + error);
+		throw new Error('Error in DataFetcherJson' + error);
 	}
 }

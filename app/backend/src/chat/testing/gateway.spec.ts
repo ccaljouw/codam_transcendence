@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ChatSocketGateway } from './chatsocket.gateway';
-import { ChatSocketService } from './chatsocket.service';
+import { ChatSocketGateway } from '../chatsocket.gateway';
+import { ChatSocketService } from '../chatsocket.service';
 
 describe('GameGateway', () => {
   let gateway: ChatSocketGateway;
