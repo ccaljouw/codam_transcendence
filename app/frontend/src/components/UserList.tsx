@@ -17,7 +17,6 @@ const UserList = ({ userDisplayFunction, filterUserIds, includeFilteredUserIds =
 	const [processedUserList, setProcessedUserList] = useState<UserProfileDto[]>([]);
 	const {someUserUpdatedTheirStatus} = useContext(TranscendenceContext);
 
-	
 	useEffect(() => {
 		console.log("render userList: ");
 		fetchUsers();
@@ -25,7 +24,7 @@ const UserList = ({ userDisplayFunction, filterUserIds, includeFilteredUserIds =
 
 	useEffect(() => {
 		if (userListFromDb.length == 0)
-			return;
+			return ;
 		let filtered;
 		if (filterUserIds && filterUserIds.length > 0) {
 			if (includeFilteredUserIds)
@@ -60,7 +59,7 @@ const UserList = ({ userDisplayFunction, filterUserIds, includeFilteredUserIds =
 		}
 	}
 	return (
-		<div className='component userlist'>
+		<div className='userlist'>
 			<ul>
 				{processedUserList.map(userDisplayFunction)}
 			</ul>

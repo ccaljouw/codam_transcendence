@@ -1,8 +1,9 @@
 "use client";
-import {useState} from 'react';
+import { useState } from 'react';
 import FormInput from '../../../components/FormInput';
 
 async function PostNewUser(formData: FormData) {
+	
 	const requestOptions = {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
@@ -24,12 +25,15 @@ async function PostNewUser(formData: FormData) {
 	return ("Error: API path not recognized")
 }
 
-export default function SignUp() {
+export default function SignUp({setCurrentUserId} : {setCurrentUserId: any}) { //todo: find correct type
 	const [message, setMessage] = useState<string | null>("");
 
 	async function handleSubmit(formData: FormData) {
 		setMessage(await PostNewUser(formData));
+		setCurrentUserId(message); //todo: don't do this when error returned
+		//todo: set userName as well
 	}
+
 	return (
 		<>
 			<form action={handleSubmit}>
