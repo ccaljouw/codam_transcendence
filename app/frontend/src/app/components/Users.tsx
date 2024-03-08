@@ -1,11 +1,11 @@
 import { UserProfileDto } from "../../../../backend/src/users/dto/user-profile.dto";
-import DataFetcher from "src/components/DataFetcherMarkup";
+import DataFetcherMarkup from "src/components/DataFetcherMarkup";
 
 export default function Users() {
 	return (
         <div className="text-center">
 			<h1>Users</h1>
-			<DataFetcher<UserProfileDto[]>
+			<DataFetcherMarkup<UserProfileDto[]>
 				url='http://localhost:3001/users/all'
 				renderData={(data) => {
 					if (!data || !Array.isArray(data)) {

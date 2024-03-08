@@ -1,11 +1,10 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { UserProfileDto } from '../../../../../backend/src/users/dto/user-profile.dto';
-// import DataFetcherJson from '../../../components/DataFetcherJson';
 import DataField from '../../../components/DataField';
 import useFetch from 'src/components/useFetch';
 
-export default function UserInfo() {
+export default function UserInfo(): JSX.Element {
 	const { data: user, isLoading, error, fetcher } = useFetch<null, UserProfileDto>();
 	
 	useEffect(() => {
@@ -14,11 +13,7 @@ export default function UserInfo() {
 
 	async function fetchUser(){
 		const userId = sessionStorage.getItem('userId'); // todo: change to token
-
-		await fetcher({
-			url: 'http://localhost:3001/users/' + userId,
-			// fetchMethod: 'GET',
-		});
+		await fetcher({url: 'http://localhost:3001/users/' + userId});
 	}
 
 	return (

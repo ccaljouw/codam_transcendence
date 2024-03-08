@@ -36,5 +36,3 @@ export default function Page() {
 		</>
 	);
 }
-
-//todo: consider to make this page client-side rendered to not have double fetch in UserInfo and LoginSettings, or consider to make user information all available in contextprovider

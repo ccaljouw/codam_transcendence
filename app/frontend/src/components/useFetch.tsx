@@ -6,15 +6,15 @@ type fetchProps<T> = {
     payload?: T | null,
 }
 
-type fetchOutput<T> = {
-    data: T | null,
+type fetchOutput<T, U> = {
+    data: U | null,
     isLoading: boolean,
     error: Error | null,
     fetcher: ({url, fetchMethod, payload}: fetchProps<T>) => Promise<void>,
 }
 
-export default function useFetch<T>(): fetchOutput<T> {
-    const [data, setData] = useState<T | null>(null);
+export default function useFetch<T, U>(): fetchOutput<T, U> {
+    const [data, setData] = useState<U | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
 
@@ -27,18 +27,17 @@ export default function useFetch<T>(): fetchOutput<T> {
         try {
             const response = await fetch(url, {
                 method: fetchMethod,
-                headers: {
-                'Content-Type': 'application/json',
-                },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload),
             });
 
             if (!response.ok) {
-                throw new Error("Response not ok in useFetch: " + response.status + ": " + response.statusText);
+                throw new Error("Response not ok: " + response.status + ": " + response.statusText);
             }
 
-            setData(await response.json() as T);
-        } catch (error: any) { // todo: find out why this needs to be any
+            setData(await response.json() as U);
+        } catch (e: any) {
+            console.log("useFetch error: ", e);
             setError(error);
         } finally {
             setIsLoading(false);

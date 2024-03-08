@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import ChooseUser from 'src/app/sign-up/components/ChooseUser';
 import Seed from 'src/app/test/components/Seed';
 import { constants } from '../globals/constants.globalvar'
+import SignUp from 'src/app/sign-up/components/SignUp';
 
 export default function Login({ currentUserId, setCurrentUserId, currentUserName, setCurrentUserName } : { currentUserId: number, setCurrentUserId: any, currentUserName: string, setCurrentUserName: any }) { //todo: change type
 	const [userListFromDb, setUserListFromDb] = useState([]);
@@ -55,9 +56,13 @@ export default function Login({ currentUserId, setCurrentUserId, currentUserName
 
 	return (
 		<>
-			<div className="page">
-				<h1>Log in or sign up to play pong</h1>
-				<ChooseUser setCurrentUserId={setCurrentUserId} setCurrentUserName={setCurrentUserName}/>
+			<div className="content-area">
+				<div className="col">
+					<ChooseUser setCurrentUserId={setCurrentUserId} setCurrentUserName={setCurrentUserName}/>
+				</div>
+				<div className="col">
+					<SignUp />
+				</div>
 			</div>
 		</>
 	);

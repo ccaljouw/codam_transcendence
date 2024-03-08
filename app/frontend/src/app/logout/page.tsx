@@ -1,9 +1,9 @@
-import SignUp from "./components/SignUp.tsx";
+import Logout from "./components/Logout.tsx";
 
 export default function Page() {
 	return (
 		<>
-			<SignUp />
+			<Logout />
 		</>
 	);
 }

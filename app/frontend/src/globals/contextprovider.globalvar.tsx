@@ -64,8 +64,13 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 			}
 			updateUserStatus(updatedProps);
 		}
-	}, [currentUserId])
-
+		sessionStorage.setItem('userId', JSON.stringify(currentUserId));
+	}, [currentUserId]);
+	
+	useEffect(() => {
+		sessionStorage.setItem('userName', JSON.stringify(currentUserName));
+	}, [currentUserName]);
+	
 
 	const contextValues: TranscendenceContextVars = {
 		someUserUpdatedTheirStatus,
@@ -105,7 +110,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	};
 	// updateUserStatus(updatedProps);
 
-	if (!currentUserId)
+	if (currentUserId == 0)
 	{
 		return (
 			<Login currentUserId={currentUserId} setCurrentUserId={setCurrentUserId} currentUserName={currentUserName} setCurrentUserName={setCurrentUserName}/>

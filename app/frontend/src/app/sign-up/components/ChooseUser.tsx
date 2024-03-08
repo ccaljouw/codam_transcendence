@@ -7,9 +7,10 @@ export default function ChooseUser({setCurrentUserId, setCurrentUserName}:{setCu
 	const setConnectionStatus = (user: UserProfileDto) => {
 		console.log("I should do something with my connection status");
 		sessionStorage.setItem('loginName', user.loginName); 
-		sessionStorage.setItem('userId', user.id.toString());
+		sessionStorage.setItem('userName', user.userName);
+		sessionStorage.setItem('userId', JSON.stringify(user.id));
 		setCurrentUserId(user.id); 
-		setCurrentUserName(user.loginName);
+		setCurrentUserName(user.userName);
 		console.log(`User set to ${user.id}`)
 	}
 
@@ -23,6 +24,7 @@ export default function ChooseUser({setCurrentUserId, setCurrentUserName}:{setCu
 
 	return (
 		<>
+			<h1>Who do you want to be?</h1>
 			<UserList userDisplayFunction={setCurrentUserDisplayFunc} />
 		</>
 	);
