@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { UserProfileDto } from '../../../../../backend/src/users/dto/user-profile.dto';
 // import DataFetcherJson from "../../../components/DataFetcherJson";
 import DataField from "../../../components/DataField";
+import useFetch from 'src/components/useFetch';
 
 export default function LoginSettings() {
 	const { data: user, isLoading, error, fetcher } = useFetch<UserProfileDto>();
@@ -13,11 +14,8 @@ export default function LoginSettings() {
 
 	async function fetchUser(){
 		const userId = sessionStorage.getItem('userId'); // todo: change to token
-
 		await fetcher({
 			url: 'http://localhost:3001/users/' + userId,
-			fetchMethod: 'GET',
-			payload: null
 		});
 	}
 
@@ -25,7 +23,7 @@ export default function LoginSettings() {
 		<>
 			<h1>User information</h1>
 			{isLoading && <p>Loading...</p>}
-			{error && <p>error</p>}
+			{error && <p>Error: {error.message}</p>}
 			{user && (<>
 			<p>From database:</p>
 			<DataField name="Login name" data={user?.loginName} />

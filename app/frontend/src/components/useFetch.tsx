@@ -2,8 +2,8 @@ import { useState } from "react";
 
 type fetchProps<T> = {
     url: string,
-    fetchMethod: string,
-    payload: T | null,
+    fetchMethod?: string,
+    payload?: T | null,
 }
 
 type fetchOutput<T> = {
@@ -34,7 +34,7 @@ export default function useFetch<T>(): fetchOutput<T> {
             });
 
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error("Response not ok in useFetch: " + response.status + ": " + response.statusText);
             }
 
             setData(await response.json() as T);

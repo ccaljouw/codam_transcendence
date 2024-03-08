@@ -17,8 +17,7 @@ export default function UserInfo() {
 
 		await fetcher({
 			url: 'http://localhost:3001/users/' + userId,
-			fetchMethod: 'GET',
-			payload: null
+			// fetchMethod: 'GET',
 		});
 	}
 
@@ -26,13 +25,13 @@ export default function UserInfo() {
 		<>
 			<h1>User information</h1>
 			{isLoading && <p>Loading...</p>}
-			{error && <p>error</p>}
+			{error && <p>Error: {error.message}</p>}
 			{user && (<>
 				<p>From database:</p>
-				<DataField name="Avatar" data={user?.avatarId} />
-				<DataField name="Username" data={user?.userName}/>
-				<DataField name="Online" data={user?.online} />
-				<DataField name="Rank" data={"#" + user?.rank} /> 
+				<DataField name="Avatar" data={user.avatarId} />
+				<DataField name="Username" data={user.userName}/>
+				<DataField name="Online" data={user.online} />
+				<DataField name="Rank" data={"#" + user.rank} /> 
 			</>)}
 		</>
 	);

@@ -3,7 +3,6 @@ import { UserProfileDto } from '../../../backend/src/users/dto/user-profile.dto'
 import { constants } from '../globals/constants.globalvar'
 import { TranscendenceContext } from "src/globals/contextprovider.globalvar"
 import DataFetcherJson from "./DataFetcherJson"
-import { User } from "@prisma/client"
 
 /**
  * 
@@ -47,7 +46,7 @@ const UserList = ({ userDisplayFunction, filterUserIds, includeFilteredUserIds =
 			// }
 			// const data = await response.json();
 			// setUserListFromDb(data);
-			const response = await DataFetcherJson({url: constants.API_ALL_USERS});
+			const response = await DataFetcherJson({url: constants.API_ALL_USERS}) as UserProfileDto[];
 			console.log("response: ", response);
 			if (response instanceof Error) {
 				console.log('Failed to fetch users');

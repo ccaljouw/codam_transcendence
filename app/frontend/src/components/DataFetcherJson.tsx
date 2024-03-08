@@ -17,6 +17,6 @@ export default async function DataFetcherJson<T>(
 		return (result); //todo: return data, isLoading, error
 	} catch (error) {
 		console.error('Error in DataFetcherJson:', error);
-		throw new Error('Error in DataFetcherJson' + error); //todo: return data=null, isLoading, error
+		throw new Error('Error in DataFetcherJson: ' + error); //todo: return data=null, isLoading, error
 	}
 }

@@ -32,6 +32,7 @@ export default function Login({ currentUserId, setCurrentUserId, currentUserName
 			}
 			const data = await response.json();
 			setUserListFromDb(data);
+			setIsLoading(false);
 		} catch (error) {
 			console.error(error);
 		}
