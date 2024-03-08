@@ -6,7 +6,7 @@ interface DataFormat {
   msg: string;
 }
 
-function Seed() {
+export default function Seed() {
   return (
     <>
       <h1>Seed database</h1>
@@ -19,5 +19,3 @@ function Seed() {
     </>
   );
 }
-
-export default Seed;

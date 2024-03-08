@@ -102,8 +102,6 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 				}
 				transcendenceSocket.emit('socket/statusChange', statusUpdate);
 			}
-			// 	const result = await response.json();
-			// 	setData(result);
 		} catch (error) {
 			console.error('Error updating online status:', error);
 		}

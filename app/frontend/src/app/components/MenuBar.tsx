@@ -34,5 +34,3 @@ export default function MenuBar(): JSX.Element {
 		</>
 	);
 }
-
-//todo: add login component 

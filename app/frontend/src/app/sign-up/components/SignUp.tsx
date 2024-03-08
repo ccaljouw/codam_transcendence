@@ -18,7 +18,6 @@ export default function SignUp(): JSX.Element {
 			sessionStorage.setItem('loginName', JSON.stringify(user.loginName));
 			setCurrentUserId(user.id);
 			setCurrentUserName(user.userName);
-			//todo: change contextProvider variables
 		}
 	}, [user])
 
