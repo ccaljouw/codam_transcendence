@@ -6,7 +6,7 @@ import DataField from "../../../components/DataField";
 import useFetch from 'src/components/useFetch';
 
 export default function LoginSettings() {
-	const { data: user, isLoading, error, fetcher } = useFetch<UserProfileDto>();
+	const { data: user, isLoading, error, fetcher } = useFetch<null, UserProfileDto>();
 
 	useEffect(() => {
 		fetchUser();
