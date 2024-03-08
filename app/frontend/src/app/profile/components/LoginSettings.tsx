@@ -1,40 +1,32 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { UserProfileDto } from '../../../../../backend/src/users/dto/user-profile.dto';
-import DataFetcherJson from "../../../components/DataFetcherJson";
+// import DataFetcherJson from "../../../components/DataFetcherJson";
 import DataField from "../../../components/DataField";
 
 export default function LoginSettings() {
-	const [user, setUser] = useState< UserProfileDto | null >(null);
+	const { data: user, isLoading, error, fetcher } = useFetch<UserProfileDto>();
 
 	useEffect(() => {
-		getData();
+		fetchUser();
 	}, []);
 
-	async function getData(){ // todo: add return type
-		try {
+	async function fetchUser(){
+		const userId = sessionStorage.getItem('userId'); // todo: change to token
 
-			const userId = sessionStorage.getItem('userId'); // todo: change to token
-			const userData = await DataFetcherJson({url: 'http://localhost:3001/users/' + userId}) as UserProfileDto;
-			setUser(userData);
-		} catch (error) {
-			console.error('Error in LoginSettings:', error);
-		}
-	}
-
-	if (user == null)
-	{
-		return (
-			<>
-				<h1>Login settings</h1>
-				<p>Loading...</p>
-			</>
-		);
+		await fetcher({
+			url: 'http://localhost:3001/users/' + userId,
+			fetchMethod: 'GET',
+			payload: null
+		});
 	}
 
 	return (
 		<>
-			<h1>Login settings</h1>
+			<h1>User information</h1>
+			{isLoading && <p>Loading...</p>}
+			{error && <p>error</p>}
+			{user && (<>
 			<p>From database:</p>
 			<DataField name="Login name" data={user?.loginName} />
 			<DataField name="First name" data={user?.firstName} />
@@ -42,6 +34,7 @@ export default function LoginSettings() {
 			<p>
 				Button to Enable two-factor authentication, link to change password
 			</p>
+			</>)}
 		</>
 	);
 }

@@ -11,7 +11,7 @@ export default async function DataFetcherJson<T>(
 		if (!response.ok)
 		{
 			console.log('Error in DataFetcherJson: response not ok');
-			throw new Error(`Error in DataFetcherJson: response not ok`);
+			throw new Error(`Error in DataFetcherJson: response not ok`); 
 		}
 		const result = await response.json() as T;
 		return (result); //todo: return data, isLoading, error
