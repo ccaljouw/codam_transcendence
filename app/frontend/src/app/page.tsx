@@ -1,17 +1,14 @@
 "use client"
-
 import Welcome from "./components/Welcome.tsx";
 import Leaderboard from './components/Leaderboard.tsx';
 import Users from "./components/Users.tsx";
 import { useContext, useEffect, useState } from "react";
-import UserList from "src/components/UserList.tsx";
 import { UserProfileDto } from "../../../backend/src/users/dto/user-profile.dto.ts";
 import { constants } from "src/globals/constants.globalvar.tsx";
 import { TranscendenceContext } from "src/globals/contextprovider.globalvar.tsx";
 
 export default function Page() {
 	const {someUserUpdatedTheirStatus, currentUserId, setCurrentUserId, currentUserName, setCurrentUserName} = useContext(TranscendenceContext);
-	const boolTest = false;
 
 	useEffect(() => {
 		if (typeof window !== 'undefined' && sessionStorage && sessionStorage.getItem != null) {
@@ -28,7 +25,7 @@ export default function Page() {
 					fetchUserName(currentUserId.toString());
 			}
 		}
-	}, [currentUserName, someUserUpdatedTheirStatus])
+	}, [currentUserName, someUserUpdatedTheirStatus]);
 
 	const fetchUserName = async (id: string | null) =>
 	{
@@ -41,26 +38,12 @@ export default function Page() {
 		setCurrentUserName(userNameFromDb);
 	}
 
-	function setCurrentUserDisplayFunc(user: UserProfileDto) {
-		return (
-			<li key={user.id} onClick={() => { 
-					sessionStorage.setItem('userId', user.id.toString()); 
-					setCurrentUserName(user.loginName); 
-				 }}>
-				{user.firstName} {user.lastName} - {user.email}
-			</li>
-		)
-	}
-
 	return (
 		<>
 			<div>
 				<div className="row">
 					<div className="col col-12">
-						{currentUserName === '' ?
-							(<UserList userDisplayFunction={setCurrentUserDisplayFunc} />)
-							:
-							(<><Welcome name={currentUserName} />	</>)}
+						<Welcome name={currentUserName} />
 					</div>
 					<div className="col col-12 col-lg-6">
 						<Leaderboard />

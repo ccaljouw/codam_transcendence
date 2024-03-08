@@ -7,6 +7,7 @@ import { UpdateUserDto } from "../../../backend/src/users/dto/update-user.dto";
 import { OnlineStatus } from "@prisma/client";
 import { constants } from "./constants.globalvar";
 import { WebsocketStatusChangeDto } from '../../../backend/src/socket/dto/statuschange'
+import Login from "src/components/Login";
 
 interface TranscendenceContextVars {
 	someUserUpdatedTheirStatus: WebsocketStatusChangeDto | undefined;
@@ -103,6 +104,13 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		}
 	};
 	// updateUserStatus(updatedProps);
+
+	if (!currentUserId)
+	{
+		return (
+			<Login currentUserId={currentUserId} setCurrentUserId={setCurrentUserId} currentUserName={currentUserName} setCurrentUserName={setCurrentUserName}/>
+		);
+	}
 
 	return (
 		<>

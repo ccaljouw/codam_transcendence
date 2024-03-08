@@ -8,7 +8,7 @@ interface DataFormat {
 
 function Seed() {
   return (
-    <div>
+    <>
       <h1>Seed database</h1>
       <DataFetcher<DataFormat>
         url="http://localhost:3001/seed"
@@ -16,7 +16,7 @@ function Seed() {
         renderError={(error) => <p>Custom error message: {error.message}</p>}
         renderData={(data) => <pre>{ data.msg }</pre>}
       />
-    </div>
+    </>
   );
 }
 
