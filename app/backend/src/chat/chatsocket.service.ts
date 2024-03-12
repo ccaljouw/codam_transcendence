@@ -1,132 +1,66 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateChatSocketDto } from './dto/create-chatSocket.dto';
-import { UpdateChatSocketDto } from './dto/update-chatSocket.dto';
 import { PrismaService } from 'src/database/prisma.service';
-
-import { } from './dto/create-chat.dto'
-import { } from './dto/create-chatUser.dto'
-import { } from './dto/update-chat.dto'
-import { } from './dto/update-chatUser.dto'
-import { CreateChatMessageDto } from './dto/create-chatMessage.dto'
-import { UpdateChatMessageDto } from './dto/update-chatMessage.dto';
-import { FetchChatMessageDto } from './dto/fetch-chatMessage.dto';
-import { FetchChatDto } from './dto/fetch-chat.dto';
+import { UpdateChatUserDto } from './dto/update-chatUser.dto'
 
 @Injectable()
 export class ChatSocketService {
 
 	constructor(private db: PrismaService) { }
 
-	// This function is used to create a chat between two users.
-	async createDM(payload: CreateChatSocketDto): Promise<FetchChatDto> {
-		console.log(`creating chat... for ${payload.user1_id} and ${payload.user2_id}`);
-
-		// Check if chat exists
-		const exists = await this.db.chat.findFirst(
-			{
-				where: {
-					AND: [
-						{ users: { some: { userId: payload.user1_id } } },
-						{ users: { some: { userId: payload.user2_id } } },
-						{ visibility: "DM" }
-					]
+	async getUserTokenArray(ids: number[]) : Promise<string[]> {
+		const users = await this.db.user.findMany({
+			where: {
+				id: {
+					in: ids
 				}
-			});
-		if (exists) // Return chat id if it exists
-		{
-			console.log(`Chat exists ${exists.id}`);
-			return ({id: exists.id, ownerId: exists.ownerId, visibility: exists.visibility});
-		}
+			},
+			select: {
+				token: true
+			}
+		});
+		return users.map(user => user.token);
+	}
 
-		// Create chat
-		const newChat = await this.db.chat.create({
+	async changeChatUserStatus(payload: {
+		userId: number, 
+		chatId: number, 
+		isInChatRoom: boolean}
+	): Promise<UpdateChatUserDto> {
+		console.log(`Changing chat user status for ${payload.userId} in chat ${payload.chatId} to ${payload.isInChatRoom}`);
+		const chatUserRecord = await this.db.chatUsers.findFirst({
+			where: {
+					chatId: payload.chatId,
+					userId: payload.userId
+			}
+		});
+		console.log(`Found chat user record ${chatUserRecord.id}`);
+		const updatedUser = await this.db.chatUsers.update({
+			where: { id: chatUserRecord.id },
 			data: {
-				ownerId: payload.user1_id,
-				visibility: "DM",
+				lastRead: new Date(),
+				isInChatRoom: payload.isInChatRoom
 			}
 		});
-		console.log(`Created chat ${newChat.id}`);
+		return updatedUser;
+	}
 
-		// Add users to chat
-		await this.db.chatUsers.createMany({
-			data: [
-				{ chatId: newChat.id, userId: payload.user1_id, lastRead: new Date() },
-				{ chatId: newChat.id, userId: payload.user2_id, lastRead: new Date() }
-			]
+	async setChatUserOfflineAfterDisconnect(userId: number) {
+		console.log(`Setting user ${userId} offline in all chats`);
+		const chatUserRecords = await this.db.chatUsers.findMany({
+			where: {
+				userId
+			}
 		});
-		console.log(`Added users ${payload.user1_id} and ${payload.user2_id} to chat ${newChat.id}`);
-
-		return ({id: newChat.id, ownerId: newChat.ownerId, visibility: newChat.visibility})
-	}
-
-	// async addMessage(msg: {chatId: number, userId: number, message: string}) {
-	// 	console.log(`Adding message to chat ${msg.chatId} from ${msg.userId}`);
-	// 	const data : CreateChatMessageDto = {
-	// 		chatId: msg.chatId,
-	// 		userId: msg.userId,
-	// 		content: msg.message
-	// 	}
-	// 	const newMessageId = await this.db.chatMessages.create({ data }); 
-	// 	return newMessageId;
-	// }
-
-	async messageToDB(createChatMessageDto: CreateChatMessageDto): Promise<Number> {
-		const newMessage = await this.db.chatMessages.create({ data: createChatMessageDto });
-		console.log(`Added message ${newMessage.id}`);
-		return newMessage.id;
-	}
-
-	findAll() {
-		return `This action returns all game`;
-	}
-	async findMessagesInChat(chatId: number): Promise<FetchChatMessageDto[]> {
-		try {
-			const messages = await this.db.chatMessages.findMany({
-				where: { chatId },
-				include: {
-					chat: {
-						select: {
-							users: {
-								select: {
-									user: {
-										select:
-										{
-											id: true,
-											loginName: true
-										}
-									}
-								}
-							}
-						}
-					}
+		for (const chatUserRecord of chatUserRecords) {
+			await this.db.chatUsers.update({
+				where: { id: chatUserRecord.id },
+				data: {
+					isInChatRoom: false
 				}
 			});
-			return messages.map((message) => ({
-				chatId: message.chatId,
-				userId: message.userId,
-				loginName: message.chat.users.find(user => user.user.id === message.userId).user.loginName,
-				message: message.content
-			}))
-		} catch {
-			throw new NotFoundException(`No messages found for this chat.`);
 		}
+		return;
 	}
-	
-			
 
-  async findMessagesInChatAfter(chatId: number, start: Date) : Promise < UpdateChatMessageDto[] > {
-			try {
-				return await this.db.chatMessages.findMany({
-					where: {
-						chatId,
-						createdAt: {
-							gte: start, // gte = "greater than or equal to"
-						},
-					}
-				});
-			}
-    catch {
-				throw new NotFoundException(`No messages found for this chat.`);
-			}
-		}
+  
 	}

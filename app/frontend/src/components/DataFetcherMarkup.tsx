@@ -19,9 +19,12 @@ function DataFetcherMarkup<T>({
   const [error, setError] = useState<any | null>(null);
 
   useEffect(() => {
+	console.log("DataFetcherMarkup: ", url);
     const fetchData = async () => {
       try {
+		console.log(`Fetching data from ${url}`);
         const result = await DataFetcherJson({url: url});
+		console.log(`Got data from ${url}: ${result}`);
         setData(result);
       } catch (error) {
         setError(error);
@@ -30,7 +33,7 @@ function DataFetcherMarkup<T>({
       }
     };
   
-    if (url && !data) {
+    if (url) {
       fetchData();
     }
   }, [url]); 
@@ -43,7 +46,7 @@ function DataFetcherMarkup<T>({
     return <>{renderError(error)}</>;
   }
 
-  if (data) {
+  if (data !== null) {
     return <>{renderData(data)}</>;
   }
   return <></>;

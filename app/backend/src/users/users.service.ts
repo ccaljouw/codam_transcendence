@@ -17,9 +17,31 @@ export class UsersService {
     // trhow exception? what kind of exception? or is this caught by the prisma filter?
   }
 
+	async findAllButMe(id: number) : Promise<UserProfileDto[]>  {
+		try {
+			const users = await this.db.user.findMany(
+				{
+					where: {id: {not: id}},
+					orderBy: [
+							{online: 'desc'},
+							{loginName: 'asc'},
+				]
+				}
+				);
+			for (const element of users)
+				delete element.hash;
+			return users;
+		}
+		catch {
+			throw new NotFoundException(`No users in the database.`);
+		}
+	}
+
   async findAll() : Promise<UserProfileDto[]>  {
     try {
-      const users = await this.db.user.findMany({});
+      const users = await this.db.user.findMany({
+		orderBy: { loginName: 'asc' },
+	  });
       for (const element of users)
         delete element.hash;
       return users;
@@ -74,7 +96,7 @@ async findUserByToken(token: string): Promise<UserProfileDto | null> {
 		},
 	  });
 	  if (user) {
-		// delete user.hash;
+		delete user.hash;
 		return user;
 	  }
 	  return null;

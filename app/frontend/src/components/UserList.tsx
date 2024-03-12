@@ -1,70 +1,50 @@
-import { useContext, useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { UserProfileDto } from '../../../backend/src/users/dto/user-profile.dto'
 import { constants } from '../globals/constants.globalvar'
-import { TranscendenceContext } from "src/globals/contextprovider.globalvar"
 import DataFetcherJson from "./DataFetcherJson"
-import { User } from "@prisma/client"
+
+
+interface UserListProps {
+	userDisplayFunction: (user: UserProfileDto, indexInUserList: number, statusChangeCallback: (idx: number) => void) => JSX.Element;
+	userFetcherFunction: () => Promise<UserProfileDto[]>;
+}
 
 /**
  * 
- * @param  userDisplayFunction (function(UserProfileDto) => JSX.Element): pointer to function to make the list items with
- * @param filterUserIds (number[]): array with userids to filter the whole list with
- * @param includeFilteredUserIds (bool): true if the array of filtered users should be the only one shown, false if they are the only ones to not show
- * @returns 
+ * @param props userDisplayFunction: function to display a user, userFetcherFunction: function to fetch users
+ * @returns JSX.Element
  */
-const UserList = ({ userDisplayFunction, filterUserIds, includeFilteredUserIds = false }: { userDisplayFunction: (user: UserProfileDto) => JSX.Element; filterUserIds?: number[]; includeFilteredUserIds?: boolean; }) => {
-	const [userListFromDb, setUserListFromDb] = useState<UserProfileDto[]>([]);
-	const [processedUserList, setProcessedUserList] = useState<UserProfileDto[]>([]);
-	const {someUserUpdatedTheirStatus} = useContext(TranscendenceContext);
+export default function UserList(props: UserListProps): JSX.Element {
+	const [userList, setUserlist] = useState<UserProfileDto[]>([]);
+	const [error, setError] = useState<boolean>(false);
 
+	// fetch users on mount
 	useEffect(() => {
-		console.log("render userList: ");
-		fetchUsers();
-	}, [someUserUpdatedTheirStatus]);
+		props.userFetcherFunction().then((usersFromDb) => {
+			setUserlist(usersFromDb);
+		})
+			.catch((error) => {
+				console.error(error);
+				setError(true);
+			})
+			;
+	}, []);
 
-	useEffect(() => {
-		if (userListFromDb.length == 0)
-			return ;
-		let filtered;
-		if (filterUserIds && filterUserIds.length > 0) {
-			if (includeFilteredUserIds)
-				filtered = userListFromDb.filter((user: { id: number }) => filterUserIds.includes(user.id));
-			else
-				filtered = userListFromDb.filter((user: { id: number }) => !filterUserIds.includes(user.id));
-		} else
-			filtered = userListFromDb;
-		setProcessedUserList(filtered);
-
-	}, [userListFromDb, filterUserIds, includeFilteredUserIds])
-
-	//todo: use generic data fetcher
-	async function fetchUsers() {
-		console.log("fetching users");
-		try {
-			// const response = await fetch(constants.API_ALL_USERS);
-			// if (!response.ok) {
-			// 	throw new Error('Failed to fetch users');
-			// }
-			// const data = await response.json();
-			// setUserListFromDb(data);
-			const response = await DataFetcherJson({url: constants.API_ALL_USERS});
-			console.log("response: ", response);
-			if (response instanceof Error) {
-				console.log('Failed to fetch users');
-				return;
-			}
-			setUserListFromDb(response);
-		} catch (error) {
-			console.error(error);
-		}
+	const moveItemWithIdToTop = (idx: number) : void => {
+		console.log("CalleBack!!!");
+		const updatedList = [...userList];
+		const item = updatedList.splice(idx, 1)[0];
+		updatedList.unshift(item);
+		setUserlist(updatedList);
 	}
+
 	return (
 		<div className='userlist'>
-			<ul>
-				{processedUserList.map(userDisplayFunction)}
-			</ul>
+			{
+			error ? 
+			<p>Error fetching users</p> :
+			<ul>{userList.map((entry, index) => (props.userDisplayFunction(entry, index, moveItemWithIdToTop)))}</ul>
+			}
 		</div>
 	);
 }
-
-export default UserList

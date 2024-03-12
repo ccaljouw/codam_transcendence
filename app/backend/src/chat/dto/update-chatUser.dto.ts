@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateChatUserDto } from './create-chatUser.dto';
-import { IsDate, IsInt, IsNotEmpty } from 'class-validator';
+import { IsBoolean, IsDate, IsInt, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateChatUserDto extends PartialType(CreateChatUserDto) {
@@ -23,4 +23,8 @@ export class UpdateChatUserDto extends PartialType(CreateChatUserDto) {
   @IsDate()
   @ApiProperty({ required: false, type: Date })
   lastRead: Date;
+
+  @IsBoolean()
+  @ApiProperty({ required: false, type: Boolean })
+  isInChatRoom: boolean;
 }

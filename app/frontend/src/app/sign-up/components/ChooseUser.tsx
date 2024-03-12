@@ -1,6 +1,8 @@
 "use client";
 import UserList from 'src/components/UserList';
 import { UserProfileDto } from '../../../../../backend/src/users/dto/user-profile.dto';
+import DataFetcherJson from 'src/components/DataFetcherJson';
+import { constants } from 'src/globals/constants.globalvar';
 
 export default function ChooseUser({setCurrentUserId, setCurrentUserName}:{setCurrentUserId: any, setCurrentUserName: any}) { //todo: change type
 
@@ -21,9 +23,12 @@ export default function ChooseUser({setCurrentUserId, setCurrentUserName}:{setCu
 		)
 	}
 
+	const fetchAllUsers = async () : Promise<UserProfileDto[]> => {
+		return DataFetcherJson({url: constants.API_ALL_USERS});
+	}
 	return (
 		<>
-			<UserList userDisplayFunction={setCurrentUserDisplayFunc} />
+			<UserList userDisplayFunction={setCurrentUserDisplayFunc} userFetcherFunction={fetchAllUsers}/>
 		</>
 	);
 }

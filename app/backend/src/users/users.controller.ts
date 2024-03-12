@@ -20,7 +20,6 @@ export class UsersController {
     return this.usersService.create(createUser);
   }
 
-
   @Get('all')
   @ApiOperation({ summary: 'Returns all users currently in the database'})
   @ApiOkResponse({ type: [UserProfileDto] })
@@ -28,6 +27,15 @@ export class UsersController {
 
   findAll() : Promise<UserProfileDto[]> {
     return this.usersService.findAll();
+  }
+
+  @Get('allButMe/:id')
+  @ApiOperation({ summary: 'Returns all users currently in the database except the one with the specified id'})
+  @ApiOkResponse({ type: [UserProfileDto] })
+  @ApiNotFoundResponse({ description: "No users in the database" })
+
+  findAllButMe(@Param('id', ParseIntPipe) id: number) : Promise<UserProfileDto[]> {
+	return this.usersService.findAllButMe(id);
   }
 
   @Get(':id')
