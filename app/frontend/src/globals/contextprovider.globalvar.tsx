@@ -8,61 +8,73 @@ import { OnlineStatus } from "@prisma/client";
 import { constants } from "./constants.globalvar";
 import { WebsocketStatusChangeDto } from '../../../backend/src/socket/dto/statuschange'
 import Login from "src/components/Login";
+import { UserProfileDto } from "../../../backend/src/users/dto/user-profile.dto";
+import { ChatMessageToRoomDto } from "../../../backend/src/chat/dto/chat-messageToRoom.dto";
 
+// Context for the entire app
 interface TranscendenceContextVars {
-	someUserUpdatedTheirStatus: WebsocketStatusChangeDto | undefined;
+	someUserUpdatedTheirStatus: WebsocketStatusChangeDto;
 	setSomeUserUpdatedTheirStatus: (val: WebsocketStatusChangeDto) => void;
 	currentUserId: number;
 	setCurrentUserId: (val: number) => void;
 	currentUserName: string;
 	setCurrentUserName: (val: string) => void;
+	currentChatRoom: number;
+	setCurrentChatRoom: (val: number) => void;
+	messageToUserNotInRoom: ChatMessageToRoomDto;
+	setMessageToUserNotInRoom: (val: ChatMessageToRoomDto) => void;
 }
 
+// Initialize the context
 export const TranscendenceContext = createContext<TranscendenceContextVars>({
 	someUserUpdatedTheirStatus: {} as WebsocketStatusChangeDto,
 	setSomeUserUpdatedTheirStatus: () => { },
 	currentUserId: 0,
 	setCurrentUserId: () => { },
 	currentUserName: '',
-	setCurrentUserName: () => { }
+	setCurrentUserName: () => { },
+	currentChatRoom: -1,
+	setCurrentChatRoom: () => { },
+	messageToUserNotInRoom: {} as ChatMessageToRoomDto,
+	setMessageToUserNotInRoom: () => { }
 });
 
 export function ContextProvider({ children }: { children: React.ReactNode }) {
 
-	const [someUserUpdatedTheirStatus, setSomeUserUpdatedTheirStatus] = useState<WebsocketStatusChangeDto>();
+	const [someUserUpdatedTheirStatus, setSomeUserUpdatedTheirStatus] = useState<WebsocketStatusChangeDto>({} as WebsocketStatusChangeDto);
 	const [currentUserId, setCurrentUserId] = useState<number>(0);
 	const [currentUserName, setCurrentUserName] = useState<string>('');
+	const [messageToUserNotInRoom, setMessageToUserNotInRoom] = useState<ChatMessageToRoomDto>({} as ChatMessageToRoomDto);
+	const [currentChatRoom, setCurrentChatRoom] = useState<number>(-1);
 
 	useEffect(() => {
+		// Listener for status changes of other users
 		transcendenceSocket.on('socket/statusChange', (payload: WebsocketStatusChangeDto) => {
-			console.log(`Received status change: ${payload.userid} ${payload.username} ${payload.token} ${payload.status}`);
-			// const prev = someUserUpdatedTheirStatus;
 			setSomeUserUpdatedTheirStatus(payload);
 		});
 
-		transcendenceSocket.on('connect',() => {
-			if (currentUserId) {
-				const updatedProps: UpdateUserDto = {
-					online: OnlineStatus.ONLINE,
-					token: transcendenceSocket.id
-				}
-				updateUserStatus(updatedProps);
-			}
+		// Listener for messenges to chats the user is subscribed to but not currently in
+		transcendenceSocket.on('chat/messageToUserNotInRoom', (payload: ChatMessageToRoomDto) => {
+			setMessageToUserNotInRoom(payload);
 		});
 
-		return () => {
+		//	Listener for when the socket connects: update the user's status to online
+		transcendenceSocket.on('connect', () => {
+			setUserStatusToOnline();
+		});
+
+		return () => { // Cleanup socket listeners
 			transcendenceSocket.off('socket/statusChange');
+			transcendenceSocket.off('socket/messageToUserNotInRoom');
+			transcendenceSocket.off('connect');
 		}
 
-	})
+	}, [])
 
+	// Update the user's status to online when the user logs in
 	useEffect(() => {
-		if(transcendenceSocket.id && transcendenceSocket.id != '0' && currentUserId) {
-			const updatedProps: UpdateUserDto = {
-				online: OnlineStatus.ONLINE,
-				token: transcendenceSocket.id
-			}
-			updateUserStatus(updatedProps);
+		if (transcendenceSocket.id && transcendenceSocket.id != '0' && currentUserId) {
+			setUserStatusToOnline();
 		}
 		sessionStorage.setItem('userId', JSON.stringify(currentUserId)); //todo: JMA: find out why stringify is needed
 	}, [currentUserId]);
@@ -78,40 +90,49 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		currentUserId,
 		setCurrentUserId,
 		currentUserName,
-		setCurrentUserName
+		setCurrentUserName,
+		currentChatRoom,
+		setCurrentChatRoom,
+		messageToUserNotInRoom,
+		setMessageToUserNotInRoom
 	}
 
-	const updateUserStatus = async (updatedProps: UpdateUserDto) => {
+	// Function to update the user's online status
+	const setUserStatusToOnline = async () => {
 		try {
-			const response = await fetch(constants.BACKEND_ADRESS_FOR_WEBSOCKET + `users/${currentUserId}`, {
+			const updateData: UpdateUserDto = {
+				online: OnlineStatus.ONLINE,
+				token: transcendenceSocket.id
+			}
+			const response = await fetch(constants.API_SINGLE_USER + currentUserId, {
 				method: 'PATCH',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify(updatedProps),
+				body: JSON.stringify(updateData),
 			});
 			if (!response.ok) {
 				throw new Error('Failed to patch data');
 			} else {
-	
-				const statusUpdate : WebsocketStatusChangeDto  = {
-					userid: currentUserId,
-					username: currentUserName,
+				const data = await response.json() as UserProfileDto;
+				const statusUpdate: WebsocketStatusChangeDto = {
+					userId: data.id,
+					userName: data.loginName,
 					token: (transcendenceSocket.id ? transcendenceSocket.id : ''),
 					status: OnlineStatus.ONLINE
 				}
-				transcendenceSocket.emit('socket/statusChange', statusUpdate);
+				setCurrentUserName(data.loginName);
+				transcendenceSocket.emit('socket/statusChange', statusUpdate); // Emit the status change to the socket
 			}
 		} catch (error) {
 			console.error('Error updating online status:', error);
 		}
 	};
-	// updateUserStatus(updatedProps);
 
 	if (currentUserId == 0)
 	{
 		return (
-			<Login currentUserId={currentUserId} setCurrentUserId={setCurrentUserId} currentUserName={currentUserName} setCurrentUserName={setCurrentUserName}/>
+			<Login currentUserId={currentUserId} setCurrentUserId={setCurrentUserId} currentUserName={currentUserName} setCurrentUserName={setCurrentUserName} />
 		);
 	}
 

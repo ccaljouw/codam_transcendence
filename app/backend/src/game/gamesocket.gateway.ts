@@ -11,7 +11,6 @@ export class GamesocketGateway {
 	private readonly gamesocketService: GamesocketService,
 	private readonly commonServer: SocketServerProvider
 	) {
-		this.setCorsOrigin(commonServer.corsArray); // CORS is defined in socketserver.gateway.ts
 	}
 
 	@WebSocketServer()
@@ -47,15 +46,4 @@ export class GamesocketGateway {
   remove(@MessageBody() id: number) {
     return this.gamesocketService.remove(id);
   }
-  /**
-   * 
-   * @param corsArray array with CORS routes
-   */
-  setCorsOrigin(corsArray: string[]) {
-	WebSocketGateway({
-	  cors: {
-		origin: corsArray,
-	  },
-	})(GamesocketGateway);
-	}
 }

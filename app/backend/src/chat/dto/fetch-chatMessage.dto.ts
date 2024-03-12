@@ -1,6 +1,6 @@
 export class FetchChatMessageDto {
-	chatId: number;
-	userId: number;
-	loginName: string;
-	message: string;
+	chatId: number = 0;
+	userId: number = 0;
+	loginName: string = '';
+	message: string = '';
 }
