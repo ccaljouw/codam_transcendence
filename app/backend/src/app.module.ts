@@ -4,9 +4,9 @@ import { ChatSocketModule } from './chat/chatsocket.module';
 import { TestingModule } from './testing/testing.module';
 import { UsersModule } from './users/users.module';
 import { GamesocketModule } from './game/gamesocket.module';
-import { ChatMessagesController } from './chat/chat.controller';
+import { AuthenticationModule } from './authentication/authentication.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), ChatSocketModule, TestingModule, UsersModule, GamesocketModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), ChatSocketModule, TestingModule, UsersModule, GamesocketModule, AuthenticationModule],
 })
 export class AppModule {}
