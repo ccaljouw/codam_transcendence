@@ -13,6 +13,7 @@ export default function Logout(): JSX.Element {
         setCurrentUserId(0);
         setCurrentUserName('');
         router.push('/');
+        //todo: JMA: also log out in the database
     },[]);
 
     return (

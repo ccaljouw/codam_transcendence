@@ -24,7 +24,7 @@ export default function ChooseUser({setCurrentUserId, setCurrentUserName}:{setCu
 	}
 
 	const fetchAllUsers = async () : Promise<UserProfileDto[]> => {
-		return DataFetcherJson({url: constants.API_ALL_USERS});
+		return DataFetcherJson({url: constants.API_ALL_USERS}); //todo: JMA: use useFetch instead of dataFetcherJson
 	}
 
 	return (
