@@ -4,7 +4,7 @@ import { UserProfileDto } from '../../../../../backend/src/users/dto/user-profil
 import DataFetcherJson from 'src/components/DataFetcherJson';
 import { constants } from 'src/globals/constants.globalvar';
 
-export default function ChooseUser({setCurrentUserId, setCurrentUserName}:{setCurrentUserId: any, setCurrentUserName: any}) { //todo: change type
+export default function ChooseUser({setCurrentUserId, setCurrentUserName}:{setCurrentUserId: any, setCurrentUserName: any}) : JSX.Element { //todo: change type
 	const setConnectionStatus = (user: UserProfileDto) => {
 		console.log("I should do something with my connection status");
 		sessionStorage.setItem('loginName', user.loginName); 
@@ -12,7 +12,7 @@ export default function ChooseUser({setCurrentUserId, setCurrentUserName}:{setCu
 		sessionStorage.setItem('userId', JSON.stringify(user.id));
 		setCurrentUserId(user.id); 
 		setCurrentUserName(user.userName);
-		console.log(`User set to ${user.id}`)
+		console.log(`User set to ${user.id}`);
 	}
 
 	const setCurrentUserDisplayFunc = (user: UserProfileDto) => {
@@ -29,7 +29,7 @@ export default function ChooseUser({setCurrentUserId, setCurrentUserName}:{setCu
 
 	return (
 		<>
-			<h1>Who do you want to be?<h1>
+			<h1>Who do you want to be?</h1>
 			<UserList userDisplayFunction={setCurrentUserDisplayFunc} userFetcherFunction={fetchAllUsers}/>
 		</>
 	);
