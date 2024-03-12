@@ -1,6 +1,6 @@
 import styles from './styles.module.css';
 
-export default function Page() {
+export default function Page() : JSX.Element {
 	const externalWebsiteUrl = 'http://localhost:3001/api';
 	return (
 		<>
@@ -10,3 +10,5 @@ export default function Page() {
 		</>
 	);
 }
+
+//todo: JMA: use constants url

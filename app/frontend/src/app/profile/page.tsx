@@ -5,7 +5,7 @@ import GameSettings from "./components/GameSettings.tsx";
 import LoginSettings from "./components/LoginSettings.tsx";
 import Blocked from "./components/Blocked.tsx";
 
-export default function Page() {
+export default function Page() : JSX.Element {
 	return (
 		<>
 			<h1>Profile page</h1>
