@@ -1,7 +1,7 @@
 import { UserProfileDto } from "../../../../backend/src/users/dto/user-profile.dto";
 import DataFetcherMarkup from "src/components/DataFetcherMarkup";
 
-export default function Users() {
+export default function Users() : JSX.Element {
 	return (
         <div className="text-center">
 			<h1>Users</h1>
@@ -26,3 +26,5 @@ export default function Users() {
         </div>
 	);
 }
+
+//todo: JMA: use generic data fetcher
