@@ -1,30 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import ChooseUser from 'src/app/sign-up/components/ChooseUser';
 import Seed from 'src/app/test/components/Seed';
 import { constants } from '../globals/constants.globalvar'
 import SignUp from 'src/app/sign-up/components/SignUp';
 import useFetch from './useFetch';
 import { UserProfileDto } from '../../../backend/src/users/dto/user-profile.dto';
+import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
 
-export default function Login({ currentUserId, setCurrentUserId, currentUserName, setCurrentUserName } : { currentUserId: number, setCurrentUserId: any, currentUserName: string, setCurrentUserName: any }) { //todo: change type
+export default function Login() { //todo: change type
 // export default function Login() { //todo: change type
 	const { data: users, isLoading, error, fetcher } = useFetch<null, UserProfileDto[]>();
+	const {currentUser, setCurrentUser} = useContext(TranscendenceContext);
 
 
 	useEffect (() => {
-		const id = sessionStorage.getItem('userId');
-		const name = sessionStorage.getItem('userName');
+		const idFromSession = sessionStorage.getItem('userId');
+		const nameFromSession = sessionStorage.getItem('userName');
 	
-		if (id != null && +id != currentUserId)
+		if (idFromSession != null && +idFromSession != currentUser.id)
 		{
-			setCurrentUserId(+id);
-			if (name != null && name != currentUserName)
-				setCurrentUserName(name);
+			// setCurrentUserId(+id);
+			setCurrentUser({...currentUser, id: +idFromSession});
+
+			
+			if (nameFromSession != null && nameFromSession != currentUser.userName)
+				setCurrentUser({...currentUser, userName: nameFromSession});
+				// setCurrentUserName(name);
 			return ;
 		} else {
 			fetchUsers();
 		}
-	}, []);
+	}, [currentUser]);
 
 	const fetchUsers = async () => {
 		console.log("fetching users in Login");
@@ -44,7 +50,7 @@ export default function Login({ currentUserId, setCurrentUserId, currentUserName
 				}
 				{users != null && users.length > 0 && <>
 					<div className="col">
-						<ChooseUser setCurrentUserId={setCurrentUserId} setCurrentUserName={setCurrentUserName}/>
+						<ChooseUser />
 						{/* <ChooseUser users={users}/> */}
 					</div>
 					<div className="col">

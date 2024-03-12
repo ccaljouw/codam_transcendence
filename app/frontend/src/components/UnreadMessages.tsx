@@ -9,7 +9,7 @@ import { constants } from "src/globals/constants.globalvar";
  * @returns JSX.Element
  */
 export default function UnreadMessages(props: {secondUserId:number, indexInUserList: number, statusChangeCallBack: (idx: number) => void}) {
-  const {messageToUserNotInRoom, currentUserId, currentChatRoom} = useContext(TranscendenceContext);
+  const {messageToUserNotInRoom, currentUser, currentChatRoom} = useContext(TranscendenceContext);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [chatId, setChatId] = useState(-1);
   
@@ -46,7 +46,7 @@ export default function UnreadMessages(props: {secondUserId:number, indexInUserL
   },[messageToUserNotInRoom]);
 
   const fetchChatId = async () => {
-	const response = await DataFetcherJson({url: constants.CHAT_CHECK_IF_DM_EXISTS + `${currentUserId}/${props.secondUserId}`});
+	const response : number | Error = await DataFetcherJson({url: constants.CHAT_CHECK_IF_DM_EXISTS + `${currentUser.id}/${props.secondUserId}`});
 	if (response instanceof Error)
 		return ;
 	setChatId(response);
@@ -55,7 +55,7 @@ export default function UnreadMessages(props: {secondUserId:number, indexInUserL
   const fetchUnreads = async () => {
 	if(chatId === -1) // If chatId is not set, return
 		return;
-	const unreads = await DataFetcherJson({url: constants.CHAT_GET_UNREADS + `${chatId}/${currentUserId}`});
+	const unreads : number | Error = await DataFetcherJson({url: constants.CHAT_GET_UNREADS + `${chatId}/${currentUser.id}`});
 	if (unreads instanceof Error)
 		return;
 	setUnreadMessages(unreads);
