@@ -22,8 +22,8 @@ function DataFetcherMarkup<T>({
 	console.log("DataFetcherMarkup: ", url);
     const fetchData = async () => {
       try {
-		    console.log(`Fetching data from ${url}`);
         const result = await DataFetcherJson({url: url}) as T;
+		    console.log(`Fetching data from ${url}`);
 		    console.log(`Got data from ${url}: ${result}`);
         setData(result);
       } catch (error) {
