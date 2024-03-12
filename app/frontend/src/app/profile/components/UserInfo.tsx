@@ -11,7 +11,7 @@ export default function UserInfo(): JSX.Element {
 		fetchUser();
 	}, []);
 
-	async function fetchUser(){
+	const fetchUser = async () => {
 		const userId = sessionStorage.getItem('userId'); // todo: change to token
 		await fetcher({url: 'http://localhost:3001/users/' + userId});
 	}

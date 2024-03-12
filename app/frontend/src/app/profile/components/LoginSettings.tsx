@@ -11,7 +11,7 @@ export default function LoginSettings(): JSX.Element {
 		fetchUser();
 	}, []);
 
-	async function fetchUser(){
+	async function fetchUser(){ //todo:  make const
 		const userId = sessionStorage.getItem('userId'); // todo: change to token
 		await fetcher({url: 'http://localhost:3001/users/' + userId});
 	}

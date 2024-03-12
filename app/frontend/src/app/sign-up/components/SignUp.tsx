@@ -6,7 +6,7 @@ import { UserProfileDto } from '../../../../../backend/src/users/dto/user-profil
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
 
 export default function SignUp(): JSX.Element {
-	const { data: user, isLoading, error, fetcher } = useFetch<Object, UserProfileDto>();
+	const { data: user, isLoading, error, fetcher } = useFetch<Object, UserProfileDto>(); //createUserDto
     const { setCurrentUserId, setCurrentUserName } = useContext(TranscendenceContext);
 
 	useEffect(() => {
@@ -22,9 +22,9 @@ export default function SignUp(): JSX.Element {
 	}, [user])
 
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+		event.preventDefault(); //check
 		const formData = new FormData(event.currentTarget);
-		console.log("FormData: " + JSON.stringify(Object.fromEntries(formData)));
+		console.log("FormData: " + JSON.stringify(Object.fromEntries(formData))); //dto
 		await fetcher({
 			url: 'http://localhost:3001/users/register', //todo: change to constant url
 			fetchMethod: 'POST', 

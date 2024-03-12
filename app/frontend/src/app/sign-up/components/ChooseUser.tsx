@@ -3,7 +3,6 @@ import UserList from 'src/components/UserList';
 import { UserProfileDto } from '../../../../../backend/src/users/dto/user-profile.dto';
 
 export default function ChooseUser({setCurrentUserId, setCurrentUserName}:{setCurrentUserId: any, setCurrentUserName: any}) { //todo: change type
-
 	const setConnectionStatus = (user: UserProfileDto) => {
 		console.log("I should do something with my connection status");
 		sessionStorage.setItem('loginName', user.loginName); 
