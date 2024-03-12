@@ -64,11 +64,11 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 			}
 			updateUserStatus(updatedProps);
 		}
-		sessionStorage.setItem('userId', JSON.stringify(currentUserId));
+		sessionStorage.setItem('userId', JSON.stringify(currentUserId)); //todo: JMA: find out why stringify is needed
 	}, [currentUserId]);
 	
 	useEffect(() => {
-		sessionStorage.setItem('userName', JSON.stringify(currentUserName));
+		sessionStorage.setItem('userName', currentUserName);
 	}, [currentUserName]);
 	
 
