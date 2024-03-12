@@ -39,30 +39,24 @@ export default function Login({ currentUserId, setCurrentUserId, currentUserName
 		}
 	}
 
-	if (isLoading)
-		return (<></>);
-	
-	if (userListFromDb.length == 0)
-	{
-		return (
-			<>
-				<div className="page">
-				<p>Database is empty. Will be seeded now. <b>Please refresh after seeding</b></p>
-				<Seed />
-				</div>
-			</>
-		);
-	}
-
 	return (
 		<>
 			<div className="content-area">
-				<div className="col">
-					<ChooseUser setCurrentUserId={setCurrentUserId} setCurrentUserName={setCurrentUserName}/>
-				</div>
-				<div className="col">
-					<SignUp />
-				</div>
+				{isLoading && <p>Loading...</p>}
+				{userListFromDb.length == 0 && 
+					<div className="page">
+						<p>Database is empty. Will be seeded now. <b>Please refresh after seeding</b></p>
+						<Seed />
+					</div>
+				}
+				{userListFromDb.length > 0 && <>
+					<div className="col">
+						<ChooseUser setCurrentUserId={setCurrentUserId} setCurrentUserName={setCurrentUserName}/>
+					</div>
+					<div className="col">
+						<SignUp />
+					</div></>
+				}
 			</div>
 		</>
 	);
