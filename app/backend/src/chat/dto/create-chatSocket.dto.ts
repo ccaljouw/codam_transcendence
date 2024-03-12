@@ -1,11 +1,11 @@
 import { IsInt, IsNotEmpty } from "class-validator";
 
 export class CreateChatSocketDto {
-	@IsNotEmpty()
 	@IsInt()
-	user1_id: number;
-
 	@IsNotEmpty()
+	user1Id: number = 0;
+	
 	@IsInt()
-  	user2_id: number;
+	@IsNotEmpty()
+	user2Id: number = 0;
 }

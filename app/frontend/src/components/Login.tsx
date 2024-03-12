@@ -47,7 +47,7 @@ export default function Login({ currentUserId, setCurrentUserId, currentUserName
 		return (
 			<>
 				<div className="page">
-				<p>Data base is empty. Will be seeded now. Please refresh after seeding</p>
+				<p>Database is empty. Will be seeded now. <b>Please refresh after seeding</b></p>
 				<Seed />
 				</div>
 			</>

@@ -1,7 +1,11 @@
+import { ApiProperty } from "@nestjs/swagger";
+
 export class ChatMessageToRoomDto {
-	userid: number;
-	username: string;
-	room: string;
-	message: string;
-	action: boolean;
+	
+	// @ApiProperty({ required: false })
+	userId: number = 0;
+	userName: string = "";
+	room: string = "";
+	message: string = "";
+	action: boolean = false;
 }

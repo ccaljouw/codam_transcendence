@@ -16,65 +16,50 @@ import { UserProfileDto } from '../../../../backend/src/users/dto/user-profile.d
 
 const chatSocket = transcendenceSocket;
 
+/**
+ * 
+ * @param param0 user1: user1 id (the current user, might update this later), user2: user2 id, chatID: chat id
+ * @returns JSX.Element
+ */
 export default function Chat({ user1, user2, chatID }: { user1?: number, user2?: number, chatID?: number }) {
 	const [message, setMessage] = useState('');
 	const [chat, setChat] = useState<string[]>([]);
 	const [currentChat, setCurrentChat] = useState<FetchChatDto>({ id: 0, ownerId: 0, visibility: ChatType.DM });
-	const [currentRoom, setCurrentRoom] = useState<number>(0);
 	const firstRender = useRef(true);
-	const { currentUserName, someUserUpdatedTheirStatus } = useContext(TranscendenceContext);
+	const firstMessage = useRef(true);
+	const { currentUserName, someUserUpdatedTheirStatus, currentChatRoom, setCurrentChatRoom } = useContext(TranscendenceContext);
 	const messageBox = useRef<HTMLDivElement>(null);
 
 	// This effect is used to set up the chat and join the room when the component is rendered.
 	useEffect(() => {
-		console.log(`Chat component rendered ${chatID}`);
+		// If we don't have a user2 or a chatID, we can't create a chat.
 		if (!user2 && !chatID) {
-			console.log('No user2 or chatID');
 			return;
 		}
-		chatSocket.on('chat/messageFromRoom', (payload: ChatMessageToRoomDto) => {
-			if (payload.action) {
-				setChat(prevChat => [...prevChat, payload.message]);
-			} else {
-				setChat(prevChat => [...prevChat, `${payload.username}: ${payload.message}`]);
-			}
-		});
 
 		if (firstRender.current) // This is to ensure that the chat is only created once.
 		{
-			console.log('Im gonna make a chat');
 			firstRender.current = false;
 			if (!chatID) // If we don't have a chatID, we need to create a chat.
-			{
-				console.log(`I gonna create a chat for ${user1} and ${user2}`);
-				// chatSocket.emit('chat/createDM', { user1_id: user1, user2_id: user2 });
-				fetchChat();
-
-			} else { // If we have a chatID, we need to join the chat.
-				console.log('I have a chatID', chatID);
+				fetchChat(); // This will set the chatID.
+			else // If we have a chatID, we need to join the chat.
 				joinRoom();
-			}
 		}
 		return () => {
-			console.log('Chat unmounted');
 			chatSocket.off('chat/messageFromRoom');
 		};
 	}, [user2, firstRender.current]);
 
-
-
 	// This effect is used to update the chat when a user changes their status.
 	useEffect(() => {
-		console.log(`someUserUpdatedTheirStatus changed: ${someUserUpdatedTheirStatus ? someUserUpdatedTheirStatus.username : ''} ${someUserUpdatedTheirStatus ? someUserUpdatedTheirStatus.status : ''}`);
-		if (someUserUpdatedTheirStatus && someUserUpdatedTheirStatus.userid == user2) {
-			const statusMessage = "<<" + someUserUpdatedTheirStatus.username + " " + (someUserUpdatedTheirStatus.status == OnlineStatus.ONLINE ? 'is online' : 'went offline') + ">>";
+		if (someUserUpdatedTheirStatus && someUserUpdatedTheirStatus.userId == user2) {
+			const statusMessage = "<<" + someUserUpdatedTheirStatus.userName + " " + (someUserUpdatedTheirStatus.status == OnlineStatus.ONLINE ? 'is online' : 'went offline') + ">>";
 			setChat(prevChat => [...prevChat, statusMessage]);
 		}
 	}, [someUserUpdatedTheirStatus]);
 
 	// This effect is used to join the room when the chatId changes.
 	useEffect(() => {
-		console.log('chatId changed to', currentChat.id);
 		if (currentChat.id) {
 			joinRoom();
 			fetchMessages();
@@ -84,7 +69,6 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 
 	// This effect is used to leave the room and reset the chat when the user2 changes.
 	useEffect(() => {
-		console.log('user2 changed to ', user2);
 		if (currentChat.id)
 			leaveRoom();
 		if (!firstRender.current)
@@ -103,8 +87,8 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 	const fetchChat = async () => {
 		if (!user1 || !user2)
 			return;
-		const payload: CreateChatSocketDto = { user1_id: user1, user2_id: user2 };
-		const response = await fetch(constants.BACKEND_ADRESS_FOR_WEBSOCKET + `chat-messages/createDM`, {
+		const payload: CreateChatSocketDto = { user1Id: user1, user2Id: user2 };
+		const response = await fetch(constants.CHAT_CREATE_DM, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -112,14 +96,13 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 			body: JSON.stringify(payload)
 		});
 		const data = await response.json();
-		console.log('My chat is', data.id);
 		setCurrentChat(data);
 	}
 
 	// This function is used to fetch the messages for the current chat.
 	const fetchMessages = async () => {
 		console.log('Fetching messages for chat', currentChat.id);
-		const data: FetchChatMessageDto[] = await DataFetcherJson({ url: constants.BACKEND_ADRESS_FOR_WEBSOCKET + `chat-messages/${currentChat.id}` });
+		const data: FetchChatMessageDto[] = await DataFetcherJson({ url: constants.CHAT_GET_MESSAGES_FROM_CHAT + currentChat.id });
 		if (data instanceof Error) {
 			console.log('Error fetching messages:', data);
 			setChat(['Error fetching messages, please try again later.']);
@@ -131,36 +114,63 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 
 	// This function is used to join the room.
 	const joinRoom = () => {
-		if (currentRoom == currentChat.id) {
-			console.log('I am already in room', currentChat.id);
+		if (currentChatRoom == currentChat.id) { //To avoid double joins, especially in strict mode. 
 			return;
 		}
-		console.log('I should join room', currentChat.id);
 		const statusChangeMsg: ChatMessageToRoomDto = {
-			userid: (user1 ? user1 : 0),
-			username: currentUserName,
+			userId: (user1 ? user1 : 0),
+			userName: currentUserName,
 			room: currentChat.id.toString(),
 			message: `<< ${currentUserName} has joined the chat >>`,
 			action: true
 		};
 		chatSocket.emit('chat/joinRoom', statusChangeMsg);
-		setCurrentRoom(currentChat.id);
+		setCurrentChatRoom(currentChat.id);
+		chatSocket.on('chat/messageFromRoom', (payload: ChatMessageToRoomDto) => {
+			if (firstMessage.current) { //This is to avoid the first message being `<< user has joined the chat >>
+				firstMessage.current = false;
+				return;
+			}else{
+				handleMessageFromRoom(payload);
+			}
+		});
 	}
-
+	
 	// This function is used to leave the room.
 	const leaveRoom = () => {
 		if (!currentChat.id)
 			return;
-		console.log('I should leave room', currentChat.id);
-		const leaveMessage: ChatMessageToRoomDto = { userid: (user1 ? user1 : 0), username: currentUserName, room: currentChat.id.toString(), message: `<< ${currentUserName} has left the chat >>`, action: true };
+		const leaveMessage: ChatMessageToRoomDto = { 
+			userId: (user1 ? user1 : 0), 
+			userName: currentUserName, 
+			room: currentChat.id.toString(), 
+			message: `<< ${currentUserName} has left the chat >>`, 
+			action: true 
+		};
 		chatSocket.emit('chat/leaveRoom', leaveMessage);
+		chatSocket.off('chat/messageFromRoom');
+		firstMessage.current = true;
+	}
+
+	// This function is used to handle messages from the room.
+	const handleMessageFromRoom = (payload: ChatMessageToRoomDto) => {
+		if (payload.action) {
+			setChat(prevChat => [...prevChat, payload.message]);
+		} else {
+			setChat(prevChat => [...prevChat, `${payload.userName}: ${payload.message}`]);
+		}
 	}
 
 	// This function is used to send a message.
 	const sendMessage = () => {
 		if (!user1 || !user2)
 			return;
-		const payload: ChatMessageToRoomDto = { userid: user1, username: currentUserName, room: currentChat.id.toString(), message: message, action: false };
+		const payload: ChatMessageToRoomDto = { 
+			userId: user1, 
+			userName: currentUserName, 
+			room: currentChat.id.toString(), 
+			message: message, action: false 
+		};
 		chatSocket.emit("chat/msgToRoom", payload);
 		console.log(`sending [${message}] to room ${currentChat.id}]`)
 		setMessage('');
@@ -173,7 +183,7 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 					currentChat.visibility == ChatType.DM ?
 						<div>Chat between {currentUserName} and
 							<DataFetcherMarkup<UserProfileDto>
-								url={constants.BACKEND_ADRESS_FOR_WEBSOCKET + `users/${user2}`}
+								url={constants.API_SINGLE_USER + user2}
 								renderData={(data) => (
 									<span> {data.loginName}</span>
 								)} /></div>
