@@ -22,7 +22,7 @@ export default function SignUp(): JSX.Element {
 
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault(); //check
-		const formData = new FormData(event.currentTarget);
+		const formData = new FormData(event.currentTarget); // todo: delete?
 		console.log("FormData: " + JSON.stringify(Object.fromEntries(formData))); //dto
 		await fetcher({
 			url: 'http://localhost:3001/users/register', //todo: change to constant url
@@ -51,3 +51,5 @@ export default function SignUp(): JSX.Element {
 		</>
 	);
 }
+
+//todo: JMA: add validation on form fields

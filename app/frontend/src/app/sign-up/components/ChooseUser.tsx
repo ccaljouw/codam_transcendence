@@ -12,9 +12,7 @@ export default function ChooseUser() : JSX.Element { //todo: change type
 		console.log("I should do something with my connection status");
 		sessionStorage.setItem('loginName', user.loginName); 
 		sessionStorage.setItem('userName', user.userName);
-		sessionStorage.setItem('userId', JSON.stringify(user.id));
-		// setCurrentUserId(user.id); 
-		// setCurrentUserName(user.userName);
+		sessionStorage.setItem('userId', JSON.stringify(user.id)); //todo: do this in contextprovider?
 		setCurrentUser(user);
 		console.log(`User set to ${user.id}`);
 	}
