@@ -1,7 +1,6 @@
 "use client";
 import { FormEvent, useEffect, useContext } from 'react';
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
-import { OnlineStatus } from '@prisma/client';
 import { constants } from 'src/globals/constants.globalvar';
 import { CreateUserDto } from '../../../../../backend/src/users/dto/create-user.dto';
 import { UserProfileDto } from '../../../../../backend/src/users/dto/user-profile.dto';
@@ -32,10 +31,7 @@ export default function SignUp(): JSX.Element {
 			userName: (formData.get('userName'))!.toString(),
 			email: (formData.get('email'))!.toString(),
 			loginName: (formData.get('loginName'))!.toString(),
-			hash: (formData.get('hash'))!.toString(),
-			avatarId: 0, // todo: remove these last 3 variables from CreateUserDto?
-			online: OnlineStatus.ONLINE,
-			token: '',		
+			hash: (formData.get('hash'))!.toString(),	
 		};
 		console.log("New user: " + JSON.stringify(newUser));
 		await fetcher({
