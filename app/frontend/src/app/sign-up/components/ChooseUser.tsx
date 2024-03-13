@@ -1,12 +1,12 @@
 "use client";
-import UserList from 'src/components/UserList';
-import { UserProfileDto } from '../../../../../backend/src/users/dto/user-profile.dto';
-import DataFetcherJson from 'src/components/DataFetcherJson';
-import { constants } from 'src/globals/constants.globalvar';
-import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
 import { useContext } from 'react';
+import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
+import { constants } from 'src/globals/constants.globalvar';
+import { UserProfileDto } from '../../../../../backend/src/users/dto/user-profile.dto';
+import UserList from 'src/components/UserList';
+import DataFetcherJson from 'src/components/DataFetcherJson';
 
-export default function ChooseUser() : JSX.Element { //todo: change type
+export default function ChooseUser() : JSX.Element {
 	const {setCurrentUser} = useContext(TranscendenceContext);
 	const setConnectionStatus = (user: UserProfileDto) => {
 		console.log("I should do something with my connection status");
