@@ -1,14 +1,12 @@
 import styles from './styles.module.css';
+import { constants } from 'src/globals/constants.globalvar';
 
 export default function Page() : JSX.Element {
-	const externalWebsiteUrl = 'http://localhost:3001/api';
 	return (
 		<>
 			<div className={styles.swagger}>
-				<iframe src={externalWebsiteUrl} title="API"/>
+				<iframe src={constants.API} title="API"/>
 			</div>
 		</>
 	);
 }
-
-//todo: JMA: use constants url

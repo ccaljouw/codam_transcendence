@@ -10,6 +10,7 @@
  */
 
 export class constants{
+	static API = 'http://localhost:3001/api';
 	static API_ALL_USERS = 'http://localhost:3001/users/all';
 	static API_SINGLE_USER = 'http://localhost:3001/users/';
 	static API_ALL_USERS_BUT_ME = 'http://localhost:3001/users/allButMe/';

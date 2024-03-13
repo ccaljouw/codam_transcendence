@@ -16,8 +16,6 @@ export default function SignUp(): JSX.Element {
 			sessionStorage.setItem('userId', JSON.stringify(user.id));
 			sessionStorage.setItem('userName', JSON.stringify(user.userName));
 			sessionStorage.setItem('loginName', JSON.stringify(user.loginName));
-			// setCurrentUserId(user.id);
-			// setCurrentUserName(user.userName);
 			setCurrentUser(user);
 		}
 	}, [user])
