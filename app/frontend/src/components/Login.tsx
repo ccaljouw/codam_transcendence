@@ -7,11 +7,9 @@ import useFetch from './useFetch';
 import { UserProfileDto } from '../../../backend/src/users/dto/user-profile.dto';
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
 
-export default function Login() { //todo: change type
-// export default function Login() { //todo: change type
+export default function Login() : JSX.Element { 
 	const { data: users, isLoading, error, fetcher } = useFetch<null, UserProfileDto[]>();
 	const {currentUser, setCurrentUser} = useContext(TranscendenceContext);
-
 
 	useEffect (() => {
 		const idFromSession = sessionStorage.getItem('userId');
@@ -19,13 +17,9 @@ export default function Login() { //todo: change type
 	
 		if (idFromSession != null && +idFromSession != currentUser.id)
 		{
-			// setCurrentUserId(+id);
 			setCurrentUser({...currentUser, id: +idFromSession});
-
-			
 			if (nameFromSession != null && nameFromSession != currentUser.userName)
 				setCurrentUser({...currentUser, userName: nameFromSession});
-				// setCurrentUserName(name);
 			return ;
 		} else {
 			fetchUsers();
@@ -51,7 +45,6 @@ export default function Login() { //todo: change type
 				{users != null && users.length > 0 && <>
 					<div className="col">
 						<ChooseUser />
-						{/* <ChooseUser users={users}/> */}
 					</div>
 					<div className="col">
 						<SignUp />
