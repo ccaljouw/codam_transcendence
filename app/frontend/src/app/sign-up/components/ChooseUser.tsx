@@ -27,6 +27,10 @@ export default function ChooseUser() : JSX.Element { //todo: change type
 
 	const fetchAllUsers = async () : Promise<UserProfileDto[]> => {
 		return DataFetcherJson({url: constants.API_ALL_USERS}); //todo: JMA: use useFetch instead of dataFetcherJson
+		// await fetcher({url: constants.API_ALL_USERS});
+		// if (users != null)
+		// 	return users;
+		// return {} as UserProfileDto[];
 	}
 
 	return (
