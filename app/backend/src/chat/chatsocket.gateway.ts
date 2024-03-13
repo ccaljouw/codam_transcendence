@@ -43,8 +43,11 @@ export class ChatSocketGateway {
 		const messageResult = await this.chatMessageService.messageToDB({chatId: parseInt(payload.room), userId: payload.userId, content: payload.message}); //replace with api call in frontend?
 		const tokenArray = await this.chatSocketService.getUserTokenArray(messageResult.usersNotInRoom);
 		tokenArray.forEach(element => {
-			console.log("Emitting to usernotinroom for " + payload.room + element)
-			this.chat_io.to(element).emit('chat/messageToUserNotInRoom', messageToChat);
+			if (element !== null) // if the user is online (ie has a token that is not null) but not in the room, send notification
+			{
+				console.log("Emitting to usernotinroom for " + payload.room + element)
+				this.chat_io.to(element).emit('chat/messageToUserNotInRoom', messageToChat);
+			}
 		});
 		console.log(`Sending username ${payload.userName} and message ${payload.message} to room`);
 		return ;

@@ -11,28 +11,30 @@ import UnreadMessages from 'src/components/UnreadMessages';
 
 export default function ChatArea() {
 	const [secondUser, setSecondUser] = useState(0);
-	const { currentUserId, setCurrentUserId, currentUserName, setCurrentUserName } = useContext(TranscendenceContext)
+	const {currentUser, setCurrentUser} = useContext(TranscendenceContext)
 
 	useEffect(() => {
-		// If we have a user in session storage, set it as the current user
-		if (typeof window !== 'undefined' && sessionStorage && sessionStorage.getItem != null) { //
-			const userIdFromSession = sessionStorage.getItem('userId');
-			if (userIdFromSession && userIdFromSession != '')
-				setCurrentUserId(parseInt(userIdFromSession));
-		}
+		// // If we have a user in session storage, set it as the current user
+		// if (typeof window !== 'undefined' && sessionStorage && sessionStorage.getItem != null) { //
+		// 	const userIdFromSession = sessionStorage.getItem('userId');
+		// 	if (userIdFromSession && userIdFromSession != '')
+		// 		setCurrentUserId(parseInt(userIdFromSession));
+		// }
 
+		console.log("ChatArea: ", currentUser.id, secondUser);
 		// If secondUser is set and currentUserId is set, fetch the chatId
-		if (secondUser) {
-			const chat = fetchDMId(currentUserId, secondUser);
+		if (secondUser && currentUser.id !== undefined && currentUser.id !== 0) {
+			const chat = fetchDMId();
 			const cur = new Date();
 			console.log(cur);
 		}
 
-	}, [currentUserId, secondUser])
+	}, [currentUser, secondUser])
 
 	// Fetch DM ID from database (if no dm is created, it creates one)
-	const fetchDMId = async (user1: number, user2: number) => {
-		const response = await DataFetcherJson({ url: constants.CHAT_CHECK_IF_DM_EXISTS + `${user1}/${user2}` });
+	const fetchDMId = async () => {
+		console.log(`Fetching DM id between ${currentUser.id} and ${secondUser}`);
+		const response = await DataFetcherJson({ url: constants.CHAT_CHECK_IF_DM_EXISTS + `${currentUser.id}/${secondUser}` });
 		if (response instanceof Error) {
 			console.log("Error fetching DM id");
 			return -1;
@@ -42,7 +44,7 @@ export default function ChatArea() {
 
 	// Fetch all users but the current user
 	const selectDMFriend = (): Promise<UserProfileDto[]> => {
-		return DataFetcherJson({ url: constants.API_ALL_USERS_BUT_ME + currentUserId });
+		return DataFetcherJson({ url: constants.API_ALL_USERS_BUT_ME + currentUser.id });
 	}
 
 	// Function to display users in the userlist
@@ -63,8 +65,8 @@ export default function ChatArea() {
 	return (
 		<>
 			{secondUser ?
-				<Chat user1={currentUserId} user2={secondUser} />
-				: <><h3>Hello {currentUserName}, Who do you wanna chat with?</h3></>
+				<Chat user1={currentUser.id} user2={secondUser} />
+				: <><h3>Hello {currentUser.userName}, Who do you wanna chat with?</h3></>
 			}
 			<UserList userDisplayFunction={selectSecondUserDisplayFunc} userFetcherFunction={selectDMFriend} />
 		</>

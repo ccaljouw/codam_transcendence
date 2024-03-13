@@ -7,7 +7,7 @@ import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
 
 export default function SignUp(): JSX.Element {
 	const { data: user, isLoading, error, fetcher } = useFetch<Object, UserProfileDto>(); //createUserDto
-    const { setCurrentUserId, setCurrentUserName } = useContext(TranscendenceContext);
+    const { setCurrentUser } = useContext(TranscendenceContext);
 
 	useEffect(() => {
 		console.log("user changed");
@@ -16,8 +16,9 @@ export default function SignUp(): JSX.Element {
 			sessionStorage.setItem('userId', JSON.stringify(user.id));
 			sessionStorage.setItem('userName', JSON.stringify(user.userName));
 			sessionStorage.setItem('loginName', JSON.stringify(user.loginName));
-			setCurrentUserId(user.id);
-			setCurrentUserName(user.userName);
+			// setCurrentUserId(user.id);
+			// setCurrentUserName(user.userName);
+			setCurrentUser(user);
 		}
 	}, [user])
 
