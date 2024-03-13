@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { UserProfileDto } from '../../../../../backend/src/users/dto/user-profile.dto';
 import DataField from "../../../components/DataField";
 import useFetch from 'src/components/useFetch';
+import { constants } from 'src/globals/constants.globalvar';
 
 export default function LoginSettings(): JSX.Element {
 	const { data: user, isLoading, error, fetcher } = useFetch<null, UserProfileDto>();
@@ -11,9 +12,9 @@ export default function LoginSettings(): JSX.Element {
 		fetchUser();
 	}, []);
 
-	async function fetchUser(){ //todo:  make const
+	const fetchUser = async () => {
 		const userId = sessionStorage.getItem('userId'); // todo: change to token
-		await fetcher({url: 'http://localhost:3001/users/' + userId});
+		await fetcher({url: constants.API_SINGLE_USER + userId});
 	}
 
 	return (
