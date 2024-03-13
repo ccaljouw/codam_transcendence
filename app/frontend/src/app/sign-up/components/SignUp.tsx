@@ -1,12 +1,15 @@
 "use client";
 import { FormEvent, useEffect, useContext } from 'react';
+import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
+import { OnlineStatus } from '@prisma/client';
+import { constants } from 'src/globals/constants.globalvar';
+import { CreateUserDto } from '../../../../../backend/src/users/dto/create-user.dto';
+import { UserProfileDto } from '../../../../../backend/src/users/dto/user-profile.dto';
 import FormInput from '../../../components/FormInput';
 import useFetch from 'src/components/useFetch';
-import { UserProfileDto } from '../../../../../backend/src/users/dto/user-profile.dto';
-import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
 
 export default function SignUp(): JSX.Element {
-	const { data: user, isLoading, error, fetcher } = useFetch<Object, UserProfileDto>(); //createUserDto
+	const { data: user, isLoading, error, fetcher } = useFetch<CreateUserDto, UserProfileDto>();
     const { setCurrentUser } = useContext(TranscendenceContext);
 
 	useEffect(() => {
@@ -15,19 +18,30 @@ export default function SignUp(): JSX.Element {
 		{
 			sessionStorage.setItem('userId', JSON.stringify(user.id));
 			sessionStorage.setItem('userName', JSON.stringify(user.userName));
-			sessionStorage.setItem('loginName', JSON.stringify(user.loginName));
+			sessionStorage.setItem('loginName', JSON.stringify(user.loginName)); //todo: move to context
 			setCurrentUser(user);
 		}
 	}, [user])
 
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault(); //check
-		const formData = new FormData(event.currentTarget); // todo: delete?
-		console.log("FormData: " + JSON.stringify(Object.fromEntries(formData))); //dto
+		event.preventDefault(); //check if needed
+		const formData = new FormData(event.currentTarget); // todo: we use new, should we use delete?
+		const newUser: CreateUserDto = {
+			firstName: (formData.get('firstName'))!.toString(),
+			lastName: (formData.get('lastName'))!.toString(),
+			userName: (formData.get('userName'))!.toString(),
+			email: (formData.get('email'))!.toString(),
+			loginName: (formData.get('loginName'))!.toString(),
+			hash: (formData.get('hash'))!.toString(),
+			avatarId: 0, // todo: remove these last 3 variables from CreateUserDto?
+			online: OnlineStatus.ONLINE,
+			token: '',		
+		};
+		console.log("New user: " + JSON.stringify(newUser));
 		await fetcher({
-			url: 'http://localhost:3001/users/register', //todo: change to constant url
+			url: constants.API_REGISTER,
 			fetchMethod: 'POST', 
-			payload: Object.fromEntries(formData),
+			payload: newUser,
 		});
 	}
 
