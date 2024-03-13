@@ -32,7 +32,7 @@ export default function MenuBar(): JSX.Element {
 							<MenuItem href="/logout" title="Logout" />
 						</>}
 						{!currentUser.id && <>
-							<MenuItem href="/sign-up" title="Sign Up" />
+							{/* <MenuItem href="/sign-up" title="Sign Up" /> */}
 						</>}
 					</div>
 					<div className="navbar-nav">
