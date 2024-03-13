@@ -135,6 +135,14 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		}
 	};
 
+	// if (currentUser.id == 0)
+	// {
+	// 	return (
+	// 		<Login currentUserId={currentUserId} setCurrentUserId={setCurrentUserId} currentUserName={currentUserName} setCurrentUserName={setCurrentUserName} />
+	// 		// <Login />
+	// 	);
+	// }
+
 	return (
 		<>
 			<TranscendenceContext.Provider value={contextValues}>
