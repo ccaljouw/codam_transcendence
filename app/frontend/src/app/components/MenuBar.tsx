@@ -1,6 +1,9 @@
 "use client"
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useContext } from 'react';
+import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
+import { UserProfileDto } from '../../../../backend/src/users/dto/user-profile.dto';
 
 function MenuItem({href, title}:{href:string, title:string}){
 	const pathname = usePathname();
@@ -12,6 +15,8 @@ function MenuItem({href, title}:{href:string, title:string}){
 }
 
 export default function MenuBar(): JSX.Element {
+	const {currentUser} = useContext(TranscendenceContext);
+
 	return (
 		<>
 			<nav className="navbar navbar-expand-md">
@@ -21,13 +26,24 @@ export default function MenuBar(): JSX.Element {
 				</button>
 				<div className="collapse navbar-collapse" id="navbarNav">
 					<div className="navbar-nav">
-						<MenuItem href="/" title="Home" />
-						<MenuItem href="/profile" title="Profile" />
-						<MenuItem href="/play" title="Play" />
-						<MenuItem href="/swagger" title="Swagger" />
-						<MenuItem href="/test" title="Test" />
-						<MenuItem href="/sign-up" title="Sign Up" />
-						<MenuItem href="/logout" title="Logout" />
+						{currentUser.id && <>
+							<MenuItem href="/" title="Home" />
+							<MenuItem href="/profile" title="Profile" />
+							<MenuItem href="/play" title="Play" />
+						</>}
+						{/* todo: limit access on the pages itself as well */}
+						{currentUser.id && <>
+							<MenuItem href="/logout" title="Logout" />
+						</>}
+						{!currentUser.id && <>
+							<MenuItem href="/sign-up" title="Sign Up" />
+						</>}
+					</div>
+					<div className="navbar-nav justify-contend-end">
+						{(currentUser.loginName == 'ccaljouw' || currentUser.loginName == 'jaberkro' || currentUser.loginName == 'avan-and' || currentUser.loginName == 'cwesseli') && <>
+							<MenuItem href="/swagger" title="Swagger" />
+							<MenuItem href="/test" title="Test" /> 
+						</>}
 					</div>
 				</div>
 			</nav>
