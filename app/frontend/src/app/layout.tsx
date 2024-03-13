@@ -1,5 +1,4 @@
 "use server";
-import MenuBar from './components/MenuBar.tsx';
 import 'bootstrap/dist/css/bootstrap.css'
 import '../styles/stylesheet.css';
 import '../styles/styleSimpleGrid.css';
@@ -11,7 +10,6 @@ export default async function  RootLayout({ children }: { children: React.ReactN
 		<html lang="en">
 			<body>
 			<div className="root-layout">
-				<MenuBar />
 			<ContextProvider>{children}</ContextProvider>
 			</div>
 			</body>
