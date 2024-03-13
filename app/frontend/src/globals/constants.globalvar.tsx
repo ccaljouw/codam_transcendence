@@ -10,11 +10,12 @@
  */
 
 export class constants{
-	static API = 'http://localhost:3001/api';
+	static API_REGISTER = 'http://localhost:3001/users/register';
 	static API_ALL_USERS = 'http://localhost:3001/users/all';
 	static API_SINGLE_USER = 'http://localhost:3001/users/';
 	static API_ALL_USERS_BUT_ME = 'http://localhost:3001/users/allButMe/';
-
+	static API_SWAGGER = 'http://localhost:3001/api';
+	
 	static CHAT_CHECK_IF_DM_EXISTS = 'http://localhost:3001/chat/checkIfDMExists/';
 	static CHAT_GET_UNREADS = 'http://localhost:3001/chat/getUnreads/';
 	static CHAT_GET_MESSAGES_FROM_CHAT = 'http://localhost:3001/chat/messages/';
