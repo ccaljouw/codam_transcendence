@@ -50,12 +50,8 @@ export default function Login() { //todo: change type
 				}
 				{users != null && users.length > 0 && <>
 					<div className="col">
-<<<<<<< HEAD
-						<ChooseUser setCurrentUserId={setCurrentUserId} setCurrentUserName={setCurrentUserName}/>
-=======
 						<ChooseUser />
 						{/* <ChooseUser users={users}/> */}
->>>>>>> origin/currentuser_global
 					</div>
 					<div className="col">
 						<SignUp />
