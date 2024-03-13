@@ -122,7 +122,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 				const data = await response.json() as UserProfileDto;
 				const statusUpdate: WebsocketStatusChangeDto = {
 					userId: data.id,
-					userName: data.loginName,
+					userName: data.userName,
 					token: (transcendenceSocket.id ? transcendenceSocket.id : ''),
 					status: OnlineStatus.ONLINE
 				}

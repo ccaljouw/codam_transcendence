@@ -35,7 +35,7 @@ export class SocketServerProvider {
 			await this.serverService.setClientStatusToOffline(disconnectedUser.id);
 			const newStatus: WebsocketStatusChangeDto = {
 				userId: disconnectedUser.id,
-				userName: disconnectedUser.loginName,
+				userName: disconnectedUser.userName,
 				token: client.id,
 				status: OnlineStatus.OFFLINE
 			};
