@@ -7,7 +7,6 @@ import useFetch from './useFetch';
 import { UserProfileDto } from '../../../backend/src/users/dto/user-profile.dto';
 
 export default function Login({ currentUserId, setCurrentUserId, currentUserName, setCurrentUserName } : { currentUserId: number, setCurrentUserId: any, currentUserName: string, setCurrentUserName: any }) { //todo: change type
-// export default function Login() { //todo: change type
 	const { data: users, isLoading, error, fetcher } = useFetch<null, UserProfileDto[]>();
 
 
@@ -45,7 +44,6 @@ export default function Login({ currentUserId, setCurrentUserId, currentUserName
 				{users != null && users.length > 0 && <>
 					<div className="col">
 						<ChooseUser setCurrentUserId={setCurrentUserId} setCurrentUserName={setCurrentUserName}/>
-						{/* <ChooseUser users={users}/> */}
 					</div>
 					<div className="col">
 						<SignUp />
