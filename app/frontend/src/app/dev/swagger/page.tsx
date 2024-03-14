@@ -1,11 +1,10 @@
 import { constants } from 'src/globals/constants.globalvar';
+import IframeHolder from '../../../components/IframeHolder';
 
 export default function Page() : JSX.Element {
 	return (
 		<>
-			<div className="iframe-holder">
-				<iframe src={constants.API_SWAGGER} title="API"/>
-			</div>
+			<IframeHolder url={constants.API_SWAGGER} title="Swagger API" />
 		</>
 	);
 }

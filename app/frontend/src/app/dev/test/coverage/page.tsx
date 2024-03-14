@@ -1,4 +1,4 @@
-import IframeHolder from "../components/IframeHolder";
+import IframeHolder from "../../../components/IframeHolder";
 
 export default function TestCoverage() {
 	const CoverageBackendUrl = 'http://localhost:3001/test/backend/report';

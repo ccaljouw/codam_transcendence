@@ -4,24 +4,6 @@ import { usePathname } from 'next/navigation';
 import { useContext } from 'react';
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
 
-function DropDownMenu({children}: {children: any}) { //todo: JMA: change type
-	return (
-		<>
-			<div className="dropdown">
-				<button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown-menu" aria-haspopup="true" aria-expanded="false">
-					Dropdown button
-				</button>
-				<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a className="dropdown-item nav-link" href="/swagger">Swagger</a>
-					<a className="dropdown-item" href="/test">Test</a>
-					<a className="dropdown-item" href="#">Something else here</a>
-					{children}
-				</div>
-			</div>
-		</>
-	);
-}
-
 function MenuLink({href, title}:{href:string, title:string}){
 	const pathname = usePathname();
 	const background = pathname === href ? "active" : "inactive";
@@ -58,12 +40,12 @@ export default function MenuBar(): JSX.Element {
 									Developer options
 								</a>
 								<ul className="dropdown-menu">
-									<li><Link className="dropdown-item" href="/swagger">Swagger</Link></li>
+									<li><Link className="dropdown-item" href="/dev/swagger">Swagger</Link></li>
 									<li><hr className="dropdown-divider"/></li>
-									<li><Link className="dropdown-item" href="/test/all">Test all</Link></li>
-									<li><Link className="dropdown-item" href="/test/frontend">Test frontend</Link></li>
-									<li><Link className="dropdown-item" href="/test/backend">Test backend</Link></li>
-									<li><Link className="dropdown-item" href="/test/coverage">Test coverage</Link></li>
+									<li><Link className="dropdown-item" href="/dev/test/all">Test all</Link></li>
+									<li><Link className="dropdown-item" href="/dev/test/frontend">Test frontend</Link></li>
+									<li><Link className="dropdown-item" href="/dev/test/backend">Test backend</Link></li>
+									<li><Link className="dropdown-item" href="/dev/test/coverage">Test coverage</Link></li>
 								</ul>
 							</li>
 						</>}

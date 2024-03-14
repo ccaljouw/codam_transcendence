@@ -1,9 +1,9 @@
 "use client";
 import { useEffect } from 'react';
 import useFetch from 'src/components/useFetch';
-import IframeHolder from '../components/IframeHolder';
+import IframeHolder from '../../../../components/IframeHolder';
 
-interface DataFormat {
+interface DataFormat { //todo: JMA: remove this?
   msg: string;
 }
 
