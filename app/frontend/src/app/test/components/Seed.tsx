@@ -1,21 +1,26 @@
-'use client'
-import React from 'react';
-import DataFetcherMarkup from '../../../components/DataFetcherMarkup';
-
-interface DataFormat {
-  msg: string;
-}
+"use client";
+import { useEffect } from 'react';
+import useFetch from 'src/components/useFetch';
 
 export default function Seed() {
+    const {data, isLoading, error, fetcher} = useFetch<null, string>();
+
+    useEffect(() => {
+        seedDatabase();
+    }, []);
+
+    const seedDatabase = async () => {
+        await fetcher({url: 'http://localhost:3001/seed'});
+    }
+
   return (
     <>
       <h1>Seed database</h1>
-      <DataFetcherMarkup<DataFormat>
-        url="http://localhost:3001/seed"
-        renderLoading={<p>Seeding database...</p>}
-        renderError={(error) => <p>Custom error message: {error.message}</p>}
-        renderData={(data) => <pre>{ data.msg }</pre>}
-      />
+      {isLoading && <p>Seeding database...</p>}
+      {error && <p>Error: {error.message}</p>}
+      {data != null && <p>{data}</p>}
     </>
   );
 }
+
+//todo: JMA: remove at all or change url to constants url

@@ -1,19 +1,19 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import TestOutput from './TestOutput';
+import IframeHolder from '../components/IframeHolder';
 
 interface DataFormat {
   msg: string;
 }
 
-function BackendTests() {
+export default function FrontendTests() {
   const [data, setData] = useState<DataFormat | null>(null);
 
   useEffect(() => {
     //todo: use generic data fetcher
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3001/test/backend');
+        const response = await fetch('http://localhost:3001/test/frontend');
         const data = await response.json();
         setData(data);
       } catch (error) {
@@ -28,16 +28,14 @@ function BackendTests() {
 
   return (
     <div>
-      <h1>Backend tests</h1>
+      <h1>Frontend tests</h1>
       {data === null ? (
         <p>Running tests...</p>
       ) : (
         <>
-          <TestOutput />
+          <IframeHolder url='http://localhost:3001/test/output' title="Frontend test output" />
         </>
       )}
     </div>
   );
 }
-
-export default BackendTests;

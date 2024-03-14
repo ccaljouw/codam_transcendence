@@ -2,11 +2,11 @@
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 
-const AllTests = dynamic(() => import('./components/AllTests'));
-const BackendTests = dynamic(() => import('./components/BackendTests'));
-const FrontendTests = dynamic(() => import('./components/FrontendTests'));
+const AllTests = dynamic(() => import('./all/page'));
+const BackendTests = dynamic(() => import('./backend/page'));
+const FrontendTests = dynamic(() => import('./frontend/page'));
 const Seed = dynamic(() => import('./components/Seed'));
-const TestCoverage = dynamic(() => import('./components/TestCoverage'));
+const TestCoverage = dynamic(() => import('./coverage/page'));
 
 const IndexPage = () => {
   const [selectedComponent, setSelectedComponent] = useState('TestCoverage');

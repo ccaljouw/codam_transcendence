@@ -1,11 +1,12 @@
+"use client";
 import React, { useEffect, useState } from 'react';
-import TestOutput from './TestOutput';
+import IframeHolder from '../components/IframeHolder';
 
 interface DataFormat {
   msg: string;
 }
 
-function AllTests() {
+export default function AllTests() {
   const [data, setData] = useState<DataFormat | null>(null);
 
   useEffect(() => {
@@ -32,11 +33,9 @@ function AllTests() {
         <p>Running tests...</p>
       ) : (
         <>
-          <TestOutput />
+          <IframeHolder url='http://localhost:3001/test/output' title="All tests output" />
         </>
       )}
     </div>
   );
 }
-
-export default AllTests;
