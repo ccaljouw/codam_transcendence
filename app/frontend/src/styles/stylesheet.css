@@ -56,3 +56,13 @@
 .userlist li:hover {
 	font-weight: bold;
 }
+
+.iframe-holder {
+    height: 100vh;
+    border: 3px dotted pink;
+}
+
+.iframe-holder iframe {
+    width: 100%;
+    height: 100%;
+}
