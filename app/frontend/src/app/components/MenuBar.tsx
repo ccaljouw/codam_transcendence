@@ -49,9 +49,6 @@ export default function MenuBar(): JSX.Element {
 							<MenuLink href="/play" title="Play" />
 							<MenuLink href="/logout" title="Logout" />
 						</>}
-						{!currentUser.id && <>
-							<MenuLink href="/sign-up" title="Sign Up" />
-						</>}
 					</div>
 					<div className="navbar-nav">
 						{/* todo: limit access on the pages itself as well */}
