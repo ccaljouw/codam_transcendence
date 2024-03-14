@@ -11,6 +11,6 @@ export class CreateChatDto {
   ownerId: number;
 
   @ApiProperty({ required: false, type: CreateChatUserDto })
-  users:   ChatUsers[]
+  users?:   ChatUsers[]
 
 }

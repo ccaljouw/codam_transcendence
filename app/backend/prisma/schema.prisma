@@ -60,6 +60,7 @@ enum ChatUserRole {
 	ADMIN
 	OWNER
 }
+
 model Chat {
   id      Int @id @default(autoincrement())
   ownerId Int @default(-1)

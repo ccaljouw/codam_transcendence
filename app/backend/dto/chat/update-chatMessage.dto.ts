@@ -7,9 +7,9 @@ export class UpdateChatMessageDto extends PartialType(CreateChatMessageDto) {
 
   @IsNotEmpty()
   @IsInt()
-  @ApiProperty({ required: false, type: Number })
+  @ApiProperty({ required: true, type: Number })
   id: number;
 
-  @ApiProperty({ required: false, type: Date })
-  createdAt!: Date;
+  // @ApiProperty({ required: false, type: Date })
+  // createdAt: Date;
 }

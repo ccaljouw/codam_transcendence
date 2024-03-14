@@ -12,19 +12,19 @@ export class UpdateChatUserDto extends PartialType(CreateChatUserDto) {
 
   @IsNotEmpty()
   @IsInt()
-  @ApiProperty({ required: true, type: Number })
-  chatId: number;
+  @ApiProperty({ required: false, type: Number })
+  chatId?: number;
 
   @IsNotEmpty()
   @IsInt()
-  @ApiProperty({ required: true, type: Number })
-  userId: number;
+  @ApiProperty({ required: false, type: Number })
+  userId?: number;
 
   @IsDate()
   @ApiProperty({ required: false, type: Date })
-  lastRead: Date;
+  lastRead?: Date;
 
   @IsBoolean()
   @ApiProperty({ required: false, type: Boolean })
-  isInChatRoom: boolean;
+  isInChatRoom?: boolean;
 }

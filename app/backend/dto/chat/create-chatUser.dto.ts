@@ -15,5 +15,5 @@ export class CreateChatUserDto {
 
   @IsDate()
   @ApiProperty({ required: false, type: Date })
-  lastRead: Date;
+  lastRead?: Date;
 }

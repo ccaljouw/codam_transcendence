@@ -14,9 +14,9 @@ export class UpdateChatDto extends PartialType(CreateChatDto) {
 
   @IsInt()
   @ApiProperty({ required: false, type: Number })
-  ownerId: number;
+  ownerId?: number;
 
   @ApiProperty({ required: false, type: UpdateChatUserDto })
-  users:   ChatUsers[]
+  users?:   ChatUsers[]
 
 }
