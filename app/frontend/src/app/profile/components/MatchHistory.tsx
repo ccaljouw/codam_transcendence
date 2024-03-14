@@ -1,4 +1,4 @@
-export default function MatchHistory() {
+export default function MatchHistory() : JSX.Element {
     return (
         <>
             <h1>Match History</h1>
