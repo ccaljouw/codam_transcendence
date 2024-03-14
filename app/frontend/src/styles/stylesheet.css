@@ -20,6 +20,8 @@
     overflow-y: auto !important;
     scrollbar-width: none !important; /* disable inner scrollbar in firefox */
     -ms-overflow-style: none; /* disable inner scrollbar in IE and Edge */
+    display: flex;
+    flex-direction: column;
 }
 
 /* Turn off the inner scrollbar in chrome, safari and opera */
@@ -58,8 +60,7 @@
 }
 
 .iframe-holder {
-    height: 100vh;
-    border: 3px dotted pink;
+    height: 100%;
 }
 
 .iframe-holder iframe {

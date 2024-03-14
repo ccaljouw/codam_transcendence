@@ -23,9 +23,7 @@ export default function Test({url, iframeTitle} : {url: string, iframeTitle: str
       {isLoading && <p>Running tests...</p>}
       {error != null && <p>Error: {error.message}</p>}
       {data != null && 
-        <>
-          <IframeHolder url='http://localhost:3001/test/output' title="All tests output" />
-        </>
+          <IframeHolder url='http://localhost:3001/test/output' title={iframeTitle} />
       }
     </>
   );
