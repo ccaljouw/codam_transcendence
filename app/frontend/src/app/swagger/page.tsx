@@ -1,11 +1,11 @@
 import styles from './styles.module.css';
+import { constants } from 'src/globals/constants.globalvar';
 
-export default function Page() {
-	const externalWebsiteUrl = 'http://localhost:3001/api';
+export default function Page() : JSX.Element {
 	return (
 		<>
 			<div className={styles.swagger}>
-				<iframe src={externalWebsiteUrl} title="API"/>
+				<iframe src={constants.API_SWAGGER} title="API"/>
 			</div>
 		</>
 	);

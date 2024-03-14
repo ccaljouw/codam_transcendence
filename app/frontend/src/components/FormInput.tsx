@@ -2,7 +2,7 @@ export default function FormInput({types, text, theName}:{types:string, text:str
 	return (
 		<>
 			<div className="form-floating">
-				<input id="floatingInput" className="form-control" type={types} name={theName}></input>
+				<input id="floatingInput" className="form-control" type={types} name={theName} required></input>
 				<label htmlFor="floatingInput" >{text}</label>
 			</div>
 		</>

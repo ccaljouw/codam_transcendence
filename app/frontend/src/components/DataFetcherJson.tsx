@@ -1,18 +1,19 @@
-export default async function DataFetcherJson(
-    {url} : {url:string}
-) {
+export default async function DataFetcherJson<T>(
+    {url} : {url:string} //todo: consider making url a URL instead of string
+) : Promise<T> {
 	try {
 		const response: Response = await fetch(url);
-		if (!response.ok) // todo: check if needed here
+		if (!response.ok)
 		{
-			console.log('Error in DataFetcherJson: response not ok')
-			const error : Error = new Error(`Error in DataFetcherJson: response not ok`);
-			return (error);
+			console.log('Error in DataFetcherJson: response not ok');
+			throw new Error(`Error in DataFetcherJson: response not ok`); 
 		}
-		const result = await response.json();
+		const result = await response.json() as T;
 		return (result);
 	} catch (error) {
 		console.error('Error in DataFetcherJson:', error);
-		return (error);
+		throw new Error('Error in DataFetcherJson: ' + error);
 	}
 }
+
+//todo: remove this function when useFetch is implemented everywhere

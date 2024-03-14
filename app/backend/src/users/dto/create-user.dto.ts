@@ -32,38 +32,38 @@ export class CreateUserDto {
   
   @IsOptional()
   @ApiProperty({ required: true })
-  userName: string;
+  userName?: string;
 
   @IsEmail()
   @IsOptional()
   @ApiProperty({ required: false, format: 'email' })
-  email: string;
+  email?: string;
   
   @IsString()
   @MaxLength(30)                      //todo: define max legth   
   @IsOptional()
   @ApiProperty({ required: false, maxLength: 30 })
-  firstName: string;
+  firstName?: string;
 
   @IsString()
   @MaxLength(30)                      //todo: define max legth  
   @IsOptional()
   @ApiProperty({ required: false, maxLength: 30 })
-  lastName: string;
+  lastName?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
-  avatarId: number;
+  avatarId?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  online: OnlineStatus;
+  online?: OnlineStatus;
 
-//   @ApiProperty
-@ApiProperty({ required: false })
+  //   @ApiProperty
+  @ApiProperty({ required: false })
   @IsOptional()
-@IsString()
-token: string;
+  @IsString()
+  token?: string;
 }

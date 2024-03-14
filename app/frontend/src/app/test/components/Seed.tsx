@@ -1,16 +1,16 @@
 'use client'
 import React from 'react';
-import DataFetcher from '../../../components/DataFetcherMarkup';
+import DataFetcherMarkup from '../../../components/DataFetcherMarkup';
 
 interface DataFormat {
   msg: string;
 }
 
-function Seed() {
+export default function Seed() {
   return (
     <>
       <h1>Seed database</h1>
-      <DataFetcher<DataFormat>
+      <DataFetcherMarkup<DataFormat>
         url="http://localhost:3001/seed"
         renderLoading={<p>Seeding database...</p>}
         renderError={(error) => <p>Custom error message: {error.message}</p>}
@@ -19,5 +19,3 @@ function Seed() {
     </>
   );
 }
-
-export default Seed;

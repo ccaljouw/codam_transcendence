@@ -5,7 +5,7 @@ import GameSettings from "./components/GameSettings.tsx";
 import LoginSettings from "./components/LoginSettings.tsx";
 import Blocked from "./components/Blocked.tsx";
 
-export default function Page() {
+export default function Page() : JSX.Element {
 	return (
 		<>
 			<h1>Profile page</h1>
@@ -36,5 +36,3 @@ export default function Page() {
 		</>
 	);
 }
-
-//todo: consider to make this page client-side rendered to not have double fetch in UserInfo and LoginSettings, or consider to make user information all available in contextprovider

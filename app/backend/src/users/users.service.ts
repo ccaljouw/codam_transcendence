@@ -9,11 +9,11 @@ export class UsersService {
 
   constructor(private db: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto) : Promise<Number> {
+  async create(createUserDto: CreateUserDto) : Promise<UserProfileDto> {
     if (!createUserDto.userName)
       createUserDto.userName = createUserDto.loginName;
-    const user = await this.db.user.create({ data: createUserDto });
-    return user.id;
+    const user : UserProfileDto = await this.db.user.create({ data: createUserDto });
+    return user;
     // trhow exception? what kind of exception? or is this caught by the prisma filter?
   }
 

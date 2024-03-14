@@ -100,3 +100,5 @@ const IndexPage = () => {
 };
 
 export default IndexPage;
+
+//todo: JMA: Make this a layout component, give a return type

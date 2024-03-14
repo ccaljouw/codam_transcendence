@@ -1,9 +1,10 @@
 import { Controller, Get, Redirect, Req } from '@nestjs/common';
 import { AuthService } from './authentication.service';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { UserProfileDto } from 'src/users/dto/user-profile.dto';
 
-@Controller('auth')
-@ApiTags('auth')
+@Controller('auth42')
+@ApiTags('auth42')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -15,9 +16,8 @@ export class AuthController {
   }
 
   @Get('callback')
-  @Redirect('/')
-  callback(@Req() req): void {
-    // Handle the OAuth callback and token exchange
-    this.authService.handleCallback(req.query.code);
+  callback(@Req() req): Promise<UserProfileDto> {
+    console.log("Callback controller called");
+    return this.authService.handleCallback(req.query.code);
   }
 }

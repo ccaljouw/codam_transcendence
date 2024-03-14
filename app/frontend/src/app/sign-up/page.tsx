@@ -1,11 +1,9 @@
 import SignUp from "./components/SignUp.tsx";
 
-export default function Page() {
+export default function Page() : JSX.Element {
 	return (
 		<>
-			<div className="">
-				<SignUp />
-			</div>
+			<SignUp />
 		</>
 	);
 }
