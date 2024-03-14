@@ -68,22 +68,24 @@ function setNewPaddlePositions(game: Game, paddle1Y: number, paddle2Y: number) {
 }
 
 function setNewBallVariables(game: Game, ballX: number, ballY: number, ballDirection: number, ballSpeed: number, ballDX: number, ballDY: number) {
-  if (ballX) {
-    game.ball?.movementComponent.setX(ballX);
-  }
-  if (ballY) {
-    game.ball?.movementComponent.setY(ballY);
-  }
-  if (ballDirection) {
-    game.ball?.movementComponent.setDirection(ballDirection);
-  }
-  if (ballSpeed) {
-    game.ball?.movementComponent.setSpeed(ballSpeed);
-  }
-  if (ballDX) {
-    game.ball?.movementComponent.setSpeedX(ballDX);
-  }
-  if (ballDY) {
-    game.ball?.movementComponent.setSpeedY(ballDY);
+  if (game.instanceType === 1) {
+    if (ballX) {
+      game.ball?.movementComponent.setX(ballX);
+    }
+    if (ballY) {
+      game.ball?.movementComponent.setY(ballY);
+    }
+    if (ballDirection) {
+      game.ball?.movementComponent.setDirection(ballDirection);
+    }
+    if (ballSpeed) {
+      game.ball?.movementComponent.setSpeed(ballSpeed);
+    }
+    if (ballDX) {
+      game.ball?.movementComponent.setSpeedX(ballDX);
+    }
+    if (ballDY) {
+      game.ball?.movementComponent.setSpeedY(ballDY);
+    }
   }
 }

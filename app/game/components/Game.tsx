@@ -176,6 +176,7 @@ export class Game {
 		this._lastFrameTime = currentTime;
 		
 		if (this.gameState == `FINISHED`) {
+			console.log("Game finished");
 			return;
 		}
 
