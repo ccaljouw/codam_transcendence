@@ -29,10 +29,15 @@ export function setSocketListeners(gameData: UpdateGameDto, socket: typeof trans
     game.receivedUpdatedGameObjects.score1 = payload.score1;
     game.receivedUpdatedGameObjects.score2 = payload.score2;
 
-
-    setNewPaddlePositions(game, payload.paddle1Y, payload.paddle2Y);
-    setNewScore(game, payload.score1, payload.score2);
-    setNewBallVariables(game, payload.ballX, payload.ballY, payload.ballDirection, payload.ballSpeed, payload.ballDX, payload.ballDY);
+    
+    if (payload.paddle1Y > 0 || payload.paddle2Y > 0) {
+      setNewPaddlePositions(game, payload.paddle1Y, payload.paddle2Y);
+    }
+    // setNewBallVariables(game, payload.ballX, payload.ballY, payload.ballDirection, payload.ballSpeed, payload.ballDX, payload.ballDY);
+    
+    if (payload.score1 >= 0 || payload.score2 >= 0) {
+      setNewScore(game, payload.score1, payload.score2);
+    }
 
   });
 
@@ -59,6 +64,9 @@ function setNewScore(game: Game, score1: number, score2: number) {
 }
 
 function setNewPaddlePositions(game: Game, paddle1Y: number, paddle2Y: number) {
+  if (game.gameState === GameState.FINISHED) {
+    return;
+  }
   if (game.instanceType === 0 && paddle2Y > 0) {
     game.paddels[1].movementComponent.setY(paddle2Y);
     game.paddels[1].setY(paddle2Y);
@@ -70,12 +78,17 @@ function setNewPaddlePositions(game: Game, paddle1Y: number, paddle2Y: number) {
 }
 
 function setNewBallVariables(game: Game, ballX: number, ballY: number, ballDirection: number, ballSpeed: number, ballDX: number, ballDY: number) {
-  if (game.instanceType === 1) {
+  if (game.gameState === GameState.FINISHED) {
+    return;
+  }
+  if (game.instanceType === 1 || game.instanceType === 0) {
     if (ballX > 0) {
-      game.ball?.movementComponent.setX(ballX);
+      // game.ball?.movementComponent.setX(ballX);
+      game.ball?.setX(ballX);
     }
     if (ballY > 0) {
-      game.ball?.movementComponent.setY(ballY);
+      // game.ball?.movementComponent.setY(ballY);
+      game.ball?.setY(ballY);
     }
     if (ballDirection > 0) {
       game.ball?.movementComponent.setDirection(ballDirection);

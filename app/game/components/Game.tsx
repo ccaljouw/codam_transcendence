@@ -108,9 +108,9 @@ export class Game {
 
 	updateGameObjects(deltaTime: number, config: keyof typeof CON.config) {
 		
+		//paddels
 		let paddleMoved = this.paddels.map(paddle => paddle.updatePaddle(this.gameState, deltaTime));
 		if (paddleMoved.some(moved => moved === true)) {
-			console.log("!!!!!!!!!!!!!!!!!paddle moved");
 			if (this.instanceType === 0) {
 				this.gameSocket.emit("game/updateGameObjects", {roomId: this.roomId, paddle1Y: this.paddels[0].movementComponent.getY()});
 			}
@@ -120,22 +120,34 @@ export class Game {
 		}
 		
 
+		//ball
 		if (this.instanceType === 0 ) {
 			this.ball?.updateBall(this.gameState, deltaTime);
 			let collisionDetected = detectCollision(this.ball as Ball, this.paddels, this._walls, this.soundFX, this.config);
-			if (collisionDetected) {
-				this.gameSocket.emit("game/updateGameObjects", {roomId: this.roomId, ballX: this.ball?.movementComponent.getX(), ballY: this.ball?.movementComponent.getY(), ballDX: this.ball?.movementComponent.getSpeedX, ballDY: this.ball?.movementComponent.getSpeedY});
-			}
+		//todoadd
+			this.gameSocket.emit("game/updateGameObjects", {roomId: this.roomId, ballX: this.ball?.getX(), ballY: this.ball?.getY(), ballDX: this.ball?.movementComponent.getSpeedX, ballDY: this.ball?.movementComponent.getSpeedY});
 		}
-
 
 		if (this.instanceType === 1) {
-			//todo interpolation
 			this.ball?.updateBall(this.gameState, deltaTime);
 			detectCollision(this.ball as Ball, this.paddels, this._walls, this.soundFX, this.config);
-		}
+			//todo interpolation
+			if (this.receivedUpdatedGameObjects.ballX > 0) {
+				this.ball?.setX(this.receivedUpdatedGameObjects.ballX);
+			}
+			if (this.receivedUpdatedGameObjects.ballY > 0) {
+				this.ball?.setY(this.receivedUpdatedGameObjects.ballY);
+			}
+			if (this.receivedUpdatedGameObjects.ballDX > 0) {
+				this.ball?.movementComponent.setSpeedX(this.receivedUpdatedGameObjects.ballDX);
+			}
+			if (this.receivedUpdatedGameObjects.ballDY > 0) {
+				this.ball?.movementComponent.setSpeedY(this.receivedUpdatedGameObjects.ballDY);
+			}
+			}
 	
-				
+
+		//game logic			
 		if (this.instanceType === 0) { //todo change to 2;
 			let goal = detectScore(this.ball as Ball, this.players, config, this);
 			let winner = checkWinCondition(this.players, config, this);
