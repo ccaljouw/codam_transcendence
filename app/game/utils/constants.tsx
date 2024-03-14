@@ -99,8 +99,8 @@ export const SCORE_OFFSET_X : number = 70;
 export const SCORE_OFFSET_Y : number = 100;
 
 //player
-export const PLAYER_SIZE = 30;
-export const PLAYER_OFFSET_X = 150;
+export const PLAYER_SIZE = 25;
+export const PLAYER_OFFSET_X = 200;
 export const PLAYER_OFFSET_Y = 50;
 export const PLAYER_1_NAME = "Left Player Name";
 export const PLAYER_2_NAME = "Right Player Name";
