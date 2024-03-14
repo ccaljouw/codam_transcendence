@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateGamesocketDto } from './dto/create-gamesocket.dto';
-import { UpdateGamesocketDto } from './dto/update-gamesocket.dto';
+import { CreateGamesocketDto } from '../../dto/game/create-gamesocket.dto';
+import { UpdateGamesocketDto } from '../../dto/game/update-gamesocket.dto';
 
 @Injectable()
 export class GamesocketService {

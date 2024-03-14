@@ -6,7 +6,7 @@ import { transcendenceSocket } from "./socket.globalvar";
 import { UpdateUserDto } from "@dto/users/update-user.dto";
 import { OnlineStatus } from "@prisma/client";
 import { constants } from "./constants.globalvar";
-import { WebsocketStatusChangeDto } from '../../../backend/src/socket/dto/statuschange'
+import { WebsocketStatusChangeDto } from '@dto/socket/statuschange'
 import Login from "src/components/Login";
 import { UserProfileDto } from "@dto/users/user-profile.dto";
 import { ChatMessageToRoomDto } from "@dto/chat/chat-messageToRoom.dto";

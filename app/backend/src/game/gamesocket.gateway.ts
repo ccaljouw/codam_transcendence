@@ -1,7 +1,7 @@
 import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer } from '@nestjs/websockets';
 import { GamesocketService } from './gamesocket.service';
-import { CreateGamesocketDto } from './dto/create-gamesocket.dto';
-import { UpdateGamesocketDto } from './dto/update-gamesocket.dto';
+import { CreateGamesocketDto } from '../../dto/game/create-gamesocket.dto';
+import { UpdateGamesocketDto } from '../../dto/game/update-gamesocket.dto';
 import { SocketServerProvider } from '../socket/socketserver.gateway';
 import { Server } from 'socket.io';
 
