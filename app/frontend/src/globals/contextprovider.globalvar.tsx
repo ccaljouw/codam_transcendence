@@ -9,7 +9,7 @@ import { constants } from "./constants.globalvar";
 import { WebsocketStatusChangeDto } from '../../../backend/src/socket/dto/statuschange'
 import Login from "src/components/Login";
 import { UserProfileDto } from "@dto/users/user-profile.dto";
-import { ChatMessageToRoomDto } from "../../../backend/src/chat/dto/chat-messageToRoom.dto";
+import { ChatMessageToRoomDto } from "@dto/chat/chat-messageToRoom.dto";
 
 // Context for the entire app
 interface TranscendenceContextVars {

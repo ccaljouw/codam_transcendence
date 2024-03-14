@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
-import { UpdateChatUserDto } from './dto/update-chatUser.dto'
+import { UpdateChatUserDto } from '../../dto/chat/update-chatUser.dto'
 
 @Injectable()
 export class ChatSocketService {
