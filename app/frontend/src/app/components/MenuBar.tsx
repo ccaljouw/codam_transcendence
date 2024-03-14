@@ -11,7 +11,7 @@ function MenuItem({href, title}:{href:string, title:string}){
 	);
 }
 
-export default function MenuBar() {
+export default function MenuBar(): JSX.Element {
 	return (
 		<>
 			<nav className="navbar navbar-expand-md">
@@ -24,14 +24,13 @@ export default function MenuBar() {
 						<MenuItem href="/" title="Home" />
 						<MenuItem href="/profile" title="Profile" />
 						<MenuItem href="/play" title="Play" />
-						<MenuItem href="/sign-up" title="Sign Up" />
 						<MenuItem href="/swagger" title="Swagger" />
 						<MenuItem href="/test" title="Test" />
+						<MenuItem href="/sign-up" title="Sign Up" />
+						<MenuItem href="/logout" title="Logout" />
 					</div>
 				</div>
 			</nav>
 		</>
 	);
 }
-
-//todo: add login component 

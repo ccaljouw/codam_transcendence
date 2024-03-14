@@ -16,7 +16,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Adds user to database and returns id for this user'})
   @ApiCreatedResponse({ description: 'User successfully created', type: Number })
 
-  register(@Body() createUser: CreateUserDto) : Promise<Number> {
+  register(@Body() createUser: CreateUserDto) : Promise<UserProfileDto> {
     return this.usersService.create(createUser);
   }
 

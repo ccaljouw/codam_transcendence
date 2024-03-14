@@ -1,4 +1,4 @@
-export default function Leaderboard() {
+export default function Leaderboard() : JSX.Element {
 	return (
 		<>
 			<div className="text-center">
@@ -8,3 +8,5 @@ export default function Leaderboard() {
 		</>
 	);
 }
+
+//todo: JMA: use generic data fetcher to create leaderboard. 

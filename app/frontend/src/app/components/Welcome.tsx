@@ -1,12 +1,12 @@
-import { useEffect } from "react";
+import { useContext } from "react";
+import { TranscendenceContext } from "src/globals/contextprovider.globalvar.tsx";
 
-export default function Welcome({name} : {name:string}) {
-	useEffect(() => { //todo: JMA: remove this useEffect before submit?
-		console.log("Welcome rendered");
-	},[])
+export default function Welcome() : JSX.Element {
+	const {currentUser} = useContext(TranscendenceContext);
+	
 	return (
-        <>
-            <h1>Welcome {name},</h1>
+		<>
+            <h1>Welcome {currentUser.userName},</h1>
             <p>Challenge your friends to play pong and make new ones on the way!</p>
         </>
 	);

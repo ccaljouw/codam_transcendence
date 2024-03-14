@@ -55,15 +55,15 @@ export class CreateUserDto {
   @IsOptional()
   @Type(() => Number)
   @IsInt()
-  avatarId: number;
+  avatarId?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  online: OnlineStatus;
+  online?: OnlineStatus;
 
-//   @ApiProperty
-@ApiProperty({ required: false })
+  //   @ApiProperty
+  @ApiProperty({ required: false })
   @IsOptional()
-@IsString()
-token: string;
+  @IsString()
+  token?: string;
 }

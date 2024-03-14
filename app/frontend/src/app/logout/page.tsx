@@ -1,9 +1,9 @@
-import GameComponent from "./components/Game.tsx";
+import Logout from "./components/Logout.tsx";
 
 export default function Page() : JSX.Element {
 	return (
 		<>
-			<GameComponent />
+			<Logout />
 		</>
 	);
 }

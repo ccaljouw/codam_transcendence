@@ -27,7 +27,7 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 	const [currentChat, setCurrentChat] = useState<FetchChatDto>({ id: 0, ownerId: 0, visibility: ChatType.DM });
 	const firstRender = useRef(true);
 	const firstMessage = useRef(true);
-	const { currentUserName, someUserUpdatedTheirStatus, currentChatRoom, setCurrentChatRoom } = useContext(TranscendenceContext);
+	const { currentUser, someUserUpdatedTheirStatus, currentChatRoom, setCurrentChatRoom } = useContext(TranscendenceContext);
 	const messageBox = useRef<HTMLDivElement>(null);
 
 	// This effect is used to set up the chat and join the room when the component is rendered.
@@ -108,7 +108,7 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 			setChat(['Error fetching messages, please try again later.']);
 			return;
 		}
-		const mappedData = data.map((message: FetchChatMessageDto) => `${message.loginName}: ${message.message}`);
+		const mappedData = data.map((message: FetchChatMessageDto) => `${message.userName}: ${message.message}`);
 		setChat(mappedData);
 	}
 
@@ -119,9 +119,9 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 		}
 		const statusChangeMsg: ChatMessageToRoomDto = {
 			userId: (user1 ? user1 : 0),
-			userName: currentUserName,
+			userName: currentUser.userName,
 			room: currentChat.id.toString(),
-			message: `<< ${currentUserName} has joined the chat >>`,
+			message: `<< ${currentUser.userName} has joined the chat >>`,
 			action: true
 		};
 		chatSocket.emit('chat/joinRoom', statusChangeMsg);
@@ -142,9 +142,9 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 			return;
 		const leaveMessage: ChatMessageToRoomDto = { 
 			userId: (user1 ? user1 : 0), 
-			userName: currentUserName, 
+			userName: currentUser.userName, 
 			room: currentChat.id.toString(), 
-			message: `<< ${currentUserName} has left the chat >>`, 
+			message: `<< ${currentUser.userName} has left the chat >>`, 
 			action: true 
 		};
 		chatSocket.emit('chat/leaveRoom', leaveMessage);
@@ -167,7 +167,7 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 			return;
 		const payload: ChatMessageToRoomDto = { 
 			userId: user1, 
-			userName: currentUserName, 
+			userName: currentUser.userName, 
 			room: currentChat.id.toString(), 
 			message: message, action: false 
 		};
@@ -181,11 +181,11 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 			<div className='component chatBox'>
 				{
 					currentChat.visibility == ChatType.DM ?
-						<div>Chat between {currentUserName} and
+						<div>Chat between {currentUser.userName} and
 							<DataFetcherMarkup<UserProfileDto>
 								url={constants.API_SINGLE_USER + user2}
 								renderData={(data) => (
-									<span> {data.loginName}</span>
+									<span> {data.userName}</span>
 								)} /></div>
 						: <></>
 				}

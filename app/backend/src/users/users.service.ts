@@ -9,11 +9,11 @@ export class UsersService {
 
   constructor(private db: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto) : Promise<Number> {
+  async create(createUserDto: CreateUserDto) : Promise<UserProfileDto> {
     if (!createUserDto.userName)
       createUserDto.userName = createUserDto.loginName;
     const user = await this.db.user.create({ data: createUserDto });
-    return user.id;
+    return user;
     // trhow exception? what kind of exception? or is this caught by the prisma filter?
   }
 
@@ -24,7 +24,7 @@ export class UsersService {
 					where: {id: {not: id}},
 					orderBy: [
 							{online: 'desc'},
-							{loginName: 'asc'},
+							{userName: 'asc'},
 				]
 				}
 				);
@@ -40,7 +40,7 @@ export class UsersService {
   async findAll() : Promise<UserProfileDto[]>  {
     try {
       const users = await this.db.user.findMany({
-		orderBy: { loginName: 'asc' },
+		orderBy: { userName: 'asc' },
 	  });
       for (const element of users)
         delete element.hash;
