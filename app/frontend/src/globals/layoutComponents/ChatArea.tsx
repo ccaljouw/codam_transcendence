@@ -3,11 +3,11 @@ import { useContext, useEffect, useState } from 'react';
 import { UserProfileDto } from '@dto/users/user-profile.dto'
 import { TranscendenceContext } from '@global/contextprovider.globalvar';
 import { constants } from '@global/constants.globalvar';
-import Chat from '../components/Chat'
-import UserList from '@utilComponents/UserList';
-import DataFetcherJson from '@utilComponents/DataFetcherJson';
-import StatusIndicator from '@utilComponents/StatusIndicator';
-import UnreadMessages from '@utilComponents/UnreadMessages';
+import UserList from '@functionComponents/UserList';
+import DataFetcherJson from '@functionComponents/DataFetcherJson';
+import StatusIndicator from '@functionComponents/StatusIndicator';
+import UnreadMessages from '@functionComponents/UnreadMessages';
+import Chat from './Chat'
 
 export default function ChatArea() {
 	const [secondUser, setSecondUser] = useState(0);

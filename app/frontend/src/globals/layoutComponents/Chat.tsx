@@ -9,8 +9,8 @@ import { constants } from '@global/constants.globalvar';
 import { TranscendenceContext } from '@global/contextprovider.globalvar';
 import { transcendenceSocket } from '@global/socket.globalvar'
 import { ChatType, OnlineStatus } from '@prisma/client';
-import DataFetcherJson from '@utilComponents/DataFetcherJson';
-import DataFetcherMarkup from '@utilComponents/DataFetcherMarkup';
+import DataFetcherJson from '@functionComponents/DataFetcherJson';
+import DataFetcherMarkup from '@functionComponents/DataFetcherMarkup';
 
 
 

@@ -8,8 +8,8 @@ import { UpdateUserDto } from "@dto/users/update-user.dto";
 import { UserProfileDto } from "@dto/users/user-profile.dto";
 import { ChatMessageToRoomDto } from "@dto/chat/chat-messageToRoom.dto";
 import { WebsocketStatusChangeDto } from '@dto/socket/statuschange'
-import Login from "@utilComponents/Login";
-import ChatArea from "../app/components/ChatArea";
+import Login from "@functionComponents/Login";
+import ChatArea from "./layoutComponents/ChatArea";
 
 // Context for the entire app
 interface TranscendenceContextVars {
