@@ -1,12 +1,11 @@
 "use client"
 
 import { createContext, useEffect, useState } from "react";
-import { constants } from "@global/constants.globalvar";
-import { transcendenceSocket } from "@global/socket.globalvar";
 import { OnlineStatus } from "@prisma/client";
 import { UpdateUserDto, UserProfileDto } from "@dto/users";
 import { ChatMessageToRoomDto } from "@dto/chat";
 import { WebsocketStatusChangeDto } from '@dto/socket'
+import { constants, transcendenceSocket } from "@global/vars";
 import Login from "@functionComponents/Login";
 import ChatArea from "./layoutComponents/ChatArea";
 

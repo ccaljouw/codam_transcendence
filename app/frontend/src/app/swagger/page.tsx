@@ -1,5 +1,5 @@
 import styles from './styles.module.css';
-import { constants } from '@global/constants.globalvar';
+import { constants } from '@global/vars';
 
 export default function Page() : JSX.Element {
 	return (

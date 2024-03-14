@@ -2,8 +2,7 @@
 import { useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { UserProfileDto } from "@dto/users";
-import { TranscendenceContext } from "@global/contextprovider.globalvar";
-import { transcendenceSocket } from "@global/socket.globalvar";
+import { TranscendenceContext, transcendenceSocket } from "@global/vars";
 
 export default function Logout(): JSX.Element {
     const { setCurrentUser } = useContext(TranscendenceContext);

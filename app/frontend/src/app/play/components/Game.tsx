@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useEffect, useState } from 'react';
 import styles from '../styles.module.css';
-import {transcendenceSocket} from '@global/socket.globalvar.tsx'; // websocket global
+import {transcendenceSocket} from '@global/vars'; // websocket global
 import { Game } from "../../../Game/components/Game.tsx";
 
 
