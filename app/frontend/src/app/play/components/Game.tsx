@@ -8,7 +8,7 @@ import {transcendenceSocket} from '../../../globals/socket.globalvar.tsx'; // we
 // assign global websocket to local var for clarity
 const gameSocket = transcendenceSocket;
 
-export default function GameComponent() {
+export default function GameComponent() : JSX.Element {
 	const [game, setGame] = useState< Game | null >(null);
 	const canvasRef = useRef< HTMLCanvasElement | null >(null);
 
