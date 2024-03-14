@@ -44,7 +44,7 @@ export class Game {
 	private _gameUsers: UpdateGameUserDto [] = [];
 	public	paddels: Paddle [] = [];
 	public	players: PlayerComponent [] = [];
-	public	receivedUpdatedGameObjects: UpdateGameObjectsDto = {roomId: -1, ballX: -1, ballY: -1, ballDirection: -1, ballSpeed: -1, ballDX: -1, ballDY: -1, paddle1Y: -1, paddle2Y: -1, score1: -1, score2: -1};
+	public	receivedUpdatedGameObjects: UpdateGameObjectsDto = {roomId: -1, ballX: -1, ballY: -1, ballDirection: -1, ballSpeed: -1, ballDX: -1, ballDY: -1, paddle1Y: -1, paddle2Y: -1, score1: -1, score2: -1, resetGame: -1, resetMatch: -1, finish: -1, winner: -1};
 	public  instanceType: CON.instanceTypes = CON.instanceTypes.observer;
 	public 	gameSocket:	typeof transcendenceSocket = transcendenceSocket;
 	public	soundFX: SoundFX = new SoundFX();
@@ -144,7 +144,7 @@ export class Game {
 			if (this.receivedUpdatedGameObjects.ballDY > 0) {
 				this.ball?.movementComponent.setSpeedY(this.receivedUpdatedGameObjects.ballDY);
 			}
-			}
+		}
 	
 
 		//game logic			
@@ -152,13 +152,15 @@ export class Game {
 			let goal = detectScore(this.ball as Ball, this.players, config, this);
 			let winner = checkWinCondition(this.players, config, this);
 			if (winner) {
+				// this.gameSocket.emit("game/updateGameObjects", {roomId: this.roomId, finish: 1, winner: winner});
 				this.endGame(winner);
 			} else if (goal) {
 				this.resetGame();
+				this.gameSocket.emit("game/updateGameObjects", {roomId: this.roomId, resetGame: 1});
 			}
 		}
 		
-		this.messageFields.forEach(message => message.update());
+		// this.messageFields.forEach(message => message.update());
 	}
 
 
@@ -210,10 +212,10 @@ export class Game {
 		}
 	}
 
-	resetMatch() {
-		this.resetGameObjects();
-		this.startGame();
-	}
+	// resetMatch() {
+	// 	this.resetGameObjects();
+	// 	this.startGame();
+	// }
 
 
 	resetGame() {
@@ -230,7 +232,7 @@ export class Game {
 		this.messageFields[0]?.setText(name + " won the match!");
 		this.winner = winner;
 		this.gameState = `FINISHED`;
-		this.gameSocket.emit("game/updateGameState", {roomId: this.roomId, state: this.gameState, winner: winner.getName()});
+		this.gameSocket.emit("game/updateGameState", {roomId: this.roomId, state: this.gameState, winner: this.winner});
 	}
 
 	//to start the game
