@@ -4,8 +4,8 @@ export class MovementComponent {
 	private direction: number	= 0;
 	private speedX: number		= 0;
 	private speedY: number		= 0;
-	private x: number			= 0;
-	private y: number			= 0;
+	private x: number					= 0;
+	private y: number					= 0;
 	
 	//direction in radians
 	constructor(speed: number, direction: number, x: number, y: number) {   
@@ -17,9 +17,9 @@ export class MovementComponent {
 	  this.y = y;
 	}
 
-	public update() {
-	  this.x += this.speedX;
-	  this.y += this.speedY;
+	public update(deltaTime: number) {
+	  this.x += this.speedX * deltaTime * 100;
+	  this.y += this.speedY * deltaTime * 100;
 	}
 
 	public setX(x: number) {
@@ -32,14 +32,12 @@ export class MovementComponent {
 
 	public setSpeedX(speed: number) {
 	  this.speedX = speed;
-	  this.speed = Math.sqrt(this.speedX * this.speedX + this.speedY * this.speedY);
-	  this.direction = Math.atan2(this.speedY, this.speedX);
+		this.updateSpeedAndDirection();
 	}
 
 	public setSpeedY(speed: number) {
 	  this.speedY = speed;
-	  this.speed = Math.sqrt(this.speedX * this.speedX + this.speedY * this.speedY);
-	  this.direction = Math.atan2(this.speedY, this.speedX);
+		this.updateSpeedAndDirection();
 	}
 
 	public setSpeed(speed: number) {
@@ -50,7 +48,8 @@ export class MovementComponent {
 
 	public setDirection(direction: number) {
 	  this.direction = direction;
-	  
+		this.speedX = this.speed * Math.cos(direction);
+		this.speedY = this.speed * Math.sin(direction);
 	}
 
 	public getX() {
@@ -92,5 +91,10 @@ export class MovementComponent {
 		this.speedY = 0;
 		this.x = 0;
 		this.y = 0;
+	}
+
+	private updateSpeedAndDirection() {
+		this.speed = Math.sqrt(this.speedX * this.speedX + this.speedY * this.speedY);
+		this.direction = Math.atan2(this.speedY, this.speedX);
 	}
 }
