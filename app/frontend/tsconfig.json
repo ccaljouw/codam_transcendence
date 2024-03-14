@@ -24,6 +24,7 @@
     "plugins": [ { "name": "next" } ],
     "paths": {
       "@dto/*": ["../backend/dto/*"],
+      "@global/*": ["./src/globals/*"],
     },
   },
   "include": [

@@ -1,10 +1,10 @@
 "use client"
 import { useContext, useEffect, useState } from 'react';
-import UserList from 'src/components/UserList';
 import { UserProfileDto } from '@dto/users/user-profile.dto'
+import { TranscendenceContext } from '@global/contextprovider.globalvar';
+import { constants } from '@global/constants.globalvar';
 import Chat from '../components/Chat'
-import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
-import { constants } from 'src/globals/constants.globalvar';
+import UserList from 'src/components/UserList';
 import DataFetcherJson from 'src/components/DataFetcherJson';
 import StatusIndicator from 'src/components/StatusIndicator';
 import UnreadMessages from 'src/components/UnreadMessages';

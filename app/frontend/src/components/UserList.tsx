@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react"
 import { UserProfileDto } from '@dto/users/user-profile.dto'
-import { constants } from '../globals/constants.globalvar'
-import DataFetcherJson from "./DataFetcherJson"
 
 
 interface UserListProps {

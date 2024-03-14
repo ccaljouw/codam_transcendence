@@ -1,7 +1,7 @@
 import { use, useContext, useEffect, useState } from "react";
-import { TranscendenceContext } from "src/globals/contextprovider.globalvar";
+import { TranscendenceContext } from "@global/contextprovider.globalvar";
+import { constants } from "@global/constants.globalvar";
 import DataFetcherJson from "./DataFetcherJson";
-import { constants } from "src/globals/constants.globalvar";
 
 /**
  * Function to display unread messages next to a user (hopefully later on also next to a chat, but that needs work)
