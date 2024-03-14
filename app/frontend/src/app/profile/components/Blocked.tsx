@@ -1,4 +1,4 @@
-export default function Blocked() {
+export default function Blocked() : JSX.Element {
 	return (
         <>
             <h1>Blocked people</h1>
