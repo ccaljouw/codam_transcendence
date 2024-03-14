@@ -10,7 +10,7 @@ import { ChatType, OnlineStatus } from '@prisma/client';
 import DataFetcherJson from 'src/components/DataFetcherJson';
 import { FetchChatDto } from '../../../../backend/src/chat/dto/fetch-chat.dto';
 import DataFetcherMarkup from 'src/components/DataFetcherMarkup';
-import { UserProfileDto } from '../../../../backend/src/users/dto/user-profile.dto';
+import { UserProfileDto } from '@dto/users/user-profile.dto';
 
 
 

@@ -3,12 +3,12 @@
 import ChatArea from "../app/components/ChatArea";
 import { createContext, useEffect, useState } from "react";
 import { transcendenceSocket } from "./socket.globalvar";
-import { UpdateUserDto } from "../../../backend/src/users/dto/update-user.dto";
+import { UpdateUserDto } from "@dto/users/update-user.dto";
 import { OnlineStatus } from "@prisma/client";
 import { constants } from "./constants.globalvar";
 import { WebsocketStatusChangeDto } from '../../../backend/src/socket/dto/statuschange'
 import Login from "src/components/Login";
-import { UserProfileDto } from "../../../backend/src/users/dto/user-profile.dto";
+import { UserProfileDto } from "@dto/users/user-profile.dto";
 import { ChatMessageToRoomDto } from "../../../backend/src/chat/dto/chat-messageToRoom.dto";
 
 // Context for the entire app

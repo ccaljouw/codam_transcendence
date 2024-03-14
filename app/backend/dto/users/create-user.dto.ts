@@ -1,12 +1,10 @@
-import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { OnlineStatus } from '@prisma/client';
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
   IsEmail,
   IsInt,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   MaxLength,
@@ -32,24 +30,24 @@ export class CreateUserDto {
   
   @IsOptional()
   @ApiProperty({ required: true })
-  userName: string;
+  userName?: string;
 
   @IsEmail()
   @IsOptional()
   @ApiProperty({ required: false, format: 'email' })
-  email: string;
+  email?: string;
   
   @IsString()
   @MaxLength(30)                      //todo: define max legth   
   @IsOptional()
   @ApiProperty({ required: false, maxLength: 30 })
-  firstName: string;
+  firstName?: string;
 
   @IsString()
   @MaxLength(30)                      //todo: define max legth  
   @IsOptional()
   @ApiProperty({ required: false, maxLength: 30 })
-  lastName: string;
+  lastName?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()

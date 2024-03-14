@@ -21,15 +21,9 @@
     "incremental": true,
     "allowImportingTsExtensions": true,
     "baseUrl": ".",
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "plugins": [ { "name": "next" } ],
     "paths": {
-      "@/*": [
-        "./frontend/src/*"
-      ]
+      "@dto/*": ["../backend/dto/*"],
     },
   },
   "include": [

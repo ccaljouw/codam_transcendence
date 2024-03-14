@@ -1,7 +1,7 @@
 "use client"
 import { useContext, useEffect, useState } from 'react';
 import UserList from 'src/components/UserList';
-import { UserProfileDto } from '../../../../backend/src/users/dto/user-profile.dto'
+import { UserProfileDto } from '@dto/users/user-profile.dto'
 import Chat from '../components/Chat'
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
 import { constants } from 'src/globals/constants.globalvar';

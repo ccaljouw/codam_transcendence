@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from '../users.controller';
-import { UsersService } from '../services/users.service';
+import { UsersService } from '../users.service';
 import { MockUsersService } from './users.service.spec';
 
 // create a mock of this service for use in other tests

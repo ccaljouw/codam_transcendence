@@ -2,7 +2,7 @@
 import { useContext } from 'react';
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
 import { constants } from 'src/globals/constants.globalvar';
-import { UserProfileDto } from '../../../../../backend/src/users/dto/user-profile.dto';
+import { UserProfileDto } from '@dto/users/user-profile.dto';
 import UserList from 'src/components/UserList';
 import DataFetcherJson from 'src/components/DataFetcherJson';
 

@@ -2,8 +2,8 @@
 import { FormEvent, useEffect, useContext } from 'react';
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
 import { constants } from 'src/globals/constants.globalvar';
-import { CreateUserDto } from '../../../../../backend/src/users/dto/create-user.dto';
-import { UserProfileDto } from '../../../../../backend/src/users/dto/user-profile.dto';
+import { CreateUserDto } from '@dto/users/create-user.dto';
+import { UserProfileDto } from '@dto/users/user-profile.dto';
 import FormInput from '../../../components/FormInput';
 import useFetch from 'src/components/useFetch';
 

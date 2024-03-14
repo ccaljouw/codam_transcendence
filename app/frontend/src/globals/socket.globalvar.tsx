@@ -1,8 +1,6 @@
 
 import io from 'socket.io-client'
 import { constants } from './constants.globalvar'
-import {UpdateUserDto} from '../../../backend/src/users/dto/update-user.dto';
-import { OnlineStatus } from '@prisma/client';
 // import 
 
 
