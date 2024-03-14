@@ -1,10 +1,7 @@
 "use client"
 import { useContext, useEffect, useRef, useState } from 'react';
-import { FetchChatMessageDto } from '@dto/chat/fetch-chatMessage.dto';
-import { ChatMessageToRoomDto } from '@dto/chat/chat-messageToRoom.dto'
-import { CreateChatSocketDto } from '@dto/chat/create-chatSocket.dto';
-import { FetchChatDto } from '@dto/chat/fetch-chat.dto';
-import { UserProfileDto } from '@dto/users/user-profile.dto';
+import { FetchChatMessageDto, ChatMessageToRoomDto, CreateChatSocketDto, FetchChatDto } from '@dto/chat';
+import { UserProfileDto } from '@dto/users';
 import { constants } from '@global/constants.globalvar';
 import { TranscendenceContext } from '@global/contextprovider.globalvar';
 import { transcendenceSocket } from '@global/socket.globalvar'

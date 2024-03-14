@@ -1,7 +1,7 @@
 "use client";
 import { useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { UserProfileDto } from "@dto/users/user-profile.dto";
+import { UserProfileDto } from "@dto/users";
 import { TranscendenceContext } from "@global/contextprovider.globalvar";
 import { transcendenceSocket } from "@global/socket.globalvar";
 
