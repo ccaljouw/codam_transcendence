@@ -38,8 +38,6 @@ export const TranscendenceContext = createContext<TranscendenceContextVars>({
 export function ContextProvider({ children }: { children: React.ReactNode }) {
 
 	const [someUserUpdatedTheirStatus, setSomeUserUpdatedTheirStatus] = useState<WebsocketStatusChangeDto>({} as WebsocketStatusChangeDto);
-	// const [currentUserId, setCurrentUserId] = useState<number>(0);
-	// const [currentUserName, setCurrentUserName] = useState<string>('');
 	const [messageToUserNotInRoom, setMessageToUserNotInRoom] = useState<ChatMessageToRoomDto>({} as ChatMessageToRoomDto);
 	const [currentChatRoom, setCurrentChatRoom] = useState<number>(-1);
 	const [currentUser, setCurrentUser] = useState<UserProfileDto>({} as UserProfileDto);
@@ -114,7 +112,6 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 					token: (transcendenceSocket.id ? transcendenceSocket.id : ''),
 					status: OnlineStatus.ONLINE
 				}
-				// setCurrentUserName(data.loginName);
 				setCurrentUser(data);
 				transcendenceSocket.emit('socket/statusChange', statusUpdate); // Emit the status change to the socket
 			}
