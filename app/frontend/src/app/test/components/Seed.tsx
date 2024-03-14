@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import DataFetcherMarkup from '../../../components/DataFetcherMarkup';
+import DataFetcherMarkup from '@utilComponents/DataFetcherMarkup';
 
 interface DataFormat {
   msg: string;

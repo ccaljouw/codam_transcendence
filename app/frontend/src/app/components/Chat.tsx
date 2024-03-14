@@ -1,16 +1,16 @@
 "use client"
 import { useContext, useEffect, useRef, useState } from 'react';
-import { transcendenceSocket } from '@global/socket.globalvar'
-import { TranscendenceContext } from '@global/contextprovider.globalvar';
-import { constants } from '@global/constants.globalvar';
 import { FetchChatMessageDto } from '@dto/chat/fetch-chatMessage.dto';
 import { ChatMessageToRoomDto } from '@dto/chat/chat-messageToRoom.dto'
 import { CreateChatSocketDto } from '@dto/chat/create-chatSocket.dto';
 import { FetchChatDto } from '@dto/chat/fetch-chat.dto';
 import { UserProfileDto } from '@dto/users/user-profile.dto';
+import { constants } from '@global/constants.globalvar';
+import { TranscendenceContext } from '@global/contextprovider.globalvar';
+import { transcendenceSocket } from '@global/socket.globalvar'
 import { ChatType, OnlineStatus } from '@prisma/client';
-import DataFetcherJson from 'src/components/DataFetcherJson';
-import DataFetcherMarkup from 'src/components/DataFetcherMarkup';
+import DataFetcherJson from '@utilComponents/DataFetcherJson';
+import DataFetcherMarkup from '@utilComponents/DataFetcherMarkup';
 
 
 

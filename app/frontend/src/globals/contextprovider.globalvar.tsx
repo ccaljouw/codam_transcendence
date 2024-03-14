@@ -1,15 +1,15 @@
 "use client"
 
-import ChatArea from "../app/components/ChatArea";
 import { createContext, useEffect, useState } from "react";
-import { transcendenceSocket } from "./socket.globalvar";
-import { UpdateUserDto } from "@dto/users/update-user.dto";
+import { constants } from "@global/constants.globalvar";
+import { transcendenceSocket } from "@global/socket.globalvar";
 import { OnlineStatus } from "@prisma/client";
-import { constants } from "./constants.globalvar";
-import { WebsocketStatusChangeDto } from '@dto/socket/statuschange'
-import Login from "src/components/Login";
+import { UpdateUserDto } from "@dto/users/update-user.dto";
 import { UserProfileDto } from "@dto/users/user-profile.dto";
 import { ChatMessageToRoomDto } from "@dto/chat/chat-messageToRoom.dto";
+import { WebsocketStatusChangeDto } from '@dto/socket/statuschange'
+import Login from "@utilComponents/Login";
+import ChatArea from "../app/components/ChatArea";
 
 // Context for the entire app
 interface TranscendenceContextVars {

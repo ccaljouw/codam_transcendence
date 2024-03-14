@@ -4,10 +4,10 @@ import { UserProfileDto } from '@dto/users/user-profile.dto'
 import { TranscendenceContext } from '@global/contextprovider.globalvar';
 import { constants } from '@global/constants.globalvar';
 import Chat from '../components/Chat'
-import UserList from 'src/components/UserList';
-import DataFetcherJson from 'src/components/DataFetcherJson';
-import StatusIndicator from 'src/components/StatusIndicator';
-import UnreadMessages from 'src/components/UnreadMessages';
+import UserList from '@utilComponents/UserList';
+import DataFetcherJson from '@utilComponents/DataFetcherJson';
+import StatusIndicator from '@utilComponents/StatusIndicator';
+import UnreadMessages from '@utilComponents/UnreadMessages';
 
 export default function ChatArea() {
 	const [secondUser, setSecondUser] = useState(0);

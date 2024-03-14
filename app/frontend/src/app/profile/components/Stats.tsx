@@ -1,4 +1,4 @@
-import DataField from "../../../components/DataField";
+import DataField from "@utilComponents/DataField";
 
 export default function Stats() {
     return (

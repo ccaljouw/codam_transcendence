@@ -4,8 +4,8 @@ import { CreateUserDto } from '@dto/users/create-user.dto';
 import { UserProfileDto } from '@dto/users/user-profile.dto';
 import { TranscendenceContext } from '@global/contextprovider.globalvar';
 import { constants } from '@global/constants.globalvar';
-import useFetch from 'src/components/useFetch';
-import FormInput from '../../../components/FormInput';
+import useFetch from '@utilComponents/useFetch';
+import FormInput from '@utilComponents/FormInput';
 
 export default function SignUp(): JSX.Element {
 	const { data: user, isLoading, error, fetcher } = useFetch<CreateUserDto, UserProfileDto>();
