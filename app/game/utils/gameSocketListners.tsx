@@ -45,46 +45,48 @@ export function setSocketListeners(gameData: UpdateGameDto, socket: typeof trans
 }
 
 function setNewScore(game: Game, score1: number, score2: number) {
-  // if (game.gameState === GameState.FINISHED) {
-  //   return;
-  // }
-  if (score1) {
+  if (game.gameState === GameState.FINISHED) {
+    return;
+  }
+  if (score1 >= 0)   {
     game.players[0].setScore(score1);
     game.players[0].scoreField?.setText(score1.toString());
   }
-  if (score2) {
+  if (score2 >= 0) {
     game.players[1].setScore(score2);
     game.players[1].scoreField?.setText(score2.toString());
   }
 }
 
 function setNewPaddlePositions(game: Game, paddle1Y: number, paddle2Y: number) {
-  if (paddle1Y) {
-    game.paddels[0].setY(paddle1Y);
-  }
-  if (paddle2Y) {
+  if (game.instanceType === 0 && paddle2Y > 0) {
+    game.paddels[1].movementComponent.setY(paddle2Y);
     game.paddels[1].setY(paddle2Y);
-  }
+   }
+   if (game.instanceType === 1 && paddle1Y > 0) {
+    game.paddels[0].movementComponent.setY(paddle1Y);
+    game.paddels[0].setY(paddle1Y);
+   }
 }
 
 function setNewBallVariables(game: Game, ballX: number, ballY: number, ballDirection: number, ballSpeed: number, ballDX: number, ballDY: number) {
   if (game.instanceType === 1) {
-    if (ballX) {
+    if (ballX > 0) {
       game.ball?.movementComponent.setX(ballX);
     }
-    if (ballY) {
+    if (ballY > 0) {
       game.ball?.movementComponent.setY(ballY);
     }
-    if (ballDirection) {
+    if (ballDirection > 0) {
       game.ball?.movementComponent.setDirection(ballDirection);
     }
-    if (ballSpeed) {
+    if (ballSpeed > 0) {
       game.ball?.movementComponent.setSpeed(ballSpeed);
     }
-    if (ballDX) {
+    if (ballDX  > 0) {
       game.ball?.movementComponent.setSpeedX(ballDX);
     }
-    if (ballDY) {
+    if (ballDY  > 0) {
       game.ball?.movementComponent.setSpeedY(ballDY);
     }
   }

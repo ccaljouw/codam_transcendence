@@ -62,7 +62,7 @@ export class Paddle extends GameObject {
 			return false;
 		}
 		let hasMoved = false;
-		const margin = 10;
+		const margin = .5;
 		if (this.keyListener.checkKeysPressed()) {
 			let initialY = this.y;
 			this.movementComponent.update(deltaTime);

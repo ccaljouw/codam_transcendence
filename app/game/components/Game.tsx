@@ -110,11 +110,12 @@ export class Game {
 		
 		let paddleMoved = this.paddels.map(paddle => paddle.updatePaddle(this.gameState, deltaTime));
 		if (paddleMoved.some(moved => moved === true)) {
+			console.log("!!!!!!!!!!!!!!!!!paddle moved");
 			if (this.instanceType === 0) {
-				this.gameSocket.emit("game/updateGameObjects", {roomId: this.roomId , paddle1Y: this.paddels[0].getY()});
+				this.gameSocket.emit("game/updateGameObjects", {roomId: this.roomId, paddle1Y: this.paddels[0].movementComponent.getY()});
 			}
 			if (this.instanceType === 1) {
-				this.gameSocket.emit("game/updateGameObjects", {roomId: this.roomId , paddle2Y: this.paddels[1].getY()});
+				this.gameSocket.emit("game/updateGameObjects", {roomId: this.roomId, paddle2Y: this.paddels[1].movementComponent.getY()});
 			}
 		}
 		
@@ -127,10 +128,11 @@ export class Game {
 			}
 		}
 
+
 		if (this.instanceType === 1) {
 			//todo interpolation
-			detectCollision(this.ball as Ball, this.paddels, this._walls, this.soundFX, this.config);
 			this.ball?.updateBall(this.gameState, deltaTime);
+			detectCollision(this.ball as Ball, this.paddels, this._walls, this.soundFX, this.config);
 		}
 	
 				
