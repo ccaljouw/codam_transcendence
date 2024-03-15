@@ -2,8 +2,8 @@
 import { FormEvent, useEffect, useContext } from 'react';
 import { CreateUserDto, UserProfileDto } from '@dto/users';
 import { TranscendenceContext, constants } from '@global/vars';
-import useFetch from '@functionComponents/useFetch';
-import FormInput from '@functionComponents/FormInput';
+import useFetch from '@global/functionComponents/useFetch';
+import FormInput from '@global/functionComponents/FormInput';
 
 export default function SignUp(): JSX.Element {
 	const { data: user, isLoading, error, fetcher } = useFetch<CreateUserDto, UserProfileDto>();

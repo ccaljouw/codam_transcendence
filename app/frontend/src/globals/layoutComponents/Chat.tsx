@@ -4,8 +4,8 @@ import { FetchChatMessageDto, ChatMessageToRoomDto, CreateChatSocketDto, FetchCh
 import { UserProfileDto } from '@dto/users';
 import { constants, TranscendenceContext, transcendenceSocket } from '@global/vars';
 import { ChatType, OnlineStatus } from '@prisma/client';
-import DataFetcherJson from '@functionComponents/DataFetcherJson';
-import DataFetcherMarkup from '@functionComponents/DataFetcherMarkup';
+import DataFetcherJson from '@global/functionComponents/DataFetcherJson';
+import DataFetcherMarkup from '@global/functionComponents/DataFetcherMarkup';
 
 
 

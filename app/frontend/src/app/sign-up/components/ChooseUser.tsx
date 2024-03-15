@@ -2,8 +2,8 @@
 import { useContext } from 'react';
 import { UserProfileDto } from '@dto/users';
 import { TranscendenceContext, constants } from '@global/vars';
-import UserList from '@functionComponents/UserList';
-import DataFetcherJson from '@functionComponents/DataFetcherJson';
+import UserList from '@global/functionComponents/UserList';
+import DataFetcherJson from '@global/functionComponents/DataFetcherJson';
 
 export default function ChooseUser() : JSX.Element {
 	const {setCurrentUser} = useContext(TranscendenceContext);

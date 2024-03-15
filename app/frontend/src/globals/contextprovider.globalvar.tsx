@@ -1,13 +1,13 @@
-"use client"
-
+"use client";
 import { createContext, useEffect, useState } from "react";
 import { OnlineStatus } from "@prisma/client";
-import { UpdateUserDto, UserProfileDto } from "@dto/users";
+import { UserProfileDto, UpdateUserDto } from "@dto/users";
 import { ChatMessageToRoomDto } from "@dto/chat";
 import { WebsocketStatusChangeDto } from '@dto/socket'
 import { constants, transcendenceSocket } from "@global/vars";
-import Login from "@global/functionComponents/Login";
 import ChatArea from "./layoutComponents/ChatArea";
+import MenuBar from "./layoutComponents/MenuBar";
+import Login from "./layoutComponents//Login";
 
 // Context for the entire app
 interface TranscendenceContextVars {
@@ -15,10 +15,6 @@ interface TranscendenceContextVars {
 	setCurrentUser: (val: UserProfileDto) => void;
 	someUserUpdatedTheirStatus: WebsocketStatusChangeDto;
 	setSomeUserUpdatedTheirStatus: (val: WebsocketStatusChangeDto) => void;
-	// currentUserId: number;
-	// setCurrentUserId: (val: number) => void;
-	// currentUserName: string;
-	// setCurrentUserName: (val: string) => void;
 	currentChatRoom: number;
 	setCurrentChatRoom: (val: number) => void;
 	messageToUserNotInRoom: ChatMessageToRoomDto;
@@ -31,10 +27,6 @@ export const TranscendenceContext = createContext<TranscendenceContextVars>({
 	setCurrentUser: () => { },
 	someUserUpdatedTheirStatus: {} as WebsocketStatusChangeDto,
 	setSomeUserUpdatedTheirStatus: () => { },
-	// currentUserId: 0,
-	// setCurrentUserId: () => { },
-	// currentUserName: '',
-	// setCurrentUserName: () => { },
 	currentChatRoom: -1,
 	setCurrentChatRoom: () => { },
 	messageToUserNotInRoom: {} as ChatMessageToRoomDto,
@@ -44,8 +36,6 @@ export const TranscendenceContext = createContext<TranscendenceContextVars>({
 export function ContextProvider({ children }: { children: React.ReactNode }) {
 
 	const [someUserUpdatedTheirStatus, setSomeUserUpdatedTheirStatus] = useState<WebsocketStatusChangeDto>({} as WebsocketStatusChangeDto);
-	// const [currentUserId, setCurrentUserId] = useState<number>(0);
-	// const [currentUserName, setCurrentUserName] = useState<string>('');
 	const [messageToUserNotInRoom, setMessageToUserNotInRoom] = useState<ChatMessageToRoomDto>({} as ChatMessageToRoomDto);
 	const [currentChatRoom, setCurrentChatRoom] = useState<number>(-1);
 	const [currentUser, setCurrentUser] = useState<UserProfileDto>({} as UserProfileDto);
@@ -89,10 +79,6 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		setCurrentUser,
 		someUserUpdatedTheirStatus,
 		setSomeUserUpdatedTheirStatus,
-		// currentUserId,
-		// setCurrentUserId,
-		// currentUserName,
-		// setCurrentUserName,
 		currentChatRoom,
 		setCurrentChatRoom,
 		messageToUserNotInRoom,
@@ -124,7 +110,6 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 					token: (transcendenceSocket.id ? transcendenceSocket.id : ''),
 					status: OnlineStatus.ONLINE
 				}
-				// setCurrentUserName(data.loginName);
 				setCurrentUser(data);
 				transcendenceSocket.emit('socket/statusChange', statusUpdate); // Emit the status change to the socket
 			}
@@ -133,17 +118,10 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		}
 	};
 
-	// if (currentUser.id == 0)
-	// {
-	// 	return (
-	// 		<Login currentUserId={currentUserId} setCurrentUserId={setCurrentUserId} currentUserName={currentUserName} setCurrentUserName={setCurrentUserName} />
-	// 		// <Login />
-	// 	);
-	// }
-
 	return (
 		<>
 			<TranscendenceContext.Provider value={contextValues}>
+				<MenuBar />
 				{!currentUser.id && <Login />}
 				{currentUser.id && 
 				<div className="content-area">

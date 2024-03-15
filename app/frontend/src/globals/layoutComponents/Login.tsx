@@ -1,10 +1,10 @@
 import { useContext, useEffect } from 'react';
 import { UserProfileDto } from '@dto/users';
-import { TranscendenceContext, constants } from '@global/vars';
-import useFetch from './useFetch';
-import ChooseUser from 'src/app/sign-up/components/ChooseUser';
-import Seed from 'src/app/test/components/Seed';
+import { constants, TranscendenceContext } from '@global/vars'
+import useFetch from '@global/functionComponents/useFetch';
 import SignUp from 'src/app/sign-up/components/SignUp';
+import ChooseUser from 'src/app/sign-up/components/ChooseUser';
+import Seed from 'src/app/dev/test/components/Seed';
 
 export default function Login() : JSX.Element { 
 	const { data: users, isLoading, error, fetcher } = useFetch<null, UserProfileDto[]>();

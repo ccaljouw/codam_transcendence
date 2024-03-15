@@ -3,17 +3,17 @@ import 'bootstrap/dist/css/bootstrap.css'
 import '../styles/stylesheet.css';
 import '../styles/styleSimpleGrid.css';
 import { ContextProvider } from '@global/vars';
-import MenuBar from '@global/layoutComponents/MenuBar';
+import BootstrapClient from '@global/layoutComponents/BootstrapClient.tsx';
 
-export default async function  RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }){
 	console.log("root rerender");
     return (
 		<html lang="en">
 			<body>
-			<div className="root-layout">
-				<MenuBar />
-			<ContextProvider>{children}</ContextProvider>
-			</div>
+				<div className="root-layout">
+					<ContextProvider>{children}</ContextProvider>
+				</div>
+				<BootstrapClient />
 			</body>
 		</html>
     );

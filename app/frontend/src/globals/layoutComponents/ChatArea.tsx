@@ -2,10 +2,10 @@
 import { useContext, useEffect, useState } from 'react';
 import { UserProfileDto } from '@dto/users'
 import { TranscendenceContext, constants } from '@global/vars';
-import UserList from '@functionComponents/UserList';
-import DataFetcherJson from '@functionComponents/DataFetcherJson';
-import StatusIndicator from '@functionComponents/StatusIndicator';
-import UnreadMessages from '@functionComponents/UnreadMessages';
+import UserList from '@global/functionComponents/UserList';
+import DataFetcherJson from '@global/functionComponents/DataFetcherJson';
+import StatusIndicator from '@global/functionComponents/StatusIndicator';
+import UnreadMessages from '@global/functionComponents/UnreadMessages';
 import Chat from './Chat'
 
 export default function ChatArea() {
