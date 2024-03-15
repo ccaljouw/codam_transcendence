@@ -2,7 +2,8 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { FetchChatMessageDto, ChatMessageToRoomDto, CreateChatSocketDto, FetchChatDto } from '@dto/chat';
 import { UserProfileDto } from '@dto/users';
-import { constants, TranscendenceContext, transcendenceSocket } from '@global/vars';
+import { TranscendenceContext,  constants} from '@global/vars'
+import { transcendenceSocket } from '@global/socket.globalvar'
 import { ChatType, OnlineStatus } from '@prisma/client';
 import DataFetcherJson from '@global/functionComponents/DataFetcherJson';
 import DataFetcherMarkup from '@global/functionComponents/DataFetcherMarkup';
