@@ -1,9 +1,9 @@
 import IframeHolder from "@global/functionComponents/IframeHolder";
+import { constants } from "@global/constants.globalvar";
 
 export default function TestCoverage() {
-	const CoverageUrl = 'http://localhost:3001/test/report';
 	return (
-      <IframeHolder url={CoverageUrl} title="Coverage of last run tests" />
+      <IframeHolder url={constants.API_TEST_REPORT} title="Coverage of last run tests" />
 	)
 }
 

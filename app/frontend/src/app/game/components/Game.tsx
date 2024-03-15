@@ -5,6 +5,7 @@ import { UpdateGameDto, updateGameStateDto } from '@dto/game';
 import { Game } from '../../../../../game/components/Game.tsx';
 import { instanceTypes } from '../../../../../game/utils/constants.tsx';
 import { transcendenceSocket } from '../../../globals/socket.globalvar.tsx'; // websocket global
+import { constants } from '@global/constants.globalvar.tsx';
 
 export default function GameComponent() {
 	const gameSocket = transcendenceSocket;
@@ -34,10 +35,9 @@ export default function GameComponent() {
 		}
 	}, [twoPlayersInGame]);
 	
-
 	// fetch game data from server
 	async function fetchGame(userID: string) {
-		const url = `http://localhost:3001/game/getGame/${userID}`; //todo make constants
+		const url = `${constants.API_GAME}getGame/${userID}`; //todo make constants
 		console.log(`Game: fetching game data for user: ${userID} from: "${url}"`);
 		
 		try {

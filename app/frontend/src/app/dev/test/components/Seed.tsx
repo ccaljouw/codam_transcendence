@@ -1,5 +1,6 @@
 "use client";
 import { useEffect } from 'react';
+import { constants } from '@global/constants.globalvar';
 import useFetch from '@global/functionComponents/useFetch';
 
 interface DataFormat { //todo: JMA: remove this?
@@ -14,7 +15,7 @@ export default function Seed() {
     }, []);
 
     const seedDatabase = async () => {
-        await fetcher({url: 'http://localhost:3001/seed'});
+        await fetcher({url: constants.BACKEND_BASEURL + 'seed'});
     }
 
   return (

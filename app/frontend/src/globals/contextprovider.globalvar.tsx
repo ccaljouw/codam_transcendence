@@ -94,7 +94,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 				online: OnlineStatus.ONLINE,
 				token: transcendenceSocket.id
 			}
-			const response = await fetch(constants.API_SINGLE_USER + currentUser.id, {
+			const response = await fetch(constants.API_USERS + currentUser.id, {
 				method: 'PATCH',
 				headers: {
 					'Content-Type': 'application/json',

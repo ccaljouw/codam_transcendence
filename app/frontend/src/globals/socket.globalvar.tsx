@@ -6,7 +6,7 @@ import { constants } from '@global/constants.globalvar'
 /**
  * This sweet baby is our page-wide websocket-server
  */
-export const transcendenceSocket = io(constants.BACKEND_ADRESS_FOR_WEBSOCKET, 
+export const transcendenceSocket = io(constants.BACKEND_BASEURL, 
 	{ 
 		autoConnect: true
 	});
@@ -28,7 +28,7 @@ export const transcendenceSocket = io(constants.BACKEND_ADRESS_FOR_WEBSOCKET,
 // 		// }
 // 		// const updateUser = async (updatedProps: UpdateUserDto) => {
 // 		// 	try {
-// 		// 		const response = await fetch(constants.BACKEND_ADRESS_FOR_WEBSOCKET + `users/${user}`, {
+// 		// 		const response = await fetch(constants.BACKEND_BASEURL + `users/${user}`, {
 // 		// 			method: 'PATCH',
 // 		// 			headers: {
 // 		// 				'Content-Type': 'application/json',

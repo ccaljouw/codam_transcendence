@@ -180,7 +180,7 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 					currentChat.visibility == ChatType.DM ?
 						<div>Chat between {currentUser.userName} and
 							<DataFetcherMarkup<UserProfileDto>
-								url={constants.API_SINGLE_USER + user2}
+								url={constants.API_USERS + user2}
 								renderData={(data) => (
 									<span> {data.userName}</span>
 								)} /></div>
