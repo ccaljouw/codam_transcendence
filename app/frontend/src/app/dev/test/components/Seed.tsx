@@ -2,8 +2,12 @@
 import { useEffect } from 'react';
 import useFetch from 'src/components/useFetch';
 
+interface DataFormat { //todo: JMA: remove this?
+  msg: string;
+}
+
 export default function Seed() {
-    const {data, isLoading, error, fetcher} = useFetch<null, string>();
+    const {data, isLoading, error, fetcher} = useFetch<null, DataFormat>();
 
     useEffect(() => {
         seedDatabase();
@@ -18,7 +22,7 @@ export default function Seed() {
       <h1>Seed database</h1>
       {isLoading && <p>Seeding database...</p>}
       {error && <p>Error: {error.message}</p>}
-      {data != null && <p>{data}</p>}
+      {data != null && <p>{data.msg}</p>}
     </>
   );
 }
