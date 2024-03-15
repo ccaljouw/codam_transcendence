@@ -1,4 +1,4 @@
-export default function GameSettings() {
+export default function GameSettings() : JSX.Element {
 	return (
         <>
             <h1>Game settings</h1>

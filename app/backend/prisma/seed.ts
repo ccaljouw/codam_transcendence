@@ -10,7 +10,7 @@ async function addDummyUsers() {
 		update: {},
 		create: {
 			userName: 'AwesomeBackendCreator',
-			loginName: 'Carien',
+			loginName: 'ccaljouw',
 			email: 'ccaljouw@student.codam.nl',
 			hash: 'pwd',
 			firstName: 'Carien',
@@ -22,7 +22,7 @@ async function addDummyUsers() {
 		update: {},
 		create: {
 			userName: 'AwesomeSocketCreator',
-			loginName: 'Albert',
+			loginName: 'avan-and',
 			email: 'avan_and@student.codam.nl',
 			hash: 'pwd',
 			firstName: 'Albert',
@@ -34,7 +34,7 @@ async function addDummyUsers() {
 		update: {},
 		create: {
 			userName: 'AwesomeFrontendCreator',
-			loginName: 'Jorien',
+			loginName: 'jaberkro',
 			email: 'jaberkro@student.codam.nl',
 			hash: 'pwd',
 			firstName: 'Jorien',
@@ -46,7 +46,7 @@ async function addDummyUsers() {
 		update: {},
 		create: {
 			userName: 'AwesomeGameCreator',
-			loginName: 'Carlo',
+			loginName: 'cwesseli',
 			email: 'cwesseli@student.codam.nl',
 			hash: 'pwd',
 			firstName: 'Carlo',

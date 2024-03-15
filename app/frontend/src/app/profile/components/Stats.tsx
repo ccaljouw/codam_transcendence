@@ -1,6 +1,6 @@
 import DataField from "../../../components/DataField";
 
-export default function Stats() {
+export default function Stats() : JSX.Element {
     return (
         <>
             <h1>User stats </h1>
