@@ -108,7 +108,7 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 			setChat(['Error fetching messages, please try again later.']);
 			return;
 		}
-		const mappedData = data.map((message: FetchChatMessageDto) => `${message.loginName}: ${message.message}`);
+		const mappedData = data.map((message: FetchChatMessageDto) => `${message.userName}: ${message.message}`);
 		setChat(mappedData);
 	}
 

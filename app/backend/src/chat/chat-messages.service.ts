@@ -61,7 +61,7 @@ export class ChatMessageService {
 			return messages.map((message) => ({
 				chatId: message.chatId,
 				userId: message.userId,
-				loginName: message.chat.users.find(user => user.user.id === message.userId).user.userName,
+				userName: message.chat.users.find(user => user.user.id === message.userId).user.userName,
 				message: message.content
 			}))
 		} catch {

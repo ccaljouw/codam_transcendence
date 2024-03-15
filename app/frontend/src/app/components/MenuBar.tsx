@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useContext } from 'react';
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
 
-function MenuItem({href, title}:{href:string, title:string}){
+function MenuLink({href, title}:{href:string, title:string}){
 	const pathname = usePathname();
 	const background = pathname === href ? "active" : "inactive";
 
@@ -26,20 +26,28 @@ export default function MenuBar(): JSX.Element {
 				<div className="collapse navbar-collapse" id="navbarNav">
 					<div className="navbar-nav">
 						{currentUser.id && <>
-							<MenuItem href="/" title="Home" />
-							<MenuItem href="/profile" title="Profile" />
-							<MenuItem href="/play" title="Play" />
-							<MenuItem href="/logout" title="Logout" />
-						</>}
-						{!currentUser.id && <>
-							{/* <MenuItem href="/sign-up" title="Sign Up" /> */}
+							<MenuLink href="/" title="Home" />
+							<MenuLink href="/profile" title="Profile" />
+							<MenuLink href="/play" title="Play" />
+							<MenuLink href="/logout" title="Logout" />
 						</>}
 					</div>
 					<div className="navbar-nav">
 						{/* todo: limit access on the pages itself as well */}
 						{(currentUser.loginName == 'ccaljouw' || currentUser.loginName == 'jaberkro' || currentUser.loginName == 'avan-and' || currentUser.loginName == 'cwesseli') && <>
-							<MenuItem href="/swagger" title="Swagger" />
-							<MenuItem href="/test" title="Test"/> 
+							<li className="nav-item dropdown">
+								<a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									Developer options
+								</a>
+								<ul className="dropdown-menu">
+									<li><Link className="dropdown-item" href="/dev/swagger">Swagger</Link></li>
+									<li><hr className="dropdown-divider"/></li>
+									<li><Link className="dropdown-item" href="/dev/test/all">Test all</Link></li>
+									<li><Link className="dropdown-item" href="/dev/test/frontend">Test frontend</Link></li>
+									<li><Link className="dropdown-item" href="/dev/test/backend">Test backend</Link></li>
+									<li><Link className="dropdown-item" href="/dev/test/coverage">Test coverage</Link></li>
+								</ul>
+							</li>
 						</>}
 					</div>
 				</div>

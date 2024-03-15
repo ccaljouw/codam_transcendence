@@ -24,7 +24,7 @@ export class UsersService {
 					where: {id: {not: id}},
 					orderBy: [
 							{online: 'desc'},
-							{loginName: 'asc'},
+							{userName: 'asc'},
 				]
 				}
 				);
@@ -40,7 +40,7 @@ export class UsersService {
   async findAll() : Promise<UserProfileDto[]>  {
     try {
       const users = await this.db.user.findMany({
-		orderBy: { loginName: 'asc' },
+		orderBy: { userName: 'asc' },
 	  });
       for (const element of users)
         delete element.hash;
