@@ -6,7 +6,7 @@ import { UpdateUserDto, UserProfileDto } from "@dto/users";
 import { ChatMessageToRoomDto } from "@dto/chat";
 import { WebsocketStatusChangeDto } from '@dto/socket'
 import { constants, transcendenceSocket } from "@global/vars";
-import Login from "@functionComponents/Login";
+import Login from "@global/functionComponents/Login";
 import ChatArea from "./layoutComponents/ChatArea";
 
 // Context for the entire app

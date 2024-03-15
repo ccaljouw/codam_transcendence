@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { UserProfileDto } from "@dto/users";
 import { constants } from "@global/vars";
-import useFetch from "@functionComponents/useFetch";
+import useFetch from '@global/functionComponents/useFetch';
 
 export default function Users() : JSX.Element {
 	const {data:users, isLoading, error, fetcher} = useFetch<null, UserProfileDto[]>();

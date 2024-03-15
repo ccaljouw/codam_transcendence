@@ -25,7 +25,7 @@
     "paths": {
       "@dto/*": ["../backend/dto/*"],
       "@global/*": ["./src/globals/*"],
-      "@functionComponents/*": ["./src/globals/functionComponents/*"]
+      "@global/functionComponents/*": ["./src/globals/functionComponents/*"]
     },
   },
   "include": [
