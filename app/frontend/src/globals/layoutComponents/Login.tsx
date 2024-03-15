@@ -1,6 +1,7 @@
 import { useContext, useEffect } from 'react';
 import { UserProfileDto } from '@dto/users';
-import { constants, TranscendenceContext } from '@global/vars'
+import { constants } from '@global/constants.globalvar';
+import { TranscendenceContext } from '@global/contextprovider.globalvar';
 import useFetch from '@global/functionComponents/useFetch';
 import SignUp from 'src/app/sign-up/components/SignUp';
 import ChooseUser from 'src/app/sign-up/components/ChooseUser';

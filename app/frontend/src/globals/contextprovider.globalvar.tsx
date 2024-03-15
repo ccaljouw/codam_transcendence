@@ -4,7 +4,8 @@ import { OnlineStatus } from "@prisma/client";
 import { UserProfileDto, UpdateUserDto } from "@dto/users";
 import { ChatMessageToRoomDto } from "@dto/chat";
 import { WebsocketStatusChangeDto } from '@dto/socket'
-import { constants, transcendenceSocket } from "@global/vars";
+import { constants } from "@global/constants.globalvar";
+import { transcendenceSocket } from '@global/socket.globalvar'
 import ChatArea from "./layoutComponents/ChatArea";
 import MenuBar from "./layoutComponents/MenuBar";
 import Login from "./layoutComponents//Login";

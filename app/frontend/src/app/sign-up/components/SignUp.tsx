@@ -1,7 +1,8 @@
 "use client";
 import { FormEvent, useEffect, useContext } from 'react';
 import { CreateUserDto, UserProfileDto } from '@dto/users';
-import { TranscendenceContext, constants } from '@global/vars';
+import { TranscendenceContext } from '@global/contextprovider.globalvar';
+import { constants } from '@global/constants.globalvar'
 import useFetch from '@global/functionComponents/useFetch';
 import FormInput from '@global/functionComponents/FormInput';
 

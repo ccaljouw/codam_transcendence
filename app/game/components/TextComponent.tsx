@@ -1,5 +1,6 @@
 
 import { GameObject } from "../gameObjects/GameObject";
+import * as CON from "../utils/constants";
 
 
 export class TextComponent extends GameObject {

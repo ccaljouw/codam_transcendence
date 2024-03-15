@@ -38,11 +38,12 @@ model User {
   lastName  String?
   token     String?
 
-  avatarId Int  @default(1)
-  online   OnlineStatus  @default(OFFLINE)
-  rank     Int? @default(-1)
+  avatarId  Int  @default(1)
+  online    OnlineStatus  @default(OFFLINE)
+  rank      Int? @default(-1)
 
-  chats ChatUsers[]
+  chats     ChatUsers[]
+  games     GameUser[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -96,4 +97,31 @@ model ChatMessages {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   chat      Chat     @relation(fields: [chatId], references: [id])
+}
+
+enum GameState {
+  WAITING
+  READY_TO_START
+  STARTED
+  FINISHED
+  ABORTED
+}
+
+model Game {
+	id 			    Int @id @default(autoincrement())
+	state		    GameState
+
+	GameUsers   GameUser[]
+}
+
+model GameUser {
+	id			Int 	@id @default(autoincrement())
+	score		Int 	@default(0)
+	win			Boolean?
+
+	gameId	Int
+	game		Game 	@relation(fields: [gameId], references: [id])
+
+	userId	Int
+	user		User 	@relation(fields: [userId], references: [id])
 }

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { UserProfileDto } from "@dto/users";
-import { constants } from "@global/vars";
+import { constants } from "@global/constants.globalvar";
 import useFetch from '@global/functionComponents/useFetch';
 
 export default function Users() : JSX.Element {

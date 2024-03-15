@@ -60,7 +60,13 @@ export class GameObject {
 		return this.height;
 	}
 
+	setColor(color: string) {
+		this.color = color;
+	}
+
 	draw(ctx: CanvasRenderingContext2D) {
 		drawGameObject(ctx, this.x, this.y, this.width, this.height, this.color);
 	}
+
+
 }

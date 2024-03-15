@@ -2,7 +2,7 @@
 import { useContext } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { TranscendenceContext } from '@global/vars';
+import { TranscendenceContext } from '@global/contextprovider.globalvar';
 
 function MenuLink({href, title}:{href:string, title:string}){
 	const pathname = usePathname();

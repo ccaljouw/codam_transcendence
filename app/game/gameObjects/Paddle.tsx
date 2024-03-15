@@ -3,6 +3,8 @@ import { GameObject } from "./GameObject";
 import { MovementComponent } from "../components/MovementComponent";
 import { KeyListenerComponent } from "../components/KeyListenerComponent";
 import * as CON from "../utils/constants";
+import { UpdateGameObjectsDto } from "../../backend/src/game/dto/update-game-objects.dto";
+import { GameState } from "@prisma/client";
 
 
 export class Paddle extends GameObject {
@@ -16,19 +18,19 @@ export class Paddle extends GameObject {
 	}
 
 	
-	public setKeyListerns(paddle: Paddle, keyUp: string, keyDown: string) {
+	public setKeyListerns(paddle: Paddle, keyUp: string, keyDown: string, config: keyof typeof CON.config) {
 		if (paddle == null) {
 			throw new Error("Paddle is not initialized");
 		}
 
 		paddle.keyListener.addKeyCallback(keyUp, () => {
 			paddle.movementComponent.setDirection(1.5 * Math.PI);
-			paddle.movementComponent.setSpeed(CON.PADDLE_BASE_SPEED);
+			paddle.movementComponent.setSpeed(CON.config[config].paddleBaseSpeed);
 		});
 
 		paddle.keyListener.addKeyCallback(keyDown, () => {
 			paddle.movementComponent.setDirection(0.5 * Math.PI);
-			paddle.movementComponent.setSpeed(CON.PADDLE_BASE_SPEED);
+			paddle.movementComponent.setSpeed(CON.config[config].paddleBaseSpeed);
 		});
 	}
 
@@ -54,14 +56,21 @@ export class Paddle extends GameObject {
 	}
 
 
-	public updatePaddle(state: number) {
-		if (state != 1) {
+	public updatePaddle(state: GameState, deltaTime: number) {
+		if (state != `STARTED`) {
 			this.resetPaddle();
-			return;
-		} else if (this.keyListener.checkKeysPressed()) {
-			this.movementComponent.update();
-			this.y = this.movementComponent.getY();
-			this.checkBounds();	
+			return false;
 		}
+		let hasMoved = false;
+		const margin = .5;
+		if (this.keyListener.checkKeysPressed()) {
+			let initialY = this.y;
+			this.movementComponent.update(deltaTime);
+			this.y = this.movementComponent.getY();
+			this.checkBounds();
+			
+			hasMoved = Math.abs(initialY - this.y) > margin;
+		}
+		return hasMoved;
 	}
 }

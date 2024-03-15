@@ -1,12 +1,13 @@
 "use client"
 import { useContext, useEffect, useState } from 'react';
-import { UserProfileDto } from '@dto/users'
-import { TranscendenceContext, constants } from '@global/vars';
+import { UserProfileDto } from '@dto/users';
+import { TranscendenceContext } from '@global/contextprovider.globalvar';
+import { constants } from '@global/constants.globalvar';
 import UserList from '@global/functionComponents/UserList';
 import DataFetcherJson from '@global/functionComponents/DataFetcherJson';
 import StatusIndicator from '@global/functionComponents/StatusIndicator';
 import UnreadMessages from '@global/functionComponents/UnreadMessages';
-import Chat from './Chat'
+import Chat from './Chat';
 
 export default function ChatArea() {
 	const [secondUser, setSecondUser] = useState(0);

@@ -1,7 +1,8 @@
 "use client";
 import { useContext } from 'react';
 import { UserProfileDto } from '@dto/users';
-import { TranscendenceContext, constants } from '@global/vars';
+import { TranscendenceContext } from '@global/contextprovider.globalvar';
+import { constants } from '@global/constants.globalvar'
 import UserList from '@global/functionComponents/UserList';
 import DataFetcherJson from '@global/functionComponents/DataFetcherJson';
 
