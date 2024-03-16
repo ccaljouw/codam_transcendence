@@ -6,6 +6,7 @@ import { CreateChatSocketDto } from '../../dto/chat/create-chatSocket.dto';
 import { CreateChatMessageDto } from '../../dto/chat/create-chatMessage.dto';
 import { ChatMessageService } from './chat-messages.service';
 import { ChatService } from './chat.service';
+import { FetchChatMessageDto } from 'dto/chat';
 
 
 @Controller('chat')
@@ -20,7 +21,7 @@ export class ChatMessagesController {
 	@ApiOperation({ summary: 'Returns chat messages with specified chatId' })
 	@ApiOkResponse({ type: [UpdateChatMessageDto] })
 	@ApiNotFoundResponse({ description: 'No messages with #${chatId}' })
-	findMessagesInChat(@Param('chatId', ParseIntPipe) chatId: number) {
+	findMessagesInChat(@Param('chatId', ParseIntPipe) chatId: number) : Promise<FetchChatMessageDto[]>{
 		return this.chatMessageService.findMessagesInChat(chatId);
 	}
 
