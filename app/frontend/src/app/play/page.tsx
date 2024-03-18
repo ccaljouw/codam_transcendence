@@ -1,9 +1,9 @@
-import GameComponent from "./components/Game.tsx";
+import RandomMatchButton from "./components/RandomMatchButton.tsx";
 
-export default function Page() : JSX.Element {
+export default function Page() {
 	return (
 		<>
-			<GameComponent />
+			<RandomMatchButton />
 		</>
 	);
 }

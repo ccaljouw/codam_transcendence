@@ -10,12 +10,8 @@ import { SeedController } from './seed.controller';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../../../..', 'coverage', 'backend', 'lcov-report'),
-      serveRoot: '/test/backend/report',
-    }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../../../..', 'coverage', 'frontend', 'lcov-report'),
-      serveRoot: '/test/frontend/report',
+      rootPath: join(__dirname, '../../../..', 'coverage', 'lcov-report'),
+      serveRoot: '/test/report',
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../../../..', 'coverage', 'test_output.html'),

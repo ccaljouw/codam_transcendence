@@ -21,15 +21,11 @@
     "incremental": true,
     "allowImportingTsExtensions": true,
     "baseUrl": ".",
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "plugins": [ { "name": "next" } ],
     "paths": {
-      "@/*": [
-        "./frontend/src/*"
-      ]
+      "@ft_dto/*": ["../backend/dto/*"],
+      "@ft_global/*": ["../frontend/src/globals/*"],
+      "@ft_global/functionComponents/*": ["../frontend/src/globals/functionComponents/*"]
     },
   },
   "include": [

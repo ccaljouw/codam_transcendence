@@ -1,15 +1,12 @@
-
 import io from 'socket.io-client'
-import { constants } from './constants.globalvar'
-import {UpdateUserDto} from '../../../backend/src/users/dto/update-user.dto';
-import { OnlineStatus } from '@prisma/client';
+import { constants } from '@ft_global/constants.globalvar'
 // import 
 
 
 /**
  * This sweet baby is our page-wide websocket-server
  */
-export const transcendenceSocket = io(constants.BACKEND_ADRESS_FOR_WEBSOCKET, 
+export const transcendenceSocket = io(constants.BACKEND_BASEURL, 
 	{ 
 		autoConnect: true
 	});
@@ -31,7 +28,7 @@ export const transcendenceSocket = io(constants.BACKEND_ADRESS_FOR_WEBSOCKET,
 // 		// }
 // 		// const updateUser = async (updatedProps: UpdateUserDto) => {
 // 		// 	try {
-// 		// 		const response = await fetch(constants.BACKEND_ADRESS_FOR_WEBSOCKET + `users/${user}`, {
+// 		// 		const response = await fetch(constants.BACKEND_BASEURL + `users/${user}`, {
 // 		// 			method: 'PATCH',
 // 		// 			headers: {
 // 		// 				'Content-Type': 'application/json',

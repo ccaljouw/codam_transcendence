@@ -1,10 +1,11 @@
 import Test from '../components/Test';
+import { constants } from '@ft_global/constants.globalvar';
 
 export default function page() : JSX.Element {
   return (
     <>
       <h1>Backend tests</h1>
-      <Test url="http://localhost:3001/test/backend" iframeTitle="Backend tests output" />
+      <Test url={ constants.API_TEST_BACKEND } iframeTitle="Backend tests output" />
     </>
   );
 }

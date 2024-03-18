@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { ChatSocketService } from './chatsocket.service';
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UpdateChatMessageDto } from './dto/update-chatMessage.dto';
-import { CreateChatSocketDto } from './dto/create-chatSocket.dto';
-import { CreateChatMessageDto } from './dto/create-chatMessage.dto';
+import { UpdateChatMessageDto } from '../../dto/chat/update-chatMessage.dto';
+import { CreateChatSocketDto } from '../../dto/chat/create-chatSocket.dto';
+import { CreateChatMessageDto } from '../../dto/chat/create-chatMessage.dto';
 import { ChatMessageService } from './chat-messages.service';
 import { ChatService } from './chat.service';
 

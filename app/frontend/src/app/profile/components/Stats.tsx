@@ -1,4 +1,4 @@
-import DataField from "../../../components/DataField";
+import DataField from "@ft_global/functionComponents/DataField";
 
 export default function Stats() : JSX.Element {
     return (

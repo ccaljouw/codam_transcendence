@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { OnlineStatus } from "@prisma/client";
 import { Socket } from "socket.io";
 import { ChatSocketService } from "src/chat/chatsocket.service";
-import { UpdateUserDto } from "src/users/dto/update-user.dto";
+import { UpdateUserDto } from "dto/users/update-user.dto";
 import { UsersService } from "src/users/users.service";
 
 @Injectable()

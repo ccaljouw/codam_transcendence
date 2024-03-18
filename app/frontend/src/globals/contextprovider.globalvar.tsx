@@ -1,15 +1,14 @@
 "use client";
-import ChatArea from "../app/components/ChatArea";
 import { createContext, useEffect, useState } from "react";
-import { transcendenceSocket } from "./socket.globalvar";
-import { UpdateUserDto } from "../../../backend/src/users/dto/update-user.dto";
 import { OnlineStatus } from "@prisma/client";
-import { constants } from "./constants.globalvar";
-import { WebsocketStatusChangeDto } from '../../../backend/src/socket/dto/statuschange'
-import Login from "src/components/Login";
-import { UserProfileDto } from "../../../backend/src/users/dto/user-profile.dto";
-import { ChatMessageToRoomDto } from "../../../backend/src/chat/dto/chat-messageToRoom.dto";
-import MenuBar from "src/app/components/MenuBar";
+import { UserProfileDto, UpdateUserDto } from "@ft_dto/users";
+import { ChatMessageToRoomDto } from "@ft_dto/chat";
+import { WebsocketStatusChangeDto } from '@ft_dto/socket'
+import { constants } from "@ft_global/constants.globalvar";
+import { transcendenceSocket } from '@ft_global/socket.globalvar'
+import ChatArea from "./layoutComponents/ChatArea";
+import MenuBar from "./layoutComponents/MenuBar";
+import Login from "./layoutComponents//Login";
 
 // Context for the entire app
 interface TranscendenceContextVars {
@@ -95,7 +94,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 				online: OnlineStatus.ONLINE,
 				token: transcendenceSocket.id
 			}
-			const response = await fetch(constants.API_SINGLE_USER + currentUser.id, {
+			const response = await fetch(constants.API_USERS + currentUser.id, {
 				method: 'PATCH',
 				headers: {
 					'Content-Type': 'application/json',

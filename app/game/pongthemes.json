@@ -1,0 +1,43 @@
+{
+  "blackAndWhite": {
+    "leftPaddleColor": "white",
+    "rightPaddleColor": "white",
+    "ballColor": "white",
+    "backgroundColor": "black",
+    "lineColor": "white",
+    "wallColor": "white",
+    "backWallColor": "white",
+    "leftPlayerColor": "white",
+    "rightPlayerColor": "white",
+    "textColor": "white",
+    "textFont": "Arial"
+  },
+
+  "classic": {
+    "leftPaddleColor": "#4CBB17",
+    "rightPaddleColor": "#4CBB17",
+    "ballColor": "#4CBB17",
+    "backgroundColor": "#002500",
+    "lineColor": "#4CBB17",
+    "wallColor": "#4CBB17",
+    "backWallColor": "#4CBB17",
+    "leftPlayerColor": "#4CBB17",
+    "rightPlayerColor": "#4CBB17",
+    "textColor": "#4CBB17",
+    "textFont": "Arial"
+  },
+  
+  "neon": {
+    "leftPaddleColor": "#FF1493",
+    "rightPaddleColor": "#FF1493",
+    "ballColor": "#FF1493",
+    "backgroundColor": "black",
+    "lineColor": "#39FF14",
+    "wallColor": "#39FF14",
+    "backWallColor": "#FF1493",
+    "leftPlayerColor": "#FF1493",
+    "rightPlayerColor": "#FF1493",
+    "textColor": "#00D0FF",
+    "textFont": "Helvetica"
+  }
+}

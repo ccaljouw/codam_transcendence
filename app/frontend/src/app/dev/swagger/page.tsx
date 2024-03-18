@@ -1,5 +1,5 @@
-import { constants } from 'src/globals/constants.globalvar';
-import IframeHolder from '../../../components/IframeHolder';
+import { constants } from '@ft_global/constants.globalvar';
+import IframeHolder from '@ft_global/functionComponents/IframeHolder';
 
 export default function Page() : JSX.Element {
 	return (
