@@ -1,5 +1,5 @@
 import Test from '../components/Test';
-import { constants } from '@global/constants.globalvar';
+import { constants } from '@ft_global/constants.globalvar';
 
 export default function page() : JSX.Element {
   return (

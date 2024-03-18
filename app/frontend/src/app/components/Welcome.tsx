@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { TranscendenceContext } from "@global/contextprovider.globalvar";
+import { TranscendenceContext } from "@ft_global/contextprovider.globalvar";
 
 export default function Welcome() : JSX.Element {
 	const {currentUser} = useContext(TranscendenceContext);

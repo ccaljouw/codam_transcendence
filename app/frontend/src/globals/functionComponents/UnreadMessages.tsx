@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { TranscendenceContext } from "@global/contextprovider.globalvar";
-import { constants } from "@global/constants.globalvar";
+import { TranscendenceContext } from "@ft_global/contextprovider.globalvar";
+import { constants } from "@ft_global/constants.globalvar";
 import DataFetcherJson from "./DataFetcherJson";
 
 /**

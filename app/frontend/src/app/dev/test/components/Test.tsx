@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from 'react';
-import useFetch from '@global/functionComponents/useFetch';
-import IframeHolder from '@global/functionComponents/IframeHolder';
+import useFetch from '@ft_global/functionComponents/useFetch';
+import IframeHolder from '@ft_global/functionComponents/IframeHolder';
 import { constants } from 'src/globals/constants.globalvar';
 
 interface DataFormat { //todo: JMA: remove this?

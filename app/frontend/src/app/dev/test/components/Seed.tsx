@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from 'react';
-import { constants } from '@global/constants.globalvar';
-import useFetch from '@global/functionComponents/useFetch';
+import { constants } from '@ft_global/constants.globalvar';
+import useFetch from '@ft_global/functionComponents/useFetch';
 
 interface DataFormat { //todo: JMA: remove this?
   msg: string;

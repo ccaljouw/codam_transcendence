@@ -1,11 +1,11 @@
 "use client";
 import { useRef, useEffect, useState } from 'react';
 import { GameState } from '@prisma/client';
-import { UpdateGameDto, updateGameStateDto } from '@dto/game';
+import { UpdateGameDto, updateGameStateDto } from '@ft_dto/game';
 import { Game } from '../../../../../game/components/Game.tsx';
 import { instanceTypes } from '../../../../../game/utils/constants.tsx';
 import { transcendenceSocket } from '../../../globals/socket.globalvar.tsx'; // websocket global
-import { constants } from '@global/constants.globalvar.tsx';
+import { constants } from '@ft_global/constants.globalvar.tsx';
 
 export default function GameComponent() {
 	const gameSocket = transcendenceSocket;

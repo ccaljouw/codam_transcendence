@@ -1,5 +1,5 @@
 import io from 'socket.io-client'
-import { constants } from '@global/constants.globalvar'
+import { constants } from '@ft_global/constants.globalvar'
 // import 
 
 

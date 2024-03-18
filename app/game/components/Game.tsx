@@ -1,6 +1,6 @@
 
-import { UpdateGameDto, UpdateGameUserDto, UpdateGameObjectsDto } from '@dto/game';
-import { transcendenceSocket } from '@global/socket.globalvar'
+import { UpdateGameDto, UpdateGameUserDto, UpdateGameObjectsDto } from '@ft_dto/game';
+import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { GameState } from '@prisma/client';
 import { SoundFX } from "../gameObjects/SoundFX";
 import { Wall } from "../gameObjects/Wall";
