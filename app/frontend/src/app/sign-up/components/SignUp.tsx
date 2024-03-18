@@ -48,12 +48,12 @@ export default function SignUp(): JSX.Element {
 			{user == null &&
 				<form onSubmit={handleSubmit}>
 				<h1>Sign up to play</h1>
-				<FormInput types="text" text="First Name" theName="firstName"/>
-				<FormInput types="text" text="Last Name" theName="lastName"/>
-				<FormInput types="text" text="Username" theName="userName"/>
-				<FormInput types="email" text="Email address" theName="email"/>
-				<FormInput types="text" text="Login name" theName="loginName"/>
-				<FormInput types="password" text="Password" theName="hash"/>	
+				<FormInput types="text" text="First Name" theName="firstName" required={true}/>
+				<FormInput types="text" text="Last Name" theName="lastName" required={true}/>
+				<FormInput types="text" text="Username" theName="userName" required={true}/>
+				<FormInput types="email" text="Email address" theName="email" required={true}/>
+				<FormInput types="text" text="Login name" theName="loginName" required={true}/>
+				<FormInput types="password" text="Password" theName="hash" required={true}/>	
 				<button className="btn btn-dark w-10 py-2 mt-3" type="submit" >Sign up</button>
 				</form>
 			}
