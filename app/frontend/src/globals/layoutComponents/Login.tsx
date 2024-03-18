@@ -1,8 +1,8 @@
 import { useContext, useEffect } from 'react';
-import { UserProfileDto } from '@dto/users';
-import { constants } from '@global/constants.globalvar';
-import { TranscendenceContext } from '@global/contextprovider.globalvar';
-import useFetch from '@global/functionComponents/useFetch';
+import { UserProfileDto } from '@ft_dto/users';
+import { constants } from '@ft_global/constants.globalvar';
+import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
+import useFetch from '@ft_global/functionComponents/useFetch';
 import SignUp from 'src/app/sign-up/components/SignUp';
 import ChooseUser from 'src/app/sign-up/components/ChooseUser';
 import Seed from 'src/app/dev/test/components/Seed';

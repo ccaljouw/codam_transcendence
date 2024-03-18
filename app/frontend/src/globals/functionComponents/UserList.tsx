@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { UserProfileDto } from '@dto/users'
+import { UserProfileDto } from '@ft_dto/users'
 
 
 interface UserListProps {

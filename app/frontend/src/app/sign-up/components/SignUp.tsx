@@ -1,10 +1,10 @@
 "use client";
 import { FormEvent, useEffect, useContext } from 'react';
-import { CreateUserDto, UserProfileDto } from '@dto/users';
-import { TranscendenceContext } from '@global/contextprovider.globalvar';
-import { constants } from '@global/constants.globalvar'
-import useFetch from '@global/functionComponents/useFetch';
-import FormInput from '@global/functionComponents/FormInput';
+import { CreateUserDto, UserProfileDto } from '@ft_dto/users';
+import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
+import { constants } from '@ft_global/constants.globalvar'
+import useFetch from '@ft_global/functionComponents/useFetch';
+import FormInput from '@ft_global/functionComponents/FormInput';
 
 export default function SignUp(): JSX.Element {
 	const { data: user, isLoading, error, fetcher } = useFetch<CreateUserDto, UserProfileDto>();

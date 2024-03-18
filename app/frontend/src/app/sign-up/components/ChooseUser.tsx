@@ -1,10 +1,10 @@
 "use client";
 import { useContext } from 'react';
-import { UserProfileDto } from '@dto/users';
-import { TranscendenceContext } from '@global/contextprovider.globalvar';
-import { constants } from '@global/constants.globalvar'
-import UserList from '@global/functionComponents/UserList';
-import DataFetcherJson from '@global/functionComponents/DataFetcherJson';
+import { UserProfileDto } from '@ft_dto/users';
+import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
+import { constants } from '@ft_global/constants.globalvar'
+import UserList from '@ft_global/functionComponents/UserList';
+import DataFetcherJson from '@ft_global/functionComponents/DataFetcherJson';
 
 export default function ChooseUser() : JSX.Element {
 	const {setCurrentUser} = useContext(TranscendenceContext);

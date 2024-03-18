@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { TranscendenceContext } from "@global/contextprovider.globalvar";
+import { TranscendenceContext } from "@ft_global/contextprovider.globalvar";
 import { OnlineStatus } from "@prisma/client";
 
 const StatusDisplay = {
