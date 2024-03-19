@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { TranscendenceContext } from "@ft_global/contextprovider.globalvar";
 import { constants } from "@ft_global/constants.globalvar";
-import DataFetcherJson from "./DataFetcherJson";
+// import DataFetcherJson from "./DataFetcherJson";
+import useFetch from "./useFetch";
 
 /**
  * Function to display unread messages next to a user (hopefully later on also next to a chat, but that needs work)
@@ -12,6 +13,8 @@ export default function UnreadMessages(props: {secondUserId:number, indexInUserL
   const {messageToUserNotInRoom, currentUser, currentChatRoom} = useContext(TranscendenceContext);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [chatId, setChatId] = useState(-1);
+  const {data: chatIdFromDb, isLoading: chatIdLoading, error: chatIdError, fetcher: chatIdFetcher} = useFetch<null, number>();
+  const {data: unreadsFromDb, isLoading: unreadsLoading, error: unreadsError, fetcher: unreadsFetcher} = useFetch<null, number>();
   
   // Fetch chatId when component is mounted
   useEffect(() => {
@@ -45,24 +48,35 @@ export default function UnreadMessages(props: {secondUserId:number, indexInUserL
 	}
   },[messageToUserNotInRoom]);
 
+  useEffect(() => {
+	if (chatIdFromDb)
+		setChatId(chatIdFromDb);
+  }
+  ,[chatIdFromDb]);
+
+  useEffect(() => {
+	console.log("unreads useEffect", unreadsFromDb, chatIdFromDb);
+	if (unreadsFromDb)
+		setUnreadMessages(unreadsFromDb);
+  },[unreadsFromDb]);
+
   const fetchChatId = async () => {
-	const response : number | Error = await DataFetcherJson({url: constants.CHAT_CHECK_IF_DM_EXISTS + `${currentUser.id}/${props.secondUserId}`});
-	if (response instanceof Error)
-		return ;
-	setChatId(response);
+	if(!currentUser.id || !props.secondUserId)
+		return;
+	await chatIdFetcher({url: constants.CHAT_CHECK_IF_DM_EXISTS + `${currentUser.id}/${props.secondUserId}`});
   }
 
   const fetchUnreads = async () => {
 	if(chatId === -1) // If chatId is not set, return
 		return;
-	const unreads : number | Error = await DataFetcherJson({url: constants.CHAT_GET_UNREADS + `${chatId}/${currentUser.id}`});
-	if (unreads instanceof Error)
-		return;
-	setUnreadMessages(unreads);
-  };
+	await unreadsFetcher({url: constants.CHAT_GET_UNREADS + `${chatId}/${currentUser.id}`});
+  }
 
   return (
-	<>{ unreadMessages > 0 ?
+	<>
+	{(chatIdLoading || unreadsLoading) && "L"}
+	{(chatIdError || unreadsError) && "E"}
+	{unreadMessages > 0 ?
 		"(" + unreadMessages +")" :
 		"" }</>
   );

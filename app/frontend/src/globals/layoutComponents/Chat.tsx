@@ -1,13 +1,13 @@
 "use client"
 import { useContext, useEffect, useRef, useState } from 'react';
-import { FetchChatMessageDto, ChatMessageToRoomDto, CreateChatSocketDto, FetchChatDto } from '@ft_dto/chat';
+import { FetchChatMessageDto, ChatMessageToRoomDto, CreateChatSocketDto, UpdateChatDto } from '@ft_dto/chat';
 import { UserProfileDto } from '@ft_dto/users';
 import { constants} from '@ft_global/constants.globalvar';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import { transcendenceSocket } from '@ft_global/socket.globalvar';
 import { ChatType, OnlineStatus } from '@prisma/client';
-import DataFetcherJson from '@ft_global/functionComponents/DataFetcherJson';
-import DataFetcherMarkup from '@ft_global/functionComponents/DataFetcherMarkup';
+import useFetch from '@ft_global/functionComponents/useFetch';
+import DataFetcher from '@ft_global/functionComponents/DataFetcher';
 
 
 
@@ -21,13 +21,12 @@ const chatSocket = transcendenceSocket;
 export default function Chat({ user1, user2, chatID }: { user1?: number, user2?: number, chatID?: number }) {
 	const [message, setMessage] = useState('');
 	const [chat, setChat] = useState<string[]>([]);
-	// const [currentChat, setCurrentChat] = useState<UpdateChatDto>({ id: 0, ownerId: 0, visibility: ChatType.DM });
 	const firstRender = useRef(true);
 	const firstMessage = useRef(true);
 	const { currentUser, someUserUpdatedTheirStatus, currentChatRoom, setCurrentChatRoom } = useContext(TranscendenceContext);
 	const messageBox = useRef<HTMLDivElement>(null);
 	const { data: currentChat, isLoading: chatLoading, error: chatError, fetcher: chatFetcher } = useFetch<CreateChatSocketDto, UpdateChatDto>();
-	// const {data: message, isLoading: messageLoading, error: messageError}
+	const { data: chatMessages, isLoading: chatMessagesLoading, error: chatMessagesError, fetcher: chatMessagesFetcher } = useFetch<null, FetchChatMessageDto[]>();
 
 	// This effect is used to set up the chat and join the room when the component is rendered.
 	useEffect(() => {
@@ -46,6 +45,7 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 		}
 		return () => {
 			chatSocket.off('chat/messageFromRoom');
+			setCurrentChatRoom(-1);
 		};
 	}, [user2, firstRender.current]);
 
@@ -59,7 +59,9 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 
 	// This effect is used to join the room when the chatId changes.
 	useEffect(() => {
-		if (currentChat?.id) {
+		if (!currentChat)
+			return;
+		if (currentChat.id) {
 			joinRoom();
 			fetchMessages();
 		}
@@ -90,17 +92,17 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 		await chatFetcher({ url: constants.CHAT_CREATE_DM, fetchMethod: "POST", payload })
 	}
 
+	useEffect(() => {
+		if (!chatMessages)
+			return;
+		setChat(chatMessages.map((message: FetchChatMessageDto) => `${message.userName}: ${message.message}`));
+	},[chatMessages])
+
 	// This function is used to fetch the messages for the current chat.
 	const fetchMessages = async () => {
-		console.log('Fetching messages for chat', currentChat?.id);
-		const data: FetchChatMessageDto[] = await DataFetcherJson({ url: constants.CHAT_GET_MESSAGES_FROM_CHAT + currentChat.id });
-		if (data instanceof Error) {
-			console.log('Error fetching messages:', data);
-			setChat(['Error fetching messages, please try again later.']);
+		if (!currentChat)
 			return;
-		}
-		const mappedData = data.map((message: FetchChatMessageDto) => `${message.userName}: ${message.message}`);
-		setChat(mappedData);
+		await chatMessagesFetcher({ url: constants.CHAT_GET_MESSAGES_FROM_CHAT + currentChat.id });
 	}
 
 	// This function is used to join the room.
@@ -175,17 +177,20 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 				{
 					currentChat?.visibility == ChatType.DM ?
 						<div>Chat between {currentUser.userName} and
-							<DataFetcherMarkup<UserProfileDto>
-								url={constants.API_USERS + user2}
-								renderData={(data) => (
-									<span> {data.userName}</span>
-								)} /></div>
+						<DataFetcher<UserProfileDto, UserProfileDto>
+							url={constants.API_USERS + user2}
+							showData={(data: UserProfileDto) => <>{data.userName}</>}
+							showLoading={<></>}
+						/>
+						</div>
 						: <></>
 				}
 				<div className='chatMessages' ref={messageBox}>
-					{chat.map((message, index) => (
+					{chatMessagesLoading && <>Chat messages are loading</>}
+					{chatMessagesError && <>Error loading chat messages</>}
+					{chatMessages? chat.map((message, index) => (
 						<p key={index}>{message}</p>
-					))}
+					)):<></>}
 				</div>
 				<div className='chatInput'>
 					<form onSubmit={(e) => {

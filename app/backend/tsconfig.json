@@ -16,6 +16,12 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
-  }
+    "noFallthroughCasesInSwitch": false,
+	"paths":
+	{
+		"@ft_dto/*": ["./dto/*"],
+		// "@ft_dto/users/*": ["./dto/users*"],
+		// "@ft_dto/chat/*": ["./dto/chat*"],
+	}
+  },
 }
