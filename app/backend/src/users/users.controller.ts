@@ -1,9 +1,7 @@
 import { Controller, ParseIntPipe, Body, Param, Get, Post, Patch, Delete } from '@nestjs/common';
 import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { CreateUserDto } from '../../dto/users/create-user.dto';
-import { UpdateUserDto } from '../../dto/users/update-user.dto';
-import { UserProfileDto } from '../../dto/users/user-profile.dto';
+import { CreateUserDto, UpdateUserDto,UserProfileDto } from '@ft_dto/users';
 
 
 @Controller('users')

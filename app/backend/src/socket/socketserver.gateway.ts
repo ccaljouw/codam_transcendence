@@ -1,7 +1,7 @@
 import { Injectable, Module } from '@nestjs/common';
 import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { WebsocketStatusChangeDto } from '../../dto/socket/statuschange';
+import { WebsocketStatusChangeDto } from '@ft_dto/socket';
 import { SocketServerService } from './socketserver.service';
 import { UsersService } from 'src/users/users.service';
 import { OnlineStatus } from '@prisma/client';

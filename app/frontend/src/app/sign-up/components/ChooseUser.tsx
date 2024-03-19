@@ -25,18 +25,10 @@ export default function ChooseUser() : JSX.Element {
 		)
 	}
 
-	const fetchAllUsers = async () : Promise<UserProfileDto[]> => {
-		return DataFetcherJson({url: constants.API_ALL_USERS}); //todo: JMA: use useFetch instead of dataFetcherJson
-		// await fetcher({url: constants.API_ALL_USERS});
-		// if (users != null)
-		// 	return users;
-		// return {} as UserProfileDto[];
-	}
-
 	return (
 		<>
 			<h1>Who do you want to be?</h1>
-			<UserList userDisplayFunction={setCurrentUserDisplayFunc} userFetcherFunction={fetchAllUsers}/>
+			<UserList userDisplayFunction={setCurrentUserDisplayFunc} fetchUrl={constants.API_ALL_USERS}/>
 		</>
 	);
 }
