@@ -1,0 +1,9 @@
+.userLink {
+    color: blue;
+}
+
+.userLink:hover {
+    color: red;
+}
+
+/* todo: consider moving this to global stylesheet */
