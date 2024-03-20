@@ -9,6 +9,7 @@ import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import ChatArea from "./layoutComponents/ChatArea";
 import MenuBar from "./layoutComponents/MenuBar";
 import Login from "./layoutComponents//Login";
+import DottedCircles from "./layoutComponents/DottedCircles";
 
 // Context for the entire app
 interface TranscendenceContextVars {
@@ -122,6 +123,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	return (
 		<>
 			<TranscendenceContext.Provider value={contextValues}>
+				<DottedCircles />
 				<MenuBar />
 				{!currentUser.id && <Login />}
 				{currentUser.id && 

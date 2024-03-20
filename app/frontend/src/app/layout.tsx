@@ -1,7 +1,7 @@
 "use server";
 import 'bootstrap/dist/css/bootstrap.css'
 import '../styles/stylesheet.css';
-import '../styles/styleSimpleGrid.css';
+import '../styles/styleStrongPong.css';
 import { ContextProvider } from '@ft_global/contextprovider.globalvar';
 import BootstrapClient from '@ft_global/layoutComponents/BootstrapClient.tsx';
 
