@@ -123,6 +123,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	return (
 		<>
 			<TranscendenceContext.Provider value={contextValues}>
+				{/* <DottedCircles /> { //JMA: Leave this for now */}
 				<MenuBar />
 				{!currentUser.id && <Login />}
 				{currentUser.id && 
