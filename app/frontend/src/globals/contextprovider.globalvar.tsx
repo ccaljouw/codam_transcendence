@@ -123,7 +123,6 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	return (
 		<>
 			<TranscendenceContext.Provider value={contextValues}>
-				<DottedCircles />
 				<MenuBar />
 				{!currentUser.id && <Login />}
 				{currentUser.id && 
