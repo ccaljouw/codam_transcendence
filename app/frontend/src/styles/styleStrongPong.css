@@ -1,3 +1,10 @@
+:root {
+    /* --bs-body-font-family: var(--my-font-comic_neue) !important; */
+
+
+
+}
+
 .root-layout {
     /* background-image: repeating-conic-gradient(at 75% 50%, red 0%, yellow 20%, red 50%); */
     /* background-image: repeating-conic-gradient(at 75% 50%, rgb(236, 50, 50) 0%, rgb(244, 244, 34) 50%); */
@@ -9,6 +16,11 @@
     background-position: center;
     background-size: 10px 10px;
     mask-image: url(#mask); */
+}
+
+h1, p {
+    /* color: white; */
+    background: #ffffff22;
 }
 
 @media screen and (max-width: 992px) {

@@ -32,7 +32,7 @@ export default function MenuBar(): JSX.Element {
 							<MenuLink href="/logout" title="Logout" />
 						</>}
 					</div>
-					<div className="navbar-nav">
+					<div className={"navbar-nav"}>
 						{/* todo: limit access on the pages itself as well */}
 						{(currentUser.loginName == 'ccaljouw' || currentUser.loginName == 'jaberkro' || currentUser.loginName == 'avan-and' || currentUser.loginName == 'cwesseli') && <>
 							<li className="nav-item dropdown">
