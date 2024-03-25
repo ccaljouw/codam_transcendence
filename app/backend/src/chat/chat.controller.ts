@@ -3,7 +3,6 @@ import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nest
 import { UpdateChatMessageDto, CreateChatSocketDto, CreateChatMessageDto, FetchChatMessageDto } from '@ft_dto/chat';
 import { ChatMessageService } from './chat-messages.service';
 import { ChatService } from './chat.service';
-import { FetchChatMessageDto } from 'dto/chat';
 
 
 @Controller('chat')
