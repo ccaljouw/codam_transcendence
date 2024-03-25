@@ -11,6 +11,7 @@
     "test:ci": "jest --ci"
   },
   "dependencies": {
+    "@next/font": "^14.1.4",
     "navigation": "^6.2.0",
     "next": "^14.1.0"
   }
