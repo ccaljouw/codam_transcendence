@@ -22,7 +22,6 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 	const [message, setMessage] = useState('');
 	const [chat, setChat] = useState<string[]>([]);
 	const firstRender = useRef(true);
-	const firstMessage = useRef(true);
 	const { currentUser, someUserUpdatedTheirStatus, currentChatRoom, setCurrentChatRoom } = useContext(TranscendenceContext);
 	const messageBox = useRef<HTMLDivElement>(null);
 	const { data: currentChat, isLoading: chatLoading, error: chatError, fetcher: chatFetcher } = useFetch<CreateChatSocketDto, UpdateChatDto>();
@@ -120,12 +119,7 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 		chatSocket.emit('chat/joinRoom', statusChangeMsg);
 		setCurrentChatRoom(currentChat.id);
 		chatSocket.on('chat/messageFromRoom', (payload: ChatMessageToRoomDto) => {
-			if (firstMessage.current) { //This is to avoid the first message being `<< user has joined the chat >>
-				firstMessage.current = false;
-				return;
-			} else {
 				handleMessageFromRoom(payload);
-			}
 		});
 	}
 
@@ -142,13 +136,22 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 		};
 		chatSocket.emit('chat/leaveRoom', leaveMessage);
 		chatSocket.off('chat/messageFromRoom');
-		firstMessage.current = true;
 	}
 
 	// This function is used to handle messages from the room.
 	const handleMessageFromRoom = (payload: ChatMessageToRoomDto) => {
 		if (payload.action) {
-			setChat(prevChat => [...prevChat, payload.message]);
+			console.log(`Received action message: ${payload.message} ${payload.userId} ${payload.userName} ${payload.room}`);
+			if (payload.message == "JOIN" && payload.userId == user1) // If the user is the current user, we don't want to show the message.	
+					return ;
+			switch (payload.message) {
+				case "JOIN":
+					setChat(prevChat => [...prevChat, `<< ${payload.userName} has joined the chat >>`]);
+					break;
+				case "LEAVE":
+					setChat(prevChat => [...prevChat, `<< ${payload.userName} has left the chat >>`]);
+					break;
+			}
 		} else {
 			setChat(prevChat => [...prevChat, `${payload.userName}: ${payload.message}`]);
 		}
