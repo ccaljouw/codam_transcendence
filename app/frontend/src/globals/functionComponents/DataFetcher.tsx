@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import useFetch from "./useFetch";
 
 export default function DataFetcher<T,U> (
-	props: {url: string,
+	{url, showData, method, showLoading, showError}: {url: string,
 	showData: (data: U) => JSX.Element,
 	method?: string,
 	showLoading?: JSX.Element,
@@ -10,23 +10,23 @@ export default function DataFetcher<T,U> (
 )
 {
 	const {data, isLoading, error, fetcher} = useFetch<T,U>();
-	const loadingComponent = props.showLoading || <p>Loading...</p>;
-	const errorComponent = props.showError || <p>Error: {error?.message}</p>;
+	const loadingComponent = showLoading || <p>Loading...</p>;
+	const errorComponent = showError || <p>Error: {error?.message}</p>;
 	
 	
 	useEffect(() => {
 		fetchData();
-	}, [props.url]);
+	}, [url]);
 
 	const fetchData = async () => {
-		await fetcher({url: props.url, fetchMethod: props.method});
+		await fetcher({url: url, fetchMethod: method});
 	};
 
 	return (
 		<>
 			{isLoading && loadingComponent}
 			{error && errorComponent}
-			{data && props.showData(data)}
+			{data && showData(data)}
 		</>
 	)
 	// fetcher({url: url, fetchMethod: method});

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { UserProfileDto } from "@ft_dto/users";
 import { constants } from "@ft_global/constants.globalvar";
 import useFetch from '@ft_global/functionComponents/useFetch';
-import UserLink from "src/globals/layoutComponents/UserLink/UserLink";
+import UserContextMenu from "src/globals/layoutComponents/UserLink/UserLink";
 
 export default function Users() : JSX.Element {
 	const {data:users, isLoading, error, fetcher} = useFetch<null, UserProfileDto[]>();
@@ -26,7 +26,7 @@ export default function Users() : JSX.Element {
 				<div>
 					{users.map((user) => (
 						<>
-							<UserLink id={user.id} userName={user.userName}/>
+							<UserContextMenu id={user.id} userName={user.userName}/>
 						</>
 					))}
 				</div>
