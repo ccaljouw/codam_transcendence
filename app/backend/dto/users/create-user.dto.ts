@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { OnlineStatus } from '@prisma/client';
+import { OnlineStatus, Tokens } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsEmail,
@@ -58,10 +58,4 @@ export class CreateUserDto {
   @ApiProperty({ required: false })
   @IsOptional()
   online?: OnlineStatus;
-
-  //   @ApiProperty
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsString()
-  token?: string;
 }

@@ -8,23 +8,31 @@ import UserList from '@ft_global/functionComponents/UserList';
 import StatusIndicator from '@ft_global/functionComponents/StatusIndicator';
 import UnreadMessages from '@ft_global/functionComponents/UnreadMessages';
 import Chat from './Chat';
+import UserContextMenu from './UserLink/UserLink';
 
 export default function ChatArea() {
 	const [secondUser, setSecondUser] = useState(0);
 	const {currentUser} = useContext(TranscendenceContext)
 
+	const changeSecondUser = (userId: number) => {
+		setSecondUser(userId);
+	}
 	// Function to display users in the userlist
 	const selectSecondUserDisplayFunc = (user: UserProfileDto, indexInUserList: number, statusChangeCallback: (idx: number) => void) => {
 		return (
-			<li key={user.id} onClick={() => { setSecondUser(user.id); console.log(`Second user set to ${user.id}`) }}>
-				<StatusIndicator
+			<>
+			<li key={user.id}>
+			<StatusIndicator
 					userId={user.id}
 					status={user.online}
 					statusChangeCallback={statusChangeCallback}
-					indexInUserList={indexInUserList} /> {user.firstName} {user.lastName} - {user.email}
-				<b> <UnreadMessages secondUserId={user.id} indexInUserList={indexInUserList} statusChangeCallBack={statusChangeCallback} /></b>
+					indexInUserList={indexInUserList} /> 
+			&nbsp;&nbsp;<a onClick={()=>setSecondUser(user.id)}>{user.firstName} {user.lastName}</a>&nbsp;
+			<b><UnreadMessages secondUserId={user.id} indexInUserList={indexInUserList} statusChangeCallBack={statusChangeCallback} /></b>
+			<UserContextMenu user={user} />
 			</li>
-		)
+			</>
+			)
 	}
 
 

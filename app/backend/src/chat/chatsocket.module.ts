@@ -6,10 +6,11 @@ import { SocketServerModule } from '../socket/socketserver.module';
 import { ChatMessagesController } from './chat.controller';
 import { ChatMessageService } from './chat-messages.service';
 import { ChatService } from './chat.service';
+import { TokenService } from 'src/users/token.service';
 
 @Module({
   imports: [SocketServerModule],
-	providers: [ChatSocketGateway, ChatSocketService, ChatMessageService, ChatService, PrismaService],
+	providers: [ChatSocketGateway, ChatSocketService, ChatMessageService, ChatService, PrismaService, TokenService],
 	controllers: [ChatMessagesController],
 })
 export class ChatSocketModule {}

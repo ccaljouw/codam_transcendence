@@ -1,9 +1,11 @@
 .userLink {
     color: blue;
+	text-decoration: none;
 }
 
 .userLink:hover {
     color: red;
+	cursor: pointer;
 }
 
 /* todo: consider moving this to global stylesheet */

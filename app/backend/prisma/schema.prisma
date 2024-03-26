@@ -11,117 +11,145 @@
 //    conform data definition.
 // Note: after migration, the database is empty.
 
+// ***************************************************************** //
+//
+
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-arm64-openssl-3.0.x", "darwin-arm64"]
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "linux-arm64-openssl-3.0.x", "darwin-arm64"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
-enum OnlineStatus {
-	OFFLINE
-	ONLINE
-	IN_GAME
-}
+// ***************************************************************** //
+//			MODELS
 
 model User {
-  id        Int    @id @default(autoincrement())
-  loginName String @unique
-  hash      String
+    id        Int    @id @default(autoincrement())
+    loginName String @unique
+    hash      String
 
-  userName  String? //if no userName is provided loginName is used
-  email     String?
-  firstName String?
-  lastName  String?
-  token     String?
+    userName  String? //if no userName is provided loginName is used
+    email     String?
+    firstName String?
+    lastName  String?
+    token     Tokens[]
+	// token	 String?
 
-  avatarId  Int  @default(1)
-  online    OnlineStatus  @default(OFFLINE)
-  rank      Int? @default(-1)
+    avatarId Int          @default(1)
+    online   OnlineStatus @default(OFFLINE)
+    rank     Int?         @default(-1)
 
-  chats     ChatUsers[]
-  games     GameUser[]
+    chats ChatUsers[]
+    games GameUser[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+	// friends User[] @relation("Friends")
+	// friendOf User[] @relation("Friends")
+
+	// blocked User[] @relation("Blocked")
+	// blockedBy User[] @relation("Blocked")
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
-enum ChatType {
-	DM
-	PRIVATE
-	PROTECTED
-	PUBLIC
-}
+model Tokens {
+    id     Int    @id @default(autoincrement())
+    token  String @unique
+    userId Int
+	chatId Int?
 
-enum ChatUserRole {
-	DEFAULT
-	ADMIN
-	OWNER
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id])
 }
 
 model Chat {
-  id      Int @id @default(autoincrement())
-  ownerId Int @default(-1)
-  visibility ChatType @default(PUBLIC)
+    id         Int      @id @default(autoincrement())
+    ownerId    Int      @default(-1)
+    visibility ChatType @default(PUBLIC)
 
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-  users     ChatUsers[]
-  berichten ChatMessages[]
+    createdAt DateTime       @default(now())
+    updatedAt DateTime       @updatedAt
+    users     ChatUsers[]
+    berichten ChatMessages[]
 }
 
 model ChatUsers {
-  id       Int      @id @default(autoincrement())
-  chatId   Int
-  userId   Int
-  lastRead DateTime
-  role	ChatUserRole @default(DEFAULT)
-  isInChatRoom Boolean @default(false)
-  unreadMessages Int @default(0)
+    id             Int          @id @default(autoincrement())
+    chatId         Int
+    userId         Int
+    lastRead       DateTime
+    role           ChatUserRole @default(DEFAULT)
+    isInChatRoom   Boolean      @default(false)
+    unreadMessages Int          @default(0)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
-  chat      Chat     @relation(fields: [chatId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id])
+    chat      Chat     @relation(fields: [chatId], references: [id])
+	@@unique([chatId, userId])
 }
 
 model ChatMessages {
-  id      Int    @id @default(autoincrement())
-  content String
-  chatId  Int
-  userId  Int
+    id      Int    @id @default(autoincrement())
+    content String
+    chatId  Int
+    userId  Int
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  chat      Chat     @relation(fields: [chatId], references: [id])
-}
-
-enum GameState {
-  WAITING
-  READY_TO_START
-  STARTED
-  FINISHED
-  ABORTED
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    chat      Chat     @relation(fields: [chatId], references: [id])
 }
 
 model Game {
-	id 			    Int @id @default(autoincrement())
-	state		    GameState
+    id    Int       @id @default(autoincrement())
+    state GameState
 
-	GameUsers   GameUser[]
+    GameUsers GameUser[]
 }
 
 model GameUser {
-	id			Int 	@id @default(autoincrement())
-	score		Int 	@default(0)
-	win			Boolean?
+    id    Int      @id @default(autoincrement())
+    score Int      @default(0)
+    win   Boolean?
 
-	gameId	Int
-	game		Game 	@relation(fields: [gameId], references: [id])
+    gameId Int
+    game   Game @relation(fields: [gameId], references: [id])
 
-	userId	Int
-	user		User 	@relation(fields: [userId], references: [id])
+    userId Int
+    user   User @relation(fields: [userId], references: [id])
+}
+
+// ***************************************************************** //
+//			ENUMS
+
+enum OnlineStatus {
+    OFFLINE
+    ONLINE
+    IN_GAME
+}
+
+enum ChatType {
+    DM
+    PRIVATE
+    PROTECTED
+    PUBLIC
+}
+
+enum ChatUserRole {
+    DEFAULT
+    ADMIN
+    OWNER
+}
+
+enum GameState {
+    WAITING
+    READY_TO_START
+    STARTED
+    FINISHED
+    ABORTED
 }
