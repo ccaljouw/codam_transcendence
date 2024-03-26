@@ -1,4 +1,3 @@
-// "use server";
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../styles/stylesheet.css';
 // import '../styles/styleSimpleGrid.css'; // JMA: leave this for now for easy switching

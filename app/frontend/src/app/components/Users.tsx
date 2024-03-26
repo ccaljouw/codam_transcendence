@@ -4,6 +4,7 @@ import { UserProfileDto } from "@ft_dto/users";
 import { constants } from "@ft_global/constants.globalvar";
 import useFetch from '@ft_global/functionComponents/useFetch';
 import UserContextMenu from "src/globals/layoutComponents/UserLink/UserLink";
+import { FontBangers } from "src/globals/layoutComponents/Font";
 
 export default function Users() : JSX.Element {
 	const {data:users, isLoading, error, fetcher} = useFetch<null, UserProfileDto[]>();
@@ -19,7 +20,9 @@ export default function Users() : JSX.Element {
 
 	return (
         <div className="text-center">
-			<h1>Users</h1>
+			<FontBangers>
+				<h3>Users</h3>
+			</FontBangers>
 			{isLoading && <p>Loading...</p>}
 			{error != null && <p>Error: {error.message}</p> }
 			{(users != null && users.length > 0 && 

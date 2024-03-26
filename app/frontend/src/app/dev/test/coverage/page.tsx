@@ -6,5 +6,3 @@ export default function TestCoverage() {
       <IframeHolder url={constants.API_TEST_REPORT} title="Coverage of last run tests" />
 	)
 }
-
-//todo: JMA: add constants url's

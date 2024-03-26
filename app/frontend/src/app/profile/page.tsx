@@ -4,11 +4,14 @@ import MatchHistory from "./components/MatchHistory.tsx";
 import GameSettings from "./components/GameSettings.tsx";
 import LoginSettings from "./components/LoginSettings.tsx";
 import Blocked from "./components/Blocked.tsx";
+import { FontBangers } from 'src/globals/layoutComponents/Font';
 
 export default function Page() : JSX.Element {
 	return (
 		<>
-			<h1>Profile page</h1>
+			<FontBangers>
+				<h3>Profile page</h3>
+			</FontBangers>
 			<div className="row">
 				<p>The information below is public:</p>
 				<div className="col col-lg-4 col-md-6 col-12">

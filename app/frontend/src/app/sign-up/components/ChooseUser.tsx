@@ -4,7 +4,7 @@ import { UserProfileDto } from '@ft_dto/users';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import { constants } from '@ft_global/constants.globalvar'
 import UserList from '@ft_global/functionComponents/UserList';
-import DataFetcherJson from '@ft_global/functionComponents/DataFetcherJson';
+import { FontBangers } from 'src/globals/layoutComponents/Font';
 
 export default function ChooseUser() : JSX.Element {
 	const {setCurrentUser} = useContext(TranscendenceContext);
@@ -27,7 +27,9 @@ export default function ChooseUser() : JSX.Element {
 
 	return (
 		<>
-			<h1>Who do you want to be?</h1>
+			<FontBangers>
+				<h3>Who do you want to be?</h3>
+			</FontBangers>
 			<UserList userDisplayFunction={setCurrentUserDisplayFunc} fetchUrl={constants.API_ALL_USERS}/>
 		</>
 	);

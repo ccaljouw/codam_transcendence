@@ -5,6 +5,7 @@ import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import { constants } from '@ft_global/constants.globalvar'
 import useFetch from '@ft_global/functionComponents/useFetch';
 import FormInput from '@ft_global/functionComponents/FormInput';
+import { FontBangers } from 'src/globals/layoutComponents/Font';
 
 export default function SignUp(): JSX.Element {
 	const { data: user, isLoading, error, fetcher } = useFetch<CreateUserDto, UserProfileDto>();
@@ -47,7 +48,9 @@ export default function SignUp(): JSX.Element {
 			{user != null && <p>User created with id {user.id}</p>}
 			{user == null &&
 				<form onSubmit={handleSubmit}>
-				<h1>Sign up to play</h1>
+				<FontBangers>
+					<h3>Sign up to play</h3>
+				</FontBangers>
 				<FormInput types="text" text="First Name" theName="firstName"/>
 				<FormInput types="text" text="Last Name" theName="lastName"/>
 				<FormInput types="text" text="Username" theName="userName"/>

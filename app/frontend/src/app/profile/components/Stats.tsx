@@ -1,9 +1,12 @@
 import DataField from "@ft_global/functionComponents/DataField";
+import { FontBangers } from 'src/globals/layoutComponents/Font';
 
 export default function Stats() : JSX.Element {
     return (
         <>
-            <h1>User stats </h1>
+            <FontBangers>
+                <h3>User stats </h3>
+            </FontBangers>
             <p>Not from database yet:</p>
             <DataField name="Friends" data="12" />
             <DataField name="Win/Loss ratio" data="1.0" />

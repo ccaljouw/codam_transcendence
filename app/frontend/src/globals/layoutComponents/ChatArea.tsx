@@ -9,6 +9,7 @@ import StatusIndicator from '@ft_global/functionComponents/StatusIndicator';
 import UnreadMessages from '@ft_global/functionComponents/UnreadMessages';
 import Chat from './Chat';
 import UserContextMenu from './UserLink/UserLink';
+import { FontBangers } from 'src/globals/layoutComponents/Font';
 
 export default function ChatArea() {
 	const [secondUser, setSecondUser] = useState(0);
@@ -40,7 +41,7 @@ export default function ChatArea() {
 		<>
 			{secondUser ?
 				<Chat user1={currentUser.id} user2={secondUser} />
-				: <><h3>Hello {currentUser.userName}, Who do you wanna chat with?</h3></>
+				: <><FontBangers><h3>Hello {currentUser.userName}, Who do you wanna chat with?</h3></FontBangers></>
 			}
 			<UserList userDisplayFunction={selectSecondUserDisplayFunc} fetchUrl={constants.API_ALL_USERS_BUT_ME + currentUser.id} />
 		</>
