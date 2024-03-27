@@ -39,12 +39,17 @@ export default function ChatArea() {
 
 	return (
 		<>
+			
 			{secondUser ?
+				<div className="white-box">
 				<Chat user1={currentUser.id} user2={secondUser} />
-				: <><FontBangers><h3>Hello {currentUser.userName}, Who do you wanna chat with?</h3></FontBangers></>
+				</div>
+				: <></>
 			}
-			<UserList userDisplayFunction={selectSecondUserDisplayFunc} fetchUrl={constants.API_ALL_USERS_BUT_ME + currentUser.id} />
+			<div className="white-box">
+				{secondUser? <></> : <><FontBangers><h3>Hello {currentUser.userName}, Who do you wanna chat with?</h3></FontBangers></>}
+				<UserList userDisplayFunction={selectSecondUserDisplayFunc} fetchUrl={constants.API_ALL_USERS_BUT_ME + currentUser.id} />
+			</div>
 		</>
-	)
-
+	);
 }

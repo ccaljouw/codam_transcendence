@@ -12,9 +12,9 @@ export default function Page() : JSX.Element {
 			<FontBangers>
 				<h3>Profile page</h3>
 			</FontBangers>
-			<div className="row">
+			<div className="row white-box">
 				<p>The information below is public:</p>
-				<div className="col col-lg-4 col-md-6 col-12">
+				<div className="col col-lg-4 col-md-6 col-12 dotted-area">
 					<UserInfo />
 				</div>
 				<div className="col col-lg-4 col-md-6 col-12">
@@ -24,7 +24,7 @@ export default function Page() : JSX.Element {
 					<MatchHistory />
 				</div>
 			</div>
-			<div className="row">
+			<div className="row white-box">
 				<p>The information below is only visible to you:</p>
 				<div className="col col-lg-4 col-md-6 col-12">
 					<GameSettings />

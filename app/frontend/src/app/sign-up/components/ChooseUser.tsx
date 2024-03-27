@@ -27,10 +27,12 @@ export default function ChooseUser() : JSX.Element {
 
 	return (
 		<>
-			<FontBangers>
-				<h3>Who do you want to be?</h3>
-			</FontBangers>
-			<UserList userDisplayFunction={setCurrentUserDisplayFunc} fetchUrl={constants.API_ALL_USERS}/>
+			<div className="white-box">
+				<FontBangers>
+					<h3>Who do you want to be?</h3>
+				</FontBangers>
+				<UserList userDisplayFunction={setCurrentUserDisplayFunc} fetchUrl={constants.API_ALL_USERS}/>
+			</div>
 		</>
 	);
 }

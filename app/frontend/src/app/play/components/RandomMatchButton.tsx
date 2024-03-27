@@ -3,7 +3,7 @@ import { FontBangers } from 'src/globals/layoutComponents/Font';
 export default function RandomMatchButton() {
     return (
         <>
-        <div className="text-center m-5">
+        <div className="pt-5 white-box">
 
             <Link className="btn btn-primary" href="/game" >Random Match</Link>
             <FontBangers>

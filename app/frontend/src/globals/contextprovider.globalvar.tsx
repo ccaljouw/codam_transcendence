@@ -173,7 +173,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 				<MenuBar />
 				{!currentUser.id && <Login />}
 				{currentUser.id && 
-				<div className="content-area">
+				<div className="content-area text-center">
 					<div className="page">
 						{children}
 					</div>

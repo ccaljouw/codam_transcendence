@@ -176,7 +176,7 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 		<>
 			{chatLoading && <>Chat is loading</>}
 			{chatError && <>Error loading chat</>}
-			{currentChat && <div className='component chatBox'>
+			{currentChat && <div className='chatBox'>
 				{
 					currentChat?.visibility == ChatType.DM ?
 						<div>Chat between {currentUser.userName} and
