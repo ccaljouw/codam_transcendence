@@ -13,4 +13,10 @@ export class updateGameStateDto {
 
   @ApiProperty({ required: false })
   winner?: number;
+
+  @ApiProperty({ required: false })
+  score1?: number;
+
+  @ApiProperty({ required: false })
+  score2?: number;
 }

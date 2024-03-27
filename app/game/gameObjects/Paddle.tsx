@@ -1,11 +1,8 @@
-
-import { GameObject } from "./GameObject";
-import { MovementComponent } from "../components/MovementComponent";
-import { KeyListenerComponent } from "../components/KeyListenerComponent";
-import * as CON from "../utils/constants";
-import { UpdateGameObjectsDto } from "../../backend/src/game/dto/update-game-objects.dto";
-import { GameState } from "@prisma/client";
-
+import { GameObject } from "./GameObject"
+import { MovementComponent } from "../components/MovementComponent"
+import { KeyListenerComponent } from "../components/KeyListenerComponent"
+import * as CON from "../utils/constants"
+import { GameState } from "@prisma/client"
 
 export class Paddle extends GameObject {
 	public	movementComponent: MovementComponent;
@@ -58,7 +55,6 @@ export class Paddle extends GameObject {
 
 	public updatePaddle(state: GameState, deltaTime: number) {
 		if (state != `STARTED`) {
-			this.resetPaddle();
 			return false;
 		}
 		let hasMoved = false;

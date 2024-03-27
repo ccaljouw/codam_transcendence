@@ -1,11 +1,12 @@
-"use client";
-import { useRef, useEffect, useState } from 'react';
-import { GameState } from '@prisma/client';
-import { UpdateGameDto, updateGameStateDto } from '@ft_dto/game';
-import { Game } from '../../../../../game/components/Game.tsx';
-import { instanceTypes } from '../../../../../game/utils/constants.tsx';
-import { transcendenceSocket } from '../../../globals/socket.globalvar.tsx'; // websocket global
-import { constants } from '@ft_global/constants.globalvar.tsx';
+"use client"
+import { useRef, useEffect, useState, use } from 'react'
+import { GameState } from '@prisma/client'
+import { UpdateGameDto, updateGameStateDto } from '@ft_dto/game'
+import { Game } from '../../../../../game/components/Game.tsx'
+import { InstanceTypes } from '../../../../../game/utils/constants.tsx'
+import { transcendenceSocket } from '@ft_global/socket.globalvar'
+import { constants } from '@ft_global/constants.globalvar.tsx'
+import DataFetcherJson from 'src/globals/functionComponents/DataFetcherJson.tsx'
 
 export default function GameComponent() {
 	const gameSocket = transcendenceSocket;
@@ -14,11 +15,10 @@ export default function GameComponent() {
 	const [game, setGame] = useState< Game | null >(null);
 	const [gameData , setGameData] = useState<UpdateGameDto | null> (null);
 	const [roomId, setRoomId] = useState<number>(0);
-	const [gameReady, setGameReady] = useState<number>(0); //todo change
+	const [playersInGame, setPlayersInGame] = useState<number>(0);
 	const [gameState, setGameState] = useState<GameState>(GameState.WAITING);
-	const [twoPlayersInGame, setTwoPlayersInGame] = useState<boolean>(false);
-	const [instanceType, setInstanceType] = useState<instanceTypes>(instanceTypes.observer) // 0 for player 1, 1 for player 2, 2 for observer
-	
+	const [waitingForPlayers, setWaitingForPlayers] = useState<boolean>(true);
+	const [instanceType, setInstanceType] = useState<InstanceTypes>(InstanceTypes.observer) // 0 for player 1, 1 for player 2, 2 for observer
 	
 	// fetch game data
 	useEffect(() => {
@@ -27,37 +27,42 @@ export default function GameComponent() {
 		}
 	}, []);
 
-	//update game data
-	useEffect(() => {
-		if (twoPlayersInGame) {
-			console.log("Game: refershing game data");
-			fetchGame(userId!);
-		}
-	}, [twoPlayersInGame]);
-	
+
 	// fetch game data from server
 	async function fetchGame(userID: string) {
-		const url = `${constants.API_GAME}getGame/${userID}`; //todo make constants
+		const url = `${constants.API_GAME}getGame/${userID}`;
 		console.log(`Game: fetching game data for user: ${userID} from: "${url}"`);
 		
 		try {
-			const response = await fetch(url);
-			if (!response?.ok) {
-				throw new Error(`Error getting gameData`);
-			}
-			const data : UpdateGameDto = await response.json();
+			const data: UpdateGameDto = await DataFetcherJson({ url: url });
 			console.log('Game data: ', data);
 			if (!data) {
 				throw new Error(`No game data found`);
 			} else {
 				setGameData(data);
-				console.log(`Game: game data and room set`);
+				// console.log(`Game: game data and room set`);
 			}
 		}	catch (error) {
 			console.error(error);
 		}
 	}
-	
+
+	async function refreshData(id: number) {
+		const url = `${constants.API_GAME}${id}`;
+		console.log(`Game: fetching game data for gameId: ${id} from: "${url}"`);
+		try {
+			const data: UpdateGameDto = await DataFetcherJson({ url: url });
+			console.log('Game data found in refresh: ', data);
+			if (!data) {
+				throw new Error(`refresh data: No game data found`);
+			} else {
+				setGameData(data);
+			}
+		}	catch (error) {
+			console.error(error);
+		}
+	}
+
 	
 	// set up websocket connection and join room
 	useEffect(() => {
@@ -71,44 +76,70 @@ export default function GameComponent() {
 			}
 			
 			gameSocket.on(`game/message`, (msg: string) => {
-				console.log(`Game: got message ${msg}`);
+				if (gameState === GameState.WAITING) {
+					console.log(`Game: got message ${msg}`);
+					//it there are less than two players in game, refresh game data
+					if (gameData.GameUsers!.length < 2) {
+						console.log("Game: less than two players in game, refreshing game data");
+						refreshData(gameData.id);
+						console.log("Game: refreshed game data");
+					} else {
+						console.log("Game: two players in game");
+						setPlayersInGame(2);
+					}
+				}
 			});
-			
 			
 			gameSocket.on(`game/updateGameState`, (payload: updateGameStateDto) => {
-				console.log(`Game: received game state update from server`, payload.roomId, payload.state);
+				console.log(`Game: received game state update`, payload.roomId, payload.state);
 				setGameState(payload.state);
+
+				//todo send message to server with game state updates
 			});
-
-			// gameSocket.on(`game/sendToRoom`, (payload: sendToRoomDto) => {
-			// 	console.log(`Game: got message in my room: ${payload.msg}`);
-			// });
 			
-		} else if (!gameData){
-			console.error("Game: no game data to create socket conn");
-		}
-		
-		return () => {
-			gameSocket?.off(`game/${roomId }`); //todo check where the disconnct should be
-		}
-		
-	}, [gameData]);
-	
+			} else if (!gameData){
+				console.error("Game: no game data to create socket conn");
+			}
+			
+			return () => {
+				gameSocket?.off(`game/${roomId }`); //todo check where the disconnct should be
+			}
+		}, [gameData]);
 
-	//set type of game instance. 0 for player 1, 1 for player 2, 2 for observer
+
 	useEffect(() => {
-		if (gameData) {
-			if (gameData.GameUsers && gameData.GameUsers[0]) {
-			if (gameData.GameUsers[0].user.id === parseInt(userId!)) {
-				setInstanceType(instanceTypes.left);
-				console.log(`Game: setting instance type to ${instanceTypes.left}`);
-			} else {
-				setInstanceType(instanceTypes.right);
-				console.log(`Game: setting instance type to ${instanceTypes.right}`);
-			}	}
+		if (gameData && gameData.GameUsers && gameData.GameUsers.length === 2) {
+			console.log("Gamedata!!!: ", gameData);
+			setPlayersInGame(2);
+		} else {
+			console.log("WAITING FOR SECOND PLAYER!!!");
 		}
 	}, [gameData]);
+
+
+	useEffect(() => {
+		if (playersInGame === 2) {
+			setWaitingForPlayers(false);
+		}
+	}, [playersInGame]);
+
 	
+	//set type of game instance. 0 for observer, 1 for player 1, 2 for player 2
+	useEffect(() => {
+		if (playersInGame === 2) {
+			if (gameData!.GameUsers && gameData!.GameUsers[0]) {
+				if (gameData!.GameUsers[0].user.id === parseInt(userId!)) {
+					setInstanceType(InstanceTypes.left);
+					console.log(`Game: setting instance type to ${InstanceTypes.left}`);
+				} else {
+					setInstanceType(InstanceTypes.right);
+					console.log(`Game: setting instance type to ${InstanceTypes.right}`);
+				}
+			}
+		}
+	}, [playersInGame]);
+
+
 	// //in case observer create game instance
 	// useEffect(() => {
 	// 	if (gameData && instanceType === 2) {
@@ -122,51 +153,57 @@ export default function GameComponent() {
 
 	// create game instance when canvas is available and there are two players
 	useEffect(() => {
-		if (!game && canvasRef.current && gameData && instanceType !== 2) {
+		if (!game && canvasRef.current && instanceType !== 2) {
 			console.log("Game: creating game instance of type: ", instanceType);
-			
-			//todo:"refresh game data"
+		
 			const newGame = new Game(canvasRef.current, instanceType, gameData!);
 			setGame(newGame);
 			console.log("Game: created");
-			if (instanceType === 1) {
-				setGameReady(1);
-			} else if (instanceType === 0) {
-				console.log("Game: Waiting for second player to join");
-			}
+			canvasRef.current.focus();
+			// if (instanceType === 2) {
+			// } else if (instanceType == 1) {
+			// 	console.log("Game: Waiting for second player to join");
+			// }
 		} else if (!canvasRef.current){
 			console.error("Game: no canvas ref");
 		} else if (!gameData) {
 			console.error("Game: no game data");
 		}
-	}, [canvasRef.current, instanceType, twoPlayersInGame]);
+	}, [canvasRef.current, instanceType, gameData]);
 	
 
 
 	// send ready to start message to server when game is ready
 	useEffect(() => {
-		if (gameReady === 1 && game !== null) {
+		if (game !== null) {
 			console.log("Game: sending 'game ready to start' message to server");
 			const payload: updateGameStateDto = {roomId: roomId, state: GameState.READY_TO_START};
 			gameSocket.emit("game/updateGameState", payload);
 		}
-	}, [gameReady]);
+	}, [game]);
 	
 	
 	//start game when game state is ready to start
 	useEffect(() => {
-		if (gameState === GameState.READY_TO_START && game !== null) {
+		if (gameState === GameState.READY_TO_START && game !== null && canvasRef.current) {
 			console.log("Game: starting game");
+			setGameState(GameState.STARTED);
+			canvasRef.current.focus();
 			game.startGame();
-		} else {
-			console.error("Game : unable to start game");
+		} else if (gameState === GameState.FINISHED) {
+			console.log("Game: game finished add more code here");
+			// todo add code
 		}
-	}, [gameState]);
+	}, [gameState, canvasRef.current, game]);
 	
 	// return the canvas
 	return (
 		<>
-			<canvas ref={canvasRef} />
+			{waitingForPlayers ? (
+				<p>Waiting for second player to join...</p>
+			) : (
+				<canvas ref={canvasRef} tabIndex={0} />
+		)}
 		</>
 	);
-}
+}	

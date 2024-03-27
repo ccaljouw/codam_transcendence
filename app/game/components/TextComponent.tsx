@@ -1,7 +1,5 @@
-
-import { GameObject } from "../gameObjects/GameObject";
-import * as CON from "../utils/constants";
-
+import { GameObject } from "../gameObjects/GameObject"
+// import * as CON from "../utils/constants"
 
 export class TextComponent extends GameObject {
 	private text: string = "";
@@ -32,7 +30,6 @@ export class TextComponent extends GameObject {
 	update() {
 	//todo: implement message changes here based on state	
 	}
-
 
 	public setText(text: string) {
 		this.text = text;
