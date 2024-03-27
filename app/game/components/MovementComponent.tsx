@@ -1,4 +1,3 @@
-
 export class MovementComponent {
 	private speed: number 		= 0;
 	private direction: number	= 0;
@@ -16,6 +15,7 @@ export class MovementComponent {
 	  this.x = x;
 	  this.y = y;
 	}
+	
 
 	public update(deltaTime: number) {
 	  this.x += this.speedX * deltaTime * 100;

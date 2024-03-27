@@ -1,4 +1,3 @@
-
 export class KeyListenerComponent {
 	private _keyStates: Map<string, boolean>;
 	private _keyMap: Map<string, Function | undefined>;
@@ -25,7 +24,6 @@ export class KeyListenerComponent {
 			}
 		}
 	}
-
 	
 	// Set the state for this key to released.
 	private handleKeyUp (event: KeyboardEvent) {
@@ -33,7 +31,6 @@ export class KeyListenerComponent {
 		this._keyStates.set(key, false);
 	}
 	
-
 	//iterate trough all keystates and check if any of them is true andif it is registered
  	public checkKeysPressed() {
 		for (const [key, value] of this._keyStates) {
@@ -44,26 +41,22 @@ export class KeyListenerComponent {
 		return false;
 	}
 	
-		
 	// Set the callback function for the specified key.
 	public addKeyCallback(key: string, callback: Function) {
 		this._keyMap.set(key, callback);
 	}
 	
-
 	// Check if the specified key is currently in a pressed state.
 	public isKeyPressed(key: string) {
 		const keyState = this._keyStates.get(key);
 		return keyState ? keyState : false;
 	}
 
-
 	//check if the key is in the map
 	public isKeyRegistered(key: string) {
 		return this._keyMap.has(key);
 	}
 	
-
 	// Remove the callback function for the specified key.
 	public removeKeyCallback(key: string) {
 		this._keyMap.delete(key);

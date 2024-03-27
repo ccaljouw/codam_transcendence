@@ -1,231 +1,116 @@
-
-import { UpdateGameDto, UpdateGameUserDto, UpdateGameObjectsDto } from '@ft_dto/game';
+import { UpdateGameDto, UpdateGameUserDto, UpdateGameObjectsDto } from '@ft_dto/game'
+import { GameState } from '@prisma/client'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
-import { GameState } from '@prisma/client';
-import { SoundFX } from "../gameObjects/SoundFX";
-import { Wall } from "../gameObjects/Wall";
-import { GameObject } from "../gameObjects/GameObject";
-import { Paddle } from "../gameObjects/Paddle";
-import { Ball } from "../gameObjects/Ball";
-import { KeyListenerComponent } from "./KeyListenerComponent";
-import { PlayerComponent } from "./PlayerComponent";
-import { TextComponent } from "./TextComponent";
-import * as CON from "../utils/constants";
-import { setSocketListeners } from "../utils/gameSocketListners";
-import { detectCollision } from "../utils/collisionDetection";
-import { detectScore, checkWinCondition, countdown } from "../utils/utils";
-import {
-	 	wallInitializer,
-		paddleInitializer,
-		ballInitializer,
-		keyListenerInitializer,
-		messageFieldInitializer,
-		playerInitializer,
-		lineInitializer,
-		canvasInitializer } from "../utils/initializers";
-import { error } from 'console';
+import { SoundFX } from "../gameObjects/SoundFX"
+import { Wall } from "../gameObjects/Wall"
+import { GameObject } from "../gameObjects/GameObject"
+import { Paddle } from "../gameObjects/Paddle"
+import { Ball } from "../gameObjects/Ball"
+import { KeyListenerComponent } from "./KeyListenerComponent"
+import { PlayerComponent } from "./PlayerComponent"
+import { TextComponent } from "./TextComponent"
+import * as CON from "../utils/constants"
+import { setSocketListeners } from "../utils/gameSocketListners"
+import { updateObjects, checkForGoals } from "../utils/updateObjects"
+import { countdown, setTheme } from "../utils/utils"
+import { initializeGameObjects, drawGameObjects, resetGameObjects } from "../utils/objectController"
 
 
 export class Game {
-	private	_canvas: HTMLCanvasElement;
-	private	_ctx: CanvasRenderingContext2D;
-	private	_keyListener: KeyListenerComponent = new KeyListenerComponent();
-	private	_walls: Wall [] = [] ;
-	private _lines: GameObject [] = [];
-	private _backgroundFill: GameObject | null = null;
-	private _lastFrameTime: number = 0;
-	private _gameUsers: UpdateGameUserDto [] = [];
-	public	paddels: Paddle [] = [];
-	public	players: PlayerComponent [] = [];
-	public	receivedUpdatedGameObjects: UpdateGameObjectsDto = {roomId: -1, ballX: -1, ballY: -1, ballDirection: -1, ballSpeed: -1, ballDX: -1, ballDY: -1, paddle1Y: -1, paddle2Y: -1, score1: -1, score2: -1, resetGame: -1, resetMatch: -1, finish: -1, winner: -1};
-	public  instanceType: CON.instanceTypes = CON.instanceTypes.observer;
-	public 	gameSocket:	typeof transcendenceSocket = transcendenceSocket;
-	public	soundFX: SoundFX = new SoundFX();
-	public	theme: keyof typeof CON.themes = "classic";
-	public	config: keyof typeof CON.config = "test";
-	public	gameState: GameState = GameState.WAITING;
-	public	winner: PlayerComponent | null = null;
-	public  roomId: number = 0;
-	public	messageFields: TextComponent [] = [];
-	public	ball: Ball | null = null;
+	canvas: HTMLCanvasElement;
+	keyListener: KeyListenerComponent = new KeyListenerComponent();
+	lastFrameTime: number = 0;
+	elapasedTimeSincceLastUpdate: number = 0;
+	gameUsers: UpdateGameUserDto [] = [];
+	walls: Wall [] = [] ;
+	lines: GameObject [] = [];
+	backgroundFill: GameObject | null = null;
+	ctx: CanvasRenderingContext2D;
+	paddels: Paddle [] = [];
+	players: PlayerComponent [] = [];
+	receivedUpdatedGameObjects: UpdateGameObjectsDto = {roomId: -1, ballX: -1, ballY: -1, ballDirection: -1, ballSpeed: 0, ballDX: -1, ballDY: -1, paddle1Y: -1, paddle2Y: -1, score1: -1, score2: -1, resetGame: -1, resetMatch: -1, winner: -1};
+	instanceType: CON.InstanceTypes = CON.InstanceTypes.observer;
+	gameSocket:	typeof transcendenceSocket = transcendenceSocket;
+	soundFX: SoundFX = new SoundFX();
+	theme: keyof typeof CON.themes = "classic";
+	config: keyof typeof CON.config = "test";
+	gameState: GameState = GameState.WAITING;
+	winner: PlayerComponent | null = null;
+	roomId: number = 0;
+	messageFields: TextComponent [] = [];
+	ball: Ball | null = null;
+	gameData: UpdateGameDto | null = null;
 
-	constructor(newCanvas: HTMLCanvasElement, instanceType: CON.instanceTypes, gameData: UpdateGameDto) {
+	constructor(newCanvas: HTMLCanvasElement, instanceType: CON.InstanceTypes, data: UpdateGameDto) {
+		this.gameData = data; //todo import from server
 		this.instanceType = instanceType;
-		this.roomId = gameData.id;
-		this._canvas = newCanvas;
-		this._gameUsers = gameData.GameUsers as UpdateGameUserDto [];
-		this.initializeGameObjects(this.config);
-		setSocketListeners(gameData, this.gameSocket, this);
-		this._ctx = this._canvas.getContext("2d") as CanvasRenderingContext2D;
+		this.roomId = this.gameData.id;
+		this.canvas = newCanvas;
+		this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
+		this.gameUsers = this.gameData.GameUsers as UpdateGameUserDto [];
+		initializeGameObjects(this, this.config);
+		setTheme(this, "classic");
+		setSocketListeners(this.gameData, this.gameSocket, this);
 	
-		console.log("instance type: ", this.instanceType); //todo: remove
-	}
-	
-
-	initializeGameObjects(config: keyof typeof CON.config) {
-		if (this.instanceType < 2) {
-			canvasInitializer(this._canvas, config);
-			keyListenerInitializer(this._keyListener, this, config);
-			messageFieldInitializer(this.messageFields, this.theme, config);
-		}
-		paddleInitializer(this.paddels, this.theme, config, this.instanceType);
-		wallInitializer(this._walls, this.theme, config);
-		lineInitializer(this._lines, this.theme, config);
-		playerInitializer(this.players, this.theme, config, this._gameUsers);
-		keyListenerInitializer(this._keyListener, this, config);
-		this._backgroundFill = new GameObject("background", 0, 0, CON.config[config].screenWidth, CON.config[config].screenHeight, CON.themes[this.theme].backgroundColor);
-		this.setBall()
+		console.log("script: instance type: ", this.instanceType); //todo: remove
 	}
 	
-	setTheme(theme: keyof typeof CON.themes) {
-	this.theme = theme;
-	this.paddels.forEach(paddle => paddle.setColor(CON.themes[theme].leftPaddleColor));
-	this.paddels.forEach(paddle => paddle.setColor(CON.themes[theme].rightPaddleColor));
-	this._walls.forEach(wall => wall.setColor(CON.themes[theme].backWallColor));
-	this._walls.forEach(wall => wall.setColor(CON.themes[theme].wallColor));
-	this._lines.forEach(line => line.setColor(CON.themes[theme].lineColor));
-	this._backgroundFill?.setColor(CON.themes[theme].backgroundColor);
-	this.players.forEach(player => player.nameField?.setColor(CON.themes[theme].leftPlayerColor));
-	this.players.forEach(player => player.scoreField?.setColor(CON.themes[theme].leftPlayerColor));
-	this.messageFields.forEach(message => message.setColor(CON.themes[theme].leftPlayerColor));
-	this.ball?.setColor(CON.themes[theme].ballColor);
-	this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
-	this.drawGameObjects();
-}
-
-	setBall() {
-		this.ball = null;
-		this.ball = ballInitializer(this.theme);
-	}
-
-
-	updateGameObjects(deltaTime: number, config: keyof typeof CON.config) {
-		
-		//paddels
-		let paddleMoved = this.paddels.map(paddle => paddle.updatePaddle(this.gameState, deltaTime));
-		if (paddleMoved.some(moved => moved === true)) {
-			if (this.instanceType === 0) {
-				this.gameSocket.emit("game/updateGameObjects", {roomId: this.roomId, paddle1Y: this.paddels[0].movementComponent.getY()});
-			}
-			if (this.instanceType === 1) {
-				this.gameSocket.emit("game/updateGameObjects", {roomId: this.roomId, paddle2Y: this.paddels[1].movementComponent.getY()});
-			}
-		}
-		
-
-		//ball
-		if (this.instanceType === 0 ) {
-			this.ball?.updateBall(this.gameState, deltaTime);
-			let collisionDetected = detectCollision(this.ball as Ball, this.paddels, this._walls, this.soundFX, this.config);
-		//todoadd
-			this.gameSocket.emit("game/updateGameObjects", {roomId: this.roomId, ballX: this.ball?.getX(), ballY: this.ball?.getY(), ballDX: this.ball?.movementComponent.getSpeedX, ballDY: this.ball?.movementComponent.getSpeedY});
-		}
-
-		if (this.instanceType === 1) {
-			this.ball?.updateBall(this.gameState, deltaTime);
-			detectCollision(this.ball as Ball, this.paddels, this._walls, this.soundFX, this.config);
-			//todo interpolation
-			if (this.receivedUpdatedGameObjects.ballX > 0) {
-				this.ball?.setX(this.receivedUpdatedGameObjects.ballX);
-			}
-			if (this.receivedUpdatedGameObjects.ballY > 0) {
-				this.ball?.setY(this.receivedUpdatedGameObjects.ballY);
-			}
-			if (this.receivedUpdatedGameObjects.ballDX > 0) {
-				this.ball?.movementComponent.setSpeedX(this.receivedUpdatedGameObjects.ballDX);
-			}
-			if (this.receivedUpdatedGameObjects.ballDY > 0) {
-				this.ball?.movementComponent.setSpeedY(this.receivedUpdatedGameObjects.ballDY);
-			}
-		}
-	
-
-		//game logic			
-		if (this.instanceType === 0) { //todo change to 2;
-			let goal = detectScore(this.ball as Ball, this.players, config, this);
-			let winner = checkWinCondition(this.players, config, this);
-			if (winner) {
-				// this.gameSocket.emit("game/updateGameObjects", {roomId: this.roomId, finish: 1, winner: winner});
-				this.endGame(winner);
-			} else if (goal) {
-				this.resetGame();
-				this.gameSocket.emit("game/updateGameObjects", {roomId: this.roomId, resetGame: 1});
-			}
-		}
-		
-		// this.messageFields.forEach(message => message.update());
-	}
-
-
-	drawGameObjects() {
-		this._backgroundFill?.draw(this._ctx); 
-		this.paddels.forEach(paddle => paddle.draw(this._ctx));
-		this._lines.forEach(line => line.draw(this._ctx));
-		this.players.forEach(player => player.scoreField?.draw(this._ctx));
-		this.players.forEach(player => player.nameField?.draw(this._ctx));
-		this.messageFields.forEach(message => message.draw(this._ctx));
-		this.ball?.draw(this._ctx);
-		this._walls.forEach(wall => wall.draw(this._ctx));
-	}
-
-	resetGameObjects() {
-		this.soundFX.reinitialize();
-		this.paddels.forEach(paddle => paddle.resetPaddle());
-		this.players.forEach(player => player.resetScore());
-		this.players.forEach(player => player.scoreField?.setText(player.getScore().toString()));
-		this.messageFields.forEach(message => message.setText(""));
-		this.setBall();
-	}
-
 
 	gameLoop(currentTime:number) {
-		//todo add master / slave check optional with interpolation
-		//calculate delta time
-		const deltaTime = (currentTime - this._lastFrameTime) / 1000;
-		this._lastFrameTime = currentTime;
+		let deltaTime = (currentTime - this.lastFrameTime) / 1000;
+		let sentFinished = false;
+
+		this.lastFrameTime = currentTime;
 		
-		if (this.gameState == `FINISHED`) {
-			console.log("Game finished");
+		if (this.gameState == `FINISHED` && !sentFinished) {
+			sentFinished = true;
+			this.gameSocket.emit("game/updateGameState", {roomId: this.roomId, state: GameState.FINISHED, winner: this.winner?.getSide(), score1: this.players[0].getScore(), score2: this.players[1].getScore()});
 			return;
 		}
 
 		if (this.gameState == `WAITING`) {
-			this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
+			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 			this.messageFields[0].setText(CON.config[this.config].startMessage);
 		}
 		
 		if (this.gameState == `STARTED`) {
-			this.updateGameObjects(deltaTime, this.config);
+			updateObjects(this, deltaTime, this.config);
+			checkForGoals(this, this.config);
 		}
 		
 		if (this.instanceType < 2 ) {
-				this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
-				this.drawGameObjects();
+				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+				drawGameObjects(this);
 				requestAnimationFrame(this.gameLoop.bind(this));
 		}
 	}
 
 	// resetMatch() {
-	// 	this.resetGameObjects();
+	// 	resetGameObjects(this);
+	//	this.players.forEach(player => player.resetScore());
+	//	game.messageFields.forEach(message => message.setText(""));
 	// 	this.startGame();
 	// }
 
 
 	resetGame() {
-		this.setBall();
-		this.paddels.forEach(paddle => paddle.resetPaddle());
+		if (this.gameState === `FINISHED`) {
+			return;
+		}
+		resetGameObjects(this);
+		console.log("script: GOAL! detected. Resetting game.");
 		this.messageFields[0]?.setText("GOAL!");
-			countdown(this, this.config);
+		countdown(this, this.config);
 	}
   
 
-	endGame(winner: PlayerComponent) {
-		
-		let name = winner?.getName();
-		this.messageFields[0]?.setText(name + " won the match!");
-		this.winner = winner;
+	endGame(winningSide: number) {
 		this.gameState = `FINISHED`;
-		this.gameSocket.emit("game/updateGameState", {roomId: this.roomId, state: this.gameState, winner: this.winner});
+		this.winner = this.players[winningSide];
+		this.messageFields[0]?.setText(this.winner?.getName() + " won the match!");
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		drawGameObjects(this);
+		console.log("player: ", this.winner?.getSide(), this.winner?.getName(), " won the match");
 	}
 
 	//to start the game

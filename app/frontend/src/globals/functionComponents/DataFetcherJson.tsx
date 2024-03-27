@@ -1,4 +1,4 @@
-export default async function DataFetcherJson(
+
     {url} : {url:string}
 ) {
 	try {
@@ -16,3 +16,4 @@ export default async function DataFetcherJson(
 		return (error);
 	}
 }
+

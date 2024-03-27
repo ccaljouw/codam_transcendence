@@ -7,10 +7,7 @@ import {
 import { GameService } from './game.service';
 import { SocketServerProvider } from '../socket/socketserver.gateway';
 import { Server, Socket } from 'socket.io';
-import { sendToRoomDto, UpdateGameObjectsDto, updateGameStateDto } from 'dto/game';
-// import { GameState } from '@prisma/client';
-// import { CreateGameDto } from './dto/create-game.dto';
-// import { UpdateGameDto } from './dto/update-game.dto';
+import { UpdateGameObjectsDto, updateGameStateDto } from 'dto/game';
 
 @WebSocketGateway({
   cors: true,
@@ -40,23 +37,12 @@ export class GamesocketGateway {
     this.game_io.emit('game/message', payload);
   }
 
-  @SubscribeMessage('game/sendToRoom')
-  sendToRoom(client: Socket, payload: sendToRoomDto) {
-    console.log("server received 'send to room message'");
-    console.log(`Sending to room: ${payload.roomId}`);
-    const player = this.game_io.sockets.sockets.get(client.id);
-    const payloadToRoom = {
-      roomId: payload.roomId,
-      msg: `Player ${player?.id} says: ${payload.msg}`,
-    };
-    this.game_io
-      .to(payload.roomId.toString())
-      .emit('game/sendToRoom', payloadToRoom);
-  }
-
   @SubscribeMessage('game/updateGameState')
   updateGameState(client: Socket, payload: updateGameStateDto) {
-    console.log('Server: received game state update from client: ', payload.state);
+    console.log(
+      'Server: received game state update from client: ',
+      payload.state,
+    );
     const updatedGameState = { roomId: payload.roomId, state: payload.state };
     this.game_io
       .to(payload.roomId.toString())
@@ -67,7 +53,7 @@ export class GamesocketGateway {
     //   console.log(`Game: game ready to start braidcast sent`);
     // }
   }
-  
+
   //update game objects
   @SubscribeMessage('game/updateGameObjects')
   updateGameObjects(client: Socket, payload: UpdateGameObjectsDto) {
@@ -76,7 +62,7 @@ export class GamesocketGateway {
       .to(payload.roomId.toString())
       .emit('game/updateGameObjects', payload);
   }
-  
+
   // @SubscribeMessage('game/discconect')
   // handleDisconnect(client: Socket) {
   //   console.log(`Client disconnected: ${client.id}`);
