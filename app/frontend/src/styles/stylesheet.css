@@ -17,17 +17,29 @@
 }
 
 .page, 
-.chat {
+.chat-area,
+.chat-box,
+.chat-messages,
+.chat-users {
     overflow-y: auto !important;
     scrollbar-width: none !important; /* disable inner scrollbar in firefox */
     -ms-overflow-style: none; /* disable inner scrollbar in IE and Edge */
+}
+
+.page, 
+.chat-area,
+.chat-box,
+.chat-box .white-box {
     display: flex;
     flex-direction: column;
 }
 
 /* Turn off the inner scrollbar in chrome, safari and opera */
 .page::-webkit-scrollbar,
-.chat::-webkit-scrollbar {
+.chat-area::-webkit-scrollbar,
+.chat-box::-webkit-scrollbar
+.chat-messages::-webkit-scrollbar
+.chat-users::-webkit-scrollbar {
     display: none;
 }
 
@@ -37,8 +49,20 @@
 }
 
 /* This is where the chat component is placed */
-.chat {
+.chat-area {
     width: 25%;
+}
+
+.chat-box{
+    height: 70%;
+}
+
+.chat-box .white-box {
+    height: 100%;
+}
+
+.chat-users {
+    height: 30%;
 }
 
 .row {
@@ -47,14 +71,10 @@
 }
 
 @media screen and (max-width: 992px) {
-    .page, .chat {
+    .page, .chat-area {
         width: 50% !important;
     }
 }
-
-/* .userlist{
-	font-family: sans-serif
-} */
 
 .userlist li:hover {
 	font-weight: bold;

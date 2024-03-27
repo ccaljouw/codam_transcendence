@@ -8,7 +8,7 @@ import { transcendenceSocket } from '@ft_global/socket.globalvar';
 import { ChatType, OnlineStatus } from '@prisma/client';
 import useFetch from '@ft_global/functionComponents/useFetch';
 import DataFetcher from '@ft_global/functionComponents/DataFetcher';
-
+import { FontBangers } from './Font';
 
 
 const chatSocket = transcendenceSocket;
@@ -174,57 +174,47 @@ export default function Chat({ user1, user2, chatID }: { user1?: number, user2?:
 
 	return (
 		<>
-			{chatLoading && <>Chat is loading</>}
-			{chatError && <>Error loading chat</>}
-			{currentChat && <div className='chatBox'>
-				{
+			<div className="white-box">
+				{chatLoading && <>Chat is loading</>}
+				{chatError && <>Error loading chat</>}
+				{currentChat && <>
+					<div className="chat-title">
+					{
 					currentChat?.visibility == ChatType.DM ?
-						<div>Chat between {currentUser.userName} and
-						<DataFetcher<UserProfileDto, UserProfileDto>
-							url={constants.API_USERS + user2}
-							showData={(data: UserProfileDto) => <>{data.userName}</>}
-							showLoading={<></>}
-						/>
-						</div>
+						<FontBangers>
+							<h3>Chat between {currentUser.userName} and&nbsp;
+								<DataFetcher<UserProfileDto, UserProfileDto>
+									url={constants.API_USERS + user2}
+									showData={(data: UserProfileDto) => <>{data.userName}</>}
+									showLoading={<></>}
+								/>
+							</h3>
+						</FontBangers>
 						: <></>
-				}
-				<div className='chatMessages' ref={messageBox}>
-					{chatMessagesLoading && <>Chat messages are loading</>}
-					{chatMessagesError && <>Error loading chat messages</>}
-					{chatMessages? chat.map((message, index) => (
-						<p key={index}>{message}</p>
-					)):<></>}
-				</div>
-				<div className='chatInput'>
-					<form onSubmit={(e) => {
-						e.preventDefault();
-						sendMessage();
-					}}>
-						<input
-							type='text'
-							value={message}
-							onChange={(e) => setMessage(e.target.value)}
-						/>
-						<button type='submit'>send</button>
-					</form>
-				</div>
-				<style jsx>{`
-				.chatBox{
-					width: 400px;
-					height: 350px;
-				}
-                .chatMessages {
-                    height: 200px;
-					width: 200px;
-                    overflow-y: scroll;
-                }
-				.chatMessages p{
-					color: blue;
-					margin-bottom: -2pt;
-				}
-            `}</style>
-			</div>}
+					}
+					</div>
+					<div className="chat-messages" ref={messageBox}>
+						{chatMessagesLoading && <>Chat messages are loading</>}
+						{chatMessagesError && <>Error loading chat messages</>}
+						{chatMessages? chat.map((message, index) => (
+							<p key={index}>{message}</p>
+						)):<></>}
+					</div>
+					<div className="chat-input">
+						<form onSubmit={(e) => {
+							e.preventDefault();
+							sendMessage();
+						}}>
+							<input
+								type='text'
+								value={message}
+								onChange={(e) => setMessage(e.target.value)}
+							/>
+							<button type='submit'>send</button>
+						</form>
+					</div>
+				</>}
+			</div>
 		</>
-
 	);
 }

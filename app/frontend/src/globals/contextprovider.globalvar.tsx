@@ -177,7 +177,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 					<div className="page">
 						{children}
 					</div>
-					<div className="chat">
+					<div className="chat-area">
 						<ChatArea />
 					</div>
 				</div>}

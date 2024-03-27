@@ -7,7 +7,7 @@
 
 .navbar, 
 .page, 
-.chat,
+.chat-area,
 .login {
     padding-top: 10px;
     padding-left: 20px;
@@ -27,6 +27,19 @@
     background-color: #ffffffbb;
     border: 4px double black;
     text-overflow: clip;
+}
+
+.chat-messages {
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: left;
+    /* width: 200px; */
+    overflow-y: scroll;
+}
+
+.chat-messages p {
+    color: blue;
+    margin-bottom: -2pt;
 }
 
 /* Below is work in progress */
