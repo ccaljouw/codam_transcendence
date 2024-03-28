@@ -1,6 +1,6 @@
-import { SubscribeMessage, WebSocketGateway, WebSocketServer, MessageBody } from '@nestjs/websockets';
+import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { ChatSocketService } from './chatsocket.service';
-import { ChatMessageToRoomDto } from './dto/chat-messageToRoom.dto';
+import { ChatMessageToRoomDto } from '@ft_dto/chat';
 import { Server, Socket } from 'socket.io';
 import { SocketServerProvider } from '../socket/socketserver.gateway';
 import { ChatMessageService } from './chat-messages.service';
@@ -56,17 +56,20 @@ export class ChatSocketGateway {
 	// This is the function that is called when a user joins a room.
 	@SubscribeMessage('chat/joinRoom')
 	async joinRoom(client: Socket, payload: ChatMessageToRoomDto) {
-		client.join(payload.room);
-		const statusChangeMessage : ChatMessageToRoomDto = {
-			userId: payload.userId,
-			userName: payload.userName,
-			room: payload.room,
-			message: ` << ${payload.userName} has joined the room >> `,
-			action: true
-		};
-		this.chat_io.to(payload.room).emit('chat/messageFromRoom', statusChangeMessage);
+		await client.join(payload.room);
+		const user = await this.chatSocketService.getChatUserById(parseInt(payload.room), payload.userId);
+		if (!user?.isInChatRoom){ // if user is not already in chatroom, emit status change message
+			const statusChangeMessage : ChatMessageToRoomDto = {
+				userId: payload.userId,
+				userName: payload.userName,
+				room: payload.room,
+				message: "JOIN",
+				action: true
+			};
+			this.chat_io.to(payload.room).emit('chat/messageFromRoom', statusChangeMessage);
+		}
 		console.log(`Joined room ${payload.room} with user ${payload.userName}`);
-		await this.chatSocketService.changeChatUserStatus({userId: payload.userId, chatId: parseInt(payload.room), isInChatRoom: true});
+		await this.chatSocketService.changeChatUserStatus({client: client, userId: payload.userId, chatId: parseInt(payload.room), isInChatRoom: true});
 		await this.chatMessageService.resetUnreadMessages({userId: payload.userId, chatId: parseInt(payload.room)});
 	}
 
@@ -74,18 +77,22 @@ export class ChatSocketGateway {
 	@SubscribeMessage('chat/leaveRoom')
 	async leaveRoom(client: Socket, payload: ChatMessageToRoomDto) {
 		// this.chat_io
-		console.log(` << ${payload.userName} has left room ${payload.room}>> `)
-		console.log(payload.message);
-		const statusChangeMessage : ChatMessageToRoomDto = {
-			userId: payload.userId,
-			userName: payload.userName,
-			room: payload.room,
-			message: ` << ${payload.userName} has left the room >> `,
-			action: true
-		};
-		console.log(`EMITTING: ${statusChangeMessage.message} to room ${payload.room}`);
-		this.chat_io.to(payload.room).emit('chat/messageFromRoom', statusChangeMessage);
+		await this.chatSocketService.changeChatUserStatus({client: client, userId: payload.userId, chatId: parseInt(payload.room), isInChatRoom: false});
+		const userStillInChatRoom = await this.chatSocketService.isUserInChatRoom(parseInt(payload.room), payload.userId);
+		if (!userStillInChatRoom) // if all tokens for the user have left the chatroom, emit status change message
+		{
+			console.log(` << ${payload.userName} has left room ${payload.room}>> `)
+			console.log(payload.message);
+			const statusChangeMessage : ChatMessageToRoomDto = {
+				userId: payload.userId,
+				userName: payload.userName,
+				room: payload.room,
+				message: "LEAVE",
+				action: true
+			};
+			console.log(`EMITTING: ${statusChangeMessage.message} to room ${payload.room}`);
+			this.chat_io.to(payload.room).emit('chat/messageFromRoom', statusChangeMessage);
+		}
 		client.leave(payload.room);
-		await this.chatSocketService.changeChatUserStatus({userId: payload.userId, chatId: parseInt(payload.room), isInChatRoom: false});
 	}
 }

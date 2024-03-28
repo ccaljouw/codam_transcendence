@@ -9,17 +9,29 @@
  * const my_var_needing_constant = constants.MY_CONSTANT
  */
 
-export class constants{
-  static API_LOGIN42 = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-66c50cf4e54a51062bc5f0c110035ff12e1b0427cc1066c11d6e5c220a2ed1dc&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauthentication&response_type=code';
-	static API_REGISTER = 'http://localhost:3001/users/register';
-	static API_ALL_USERS = 'http://localhost:3001/users/all';
-	static API_SINGLE_USER = 'http://localhost:3001/users/';
-	static API_ALL_USERS_BUT_ME = 'http://localhost:3001/users/allButMe/';
-	static API_SWAGGER = 'http://localhost:3001/api';
-	
-	static CHAT_CHECK_IF_DM_EXISTS = 'http://localhost:3001/chat/checkIfDMExists/';
-	static CHAT_GET_UNREADS = 'http://localhost:3001/chat/getUnreads/';
-	static CHAT_GET_MESSAGES_FROM_CHAT = 'http://localhost:3001/chat/messages/';
-	static CHAT_CREATE_DM = 'http://localhost:3001/chat/createDM';
-	static BACKEND_ADRESS_FOR_WEBSOCKET = 'http://localhost:3001/';
+export class constants {
+	static BACKEND_BASEURL = 'http://localhost:3001/';
+
+	static API_USERS = this.BACKEND_BASEURL + 'users/';
+	static API_REGISTER = this.API_USERS + 'register/';
+	static API_ALL_USERS = this.API_USERS + 'all/';
+	static API_ALL_USERS_BUT_ME = this.API_USERS + 'allButMe/';
+	static API_ADD_TOKEN = this.API_USERS + 'token/';
+
+	static API_CHAT = this.BACKEND_BASEURL + 'chat/';
+	static CHAT_CHECK_IF_DM_EXISTS = this.API_CHAT + 'checkIfDMExists/';
+	static CHAT_GET_UNREADS = this.API_CHAT + 'getUnreads/';
+	static CHAT_GET_MESSAGES_FROM_CHAT = this.API_CHAT + 'messages/';
+	static CHAT_CREATE_DM = this.API_CHAT + 'createDM/';
+
+	static API_GAME = this.BACKEND_BASEURL + 'game/'
+
+	static API_TEST = this.BACKEND_BASEURL + 'test/';
+	static API_TEST_BACKEND = this.API_TEST + 'backend';
+	static API_TEST_FRONTEND = this.API_TEST + 'frontend';
+	static API_TEST_ALL = this.API_TEST + 'all';
+	static API_TEST_OUTPUT = this.API_TEST + 'output';
+	static API_TEST_REPORT = this.API_TEST + 'report';
+
+	static API_SWAGGER = this.BACKEND_BASEURL + 'api';
 }

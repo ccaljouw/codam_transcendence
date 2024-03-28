@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/database/prisma.service";
-import { FetchChatDto } from "./dto/fetch-chat.dto";
-import { CreateChatSocketDto } from "./dto/create-chatSocket.dto";
+import { CreateChatSocketDto, UpdateChatDto } from "@ft_dto/chat";
 
 @Injectable()
 export class ChatService {
@@ -9,7 +8,7 @@ export class ChatService {
 		private db: PrismaService
 	) { }
 
-	async findDMChat(user1: number, user2: number): Promise<FetchChatDto | null> {
+	async findDMChat(user1: number, user2: number): Promise<UpdateChatDto | null> {
 		// Check if chat exists
 		const exists = await this.db.chat.findFirst(
 			{
@@ -30,7 +29,7 @@ export class ChatService {
 	}
 
 	// This function is used to create a chat between two users.
-	async createDM(payload: CreateChatSocketDto): Promise<FetchChatDto> {
+	async createDM(payload: CreateChatSocketDto): Promise<UpdateChatDto> {
 		console.log(`creating chat... for ${payload.user1Id} and ${payload.user2Id}`);
 
 		const exists = await this.findDMChat(payload.user1Id, payload.user2Id);

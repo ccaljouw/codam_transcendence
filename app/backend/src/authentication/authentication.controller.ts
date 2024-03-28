@@ -1,7 +1,7 @@
-import { Controller, Get, Redirect, Req } from '@nestjs/common';
+import { Controller, Get, Req } from '@nestjs/common';
 import { AuthService } from './authentication.service';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UserProfileDto } from 'src/users/dto/user-profile.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { UserProfileDto } from '@ft_dto/users';
 
 @Controller('auth42')
 @ApiTags('auth42')

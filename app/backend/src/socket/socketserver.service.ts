@@ -1,36 +1,24 @@
-import { Injectable } from "@nestjs/common";
-import { OnlineStatus } from "@prisma/client";
+import { Inject, Injectable, forwardRef } from "@nestjs/common";
 import { Socket } from "socket.io";
 import { ChatSocketService } from "src/chat/chatsocket.service";
-import { UpdateUserDto } from "src/users/dto/update-user.dto";
-import { UsersService } from "src/users/users.service";
+import { TokenService } from "src/users/token.service";
 
 @Injectable()
 export class SocketServerService {
 	constructor(
-		private users: UsersService,
-		private chat: ChatSocketService
+		@Inject (forwardRef(() => ChatSocketService)) private readonly chat: ChatSocketService,
+		@Inject (forwardRef(() => TokenService)) private readonly tokens: TokenService
 	) { }
-	async setClientStatusToOnline(client: Socket, userId: number) {
 
-		const updateInfo: UpdateUserDto = {
-			token: client.id,
-			online: OnlineStatus.ONLINE
-		};
+	async setClientStatusToOffline(client: Socket, id: number) : Promise<boolean> { // returns true if last token of user removed
 		try {
-			await this.users.update(userId, updateInfo);
-			console.log(`User with id ${userId} and session id ${client.id} set to online`);
-		}
-		catch (error) {
-			console.error(`Error updating with id ${userId}: `, error);
-			throw error;
-		}
-	}
-
-	async setClientStatusToOffline(id: number) {
-		try {
-			await this.chat.setChatUserOfflineAfterDisconnect(id);
-			await this.users.update(id, { token: null, online: OnlineStatus.OFFLINE });
+			const chatIdFromToken = await this.tokens.findChatIdByToken(client.id); // get chatId from token
+			if (chatIdFromToken) // if user is in a chatroom, change the status (this function will check if user is still in that room on another client)
+				await this.chat.changeChatUserStatus({client, userId: id, chatId: chatIdFromToken, isInChatRoom: false});
+			const lastTokenOfUserRemoved = await this.tokens.removeToken(client.id); // remove Tokens returns true if this is the last token of this user
+			if (lastTokenOfUserRemoved) // if this is the last token of the user, set user online in all chats
+				await this.chat.setChatUserOfflineInAllChats(id);
+			return lastTokenOfUserRemoved;
 		}
 		catch (error) {
 			console.error(`Error logging of user with id ${id}`);

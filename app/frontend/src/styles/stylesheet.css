@@ -5,6 +5,7 @@
     flex-direction: column;
     height: 100vh;
     width: 100vw;
+    overflow-wrap: break-word;
 }
 
 /* This is the whole area under the menubar */
@@ -20,6 +21,8 @@
     overflow-y: auto !important;
     scrollbar-width: none !important; /* disable inner scrollbar in firefox */
     -ms-overflow-style: none; /* disable inner scrollbar in IE and Edge */
+    display: flex;
+    flex-direction: column;
 }
 
 /* Turn off the inner scrollbar in chrome, safari and opera */
@@ -55,4 +58,13 @@
 
 .userlist li:hover {
 	font-weight: bold;
+}
+
+.iframe-holder {
+    height: 100%;
+}
+
+.iframe-holder iframe {
+    width: 100%;
+    height: 100%;
 }

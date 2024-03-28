@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { UserProfileDto } from 'src/users/dto/user-profile.dto';
+import { UserProfileDto, CreateUserDto } from '@ft_dto/users';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -31,7 +30,7 @@ export class AuthService {
   private exchangeCodeForToken(code: string): string {
 
     // Implement the OAuth token exchange logic here
-    
+
     return 'your_access_token';
   }
 

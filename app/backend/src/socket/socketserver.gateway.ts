@@ -1,10 +1,10 @@
-import { Injectable, Module } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { WebsocketStatusChangeDto } from './dto/statuschange';
+import { WebsocketStatusChangeDto } from '@ft_dto/socket';
 import { SocketServerService } from './socketserver.service';
-import { UsersService } from 'src/users/users.service';
 import { OnlineStatus } from '@prisma/client';
+import { TokenService } from 'src/users/token.service';
 
 
 @WebSocketGateway({
@@ -13,14 +13,12 @@ import { OnlineStatus } from '@prisma/client';
 	},
 
 })
-
-
 @Injectable()
 export class SocketServerProvider {
 	constructor(
-		private readonly serverService: SocketServerService,
-		private readonly userService: UsersService
-		) { }
+		@Inject (forwardRef(() => SocketServerService)) private readonly serverService: SocketServerService,
+		@Inject(forwardRef(() => TokenService)) private readonly tokenService: TokenService
+	) { }
 
 	@WebSocketServer()
 	socketIO: Server;
@@ -31,16 +29,20 @@ export class SocketServerProvider {
 
 	async handleDisconnect(client: Socket) {
 		try {
-			const disconnectedUser = await this.userService.findUserByToken(client.id) 
-			await this.serverService.setClientStatusToOffline(disconnectedUser.id);
-			const newStatus: WebsocketStatusChangeDto = {
-				userId: disconnectedUser.id,
-				userName: disconnectedUser.loginName,
-				token: client.id,
-				status: OnlineStatus.OFFLINE
-			};
-			this.socketIO.emit("socket/statusChange", newStatus);
-			console.log(`Client disconnected ${client.id}`)
+			const disconnectedUser = await this.tokenService.findUserByToken(client.id)
+			const lastTokenOfUserRemoved: boolean = await this.serverService.setClientStatusToOffline(client, disconnectedUser.id);
+			if (lastTokenOfUserRemoved) {
+				const newStatus: WebsocketStatusChangeDto = {
+					userId: disconnectedUser.id,
+					userName: disconnectedUser.userName,
+					token: client.id,
+					status: OnlineStatus.OFFLINE
+				};
+				this.socketIO.emit("socket/statusChange", newStatus);
+				console.log(`Client disconnected ${client.id}`)
+			}
+			else
+				console.log(`Client disconnected ${client.id} but user ${disconnectedUser.id} still has other active connections`);
 		}
 		catch (error) {
 			console.error(`Error logging off user with token ${client.id}`);
@@ -51,22 +53,6 @@ export class SocketServerProvider {
 	@SubscribeMessage('socket/statusChange')
 	broadcastStatusChange(@MessageBody() data: any) {
 		this.socketIO.emit("socket/statusChange", data);
-	}
-
-	@SubscribeMessage('socket/online')
-	async handleMessage(client: Socket, payload: WebsocketStatusChangeDto) {
-		try {
-			await this.serverService.setClientStatusToOnline(client, payload.userId);
-			const newStatus: WebsocketStatusChangeDto = {
-				userId: payload.userId,
-				userName: payload.userName,
-				token: payload.token,
-				status: OnlineStatus.ONLINE
-			};
-			this.socketIO.emit("socket/statusChange", "refresh!");
-		}
-		catch (error) {console.error(`Error setting user ${payload.userId} to online: `, error)};
-
 	}
 
 }

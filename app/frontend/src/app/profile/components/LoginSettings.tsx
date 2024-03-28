@@ -1,7 +1,8 @@
 "use client";
 import { useContext } from 'react';
-import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
-import DataField from "../../../components/DataField";
+import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
+// import DataField from "@ft_global/functionComponents/DataField";
+import DataField from "../../../globals/functionComponents/DataField";
 
 export default function LoginSettings(): JSX.Element {
 	const {currentUser} = useContext(TranscendenceContext);

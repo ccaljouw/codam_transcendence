@@ -1,15 +1,18 @@
 import { Controller, ParseIntPipe, Body, Param, Get, Post, Patch, Delete } from '@nestjs/common';
 import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UserProfileDto } from './dto/user-profile.dto';
+import { CreateUserDto, UpdateUserDto,UserProfileDto } from '@ft_dto/users';
+import { CreateTokenDto } from '@ft_dto/users/create-token.dto';
+import { TokenService } from './token.service';
 
 
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+	private readonly usersService: UsersService,
+	private readonly tokenService: TokenService,
+	) {}
   
   // TODO: update endpoints to include access token
   @Post('register')
@@ -18,6 +21,16 @@ export class UsersController {
 
   register(@Body() createUser: CreateUserDto) : Promise<UserProfileDto> {
     return this.usersService.create(createUser);
+  }
+
+  @Post('token')
+  @ApiOperation({ summary: 'Adds token with user id to database'})
+  @ApiCreatedResponse({ description: 'Token successfully created', type: Number })
+
+  addToken(@Body() createToken: CreateTokenDto) : Promise<boolean> {
+	console.log(`Adding token ${createToken.token} for user ${createToken.userId}`);
+	
+	return this.tokenService.addTokenWithStaleCheck(createToken);
   }
 
   @Get('all')

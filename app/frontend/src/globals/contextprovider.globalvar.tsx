@@ -1,15 +1,16 @@
-"use client"
-
-import ChatArea from "../app/components/ChatArea";
+"use client";
 import { createContext, useEffect, useState } from "react";
-import { transcendenceSocket } from "./socket.globalvar";
-import { UpdateUserDto } from "../../../backend/src/users/dto/update-user.dto";
 import { OnlineStatus } from "@prisma/client";
-import { constants } from "./constants.globalvar";
-import { WebsocketStatusChangeDto } from '../../../backend/src/socket/dto/statuschange'
-import Login from "src/components/Login";
-import { UserProfileDto } from "../../../backend/src/users/dto/user-profile.dto";
-import { ChatMessageToRoomDto } from "../../../backend/src/chat/dto/chat-messageToRoom.dto";
+import { UserProfileDto, UpdateUserDto } from "@ft_dto/users";
+import { ChatMessageToRoomDto } from "@ft_dto/chat";
+import { WebsocketStatusChangeDto, CreateTokenDto } from '@ft_dto/socket'
+import { constants } from "@ft_global/constants.globalvar";
+import { transcendenceSocket } from '@ft_global/socket.globalvar'
+import ChatArea from "./layoutComponents/ChatArea";
+import MenuBar from "./layoutComponents/MenuBar";
+import Login from "./layoutComponents//Login";
+import DottedCircles from "./layoutComponents/DottedCircles";
+import useFetch from "./functionComponents/useFetch";
 
 // Context for the entire app
 interface TranscendenceContextVars {
@@ -17,10 +18,6 @@ interface TranscendenceContextVars {
 	setCurrentUser: (val: UserProfileDto) => void;
 	someUserUpdatedTheirStatus: WebsocketStatusChangeDto;
 	setSomeUserUpdatedTheirStatus: (val: WebsocketStatusChangeDto) => void;
-	// currentUserId: number;
-	// setCurrentUserId: (val: number) => void;
-	// currentUserName: string;
-	// setCurrentUserName: (val: string) => void;
 	currentChatRoom: number;
 	setCurrentChatRoom: (val: number) => void;
 	messageToUserNotInRoom: ChatMessageToRoomDto;
@@ -33,10 +30,6 @@ export const TranscendenceContext = createContext<TranscendenceContextVars>({
 	setCurrentUser: () => { },
 	someUserUpdatedTheirStatus: {} as WebsocketStatusChangeDto,
 	setSomeUserUpdatedTheirStatus: () => { },
-	// currentUserId: 0,
-	// setCurrentUserId: () => { },
-	// currentUserName: '',
-	// setCurrentUserName: () => { },
 	currentChatRoom: -1,
 	setCurrentChatRoom: () => { },
 	messageToUserNotInRoom: {} as ChatMessageToRoomDto,
@@ -46,11 +39,11 @@ export const TranscendenceContext = createContext<TranscendenceContextVars>({
 export function ContextProvider({ children }: { children: React.ReactNode }) {
 
 	const [someUserUpdatedTheirStatus, setSomeUserUpdatedTheirStatus] = useState<WebsocketStatusChangeDto>({} as WebsocketStatusChangeDto);
-	// const [currentUserId, setCurrentUserId] = useState<number>(0);
-	// const [currentUserName, setCurrentUserName] = useState<string>('');
 	const [messageToUserNotInRoom, setMessageToUserNotInRoom] = useState<ChatMessageToRoomDto>({} as ChatMessageToRoomDto);
 	const [currentChatRoom, setCurrentChatRoom] = useState<number>(-1);
 	const [currentUser, setCurrentUser] = useState<UserProfileDto>({} as UserProfileDto);
+	const {data: userPatch, isLoading: userPatchLoading, error: userPatchError, fetcher: patchUserFetcher} = useFetch<UpdateUserDto, UserProfileDto>();
+	const {data: addToken, isLoading: addTokenLoading, error: addTokenError, fetcher: addTokenFetcher} = useFetch<CreateTokenDto, boolean>();
 
 	useEffect(() => {
 		// console.log("CONTEXT ", transcendenceSocket.id, currentUser.id,);
@@ -91,61 +84,93 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		setCurrentUser,
 		someUserUpdatedTheirStatus,
 		setSomeUserUpdatedTheirStatus,
-		// currentUserId,
-		// setCurrentUserId,
-		// currentUserName,
-		// setCurrentUserName,
 		currentChatRoom,
 		setCurrentChatRoom,
 		messageToUserNotInRoom,
 		setMessageToUserNotInRoom
 	}
 
+	useEffect(() => {
+		if (userPatch) {
+			setCurrentUser(userPatch);
+		}
+	}, [userPatch])
+
+	useEffect(() => {
+		if (addToken) {
+			const statusUpdate: WebsocketStatusChangeDto = {
+				userId: currentUser.id,
+				userName: currentUser.userName,
+				token: (transcendenceSocket.id ? transcendenceSocket.id : ''),
+				status: OnlineStatus.ONLINE
+			}
+			console.log('User status updated to online:', currentUser.id,currentUser.userName, transcendenceSocket.id, statusUpdate);
+			transcendenceSocket.emit('socket/statusChange', statusUpdate); // Emit the status change to the socket
+		}
+	}, [addToken])
+
+	useEffect(() => {
+		if (userPatchError) {
+			console.error('Error updating user:', userPatchError);
+		}
+		if (addTokenError) {
+			console.error('Error adding token:', addTokenError);
+		}
+	}, [userPatchError, addTokenError])
+
 	// Function to update the user's online status
 	const setUserStatusToOnline = async () => {
+		console.log('Setting user status to online');
 		if (!currentUser.id) return;
-		try {
-			const updateData: UpdateUserDto = {
+		// try {
+			const patchUserData: UpdateUserDto = {
 				online: OnlineStatus.ONLINE,
-				token: transcendenceSocket.id
 			}
-			const response = await fetch(constants.API_SINGLE_USER + currentUser.id, {
-				method: 'PATCH',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(updateData),
-			});
-			if (!response.ok) {
-				throw new Error('Failed to patch data');
-			} else {
-				const data = await response.json() as UserProfileDto;
-				const statusUpdate: WebsocketStatusChangeDto = {
-					userId: data.id,
-					userName: data.loginName,
-					token: (transcendenceSocket.id ? transcendenceSocket.id : ''),
-					status: OnlineStatus.ONLINE
-				}
-				// setCurrentUserName(data.loginName);
-				setCurrentUser(data);
-				transcendenceSocket.emit('socket/statusChange', statusUpdate); // Emit the status change to the socket
+			const addTokenData: CreateTokenDto = {
+				token: transcendenceSocket.id? transcendenceSocket.id : '',
+				userId: currentUser.id
 			}
-		} catch (error) {
-			console.error('Error updating online status:', error);
-		}
+			// const patchUserResponse = await fetch(constants.API_USERS + currentUser.id, { // using fetch here, maybe we should use useFetch instead
+			// 	method: 'PATCH',
+			// 	headers: {
+			// 		'Content-Type': 'application/json',
+			// 	},
+			// 	body: JSON.stringify(patchUserData),
+			// });
+			patchUserFetcher({url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: patchUserData});
+			addTokenFetcher({url: constants.API_ADD_TOKEN, fetchMethod: 'POST', payload: addTokenData });
+			// const addTokenResponse = await fetch(constants.API_ADD_TOKEN, {
+			// 	method: 'POST',
+			// 	headers: {
+			// 		'Content-Type': 'application/json',
+			// 	},
+			// 	body: JSON.stringify({ token: transcendenceSocket.id, userId: currentUser.id }),
+			// });
+			// if (!patchUserResponse.ok || !addTokenResponse.ok) {
+			// 	throw new Error('Failed to patch data');
+			// } else {
+				// console.log('Getting ready for socket status change');
+				// const data = await patchUserResponse.json() as UserProfileDto;
+				// const statusUpdate: WebsocketStatusChangeDto = {
+				// 	userId: data.id,
+				// 	userName: data.userName,
+				// 	token: (transcendenceSocket.id ? transcendenceSocket.id : ''),
+				// 	status: OnlineStatus.ONLINE
+				// }
+				// console.log('User status updated to online:', data.id,data.userName, transcendenceSocket.id, statusUpdate);
+				// setCurrentUser(data);
+				// transcendenceSocket.emit('socket/statusChange', statusUpdate); // Emit the status change to the socket
+			// }
+		// } catch (error) {
+		// 	console.error('Error updating online status:', error);
+		// }
 	};
-
-	// if (currentUser.id == 0)
-	// {
-	// 	return (
-	// 		<Login currentUserId={currentUserId} setCurrentUserId={setCurrentUserId} currentUserName={currentUserName} setCurrentUserName={setCurrentUserName} />
-	// 		// <Login />
-	// 	);
-	// }
 
 	return (
 		<>
 			<TranscendenceContext.Provider value={contextValues}>
+				{/* <DottedCircles /> { //JMA: Leave this for now */}
+				<MenuBar />
 				{!currentUser.id && <Login />}
 				{currentUser.id && 
 				<div className="content-area">
