@@ -9,8 +9,12 @@
     "backWallColor": "white",
     "leftPlayerColor": "white",
     "rightPlayerColor": "white",
-    "textColor": "white",
-    "textFont": "Arial"
+    "bottomLeftTextColor": "white",
+    "bottomLeftTextFont": "Arial",
+    "bottomLeftTextSize": "25",
+    "bottomRightTextColor": "white",
+    "bottomRightTextFont": "Arial",
+    "bottomRightTextSize": "25"
   },
 
   "classic": {
@@ -23,8 +27,12 @@
     "backWallColor": "#4CBB17",
     "leftPlayerColor": "#4CBB17",
     "rightPlayerColor": "#4CBB17",
-    "textColor": "#4CBB17",
-    "textFont": "Arial"
+    "bottomLeftTextColor": "white",
+    "bottomLeftTextFont": "Arial",
+    "bottomLeftTextSize": "25",
+    "bottomRightTextColor": "#4CBB17",
+    "bottomRightTextFont": "Arial",
+    "bottomRightTextSize": "25"
   },
   
   "neon": {
@@ -37,7 +45,11 @@
     "backWallColor": "#FF1493",
     "leftPlayerColor": "#FF1493",
     "rightPlayerColor": "#FF1493",
-    "textColor": "#00D0FF",
-    "textFont": "Helvetica"
+    "bottomLeftTextColor": "#00D0FF",
+    "bottomLeftTextFont": "Helvetica",
+    "bottomLeftTextSize": "25",
+    "bottomRightTextColor": "#00D0FF",
+    "bottomRightTextFont": "Helvetica",
+    "bottomRightTextSize": "25"
   }
 }

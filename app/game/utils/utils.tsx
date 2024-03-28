@@ -104,17 +104,59 @@ export function detectScore(ball: Ball, players: PlayerComponent[], config: keyo
 }
 
 
-export function	setTheme(game: Game, theme: keyof typeof CON.themes) {
-	game.theme = theme;
+function setPaddleTheme(game: Game, theme: keyof typeof CON.themes) {
 	game.paddels.forEach(paddle => paddle.setColor(CON.themes[theme].leftPaddleColor));
 	game.paddels.forEach(paddle => paddle.setColor(CON.themes[theme].rightPaddleColor));
+}
+
+function setWallTheme(game: Game, theme: keyof typeof CON.themes) {
 	game.walls.forEach(wall => wall.setColor(CON.themes[theme].backWallColor));
 	game.walls.forEach(wall => wall.setColor(CON.themes[theme].wallColor));
+}
+
+function setPlayerTheme(game: Game, theme: keyof typeof CON.themes) {
+	game.players.forEach(player => {
+		if (player.getSide() == 0) {
+			player.nameField?.setColor(CON.themes[theme].leftPlayerColor);
+			player.scoreField?.setSize(CON.themes[theme].leftScoreFieldSize);
+			player.scoreField?.setColor(CON.themes[theme].leftScoreFieldColor);
+			player.scoreField?.setFont(CON.themes[theme].leftScoreFieldFont);
+		}
+		else {
+			player.nameField?.setColor(CON.themes[theme].rightPlayerColor);
+			player.scoreField?.setSize(CON.themes[theme].rightScoreFieldSize);
+			player.scoreField?.setColor(CON.themes[theme].rightScoreFieldColor);
+			player.scoreField?.setFont(CON.themes[theme].rightScoreFieldFont);
+		}
+	});
+}
+	
+
+function setMessageTheme(game: Game, theme: keyof typeof CON.themes) {
+	game.messageFields.forEach(message => {
+		if (message.getName() == "left") {
+			message.setColor(CON.themes[theme].bottomLeftTextColor);
+			message.setFont(CON.themes[theme].bottomLeftTextFont);
+			message.setSize(CON.themes[theme].bottomLeftTextSize);
+		}
+		else if (message.getName() == "right") {
+			message.setColor(CON.themes[theme].bottomRightTextColor);
+			message.setFont(CON.themes[theme].bottomRightTextFont);
+			message.setSize(CON.themes[theme].bottomRightTextSize);
+		}
+	});
+}
+
+
+export function	setTheme(game: Game, theme: keyof typeof CON.themes) {
+	game.theme = theme;
+	setPaddleTheme(game, theme);
+	setWallTheme(game, theme);
+	setPlayerTheme(game, theme);
+	setMessageTheme(game, theme);
+
 	game.lines.forEach(line => line.setColor(CON.themes[theme].lineColor));
 	game.backgroundFill?.setColor(CON.themes[theme].backgroundColor);
-	game.players.forEach(player => player.nameField?.setColor(CON.themes[theme].leftPlayerColor));
-	game.players.forEach(player => player.scoreField?.setColor(CON.themes[theme].leftPlayerColor));
-	game.messageFields?.forEach(message => message.setColor(CON.themes[theme].leftPlayerColor)); //todo change
 	game.ball?.setColor(CON.themes[theme].ballColor);
 	game.ctx.clearRect(0, 0, game.canvas.width, game.canvas.height);
 	drawGameObjects(game);

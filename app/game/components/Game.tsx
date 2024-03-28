@@ -48,7 +48,7 @@ export class Game {
 		this.canvas = newCanvas;
 		this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
 		this.gameUsers = this.gameData.GameUsers as UpdateGameUserDto [];
-		initializeGameObjects(this, this.config);
+		initializeGameObjects(this, this.config, this.theme);
 		setTheme(this, "classic");
 		setSocketListeners(this.gameData, this.gameSocket, this);
 	
