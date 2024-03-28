@@ -6,6 +6,7 @@
     "countdownTime": "3",
     "winningScore": "5",
     "collisionCooldown": "500",
+    "ballWidth": "15",
     "ballBaseSpeed": "5",
     "ballSpeedIncrease": "0.5",
     "paddleBaseSpeed": "7",
@@ -23,7 +24,24 @@
     "backWallGap": "200",
 
     "startMessage": "Waiting for other player",
-    "winMessage": "Press SPACE to start a new match"
+    "winMessage": "Press SPACE to start a new match",
+
+    "scoreFieldOffset_X": "50",
+    "scoreFieldOffset_Y": "150",
+
+    "bottomMessageOffset_X": "300",
+    "bottomMessageOffset_Y": "30",
+
+    "playerNameOffset_X": "200",
+    "playerNameOffset_Y": "50",
+
+    "lineWidth": "6",
+    "wallWidth": "20",
+
+    "paddleWidth": "20",
+    "paddleOffset_X": "20",
+    "paddleHeightFactor": ".25",
+    "paddleGap": "2"
   },
   
   "test": {
@@ -33,6 +51,7 @@
     "countdownTime": "1",
     "winningScore": "2",
     "collisionCooldown": "500",
+    "ballWidth": "20",
     "ballBaseSpeed": "7",
     "ballSpeedIncrease": "1",
     "paddleBaseSpeed": "10",
@@ -50,6 +69,23 @@
     "rightBackWall": "false",
 
     "startMessage": "Waiting for other player",
-    "winMessage": "Press SPACE to start a new match"
+    "winMessage": "Press SPACE to start a new match",
+
+    "scoreFieldOffset_X": "50",
+    "scoreFieldOffset_Y": "150",
+
+    "bottomMessageOffset_X": "300",
+    "bottomMessageOffset_Y": "30",
+
+    "playerNameOffset_X": "200",
+    "playerNameOffset_Y": "50",
+
+    "lineWidth": "6",
+    "wallWidth": "20",
+
+    "paddleWidth": "20",
+    "paddleOffset_X": "20",
+    "paddleHeightFactor": ".25",
+    "paddleGap": "2"
   }
 }

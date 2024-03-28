@@ -30,7 +30,7 @@ export function initializeGameObjects(game: Game, config: keyof typeof CON.confi
 
 function setBall(game: Game) {
   game.ball = null;
-  game.ball = new Ball();
+  game.ball = new Ball(game.config, game.theme);
 }
 
 export function drawGameObjects(game: Game) {
@@ -46,6 +46,6 @@ export function drawGameObjects(game: Game) {
 
 export function resetGameObjects(game: Game) {
   game.soundFX.reinitialize();
-  game.paddels.forEach(paddle => paddle.resetPaddle());
+  game.paddels.forEach(paddle => paddle.resetPaddle(game.config));
   setBall(game);
 }

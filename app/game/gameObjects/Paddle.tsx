@@ -32,28 +32,31 @@ export class Paddle extends GameObject {
 	}
 
 	
-	public resetPaddle() {
-		this.y = CON.PADDLE_OFFSET_Y;
+	public resetPaddle(config: keyof typeof CON.config) {
+		const paddleHeight = CON.config[config].screenHeight * CON.config[config].paddleHeightFactor;
+		this.y = CON.config[config].screenHeight / 2 - paddleHeight / 2;
 		this.movementComponent.setSpeed(0);
 		this.movementComponent.setDirection(0);
-		this.movementComponent.setY(CON.PADDLE_OFFSET_Y);
+		this.movementComponent.setY(CON.config[config].screenHeight / 2 - paddleHeight / 2);
 	}
 
 	
 	//checks if paddle is out of bounds. set back and stop movment to reduce lag
-	private checkBounds() {
-		let speed = this.movementComponent.getSpeed();
-		if (this.y + speed > CON.PADDLE_MAX_Y) {
+	private checkBounds(config: keyof typeof CON.config) {
+		const speed = this.movementComponent.getSpeed();
+		const paddleMinY = CON.config[config].wallWidth + CON.config[config].paddleGap;
+		const paddleMaxY = CON.config[config].screenHeight - this.height - CON.config[config].wallWidth - CON.config[config].paddleGap;
+		if (this.y + speed > paddleMaxY) {
 			this.movementComponent.setSpeed(0);
-			this.y = CON.PADDLE_MAX_Y - speed;
-		} else if (this.y - speed < CON.PADDLE_MIN_Y) {
+			this.y = paddleMaxY - speed;
+		} else if (this.y - speed < paddleMinY) {
 			this.movementComponent.setSpeed(0);
-			this.y = CON.PADDLE_MIN_Y + speed;
+			this.y = paddleMinY + speed;
 		}
 	}
 
 
-	public updatePaddle(state: GameState, deltaTime: number) {
+	public updatePaddle(state: GameState, deltaTime: number, config: keyof typeof CON.config) {
 		if (state != `STARTED`) {
 			return false;
 		}
@@ -63,7 +66,7 @@ export class Paddle extends GameObject {
 			let initialY = this.y;
 			this.movementComponent.update(deltaTime);
 			this.y = this.movementComponent.getY();
-			this.checkBounds();
+			this.checkBounds(config);
 			
 			hasMoved = Math.abs(initialY - this.y) > margin;
 		}

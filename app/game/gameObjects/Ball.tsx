@@ -11,9 +11,18 @@ export class Ball extends GameObject {
 	private _lastCollisionWithPaddle: number = 0;
 	private _lastcollisionType: string = "";
 
-	constructor() {
-		super("Ball", CON.BALL_START_X, CON.BALL_START_Y, CON.BALL_WIDTH, CON.BALL_WIDTH, CON.BASE_COLOR);
-		this.movementComponent = new MovementComponent(0, 0, CON.BALL_START_X, CON.BALL_START_Y);
+	constructor(config: keyof typeof CON.config, theme: keyof typeof CON.themes) {
+		super("Ball",
+			CON.config[config].screenWidth / 2 - CON.config[config].ballWidth /2,
+			CON.config[config].screenHeight / 2 - CON.config[config].ballWidth /2,
+			CON.config[config].ballWidth,
+			CON.config[config].ballWidth,
+			CON.themes[theme].ballColor);
+		this.movementComponent = new MovementComponent(
+			0,
+			0,
+			CON.config[config].screenWidth / 2 - CON.config[config].ballWidth /2,
+			CON.config[config].screenHeight / 2 - CON.config[config].ballWidth /2);
 	}
 
 	

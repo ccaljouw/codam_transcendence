@@ -48,8 +48,8 @@ export class Game {
 		this.canvas = newCanvas;
 		this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
 		this.gameUsers = this.gameData.GameUsers as UpdateGameUserDto [];
-		initializeGameObjects(this, this.config, this.theme);
-		setTheme(this, "classic");
+		initializeGameObjects(this, this.config);
+		setTheme(this, this.theme);
 		setSocketListeners(this.gameData, this.gameSocket, this);
 	
 		console.log("script: instance type: ", this.instanceType); //todo: remove

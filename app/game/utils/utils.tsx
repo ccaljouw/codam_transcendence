@@ -117,13 +117,17 @@ function setWallTheme(game: Game, theme: keyof typeof CON.themes) {
 function setPlayerTheme(game: Game, theme: keyof typeof CON.themes) {
 	game.players.forEach(player => {
 		if (player.getSide() == 0) {
+			player.nameField?.setSize(CON.themes[theme].leftPlayerSize);
 			player.nameField?.setColor(CON.themes[theme].leftPlayerColor);
+			player.nameField?.setFont(CON.themes[theme].leftPlayerFont);
 			player.scoreField?.setSize(CON.themes[theme].leftScoreFieldSize);
 			player.scoreField?.setColor(CON.themes[theme].leftScoreFieldColor);
 			player.scoreField?.setFont(CON.themes[theme].leftScoreFieldFont);
 		}
 		else {
+			player.nameField?.setSize(CON.themes[theme].rightPlayerSize);
 			player.nameField?.setColor(CON.themes[theme].rightPlayerColor);
+			player.nameField?.setFont(CON.themes[theme].rightPlayerFont);
 			player.scoreField?.setSize(CON.themes[theme].rightScoreFieldSize);
 			player.scoreField?.setColor(CON.themes[theme].rightScoreFieldColor);
 			player.scoreField?.setFont(CON.themes[theme].rightScoreFieldFont);

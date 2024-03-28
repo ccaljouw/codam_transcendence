@@ -55,6 +55,10 @@ export class TextComponent extends GameObject {
 		this.size = size;
 	}
 
+	public getText() {
+		return this.text;
+	}
+
 	public getAlign() {
 		return this.align;
 	}

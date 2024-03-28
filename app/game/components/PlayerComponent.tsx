@@ -14,34 +14,44 @@ export class PlayerComponent {
 	constructor(name: string, side: CON.PlayerSide, config: keyof typeof CON.config) {
 		this._name = name;
 		this._side = side;
-		this.nameField = new TextComponent("nameField", this._name, CON.MESSAGE_FONT, CON.BASE_COLOR, CON.ALIGN, CON.BASELINE, CON.PLAYER_SIZE, CON.config[config].screenWidth  / 2, CON.PLAYER_OFFSET_Y);
-		this.scoreField = new TextComponent("scoreField", this._score.toString(), CON.MESSAGE_FONT, CON.BASE_COLOR, CON.ALIGN, CON.BASELINE, CON.SCORE_SIZE, CON.config[config].screenWidth  / 2 - CON.SCORE_OFFSET_X, CON.SCORE_OFFSET_Y);
+				
+		this.nameField = new TextComponent(
+			"nameField",
+			this._name,
+			CON.BASE_FONT,
+			CON.BASE_COLOR,
+			CON.ALIGN,
+			CON.BASELINE,
+			CON.BASE_FONT_SIZE,
+			10,
+			CON.config[config].playerNameOffset_Y
+			);
+			
+			this.scoreField = new TextComponent(
+			"scoreField",
+			this._score.toString(),
+			CON.BASE_FONT,
+			CON.BASE_COLOR,
+			CON.ALIGN,
+			CON.BASELINE,
+			CON.BASE_FONT_SIZE,
+			10,
+			CON.config[config].scoreFieldOffset_Y
+		);
+		
+				console.log("!!! offset: ", CON.config[config].scoreFieldOffset_Y);
 
 		if (this._side == 1) {
 			//this._bot = true;
-			this.setRightPlayerFormat(config);
+			this.nameField?.setX(CON.config[config].screenWidth / 2 + CON.config[config].playerNameOffset_X);
+			this.scoreField?.setX(CON.config[config].screenWidth / 2 + CON.config[config].scoreFieldOffset_X);
 	
 		} else {
-			this.setLeftPlayerFormat(config);
+			this.nameField?.setX(CON.config[config].playerNameOffset_X);
+			this.scoreField?.setX(CON.config[config].screenWidth  / 2 - CON.config[config].scoreFieldOffset_X);
 		}
 	}
 	
-
-	setRightPlayerFormat(config: keyof typeof CON.config) {
-		this.nameField?.setX(CON.config[config].screenWidth - CON.PLAYER_OFFSET_X);
-		this.scoreField?.setX(CON.config[config].screenWidth  / 2 + CON.SCORE_OFFSET_X);
-		this.nameField?.setColor(CON.BASE_COLOR);
-		this.scoreField?.setColor(CON.BASE_COLOR);
-	}
-
-
-	setLeftPlayerFormat(config: keyof typeof CON.config) {
-		this.nameField?.setX(CON.PLAYER_OFFSET_X);
-		this.scoreField?.setX(CON.config[config].screenWidth  / 2 - CON.SCORE_OFFSET_X);
-		this.nameField?.setColor(CON.BASE_COLOR);
-		this.scoreField?.setColor(CON.BASE_COLOR);
-	}
-
 	setId(id: string) {
 		this._id = id;
 	}

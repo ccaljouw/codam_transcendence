@@ -1,5 +1,6 @@
 import myThemes from "../pongthemes.json"
 import myConfig from "../pongconfig.json"
+import * as CON from "./constants"
 
 type Theme = {
 	leftPaddleColor: string;
@@ -11,10 +12,64 @@ type Theme = {
 	backWallColor: string;
 	leftPlayerColor: string;
 	rightPlayerColor: string;
+	leftPlayerFont: string;
+	rightPlayerFont: string;
+	leftPlayerSize: number;
+	rightPlayerSize: number;
 	textColor: string;
 	textFont: string;
+	leftScoreFieldColor: string;
+	rightScoreFieldColor: string;
+	leftScoreFieldFont: string;
+	rightScoreFieldFont: string;
+	leftScoreFieldSize: number;
+	rightScoreFieldSize: number;
+	bottomLeftTextColor: string;
+	bottomLeftTextFont: string;
+	bottomLeftTextSize: number;
+	bottomRightTextColor: string;
+	bottomRightTextFont: string;
+	bottomRightTextSize: number;
 };
-export const themes: Record<string, Theme> = myThemes;
+
+function parseThemes(jsonThemes: any): Record<string, Theme> {
+	const themes: Record<string, Theme> = {};
+
+	for (const key in jsonThemes) {
+		const value = jsonThemes[key];
+		themes[key] = {
+			leftPaddleColor: value.leftPaddleColor,
+			rightPaddleColor: value.rightPaddleColor,
+			ballColor: value.ballColor,
+			backgroundColor: value.backgroundColor,
+			lineColor: value.lineColor,
+			wallColor: value.wallColor,
+			backWallColor: value.backWallColor,
+			leftPlayerColor: value.leftPlayerColor,
+			rightPlayerColor: value.rightPlayerColor,
+			leftPlayerFont: value.leftPlayerFont,
+			rightPlayerFont: value.rightPlayerFont,
+			leftPlayerSize: parseInt(value.leftPlayerSize, 10),
+			rightPlayerSize: parseInt(value.rightPlayerSize, 10),
+			textColor: value.textColor,
+			textFont: value.textFont,
+			leftScoreFieldColor: value.leftScoreFieldColor,
+			rightScoreFieldColor: value.rightScoreFieldColor,
+			leftScoreFieldFont: value.leftScoreFieldFont,
+			rightScoreFieldFont: value.rightScoreFieldFont,
+			leftScoreFieldSize: parseInt(value.leftScoreFieldSize, 10),
+			rightScoreFieldSize: parseInt(value.rightScoreFieldSize, 10),
+			bottomLeftTextColor: value.bottomLeftTextColor,
+			bottomLeftTextFont: value.bottomLeftTextFont,
+			bottomLeftTextSize: parseInt(value.bottomLeftTextSize, 10),
+			bottomRightTextColor: value.bottomRightTextColor,
+			bottomRightTextFont: value.bottomRightTextFont,
+			bottomRightTextSize: parseInt(value.bottomRightTextSize, 10),
+		};
+	}
+	return themes;
+}
+export const themes: Record<string, Theme> = parseThemes(myThemes);
 
 
 type Config = {
@@ -23,6 +78,7 @@ type Config = {
 	countdownTime: number;
 	winningScore: number;
 	collisionCooldown: number;
+	ballWidth: number;
 	ballBaseSpeed: number;
 	ballSpeedIncrease: number;
 	paddleBaseSpeed: number;
@@ -37,6 +93,18 @@ type Config = {
 	backWallGap: number;
 	startMessage: string;
 	winMessage: string;
+	scoreFieldOffset_X: number;
+	scoreFieldOffset_Y: number;
+	bottomMessageOffset_X: number;
+	bottomMessageOffset_Y: number;
+	playerNameOffset_X: number;
+	playerNameOffset_Y: number;
+	lineWidth: number;
+	wallWidth: number;
+	paddleWidth: number;
+	paddleOffset_X: number;
+	paddleHeightFactor: number;
+	paddleGap: number;
 };
 
 
@@ -51,6 +119,7 @@ function parseConfig(jsonConfig: any): Record<string, Config> {
 			countdownTime: parseInt(value.countdownTime, 10),
 			winningScore: parseInt(value.winningScore, 10),
 			collisionCooldown: parseInt(value.collisionCooldown, 10),
+			ballWidth: parseInt(value.ballWidth, 10),
 			ballBaseSpeed: parseInt(value.ballBaseSpeed, 10),
 			ballSpeedIncrease: parseInt(value.ballSpeedIncrease, 10),
 			socketUpdateInterval: parseFloat(value.socketUpdateInterval),
@@ -65,79 +134,36 @@ function parseConfig(jsonConfig: any): Record<string, Config> {
 			backWallGap: parseInt(value.backWallGap, 10),
 			startMessage: value.startMessage,
 			winMessage: value.winMessage,
+			scoreFieldOffset_X: parseInt(value.scoreFieldOffset_X, 10),
+			scoreFieldOffset_Y: parseInt(value.scoreFieldOffset_Y, 10),
+			bottomMessageOffset_X: parseInt(value.bottomMessageOffset_X, 10),
+			bottomMessageOffset_Y: parseInt(value.bottomMessageOffset_Y, 10),
+			playerNameOffset_X: parseInt(value.playerNameOffset_X, 10),
+			playerNameOffset_Y: parseInt(value.playerNameOffset_Y, 10),
+			lineWidth: parseInt(value.lineWidth, 10),
+			wallWidth: parseInt(value.wallWidth, 10),
+			paddleWidth: parseInt(value.paddleWidth, 10),
+			paddleOffset_X: parseInt(value.paddleOffset_X, 10),
+			paddleHeightFactor: parseFloat(value.paddleHeightFactor),
+			paddleGap: parseInt(value.paddleGap, 10),
 		};
 	}
 	return config;
 }
-
 export const config: Record<string, Config> = parseConfig(myConfig);
 
 
 //ball
-const SCREEN_WIDTH : number = config.standard.screenWidth;
-const SCREEN_HEIGHT : number = config.standard.screenHeight;
-
-export const BALL_WIDTH : number = 15;
-export const BALL_START_X : number = SCREEN_WIDTH / 2  - BALL_WIDTH / 2;
-export const BALL_START_Y : number = SCREEN_HEIGHT / 2 - BALL_WIDTH / 2;
 export const BALL_MAX_START_ANGLE : number = Math.PI / 6;
 export const BALL_MIN_START_ANGLE : number = -Math.PI / 6;
 export const MAX_BOUNCE_ANGLE : number = Math.PI / 4;
 
+//text
 export const BASE_COLOR = "white";
-
-
-//lines
-export const LINE_WIDTH : number = 6;
-
-//wall
-export const WALL_WIDTH : number = 20;
-
-//paddle
-export const PADDLE_WIDTH : number = 20;
-export const PADDLE_HEIGHT : number = SCREEN_HEIGHT / 4 
-export const PADDLE_OFFSET_X : number = 25;
-export const PADDLE_OFFSET_Y : number = SCREEN_HEIGHT / 2 - PADDLE_HEIGHT / 2;
-export const PADDLE_MIN_Y : number = WALL_WIDTH + 2;
-export const PADDLE_MAX_Y : number = SCREEN_HEIGHT - PADDLE_HEIGHT - WALL_WIDTH - 2;
-
-//score
-export const SCORE_SIZE : number = 70;
-export const SCORE_OFFSET_X : number = 70;
-export const SCORE_OFFSET_Y : number = 100;
-
-//player
-export const PLAYER_SIZE = 25;
-export const PLAYER_OFFSET_X = 200;
-export const PLAYER_OFFSET_Y = 50;
-export const PLAYER_1_NAME = "Left Player Name";
-export const PLAYER_2_NAME = "Right Player Name";
-
-//messages
+export const BASE_FONT = "Arial";
+export const BASE_FONT_SIZE = 30;
 export const ALIGN = "center";
 export const BASELINE = "middle";
-export const MESSAGE_SIZE = 30;
-export const MESSAGE_COLOR = "white";
-export const MESSAGE_FONT = "Arial";
-
-
-
-//center message
-// export const CENTER_MESSAGE_SIZE = 30;
-// export const CENTER_MESSAGE_X = SCREEN_WIDTH / 2 - CENTER_MESSAGE_SIZE / 2;
-// export const CENTER_MESSAGE_Y = SCREEN_HEIGHT - WALL_WIDTH -  CENTER_MESSAGE_SIZE - 200;
-
-//left and right messages (side)
-export const SIDE_MESSAGE_SIZE = 25;
-export const SIDE_MESSAGE_OFFSET_X = WALL_WIDTH + SIDE_MESSAGE_SIZE + 200;
-export const SIDE_MESSAGE_OFFSET_Y = SCREEN_HEIGHT - WALL_WIDTH + SIDE_MESSAGE_SIZE - 50;
-
-//top message
-// export const TOP_MESSAGE_SIZE = 30;
-// export const TOP_MESSAGE_OFFSET_X = SCREEN_WIDTH / 2 - TOP_MESSAGE_SIZE - 200;
-// export const TOP_MESSAGE_OFFSET_Y = WALL_WIDTH + TOP_MESSAGE_SIZE + 100;
-
-
 
 export enum WallTypes {
 	horizontal,

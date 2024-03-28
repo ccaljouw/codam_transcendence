@@ -17,7 +17,7 @@ export function updateObjects(game: Game, deltaTime: number, config: keyof typeo
 
 function updatePaddles(game: Game, deltaTime: number, config: keyof typeof CON.config) {
   // console.log("script: updatePaddles");
-  let paddleMoved = game.paddels.map(paddle => paddle.updatePaddle(game.gameState, deltaTime));
+  let paddleMoved = game.paddels.map(paddle => paddle.updatePaddle(game.gameState, deltaTime, config));
   if (paddleMoved.some(moved => moved === true) && game.elapasedTimeSincceLastUpdate >= CON.config[config].socketUpdateInterval) {
     if (game.instanceType === 0) {
       game.gameSocket.emit("game/updateGameObjects", {
