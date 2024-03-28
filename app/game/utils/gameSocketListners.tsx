@@ -35,8 +35,6 @@ export function setSocketListeners(gameData: UpdateGameDto, socket: typeof trans
       game.endGame(payload.winner!);
     }
     
- 
-    
     // if (payload.resetMatch === 1) {
     //   game.resetMatch();
     // }

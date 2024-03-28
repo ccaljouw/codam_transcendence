@@ -92,13 +92,13 @@ export function checkForGoals(game: Game, config: keyof typeof CON.config) {
       return;
     }
   }
-   
-  // game.resetGame(); //todo turn on?
-  game.gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, resetGame: 1});
-  
   let winner = checkWinCondition(game.players, config) ?? -1;
   if (winner !== -1) {
-    // game.endGame(winner!);  //todo turn on?
+    game.endGame(winner!);
     game.gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, winner: winner});
+    return;
+  } else {
+    game.resetGame();
+    game.gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, resetGame: 1});
   }
 }
