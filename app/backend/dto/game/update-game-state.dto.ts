@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { GameState } from '@prisma/client';
 import { IsInt, IsNotEmpty } from "class-validator";
 
-export class updateGameStateDto {
+export class UpdateGameStateDto {
   @ApiProperty({ required: true })
   @IsNotEmpty()
   @IsInt()

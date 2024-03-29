@@ -1,6 +1,6 @@
+import { UpdateGameStateDto } from '@ft_dto/game';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateGameDto } from 'dto/game/create-game.dto';
-import { UpdateGameDto } from 'dto/game/update-game.dto';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
@@ -120,14 +120,21 @@ export class GameService {
       throw new NotFoundException(`Game with id ${id} does not exist.`);
     }
   }
-  // async update(id: number, updateGameDto: UpdateGameDto) {
-  //   try {
-  //     const game = await this.db.game.update({
-  //       where: { id: this.game.id },
-  //       // data: {state: updateGameDto.state, winner: updateGameDto.winner, score1: updateGameDto.score1, score2: updateGameDto.score2 },
-  //     return game;
-  //   } catch (error) {
-  //     throw new NotFoundException(`User with id ${id} does not exist.`);
-  //   }
-  // }
+
+  async update(id: number, updateGameStateDto: UpdateGameStateDto) {
+    try {
+      const game = await this.db.game.update({
+        where: { id: id },
+        data: { state: updateGameStateDto.state },
+      });
+      if (game) {
+        return 0;
+      } else {
+        return 1;
+      }
+      // return game;
+    } catch (error) {
+      throw new NotFoundException(`User with id ${id} does not exist.`);
+    }
+  }
 }

@@ -7,7 +7,7 @@ import {
 import { GameService } from './game.service';
 import { SocketServerProvider } from '../socket/socketserver.gateway';
 import { Server, Socket } from 'socket.io';
-import { UpdateGameObjectsDto, updateGameStateDto } from 'dto/game';
+import { UpdateGameObjectsDto, UpdateGameStateDto } from 'dto/game';
 
 @WebSocketGateway({
   cors: true,
@@ -38,7 +38,7 @@ export class GamesocketGateway {
   }
 
   @SubscribeMessage('game/updateGameState')
-  updateGameState(client: Socket, payload: updateGameStateDto) {
+  updateGameState(client: Socket, payload: UpdateGameStateDto) {
     console.log(
       'Server: received game state update from client: ',
       payload.state,
@@ -47,6 +47,7 @@ export class GamesocketGateway {
     this.game_io
       .to(payload.roomId.toString())
       .emit('game/updateGameState', updatedGameState);
+    // this.gamesocketService.update(payload);
     // console.log(`Updating game state: ${payload.roomId} to ${payload.state}`);
     // if (payload.state === `READY_TO_START`) {
     //   this.game_io.to(payload.roomId.toString()).emit('game/message', "test from emit");

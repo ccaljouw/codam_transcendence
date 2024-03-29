@@ -1,7 +1,7 @@
 import { Game } from '../components/Game';
 import { GameState } from '@prisma/client';
 import { transcendenceSocket } from '@ft_global/socket.globalvar';
-import { UpdateGameObjectsDto, updateGameStateDto, UpdateGameDto } from '@ft_dto/game';
+import { UpdateGameObjectsDto, UpdateGameStateDto, UpdateGameDto } from '@ft_dto/game';
 
 
 export function setSocketListeners(gameData: UpdateGameDto, socket: typeof transcendenceSocket, game: Game) {
@@ -49,13 +49,12 @@ export function setSocketListeners(gameData: UpdateGameDto, socket: typeof trans
     }
   });
 
-  gameSocket.on(`game/updateGameState`, (payload: updateGameStateDto) => {
+  gameSocket.on(`game/updateGameState`, (payload: UpdateGameStateDto) => {
     if (game.gameState === GameState.FINISHED) {
       return;
     }
     console.log(`Script: received game state update from server`, payload.roomId, payload.state, payload?.winner, payload?.score1, payload?.score2);
     game.gameState = payload.state;
-   
   });
 }
 

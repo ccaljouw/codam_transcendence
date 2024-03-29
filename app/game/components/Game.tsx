@@ -65,6 +65,7 @@ export class Game {
 		if (this.gameState == `FINISHED` && !sentFinished) {
 			sentFinished = true;
 			this.gameSocket.emit("game/updateGameState", {roomId: this.roomId, state: GameState.FINISHED, winner: this.winner?.getSide(), score1: this.players[0].getScore(), score2: this.players[1].getScore()});
+			
 			return;
 		}
 

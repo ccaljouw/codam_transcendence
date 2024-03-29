@@ -1,13 +1,14 @@
-import { Controller, ParseIntPipe, Param, Get, Delete } from '@nestjs/common';
+import { Controller, ParseIntPipe, Param, Get, Delete, Patch, Body } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UpdateGameDto } from 'dto/game/update-game.dto';
 import { GameService } from './game.service';
+import { UpdateGameStateDto } from 'dto/game/update-game-state.dto';
 
 @Controller('game')
 @ApiTags('game')
 export class GameController {
   constructor(private readonly gameService: GameService) {}
-  
+
   @Get('getGame/:userId')
   @ApiOperation({ summary: 'Checks if there is a player waiting and if so returns new game id'})
   async getGame(@Param('userId', ParseIntPipe) userId: number) : Promise<UpdateGameDto> {
@@ -35,13 +36,13 @@ export class GameController {
     return this.gameService.findOne(id);
   }
 
-  // @Patch(':id')
-  // @ApiOperation({ summary: 'Updates game with specified id'})
-  // @ApiOkResponse({ type: UpdateGameDto })
+  @Patch(':id')
+  @ApiOperation({ summary: 'Updates user with specified id'})
+  @ApiOkResponse({ type: UpdateGameStateDto })
 
-  // update(@Param('id', ParseIntPipe) id: number, @Body() updateGameDto: UpdateGameDto) : Promise<UpdateGameDto> {
-  //   return this.gameService.update(id, updateGameDto);
-  // }
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateGameStateDto: UpdateGameStateDto) : Promise<number> {
+    return this.gameService.update(id, updateGameStateDto);
+  }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Deletes game with specified id'})
