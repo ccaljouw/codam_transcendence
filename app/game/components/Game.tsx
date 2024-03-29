@@ -62,10 +62,10 @@ export class Game {
 
 		this.lastFrameTime = currentTime;
 		
-		if (this.gameState == `FINISHED` && !sentFinished) {
+		if (this.gameState == `FINISHED` && sentFinished == false) {
 			sentFinished = true;
-			this.gameSocket.emit("game/updateGameState", {roomId: this.roomId, state: GameState.FINISHED, winner: this.winner?.getSide(), score1: this.players[0].getScore(), score2: this.players[1].getScore()});
-			
+			const payload = {roomId: this.roomId, state: GameState.FINISHED, winner: this.winner?.getSide(), score1: this.players[0].getScore(), score2: this.players[1].getScore()};
+			this.gameSocket.emit("game/updateGameState", payload);
 			return;
 		}
 

@@ -1,12 +1,13 @@
 "use client"
 import { useRef, useEffect, useState, use } from 'react'
 import { GameState } from '@prisma/client'
-import { UpdateGameDto, updateGameStateDto } from '@ft_dto/game'
+import { UpdateGameDto, UpdateGameStateDto } from '@ft_dto/game'
 import { Game } from '../../../../../game/components/Game.tsx'
 import { InstanceTypes } from '../../../../../game/utils/constants.tsx'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { constants } from '@ft_global/constants.globalvar.tsx'
 import DataFetcherJson from 'src/globals/functionComponents/DataFetcherJson.tsx'
+import { response } from 'express'
 
 export default function GameComponent() {
 	const gameSocket = transcendenceSocket;
@@ -47,6 +48,7 @@ export default function GameComponent() {
 		}
 	}
 
+	// refresh game data
 	async function refreshData(id: number) {
 		const url = `${constants.API_GAME}${id}`;
 		console.log(`Game: fetching game data for gameId: ${id} from: "${url}"`);
@@ -57,6 +59,30 @@ export default function GameComponent() {
 				throw new Error(`refresh data: No game data found`);
 			} else {
 				setGameData(data);
+			}
+		}	catch (error) {
+			console.error(error);
+		}
+	}
+
+	//update game state using patch request
+	async function updateGameState(id: number, updateGameStateDto: UpdateGameStateDto) {
+		const url = `${constants.API_GAME}${id}`;
+		const payload: UpdateGameStateDto = {roomId: id, state: updateGameStateDto.state};
+		console.log(`Game: updating game state for gameId: ${id} to ${updateGameStateDto.state} from: "${url}"`);
+		try {
+			const data = await fetch(url, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(payload),
+			});
+			console.log('update game state returned ', data);
+			if (!data) {
+				throw new Error(`refresh data: No game data found`);
+			} else {
+				setGameState(updateGameStateDto.state);
 			}
 		}	catch (error) {
 			console.error(error);
@@ -90,21 +116,21 @@ export default function GameComponent() {
 				}
 			});
 			
-			gameSocket.on(`game/updateGameState`, (payload: updateGameStateDto) => {
+			gameSocket.on(`game/updateGameState`, (payload: UpdateGameStateDto) => {
 				console.log(`Game: received game state update`, payload.roomId, payload.state);
 				setGameState(payload.state);
 
-				//todo send message to server with game state updates
+				updateGameState(payload.roomId, payload);
 			});
+
+		// } else if (!gameData){
+		// 		console.error("Game: no game data to create socket conn");
+	}
 			
-			} else if (!gameData){
-				console.error("Game: no game data to create socket conn");
-			}
-			
-			return () => {
-				gameSocket?.off(`game/${roomId }`); //todo check where the disconnct should be
-			}
-		}, [gameData]);
+	return () => {
+		gameSocket?.off(`game/${roomId }`); //todo check where the disconnct should be
+		}
+	}, [gameData]);
 
 
 	useEffect(() => {
@@ -177,7 +203,7 @@ export default function GameComponent() {
 	useEffect(() => {
 		if (game !== null) {
 			console.log("Game: sending 'game ready to start' message to server");
-			const payload: updateGameStateDto = {roomId: roomId, state: GameState.READY_TO_START};
+			const payload: UpdateGameStateDto = {roomId: roomId, state: GameState.READY_TO_START};
 			gameSocket.emit("game/updateGameState", payload);
 		}
 	}, [game]);
