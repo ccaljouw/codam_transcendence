@@ -1,13 +1,12 @@
 "use client"
 import { useRef, useEffect, useState, use } from 'react'
 import { GameState } from '@prisma/client'
-import { UpdateGameDto, UpdateGameStateDto } from '@ft_dto/game'
+import { UpdateGameDto, updateGameStateDto } from '@ft_dto/game'
 import { Game } from '../../../../../game/components/Game.tsx'
 import { InstanceTypes } from '../../../../../game/utils/constants.tsx'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { constants } from '@ft_global/constants.globalvar.tsx'
 import DataFetcherJson from 'src/globals/functionComponents/DataFetcherJson.tsx'
-import useFetch from 'src/globals/functionComponents/useFetch.tsx'
 
 export default function GameComponent() {
 	const gameSocket = transcendenceSocket;
@@ -20,7 +19,6 @@ export default function GameComponent() {
 	const [gameState, setGameState] = useState<GameState>(GameState.WAITING);
 	const [waitingForPlayers, setWaitingForPlayers] = useState<boolean>(true);
 	const [instanceType, setInstanceType] = useState<InstanceTypes>(InstanceTypes.observer) // 0 for player 1, 1 for player 2, 2 for observer
-	const {data: success, isLoading, error, fetcher: patcher} = useFetch<UpdateGameStateDto, number>();
 	
 	// fetch game data
 	useEffect(() => {
@@ -42,6 +40,7 @@ export default function GameComponent() {
 				throw new Error(`No game data found`);
 			} else {
 				setGameData(data);
+				// console.log(`Game: game data and room set`);
 			}
 		}	catch (error) {
 			console.error(error);
@@ -64,35 +63,7 @@ export default function GameComponent() {
 		}
 	}
 
-
-	async function updateGameState(updateGameStateDto: UpdateGameStateDto) {
-		const url = `${constants.API_GAME}${updateGameStateDto.roomId}`;
-		console.log(`Game: updating gamed state for gameId: ${updateGameStateDto.roomId} from: "${url}"`);
-		
-		// const options {...}
-		try {
-			const data: number = await DataFetcherJson({ url: url }); //to do aanpassen
-			console.log('Result of game state update:', data);
-			if (data) {
-				throw new Error(`refresh data: No game data found`);
-			}
-		}	catch (error) {
-			console.error(error);
-		}
-	}
-
-	// const updateGameState = async (updateGameStateDto: UpdateGameStateDto) => {
-	// 	console.log(`Game: called updateGameState function`);
-	// 	const url = `${constants.API_GAME}${updateGameStateDto.roomId}`;
-
-	// 	patcher({url: url, fetchMethod: 'PATCH', payload:updateGameStateDto});
-
-	// 	if (success == 1) {
-	// 		console.error(`Error: patch failed in updateGameState`);
-	// 	}
-	// }
-
-
+	
 	// set up websocket connection and join room
 	useEffect(() => {
 		if (gameData && roomId === 0) {
@@ -119,13 +90,11 @@ export default function GameComponent() {
 				}
 			});
 			
-			gameSocket.on(`game/updateGameState`, (payload: UpdateGameStateDto) => {
-				if (gameState === `FINISHED`) {
-					return;
-				}
-				setGameState(payload.state);
+			gameSocket.on(`game/updateGameState`, (payload: updateGameStateDto) => {
 				console.log(`Game: received game state update`, payload.roomId, payload.state);
-				updateGameState(payload);
+				setGameState(payload.state);
+
+				//todo send message to server with game state updates
 			});
 			
 			} else if (!gameData){
@@ -208,7 +177,7 @@ export default function GameComponent() {
 	useEffect(() => {
 		if (game !== null) {
 			console.log("Game: sending 'game ready to start' message to server");
-			const payload: UpdateGameStateDto = {roomId: roomId, state: GameState.READY_TO_START};
+			const payload: updateGameStateDto = {roomId: roomId, state: GameState.READY_TO_START};
 			gameSocket.emit("game/updateGameState", payload);
 		}
 	}, [game]);
