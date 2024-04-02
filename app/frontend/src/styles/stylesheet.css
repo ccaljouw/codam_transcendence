@@ -52,13 +52,33 @@
     }
 }
 
+
+/* Stuff Albert added */
+
 .userlist{
 	font-family: sans-serif
 }
 
-.userlist li:hover {
-	font-weight: bold;
+.userlist .username:hover {
+	font-weight: bolder;
+	cursor: pointer;
 }
+
+.chatBox{
+	width: 400px;
+	height: 350px;
+}
+.chatMessages {
+	height: 200px;
+	width: 200px;
+	overflow-y: scroll;
+}
+.chatMessages p{
+	color: blue;
+	margin-bottom: -2pt;
+}
+
+/* end of Albert's stuff, feel free to make this better & more wholesome */
 
 .iframe-holder {
     height: 100%;
