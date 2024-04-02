@@ -2,11 +2,9 @@ import { useEffect, useState } from "react"
 import { UserProfileDto } from '@ft_dto/users'
 import useFetch from "./useFetch";
 
-
 interface UserListProps {
 	userDisplayFunction: (user: UserProfileDto, indexInUserList: number, statusChangeCallback: (idx: number) => void) => JSX.Element;
 	fetchUrl: string;
-
 }
 
 /**
@@ -41,11 +39,10 @@ export default function UserList(props: UserListProps): JSX.Element {
 	}
 
 	return (
-		<div className='userlist'>
+		<div className='userlist text-start'>
 			{usersFromDbLoading && <p>Loading users...</p>}
 			{userFromDbError && <p>Error: {userFromDbError.message}</p>}
 			{userList && <ul>{userList.map((entry, index) => (props.userDisplayFunction(entry, index, moveItemWithIdToTop)))}</ul>}
-
 		</div>
 	);
 }

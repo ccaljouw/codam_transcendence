@@ -54,7 +54,7 @@
 }
 
 .chat-box{
-    height: 70%;
+    height: 80%;
 }
 
 .chat-box .white-box {
@@ -62,7 +62,7 @@
 }
 
 .chat-users {
-    height: 30%;
+    min-height: 20%;
 }
 
 .row {
@@ -76,7 +76,15 @@
     }
 }
 
-.userlist li:hover {
+.userlist ul {
+    padding-left: 8px !important;
+}
+
+.userlist li {
+    list-style-type: none !important;
+}
+
+.userlist a:hover {
 	font-weight: bold;
 }
 

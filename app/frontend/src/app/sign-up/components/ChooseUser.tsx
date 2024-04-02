@@ -8,6 +8,7 @@ import { FontBangers } from 'src/globals/layoutComponents/Font';
 
 export default function ChooseUser() : JSX.Element {
 	const {setCurrentUser} = useContext(TranscendenceContext);
+
 	const setConnectionStatus = (user: UserProfileDto) => {
 		console.log("I should do something with my connection status");
 		sessionStorage.setItem('loginName', user.loginName); 
@@ -19,9 +20,13 @@ export default function ChooseUser() : JSX.Element {
 
 	const setCurrentUserDisplayFunc = (user: UserProfileDto) => {
 		return (
-			<li key={user.id} onClick={() => { setConnectionStatus(user);   }}>
-				{user.firstName} {user.lastName} - {user.email}
-			</li>
+			<>
+				<li key={user.id}> 
+					<a onClick={() => setConnectionStatus(user)}> 
+						{user.firstName} {user.lastName} - {user.email}
+					</a>
+				</li>
+			</>
 		)
 	}
 

@@ -22,18 +22,20 @@ export default function ChatArea() {
 	const selectSecondUserDisplayFunc = (user: UserProfileDto, indexInUserList: number, statusChangeCallback: (idx: number) => void) => {
 		return (
 			<>
-			<li key={user.id}>
-			<StatusIndicator
-					userId={user.id}
-					status={user.online}
-					statusChangeCallback={statusChangeCallback}
-					indexInUserList={indexInUserList} /> 
-			&nbsp;&nbsp;<a onClick={()=>setSecondUser(user.id)}>{user.firstName} {user.lastName}</a>&nbsp;
-			<b><UnreadMessages secondUserId={user.id} indexInUserList={indexInUserList} statusChangeCallBack={statusChangeCallback} /></b>
-			<UserContextMenu user={user} />
-			</li>
+				<li key={user.id}>
+					<StatusIndicator
+						userId={user.id}
+						status={user.online}
+						statusChangeCallback={statusChangeCallback}
+						indexInUserList={indexInUserList} /> 
+					&nbsp;&nbsp;
+					<a onClick={() => setSecondUser(user.id)}>{user.firstName} {user.lastName}</a>
+					&nbsp;
+					<b><UnreadMessages secondUserId={user.id} indexInUserList={indexInUserList} statusChangeCallBack={statusChangeCallback} /></b>
+					<UserContextMenu user={user} />
+				</li>
 			</>
-			)
+		);
 	}
 
 	return (
