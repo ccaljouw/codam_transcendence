@@ -7,7 +7,6 @@ import { InstanceTypes } from '../../../../../game/utils/constants.tsx'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { constants } from '@ft_global/constants.globalvar.tsx'
 import DataFetcherJson from 'src/globals/functionComponents/DataFetcherJson.tsx'
-import { response } from 'express'
 
 export default function GameComponent() {
 	const gameSocket = transcendenceSocket;
@@ -28,66 +27,6 @@ export default function GameComponent() {
 		}
 	}, []);
 
-
-	// fetch game data from server
-	async function fetchGame(userID: string) {
-		const url = `${constants.API_GAME}getGame/${userID}`;
-		console.log(`Game: fetching game data for user: ${userID} from: "${url}"`);
-		
-		try {
-			const data: UpdateGameDto = await DataFetcherJson({ url: url });
-			console.log('Game data: ', data);
-			if (!data) {
-				throw new Error(`No game data found`);
-			} else {
-				setGameData(data);
-				// console.log(`Game: game data and room set`);
-			}
-		}	catch (error) {
-			console.error(error);
-		}
-	}
-
-	// refresh game data
-	async function refreshData(id: number) {
-		const url = `${constants.API_GAME}${id}`;
-		console.log(`Game: fetching game data for gameId: ${id} from: "${url}"`);
-		try {
-			const data: UpdateGameDto = await DataFetcherJson({ url: url });
-			console.log('Game data found in refresh: ', data);
-			if (!data) {
-				throw new Error(`refresh data: No game data found`);
-			} else {
-				setGameData(data);
-			}
-		}	catch (error) {
-			console.error(error);
-		}
-	}
-
-	//update game state using patch request
-	async function updateGameState(id: number, updateGameStateDto: UpdateGameStateDto) {
-		const url = `${constants.API_GAME}${id}`;
-		const payload: UpdateGameStateDto = {roomId: id, state: updateGameStateDto.state};
-		console.log(`Game: updating game state for gameId: ${id} to ${updateGameStateDto.state} from: "${url}"`);
-		try {
-			const data = await fetch(url, {
-				method: 'PATCH',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(payload),
-			});
-			console.log('update game state returned ', data);
-			if (!data) {
-				throw new Error(`refresh data: No game data found`);
-			} else {
-				setGameState(updateGameStateDto.state);
-			}
-		}	catch (error) {
-			console.error(error);
-		}
-	}
 
 	
 	// set up websocket connection and join room
@@ -120,17 +59,17 @@ export default function GameComponent() {
 				console.log(`Game: received game state update`, payload.roomId, payload.state);
 				setGameState(payload.state);
 
-				updateGameState(payload.roomId, payload);
+				//todo send message to server with game state updates
 			});
-
-		// } else if (!gameData){
-		// 		console.error("Game: no game data to create socket conn");
-	}
 			
-	return () => {
-		gameSocket?.off(`game/${roomId }`); //todo check where the disconnct should be
-		}
-	}, [gameData]);
+			} else if (!gameData){
+				console.error("Game: no game data to create socket conn");
+			}
+			
+			return () => {
+				gameSocket?.off(`game/${roomId }`); //todo check where the disconnct should be
+			}
+		}, [gameData]);
 
 
 	useEffect(() => {
@@ -215,11 +154,15 @@ export default function GameComponent() {
 			console.log("Game: starting game");
 			setGameState(GameState.STARTED);
 			canvasRef.current.focus();
-			game.startGame();
+			gameSocket.emit("game/updateGameState", {roomId: roomId, state: GameState.STARTED});
+			// game.startGame();
 		} else if (gameState === GameState.FINISHED) {
-			console.log("Game: game finished add more code here");
+			console.log("Game: game finished add more code cleanup code here!!");
 			// todo add code
 		}
+
+
+
 	}, [gameState, canvasRef.current, game]);
 	
 	// return the canvas
@@ -232,4 +175,42 @@ export default function GameComponent() {
 		)}
 		</>
 	);
+
+
+//functions
+	// fetch game data from server
+	async function fetchGame(userID: string) {
+		const url = `${constants.API_GAME}getGame/${userID}`;
+		console.log(`Game: fetching game data for user: ${userID} from: "${url}"`);
+		
+		try {
+			const data: UpdateGameDto = await DataFetcherJson({ url: url });
+			console.log('Game data: ', data);
+			if (!data) {
+				throw new Error(`No game data found`);
+			} else {
+				setGameData(data);
+				// console.log(`Game: game data and room set`);
+			}
+		}	catch (error) {
+			console.error(error);
+		}
+	}
+
+	async function refreshData(id: number) {
+		const url = `${constants.API_GAME}${id}`;
+		console.log(`Game: fetching game data for gameId: ${id} from: "${url}"`);
+		try {
+			const data: UpdateGameDto = await DataFetcherJson({ url: url });
+			console.log('Game data found in refresh: ', data);
+			if (!data) {
+				throw new Error(`refresh data: No game data found`);
+			} else {
+				setGameData(data);
+			}
+		}	catch (error) {
+			console.error(error);
+		}
+	}
+
 }	

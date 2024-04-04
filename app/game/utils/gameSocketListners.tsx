@@ -7,7 +7,8 @@ import { UpdateGameObjectsDto, UpdateGameStateDto, UpdateGameDto } from '@ft_dto
 export function setSocketListeners(gameData: UpdateGameDto, socket: typeof transcendenceSocket, game: Game) {
   const roomId: number = gameData.id;
   const gameSocket = socket;
-  
+  let gamerunning = false;
+
   gameSocket.emit("game/joinRoom", roomId);
   console.log("Script: joined room");
     
@@ -55,8 +56,15 @@ export function setSocketListeners(gameData: UpdateGameDto, socket: typeof trans
     }
     console.log(`Script: received game state update from server`, payload.roomId, payload.state, payload?.winner, payload?.score1, payload?.score2);
     game.gameState = payload.state;
+
+    if (game.gameState === GameState.STARTED && !gamerunning) {
+      gamerunning = true;
+      game.startGame();
+    }
   });
 }
+
+
 
 function setNewScore(game: Game, score1: number, score2: number) {
   if (score1 >= 0)   {

@@ -40,6 +40,7 @@ export class Game {
 	messageFields: TextComponent [] = [];
 	ball: Ball | null = null;
 	gameData: UpdateGameDto | null = null;
+	currentAnimationFrame: number = 0;
 
 	constructor(newCanvas: HTMLCanvasElement, instanceType: CON.InstanceTypes, data: UpdateGameDto) {
 		this.gameData = data; //todo import from server
@@ -63,9 +64,12 @@ export class Game {
 		this.lastFrameTime = currentTime;
 		
 		if (this.gameState == `FINISHED` && sentFinished == false) {
+			cancelAnimationFrame(this.currentAnimationFrame);
 			sentFinished = true;
 			const payload = {roomId: this.roomId, state: GameState.FINISHED, winner: this.winner?.getSide(), score1: this.players[0].getScore(), score2: this.players[1].getScore()};
 			this.gameSocket.emit("game/updateGameState", payload);
+			this.gameSocket.off(`game/updateGameObjects`);
+			this.gameSocket.off(`game/updateGameState`);
 			return;
 		}
 
@@ -82,7 +86,7 @@ export class Game {
 		if (this.instanceType < 2 ) {
 				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 				drawGameObjects(this);
-				requestAnimationFrame(this.gameLoop.bind(this));
+				this.currentAnimationFrame = requestAnimationFrame(this.gameLoop.bind(this));
 		}
 	}
 
