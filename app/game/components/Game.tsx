@@ -63,6 +63,7 @@ export class Game {
 
 		this.lastFrameTime = currentTime;
 		
+		//todo add instance condition
 		if (this.gameState == `FINISHED` && sentFinished == false) {
 			cancelAnimationFrame(this.currentAnimationFrame);
 			sentFinished = true;

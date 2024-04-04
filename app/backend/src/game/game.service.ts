@@ -122,6 +122,7 @@ export class GameService {
   }
 
   async update(updateGameStateDto: UpdateGameStateDto) {
+    console.log(`backend - game: Game: updating game state`);
     try {
       const game = await this.db.game.update({
         where: { id: updateGameStateDto.roomId },

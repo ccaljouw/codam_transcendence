@@ -54,7 +54,7 @@ export default function GameComponent() {
 			});
 			
 			gameSocket.on(`game/updateGameState`, (payload: UpdateGameStateDto) => {
-				console.log(`Game: received game state update`, payload.roomId, payload.state);
+				console.log(`Game: received game state update!!!!!!`, payload.roomId, payload.state);
 				setGameState(payload.state);
 				updateGameState(payload);
 
