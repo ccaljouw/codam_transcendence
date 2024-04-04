@@ -34,7 +34,6 @@ export default function Login() : JSX.Element {
 		if (user != null)
 		{
 			setCurrentUser(user);
-			console.log("setting userId in sessionStorage from login");
 			return ;
 		}
 	}, [user]);
