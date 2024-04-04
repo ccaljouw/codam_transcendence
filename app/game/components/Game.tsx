@@ -73,7 +73,7 @@ export class Game {
 			return;
 		}
 
-		if (this.gameState == `WAITING`) {
+		if (this.gameState == `WAITING` && this.instanceType < 2) {
 			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 			this.messageFields[0].setText(CON.config[this.config].startMessage);
 		}

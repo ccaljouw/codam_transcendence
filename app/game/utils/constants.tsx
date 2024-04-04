@@ -1,6 +1,5 @@
 import myThemes from "../pongthemes.json"
 import myConfig from "../pongconfig.json"
-import * as CON from "./constants"
 
 type Theme = {
 	leftPaddleColor: string;

@@ -8,6 +8,7 @@ import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { constants } from '@ft_global/constants.globalvar.tsx'
 import DataFetcherJson from 'src/globals/functionComponents/DataFetcherJson.tsx'
 
+
 export default function GameComponent() {
 	const gameSocket = transcendenceSocket;
 	const canvasRef = useRef< HTMLCanvasElement | null >(null);
@@ -48,9 +49,6 @@ export default function GameComponent() {
 						console.log("Game: less than two players in game, refreshing game data");
 						refreshData(gameData.id);
 						console.log("Game: refreshed game data");
-					} else {
-						console.log("Game: two players in game");
-						setPlayersInGame(2);
 					}
 				}
 			});
@@ -81,6 +79,16 @@ export default function GameComponent() {
 		}
 	}, [gameData]);
 
+//create observer game
+// /	useEffect(() => {
+// 		if (gameData && playersingame === 2) {
+// 			console.log("Game: creating game instance of type: ", instanceType.observer);
+// 			const newGame = new Game(canvasRef.current!, instanceType, gameData!);
+// 			setGame(newGame);
+// 			console.log("Game: created observer instance");
+// 		}
+// 	} , [playersInGame, gameData]);
+
 
 	useEffect(() => {
 		if (playersInGame === 2) {
@@ -105,15 +113,6 @@ export default function GameComponent() {
 	}, [playersInGame]);
 
 
-	// //in case observer create game instance
-	// useEffect(() => {
-	// 	if (gameData && instanceType === 2) {
-	// 		console.log("Game: creating game instance of type: ", instanceType);
-	// 		const newGame = new Game(canvasRef.current!, instanceType, gameData!);
-	// 		setGame(newGame);
-	// 		console.log("Game: created observer instance");
-	// 	}
-	// } , [instanceType]);
 
 
 	// create game instance when canvas is available and there are two players
@@ -130,9 +129,9 @@ export default function GameComponent() {
 			// 	console.log("Game: Waiting for second player to join");
 			// }
 		} else if (!canvasRef.current){
-			console.error("Game: no canvas ref");
+			console.log("Game: waiting for canvas ref");
 		} else if (!gameData) {
-			console.error("Game: no game data");
+			console.log("Game: waiting for game data");
 		}
 	}, [canvasRef.current, instanceType, gameData]);
 	
