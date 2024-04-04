@@ -24,7 +24,7 @@
 
 .white-box {
     border-radius: 5px;
-    background-color: #ffffffbb;
+    background-color: #f8ded7bb;
     border: 4px double black;
     text-overflow: clip;
     padding: 20px;
@@ -36,8 +36,13 @@
 }
 
 .chat-messages p {
-    color: blue;
+    color: #1998CB;
     margin-bottom: -2pt;
+}
+
+.btn-primary {
+    --bs-btn-bg: #1998CB;
+    --bs-btn-border-color: #1998CB;
 }
 
 /* Below is work in progress */

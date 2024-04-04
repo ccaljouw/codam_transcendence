@@ -72,7 +72,7 @@ export default function LoginSettings(): JSX.Element {
 					</p>
 					{updatedUser != null && <p>User settings updated!</p>}
 
-					<button onClick={toggleEditMode}>Edit</button>
+					<button className="btn btn-primary" onClick={toggleEditMode}>Edit</button>
 				</>
 			}
 			{editMode == true && 
@@ -84,11 +84,12 @@ export default function LoginSettings(): JSX.Element {
 						<FormInput types="email" text="Email" theName="email" required={false}/>
 						<FormInput types="text" text="Login name" theName="loginName" required={false}/>
 						<FormInput types="password" text="Password" theName="hash" required={false}/>	
-						<button className="btn btn-dark w-10 py-2 mt-3" type="submit" >Save changes</button>
+						<FormInput types="password" text="Confirm password" theName="hash2" required={false}/>
+						<button className="btn btn-primary" type="submit" >Save changes</button>
+						<button className="btn btn-primary" onClick={toggleEditMode}>Cancel</button>
 					</form>
 					{isLoading && <p>Loading...</p>}
 					{error && <p>Error: {error.message}</p>}
-					<button onClick={toggleEditMode}>Cancel</button>
 				</>
 			}
 		</>

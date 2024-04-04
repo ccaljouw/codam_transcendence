@@ -57,8 +57,8 @@ export default function SignUp(): JSX.Element {
 					<FormInput types="text" text="Username" theName="userName" required={false}/>
 					<FormInput types="email" text="Email address" theName="email" required={false}/>
 					<FormInput types="text" text="Login name" theName="loginName" required={false}/>
-					<FormInput types="password" text="Password" theName="hash" required={false}/>	
-					<button className="btn btn-dark w-10 py-2 mt-3" type="submit">Sign up</button>
+					<FormInput types="password" text="Password" theName="hash" required={false}/>
+					<button className="btn btn-primary w-10 py-2 mt-3" type="submit">Sign up</button>
 					</form>
 				}
 			</div>
