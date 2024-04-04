@@ -14,9 +14,6 @@ export default function Page() : JSX.Element {
 					<div className="col col-12 col-lg-6">
 						<Leaderboard />
 					</div>
-					<div className="col col-12 col-lg-6">
-						{/* <Users /> */}
-					</div>
 				</div>
 			</div>
 		</>
