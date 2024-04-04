@@ -6,7 +6,6 @@ import { OnlineStatus } from "@prisma/client";
 interface UserListProps {
 	userDisplayFunction: (user: UserProfileDto, indexInUserList: number, statusChangeCallback: (idx: number, newStatus? : OnlineStatus) => void) => JSX.Element;
 	fetchUrl: string;
-
 }
 
 interface UserListContextVars {
@@ -18,7 +17,6 @@ export const UserListContext = createContext<UserListContextVars>({
 	contextMenuClickSent: 0,
 	triggerContextMenuClick: () => { }
 });
-
 
 /**
  * 
@@ -36,7 +34,7 @@ export default function UserList(props: UserListProps): JSX.Element {
 	}, []);
 
 	useEffect(() => { // update userlist when usersFromDb is fetched
-		if (usersFromDb) {
+		if (usersFromDb != null) {
 			setUserlist(usersFromDb);
 		}
 	}, [usersFromDb]);
@@ -60,12 +58,14 @@ export default function UserList(props: UserListProps): JSX.Element {
 	}
 
 	return (
-		<UserListContext.Provider value={{contextMenuClickSent, triggerContextMenuClick}}> 
-		<div className='userlist text-start'>
-			{usersFromDbLoading && <p>Loading users...</p>}
-			{userFromDbError && <p>Error: {userFromDbError.message}</p>}
-			{userList && <ul>{userList.map((entry, index) => (props.userDisplayFunction(entry, index, statusChangeCallback)))}</ul>}
-		</div>
-		</UserListContext.Provider>
+		<>
+			<UserListContext.Provider value={{contextMenuClickSent, triggerContextMenuClick}}> 
+				<div className='userlist text-start'>
+					{usersFromDbLoading && <p>Loading users...</p>}
+					{userFromDbError && <p>Error: {userFromDbError.message}</p>}
+					{userList != null && <ul>{userList.map((entry, index) => (props.userDisplayFunction(entry, index, statusChangeCallback)))}</ul>}
+				</div>
+			</UserListContext.Provider>
+		</>
 	);
 }

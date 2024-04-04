@@ -4,7 +4,7 @@ import { CreateUserDto, UserProfileDto } from '@ft_dto/users';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import { constants } from '@ft_global/constants.globalvar'
 import useFetch from '@ft_global/functionComponents/useFetch';
-import FormInput from '@ft_global/functionComponents/FormInput';
+import FormInput from 'src/globals/functionComponents/form/FormInput';
 import { FontBangers } from 'src/globals/layoutComponents/Font';
 
 export default function SignUp(): JSX.Element {
@@ -16,9 +16,8 @@ export default function SignUp(): JSX.Element {
 		if (user != null)
 		{
 			sessionStorage.setItem('userId', JSON.stringify(user.id));
-			sessionStorage.setItem('userName', JSON.stringify(user.userName));
-			sessionStorage.setItem('loginName', JSON.stringify(user.loginName)); //todo: move to context
 			setCurrentUser(user);
+			console.log("setting userId in sessionStorage from signup");
 		}
 	}, [user])
 
@@ -52,12 +51,12 @@ export default function SignUp(): JSX.Element {
 					<FontBangers>
 						<h3>Sign up to play</h3>
 					</FontBangers>
-					<FormInput types="text" text="First Name" theName="firstName" required={false}/>
-					<FormInput types="text" text="Last Name" theName="lastName" required={false}/>
-					<FormInput types="text" text="Username" theName="userName" required={false}/>
-					<FormInput types="email" text="Email address" theName="email" required={false}/>
-					<FormInput types="text" text="Login name" theName="loginName" required={false}/>
-					<FormInput types="password" text="Password" theName="hash" required={false}/>
+					<FormInput type="text" name="firstName" required={false} text="First Name"/>
+					<FormInput type="text" name="lastName" required={false} text="Last Name"/>
+					<FormInput type="text" name="userName" required={false} text="Username"/>
+					<FormInput type="email" name="email" required={false} text="Email address"/>
+					<FormInput type="text" name="loginName" required={false} text="Login name"/>
+					<FormInput type="password" name="hash" required={false} text="Password"/>
 					<button className="btn btn-primary w-10 py-2 mt-3" type="submit">Sign up</button>
 					</form>
 				}

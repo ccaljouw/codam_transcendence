@@ -11,9 +11,8 @@ export default function ChooseUser() : JSX.Element {
 
 	const setConnectionStatus = (user: UserProfileDto) => {
 		console.log("I should do something with my connection status");
-		sessionStorage.setItem('loginName', user.loginName); 
-		sessionStorage.setItem('userName', user.userName);
 		sessionStorage.setItem('userId', JSON.stringify(user.id)); //todo: do this in contextprovider?
+		console.log("setting userId in sessionStorage from chooseUser");
 		setCurrentUser(user);
 		console.log(`User set to ${user.id}`);
 	}

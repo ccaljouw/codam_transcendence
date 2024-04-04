@@ -2,7 +2,7 @@
 import { useContext, useState, useEffect } from 'react';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import DataField from "@ft_global/functionComponents/DataField";
-import FormInput from 'src/globals/functionComponents/FormInput';
+import FormInput from 'src/globals/functionComponents/form/FormInput';
 import useFetch from 'src/globals/functionComponents/useFetch';
 import { constants } from 'src/globals/constants.globalvar';
 import { FormEvent } from 'react';
@@ -79,12 +79,12 @@ export default function LoginSettings(): JSX.Element {
 				<>
 					<form onSubmit={handleSubmit}>
 						<h1>Change your login information</h1>
-						<FormInput types="text" text="First Name" theName="firstName" required={false}/>
-						<FormInput types="text" text="Last Name" theName="lastName" required={false}/>
-						<FormInput types="email" text="Email" theName="email" required={false}/>
-						<FormInput types="text" text="Login name" theName="loginName" required={false}/>
-						<FormInput types="password" text="Password" theName="hash" required={false}/>	
-						<FormInput types="password" text="Confirm password" theName="hash2" required={false}/>
+						<FormInput type="text" name="firstName" required={false} text="First Name"/>
+						<FormInput type="text" name="lastName" required={false} text="Last Name"/>
+						<FormInput type="email" name="email" required={false} text="Email"/>
+						<FormInput type="text" name="loginName" required={false} text="Login name"/>
+						<FormInput type="password" name="hash" required={false} text="Password"/>	
+						<FormInput type="password" name="hash2" required={false} text="Confirm password"/>
 						<button className="btn btn-primary" type="submit" >Save changes</button>
 						<button className="btn btn-primary" onClick={toggleEditMode}>Cancel</button>
 					</form>
