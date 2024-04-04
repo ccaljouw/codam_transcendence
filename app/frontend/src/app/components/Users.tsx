@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { UserProfileDto } from "@ft_dto/users";
 import { constants } from "@ft_global/constants.globalvar";
 import useFetch from '@ft_global/functionComponents/useFetch';
+import UserContextMenu from "src/globals/layoutComponents/UserLink/UserLink";
+import { FontBangers } from "src/globals/layoutComponents/Font";
 
 export default function Users() : JSX.Element {
 	const {data:users, isLoading, error, fetcher} = useFetch<null, UserProfileDto[]>();
@@ -12,20 +14,23 @@ export default function Users() : JSX.Element {
 	}, []);
 
 	const fetchUsers = async () => {
-		await fetcher({url: constants.API_ALL_USERS});
+		//todo: call this function again after blocking a user
+		await fetcher({url: constants.API_ALL_USERS}); //todo: fetch only the non-blocked users
 	}
 
 	return (
         <div className="text-center">
-			<h1>Users</h1>
+			<FontBangers>
+				<h3>Users</h3>
+			</FontBangers>
 			{isLoading && <p>Loading...</p>}
 			{error != null && <p>Error: {error.message}</p> }
 			{(users != null && users.length > 0 && 
 				<div>
 					{users.map((user) => (
-						<div key={user.id}>
-							<p>{user.userName} {user.firstName}: {user.id}</p>
-						</div>
+						<>
+							<UserContextMenu user={user}/>
+						</>
 					))}
 				</div>
 			)}

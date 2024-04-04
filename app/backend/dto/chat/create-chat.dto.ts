@@ -1,4 +1,4 @@
-import { ChatUsers } from "@prisma/client";
+import { ChatUsers, ChatType } from "@prisma/client";
 import { IsInt, IsNotEmpty } from "class-validator";
 import { CreateChatUserDto } from "./create-chatUser.dto";
 import { ApiProperty } from "@nestjs/swagger";
@@ -13,4 +13,6 @@ export class CreateChatDto {
   @ApiProperty({ required: false, type: CreateChatUserDto })
   users?:   ChatUsers[]
 
+  @ApiProperty({ required: false, type: ChatType })
+  visibility?: ChatType;
 }

@@ -57,9 +57,5 @@ export class UpdateGameObjectsDto {
 
   @ApiProperty({ required: false })
   @IsInt()
-  finish?: number;
-
-  @ApiProperty({ required: false })
-  @IsInt()
   winner?: number;
 }

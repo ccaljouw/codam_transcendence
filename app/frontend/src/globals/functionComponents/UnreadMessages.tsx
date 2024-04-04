@@ -1,7 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { TranscendenceContext } from "@ft_global/contextprovider.globalvar";
 import { constants } from "@ft_global/constants.globalvar";
-import DataFetcherJson from "./DataFetcherJson";
+// import DataFetcherJson from "./DataFetcherJson";
+import useFetch from "./useFetch";
+import { OnlineStatus } from "@prisma/client";
 
 /**
  * Function to display unread messages next to a user (hopefully later on also next to a chat, but that needs work)
@@ -12,6 +14,8 @@ export default function UnreadMessages(props: {secondUserId:number, indexInUserL
   const {messageToUserNotInRoom, currentUser, currentChatRoom} = useContext(TranscendenceContext);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [chatId, setChatId] = useState(-1);
+  const {data: chatIdFromDb, isLoading: chatIdLoading, error: chatIdError, fetcher: chatIdFetcher} = useFetch<null, number>();
+  const {data: unreadsFromDb, isLoading: unreadsLoading, error: unreadsError, fetcher: unreadsFetcher} = useFetch<null, number>();
   
   // Fetch chatId when component is mounted
   useEffect(() => {
@@ -30,39 +34,49 @@ export default function UnreadMessages(props: {secondUserId:number, indexInUserL
 
   // Update unread messages when messageToUserNotInRoom is sent
   useEffect(() => {
-	if (messageToUserNotInRoom === undefined)
+	if (messageToUserNotInRoom === undefined) // If messageToUserNotInRoom is not set, return
 		return ;
-	if (parseInt(messageToUserNotInRoom.room) === chatId)
+	if (parseInt(messageToUserNotInRoom.room) === chatId) // If the message is for the current chat, adjust the unread messages
 	{
 		setUnreadMessages(unreadMessages + 1);
 		props.statusChangeCallBack(props.indexInUserList);
 		return ;
 	}
-	if (messageToUserNotInRoom.userId === props.secondUserId)
+	if (messageToUserNotInRoom.userId === props.secondUserId)  // If we reach this point, the chatId is not set, so we need to fetch it if the message is from the user
 	{
 		fetchChatId();
 		return ;
 	}
   },[messageToUserNotInRoom]);
 
+  useEffect(() => {
+	if (chatIdFromDb) // If chatId is set, update the state
+		setChatId(chatIdFromDb);
+  }
+  ,[chatIdFromDb]);
+
+  useEffect(() => {
+	if (unreadsFromDb && unreadMessages !== unreadsFromDb) // if unreadsFromDb have arrived and are different from the current state, update the state
+		setUnreadMessages(unreadsFromDb);
+  },[unreadsFromDb]);
+
   const fetchChatId = async () => {
-	const response : number | Error = await DataFetcherJson({url: constants.CHAT_CHECK_IF_DM_EXISTS + `${currentUser.id}/${props.secondUserId}`});
-	if (response instanceof Error)
-		return ;
-	setChatId(response);
+	if(!currentUser.id || !props.secondUserId || chatId !== -1)
+		return;
+	await chatIdFetcher({url: constants.CHAT_CHECK_IF_DM_EXISTS + `${currentUser.id}/${props.secondUserId}`});
   }
 
   const fetchUnreads = async () => {
 	if(chatId === -1) // If chatId is not set, return
 		return;
-	const unreads : number | Error = await DataFetcherJson({url: constants.CHAT_GET_UNREADS + `${chatId}/${currentUser.id}`});
-	if (unreads instanceof Error)
-		return;
-	setUnreadMessages(unreads);
-  };
+	await unreadsFetcher({url: constants.CHAT_GET_UNREADS + `${chatId}/${currentUser.id}`});
+  }
 
   return (
-	<>{ unreadMessages > 0 ?
+	<>
+	{(chatIdLoading || unreadsLoading) && "L"}
+	{(chatIdError || unreadsError) && "E"}
+	{unreadMessages > 0 ?
 		"(" + unreadMessages +")" :
 		"" }</>
   );

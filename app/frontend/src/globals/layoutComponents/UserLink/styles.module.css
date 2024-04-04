@@ -1,0 +1,16 @@
+.userLink {
+    color: blue;
+	text-decoration: none;
+}
+
+.userLink:hover {
+    color: red;
+	cursor: pointer;
+}
+
+.userlink_item:hover {
+	text-shadow: 0 0 5px #FF0000;
+	cursor: pointer;
+}
+
+/* todo: consider moving this to global stylesheet */

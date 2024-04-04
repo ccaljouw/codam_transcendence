@@ -1,26 +1,22 @@
-
-import { GameObject } from "./GameObject";
-import { MovementComponent } from "../components/MovementComponent";
-import { getNormalizedDistance, switchDirectionForRightPaddle } from "../utils/utils";
-import * as CON from "../utils/constants";
-import { updateGameStateDto } from "../../backend/src/game/dto/update-game-state.dto";
-import { UpdateGameObjectsDto } from "../../backend/src/game/dto/update-game-objects.dto";
-import { Game } from "components/Game";
-import { GameState } from "@prisma/client";
-
+import { GameObject } from "./GameObject"
+import { MovementComponent } from "../components/MovementComponent"
+import { getNormalizedDistance, switchDirectionForRightPaddle } from "../utils/utils"
+import * as CON from "../utils/constants"
+import { Game } from "../components/Game"
+import { GameState } from "@prisma/client"
 
 export class Ball extends GameObject {
-	
 	public	movementComponent: MovementComponent;
 	private _lastCollisionWithWall: number = 0;
 	private _lastCollisionWithPaddle: number = 0;
 	private _lastcollisionType: string = "";
 
-	constructor(theme: keyof typeof CON.themes) {
-		super("Ball", CON.BALL_START_X, CON.BALL_START_Y, CON.BALL_WIDTH, CON.BALL_WIDTH, CON.themes[theme].ballColor);
+	constructor() {
+		super("Ball", CON.BALL_START_X, CON.BALL_START_Y, CON.BALL_WIDTH, CON.BALL_WIDTH, CON.BASE_COLOR);
 		this.movementComponent = new MovementComponent(0, 0, CON.BALL_START_X, CON.BALL_START_Y);
 	}
 
+	
 	public setLastCollisionWithHorizontalWall() {
 		this._lastCollisionWithWall = Date.now();
 		this._lastcollisionType = "h_wall";
@@ -61,6 +57,10 @@ export class Ball extends GameObject {
 	}
 
 	public getStartValues(config: keyof typeof CON.config, game: Game) {
+		if (game.gameState != GameState.STARTED) {
+			return;
+		}
+		
 		var direction;
 		var speed;
 
@@ -80,10 +80,17 @@ export class Ball extends GameObject {
 		this.movementComponent.setDirection(direction);
 		this.movementComponent.setSpeed(speed);
 		
-		console.log("Game: startvalues set to direction: ", direction, " and speed: ", speed);
+		console.log("Script: startvalues set to direction: ", direction, " and speed: ", speed);
 		game.gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, ballDirection: direction, ballSpeed: speed});
 	} 
 
+
+	public setStartValues(direction: number, speed: number) {
+		this.movementComponent.setDirection(direction);
+		this.movementComponent.setSpeed(speed);
+	}
+
+	
 	public increaseSpeed(config: keyof typeof CON.config) {
 		this.movementComponent.setSpeed(this.movementComponent.getSpeed() + CON.config[config].ballSpeedIncrease);
 	}

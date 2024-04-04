@@ -9,7 +9,10 @@
     "ballBaseSpeed": "5",
     "ballSpeedIncrease": "0.5",
     "paddleBaseSpeed": "7",
-    
+
+    "socketUpdateInterval": "0.01",
+    "interpolationFactor": "0.4",
+
     "leftPaddleUpKey": "w",
     "leftPaddleDownKey": "s",
     "rightPaddleUpKey": "ArrowUp",
@@ -27,12 +30,15 @@
     "screenWidth": "1000",
     "screenHeight": "666",
 
-    "countdownTime": "2",
+    "countdownTime": "1",
     "winningScore": "2",
     "collisionCooldown": "500",
     "ballBaseSpeed": "7",
     "ballSpeedIncrease": "1",
-    "paddleBaseSpeed": "7",
+    "paddleBaseSpeed": "10",
+
+    "socketUpdateInterval": "0.01",
+    "interpolationFactor": "0.4",
     
     "leftPaddleUpKey": "w",
     "leftPaddleDownKey": "s",
@@ -40,8 +46,8 @@
     "rightPaddleDownKey": "ArrowDown",
     "backWallGap": "100",
 
-    "leftBackWall": "true",
-    "rightBackWall": "true",
+    "leftBackWall": "false",
+    "rightBackWall": "false",
 
     "startMessage": "Waiting for other player",
     "winMessage": "Press SPACE to start a new match"

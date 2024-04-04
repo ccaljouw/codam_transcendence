@@ -43,10 +43,10 @@ export default function Login() : JSX.Element {
 					</div>
 				}
 				{users != null && users.length > 0 && <>
-					<div className="col">
+					<div className="col login">
 						<ChooseUser />
 					</div>
-					<div className="col">
+					<div className="col login">
 						<SignUp />
 					</div></>
 				}

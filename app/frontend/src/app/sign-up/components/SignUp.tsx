@@ -5,6 +5,7 @@ import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import { constants } from '@ft_global/constants.globalvar'
 import useFetch from '@ft_global/functionComponents/useFetch';
 import FormInput from '@ft_global/functionComponents/FormInput';
+import { FontBangers } from 'src/globals/layoutComponents/Font';
 
 export default function SignUp(): JSX.Element {
 	const { data: user, isLoading, error, fetcher } = useFetch<CreateUserDto, UserProfileDto>();
@@ -42,21 +43,25 @@ export default function SignUp(): JSX.Element {
 
 	return (
 		<>
-			{isLoading && <p>Sending info to database...</p>}
-			{error && <p>Error: {error.message}</p>}
-			{user != null && <p>User created with id {user.id}</p>}
-			{user == null &&
-				<form onSubmit={handleSubmit}>
-				<h1>Sign up to play</h1>
-				<FormInput types="text" text="First Name" theName="firstName" required={true}/>
-				<FormInput types="text" text="Last Name" theName="lastName" required={true}/>
-				<FormInput types="text" text="Username" theName="userName" required={true}/>
-				<FormInput types="email" text="Email address" theName="email" required={true}/>
-				<FormInput types="text" text="Login name" theName="loginName" required={true}/>
-				<FormInput types="password" text="Password" theName="hash" required={true}/>	
-				<button className="btn btn-dark w-10 py-2 mt-3" type="submit" >Sign up</button>
-				</form>
-			}
+			<div className="white-box">
+				{isLoading && <p>Sending info to database...</p>}
+				{error && <p>Error: {error.message}</p>}
+				{user != null && <p>User created with id {user.id}</p>}
+				{user == null &&
+					<form onSubmit={handleSubmit}>
+					<FontBangers>
+						<h3>Sign up to play</h3>
+					</FontBangers>
+					<FormInput types="text" text="First Name" theName="firstName" required={false}/>
+					<FormInput types="text" text="Last Name" theName="lastName" required={false}/>
+					<FormInput types="text" text="Username" theName="userName" required={false}/>
+					<FormInput types="email" text="Email address" theName="email" required={false}/>
+					<FormInput types="text" text="Login name" theName="loginName" required={false}/>
+					<FormInput types="password" text="Password" theName="hash" required={false}/>	
+					<button className="btn btn-dark w-10 py-2 mt-3" type="submit">Sign up</button>
+					</form>
+				}
+			</div>
 		</>
 	);
 }

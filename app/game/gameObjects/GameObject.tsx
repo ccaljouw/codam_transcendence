@@ -1,9 +1,6 @@
-
-import { drawGameObject } from "../utils/utils";
-
+import { drawGameObject } from "../utils/utils"
 
 export class GameObject {
-
 	protected name: string = "";
 	protected type: string = "";
 	protected x: number = 0;
@@ -11,7 +8,6 @@ export class GameObject {
 	protected width: number = 0;
 	protected height: number = 0;
 	protected color: string = "";
-
 
 	constructor(name: string, x: number, y: number, width: number, height: number, color: string) {
 		this.name = name;

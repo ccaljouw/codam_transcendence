@@ -3,12 +3,14 @@ import { createContext, useEffect, useState } from "react";
 import { OnlineStatus } from "@prisma/client";
 import { UserProfileDto, UpdateUserDto } from "@ft_dto/users";
 import { ChatMessageToRoomDto } from "@ft_dto/chat";
-import { WebsocketStatusChangeDto } from '@ft_dto/socket'
+import { WebsocketStatusChangeDto, CreateTokenDto } from '@ft_dto/socket'
 import { constants } from "@ft_global/constants.globalvar";
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import ChatArea from "./layoutComponents/ChatArea";
 import MenuBar from "./layoutComponents/MenuBar";
 import Login from "./layoutComponents//Login";
+import DottedCircles from "./layoutComponents/DottedCircles";
+import useFetch from "./functionComponents/useFetch";
 
 // Context for the entire app
 interface TranscendenceContextVars {
@@ -40,12 +42,15 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	const [messageToUserNotInRoom, setMessageToUserNotInRoom] = useState<ChatMessageToRoomDto>({} as ChatMessageToRoomDto);
 	const [currentChatRoom, setCurrentChatRoom] = useState<number>(-1);
 	const [currentUser, setCurrentUser] = useState<UserProfileDto>({} as UserProfileDto);
+	const {data: userPatch, isLoading: userPatchLoading, error: userPatchError, fetcher: patchUserFetcher} = useFetch<UpdateUserDto, UserProfileDto>();
+	const {data: addToken, isLoading: addTokenLoading, error: addTokenError, fetcher: addTokenFetcher} = useFetch<CreateTokenDto, boolean>();
 
 	useEffect(() => {
 		// console.log("CONTEXT ", transcendenceSocket.id, currentUser.id,);
 
 		// Listener for status changes of other users
 		transcendenceSocket.on('socket/statusChange', (payload: WebsocketStatusChangeDto) => {
+			console.log('User status change:', payload);
 			setSomeUserUpdatedTheirStatus(payload);
 		});
 
@@ -86,42 +91,54 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		setMessageToUserNotInRoom
 	}
 
+	useEffect(() => {
+		if (userPatch) {
+			setCurrentUser(userPatch);
+		}
+	}, [userPatch])
+
+	useEffect(() => {
+		if (addToken) {
+			const statusUpdate: WebsocketStatusChangeDto = {
+				userId: currentUser.id,
+				userName: currentUser.userName,
+				token: (transcendenceSocket.id ? transcendenceSocket.id : ''),
+				status: OnlineStatus.ONLINE
+			}
+			console.log('User status updated to online:', currentUser.id,currentUser.userName, transcendenceSocket.id, statusUpdate);
+			transcendenceSocket.emit('socket/statusChange', statusUpdate); // Emit the status change to the socket
+		}
+	}, [addToken])
+
+	useEffect(() => {
+		if (userPatchError) {
+			console.error('Error updating user:', userPatchError);
+		}
+		if (addTokenError) {
+			console.error('Error adding token:', addTokenError);
+		}
+	}, [userPatchError, addTokenError])
+
 	// Function to update the user's online status
 	const setUserStatusToOnline = async () => {
+		console.log('Setting user status to online');
 		if (!currentUser.id) return;
-		try {
-			const updateData: UpdateUserDto = {
+		// try {
+			const patchUserData: UpdateUserDto = {
 				online: OnlineStatus.ONLINE,
-				token: transcendenceSocket.id
 			}
-			const response = await fetch(constants.API_USERS + currentUser.id, {
-				method: 'PATCH',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(updateData),
-			});
-			if (!response.ok) {
-				throw new Error('Failed to patch data');
-			} else {
-				const data = await response.json() as UserProfileDto;
-				const statusUpdate: WebsocketStatusChangeDto = {
-					userId: data.id,
-					userName: data.userName,
-					token: (transcendenceSocket.id ? transcendenceSocket.id : ''),
-					status: OnlineStatus.ONLINE
-				}
-				setCurrentUser(data);
-				transcendenceSocket.emit('socket/statusChange', statusUpdate); // Emit the status change to the socket
+			const addTokenData: CreateTokenDto = {
+				token: transcendenceSocket.id? transcendenceSocket.id : '',
+				userId: currentUser.id
 			}
-		} catch (error) {
-			console.error('Error updating online status:', error);
-		}
+			patchUserFetcher({url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: patchUserData});
+			addTokenFetcher({url: constants.API_ADD_TOKEN, fetchMethod: 'POST', payload: addTokenData });
 	};
 
 	return (
 		<>
 			<TranscendenceContext.Provider value={contextValues}>
+				{/* <DottedCircles /> { //JMA: Leave this for now */}
 				<MenuBar />
 				{!currentUser.id && <Login />}
 				{currentUser.id && 
@@ -129,7 +146,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 					<div className="page">
 						{children}
 					</div>
-					<div className="chat">
+					<div className="chat-area">
 						<ChatArea />
 					</div>
 				</div>}

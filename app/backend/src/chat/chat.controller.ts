@@ -1,9 +1,6 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
-import { ChatSocketService } from './chatsocket.service';
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UpdateChatMessageDto } from '../../dto/chat/update-chatMessage.dto';
-import { CreateChatSocketDto } from '../../dto/chat/create-chatSocket.dto';
-import { CreateChatMessageDto } from '../../dto/chat/create-chatMessage.dto';
+import { UpdateChatMessageDto, CreateChatSocketDto, CreateChatMessageDto, FetchChatMessageDto } from '@ft_dto/chat';
 import { ChatMessageService } from './chat-messages.service';
 import { ChatService } from './chat.service';
 
@@ -20,7 +17,7 @@ export class ChatMessagesController {
 	@ApiOperation({ summary: 'Returns chat messages with specified chatId' })
 	@ApiOkResponse({ type: [UpdateChatMessageDto] })
 	@ApiNotFoundResponse({ description: 'No messages with #${chatId}' })
-	findMessagesInChat(@Param('chatId', ParseIntPipe) chatId: number) {
+	findMessagesInChat(@Param('chatId', ParseIntPipe) chatId: number) : Promise<FetchChatMessageDto[]>{
 		return this.chatMessageService.findMessagesInChat(chatId);
 	}
 

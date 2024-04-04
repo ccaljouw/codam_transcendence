@@ -7,6 +7,7 @@ import useFetch from 'src/globals/functionComponents/useFetch';
 import { constants } from 'src/globals/constants.globalvar';
 import { FormEvent } from 'react';
 import { UpdateUserDto, UserProfileDto } from '@ft_dto/users';
+import { FontBangers } from 'src/globals/layoutComponents/Font';
 
 export default function LoginSettings(): JSX.Element {
 	const {currentUser, setCurrentUser} = useContext(TranscendenceContext);
@@ -56,7 +57,9 @@ export default function LoginSettings(): JSX.Element {
 
 	return (
 		<>
-			<h1>User information</h1>
+			<FontBangers>
+				<h3>User information</h3>
+			</FontBangers>
 			{editMode == false && 
 				<>
 					<p>From context:</p>

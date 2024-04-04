@@ -1,6 +1,5 @@
-import myThemes from "../pongthemes.json";
-import myConfig from "../pongconfig.json";
-import e from "express";
+import myThemes from "../pongthemes.json"
+import myConfig from "../pongconfig.json"
 
 type Theme = {
 	leftPaddleColor: string;
@@ -17,6 +16,7 @@ type Theme = {
 };
 export const themes: Record<string, Theme> = myThemes;
 
+
 type Config = {
 	screenWidth: number;
 	screenHeight: number;
@@ -26,6 +26,8 @@ type Config = {
 	ballBaseSpeed: number;
 	ballSpeedIncrease: number;
 	paddleBaseSpeed: number;
+	socketUpdateInterval: number;
+	interpolationFactor: number;
 	leftPaddleUpKey: string;
 	leftPaddleDownKey: string;
 	rightPaddleUpKey: string;
@@ -36,6 +38,7 @@ type Config = {
 	startMessage: string;
 	winMessage: string;
 };
+
 
 function parseConfig(jsonConfig: any): Record<string, Config> {
 	const config: Record<string, Config> = {};
@@ -50,6 +53,8 @@ function parseConfig(jsonConfig: any): Record<string, Config> {
 			collisionCooldown: parseInt(value.collisionCooldown, 10),
 			ballBaseSpeed: parseInt(value.ballBaseSpeed, 10),
 			ballSpeedIncrease: parseInt(value.ballSpeedIncrease, 10),
+			socketUpdateInterval: parseFloat(value.socketUpdateInterval),
+			interpolationFactor: parseFloat(value.interpolationFactor),
 			paddleBaseSpeed: parseInt(value.paddleBaseSpeed, 10),
 			leftPaddleUpKey: value.leftPaddleUpKey,
 			leftPaddleDownKey: value.leftPaddleDownKey,
@@ -64,6 +69,7 @@ function parseConfig(jsonConfig: any): Record<string, Config> {
 	}
 	return config;
 }
+
 export const config: Record<string, Config> = parseConfig(myConfig);
 
 
@@ -78,12 +84,14 @@ export const BALL_MAX_START_ANGLE : number = Math.PI / 6;
 export const BALL_MIN_START_ANGLE : number = -Math.PI / 6;
 export const MAX_BOUNCE_ANGLE : number = Math.PI / 4;
 
+export const BASE_COLOR = "white";
+
+
 //lines
 export const LINE_WIDTH : number = 6;
 
 //wall
 export const WALL_WIDTH : number = 20;
-// export const BACK_WALL_GAP : number = 100;
 
 //paddle
 export const PADDLE_WIDTH : number = 20;
@@ -105,10 +113,14 @@ export const PLAYER_OFFSET_Y = 50;
 export const PLAYER_1_NAME = "Left Player Name";
 export const PLAYER_2_NAME = "Right Player Name";
 
-
 //messages
 export const ALIGN = "center";
 export const BASELINE = "middle";
+export const MESSAGE_SIZE = 30;
+export const MESSAGE_COLOR = "white";
+export const MESSAGE_FONT = "Arial";
+
+
 
 //center message
 // export const CENTER_MESSAGE_SIZE = 30;
@@ -126,12 +138,6 @@ export const SIDE_MESSAGE_OFFSET_Y = SCREEN_HEIGHT - WALL_WIDTH + SIDE_MESSAGE_S
 // export const TOP_MESSAGE_OFFSET_Y = WALL_WIDTH + TOP_MESSAGE_SIZE + 100;
 
 
-// export enum GameState {
-// 	waiting,
-// 	play,
-// 	// pause,
-// 	end
-// }
 
 export enum WallTypes {
 	horizontal,
@@ -145,7 +151,7 @@ export enum MessageFields {
 	top,
 }
 
-export enum instanceTypes {
+export enum InstanceTypes {
 	left,
 	right,
 	observer
@@ -155,6 +161,3 @@ export enum PlayerSide {
 	left,
 	right
 }
-
-
-

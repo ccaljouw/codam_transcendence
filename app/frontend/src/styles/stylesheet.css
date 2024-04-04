@@ -5,6 +5,7 @@
     flex-direction: column;
     height: 100vh;
     width: 100vw;
+    overflow-wrap: break-word;
 }
 
 /* This is the whole area under the menubar */
@@ -16,17 +17,29 @@
 }
 
 .page, 
-.chat {
+.chat-area,
+.chat-box,
+.chat-messages,
+.chat-users {
     overflow-y: auto !important;
     scrollbar-width: none !important; /* disable inner scrollbar in firefox */
     -ms-overflow-style: none; /* disable inner scrollbar in IE and Edge */
+}
+
+.page, 
+.chat-area,
+.chat-box,
+.chat-box .white-box {
     display: flex;
     flex-direction: column;
 }
 
 /* Turn off the inner scrollbar in chrome, safari and opera */
 .page::-webkit-scrollbar,
-.chat::-webkit-scrollbar {
+.chat-area::-webkit-scrollbar,
+.chat-box::-webkit-scrollbar
+.chat-messages::-webkit-scrollbar
+.chat-users::-webkit-scrollbar {
     display: none;
 }
 
@@ -36,29 +49,32 @@
 }
 
 /* This is where the chat component is placed */
-.chat {
+.chat-area {
     width: 25%;
 }
 
-.row {
-    padding: 0;
-    margin: 0;
-}
-
+/* In case of small screens, divide page and chat 50/50 */
 @media screen and (max-width: 992px) {
-    .page, .chat {
+    .page, .chat-area {
         width: 50% !important;
     }
 }
 
-.userlist{
-	font-family: sans-serif
+/* place to chat */
+.chat-box{
+    height: 80%;
 }
 
-.userlist li:hover {
-	font-weight: bold;
+.chat-box .white-box {
+    height: 100%;
 }
 
+/* place to find users */
+.chat-users {
+    min-height: 20%;
+}
+
+/* iframe settings for developer pages */
 .iframe-holder {
     height: 100%;
 }
@@ -66,4 +82,27 @@
 .iframe-holder iframe {
     width: 100%;
     height: 100%;
+}
+
+/* remove standard padding of all rows and cols */
+.row,
+.col {
+    padding: 0;
+    margin: 0;
+}
+
+/* remove dot in front of li element */
+.userlist li {
+    list-style-type: none !important;
+}
+
+/* remove ul indentation */
+.userlist ul {
+    padding-left: 0px !important;
+}
+
+/* make user bold when hovered over */
+.userlist span:hover {
+	font-weight: bolder;
+	cursor: pointer;
 }

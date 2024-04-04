@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateGameDto } from 'dto/game/create-game.dto';
+import { UpdateGameDto } from 'dto/game/update-game.dto';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
@@ -23,13 +24,11 @@ export class GameService {
         });
       } else {
         //check if user is already in the game
-        const isUserInGame = game.GameUsers.some((gameUser) => gameUser.userId === userId);
+        const isUserInGame = game.GameUsers.some(
+          (gameUser) => gameUser.userId === userId,
+        );
         if (!isUserInGame) {
           console.log(`!!!user is not in game`);
-          // if (game.GameUsers.length === 2) {
-          //   console.log(`!!!ame is full`);
-          //   return game;
-          // }
           await this.addUser(game.id, userId);
           game = await this.db.game.update({
             where: { id: game.id },
@@ -124,11 +123,10 @@ export class GameService {
   // async update(id: number, updateGameDto: UpdateGameDto) {
   //   try {
   //     const game = await this.db.game.update({
-  //       where: { id },
-  //       data: updateGameDto,});
+  //       where: { id: this.game.id },
+  //       // data: {state: updateGameDto.state, winner: updateGameDto.winner, score1: updateGameDto.score1, score2: updateGameDto.score2 },
   //     return game;
-  //   }
-  //   catch (error) {
+  //   } catch (error) {
   //     throw new NotFoundException(`User with id ${id} does not exist.`);
   //   }
   // }
