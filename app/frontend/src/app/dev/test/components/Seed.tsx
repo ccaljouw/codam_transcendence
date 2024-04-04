@@ -2,6 +2,7 @@
 import { useEffect } from 'react';
 import { constants } from '@ft_global/constants.globalvar';
 import useFetch from '@ft_global/functionComponents/useFetch';
+import { FontBangers } from 'src/globals/layoutComponents/Font';
 
 interface DataFormat { //todo: JMA: remove this?
   msg: string;
@@ -20,7 +21,9 @@ export default function Seed() {
 
   return (
     <>
-      <h1>Seed database</h1>
+      <FontBangers>
+        <h3>Seed database</h3>
+      </FontBangers>
       {isLoading && <p>Seeding database...</p>}
       {error && <p>Error: {error.message}</p>}
       {data != null && <p>{data.msg}</p>}

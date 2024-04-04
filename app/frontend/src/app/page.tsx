@@ -7,7 +7,7 @@ export default function Page() : JSX.Element {
 	return (
 		<>
 			<div>
-				<div className="row">
+				<div className="row white-box">
 					<div className="col col-12">
 						<Welcome />
 					</div>

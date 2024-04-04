@@ -30,6 +30,8 @@ export default function StatusIndicator(props: { userId: number, status: OnlineS
 	}, [someUserUpdatedTheirStatus]);
 
 	return (
-		<>{status}</>
+		<>
+			{status}
+		</>
 	);
 }

@@ -1,18 +1,67 @@
 .root-layout {
-    /* background-image: repeating-conic-gradient(at 75% 50%, red 0%, yellow 20%, red 50%); */
-    /* background-image: repeating-conic-gradient(at 75% 50%, rgb(236, 50, 50) 0%, rgb(244, 244, 34) 50%); */
-    background-image: repeating-conic-gradient(at 75% 50%, rgb(150, 40, 40) 10%, rgb(95, 19, 19) 15%, rgb(150, 40, 40) 20%);
+    background-image: radial-gradient(circle at center, #F2A28D 30%, transparent 20%),
+        repeating-conic-gradient(at 75% 50%, #F0CD13 10%, #Ec3C37 15%, #F0CD13 20%);
+    background-size: 10px 10px, cover;
+    background-repeat: repeat, repeat;
 }
 
-.content-area {
-    /* background-image: radial-gradient(#212121 20%, rgba(255, 255, 255, 0) 20%);
-    background-position: center;
-    background-size: 10px 10px;
-    mask-image: url(#mask); */
+.navbar, 
+.page, 
+.chat-area,
+.login {
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 @media screen and (max-width: 992px) {
     .root-layout {
-        background-image: repeating-conic-gradient(at 50% 50%, rgb(150, 40, 40) 10%, rgb(95, 19, 19) 15%, rgb(150, 40, 40) 20%);
+        background-image: 
+            radial-gradient(circle at center, #F2A28D 30%, transparent 20%),
+            repeating-conic-gradient(at 50% 50%, #F0CD13 10%, #Ec3C37 15%, #F0CD13 20%);
     }
 }
+
+.white-box {
+    border-radius: 5px;
+    background-color: #ffffffbb;
+    border: 4px double black;
+    text-overflow: clip;
+    padding: 20px;
+    padding-top: 10px;
+}
+
+.chat-messages {
+    overflow-y: scroll;
+}
+
+.chat-messages p {
+    color: blue;
+    margin-bottom: -2pt;
+}
+
+/* Below is work in progress */
+
+/* .white-box {
+    border-radius:50px;
+    background-color: white;
+    filter: contrast(50) invert(0);
+    mix-blend-mode: color-burn;
+    isolation: isolate;
+} */
+       
+/* .white-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+            
+    border-radius:50px;
+    background-image: radial-gradient(
+        circle at center,
+        black 3%,
+        transparent 65%
+      ), radial-gradient(circle at center, black 3%, transparent 65%);
+    background-size: 1rem 1rem;
+    background-position: 0 0, 0.5rem 0.5rem;
+    mask-image: radial-gradient(circle at center, rgb(0 0 0), rgb(0 0 0 / 0.3));
+} */
