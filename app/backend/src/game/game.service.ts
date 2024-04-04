@@ -121,10 +121,10 @@ export class GameService {
     }
   }
 
-  async update(id: number, updateGameStateDto: UpdateGameStateDto) {
+  async update(updateGameStateDto: UpdateGameStateDto) {
     try {
       const game = await this.db.game.update({
-        where: { id: id },
+        where: { id: updateGameStateDto.roomId },
         data: { state: updateGameStateDto.state },
       });
       if (game) {
@@ -132,9 +132,8 @@ export class GameService {
       } else {
         return 1;
       }
-      // return game;
     } catch (error) {
-      throw new NotFoundException(`User with id ${id} does not exist.`);
+      throw new NotFoundException(`User with id ${updateGameStateDto.roomId} does not exist.`);
     }
   }
 }

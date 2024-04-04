@@ -23,7 +23,7 @@ export class GamesocketGateway {
 
   @SubscribeMessage('game/joinRoom')
   joinRoom(client: Socket, roomId: number) {
-    console.log(`Server: someone is joining the room: ${roomId}`);
+    console.log(`Game Socket Server: someone is joining the room: ${roomId}`);
     client.join(roomId.toString());
     const player = this.game_io.sockets.sockets.get(client.id);
     this.game_io
@@ -33,14 +33,14 @@ export class GamesocketGateway {
 
   @SubscribeMessage('game/message')
   handleMessage(client: Socket, payload: string) {
-    console.log(`Got message: ${payload}`);
+    console.log(`Game Socket Server Got message: ${payload}`);
     this.game_io.emit('game/message', payload);
   }
 
   @SubscribeMessage('game/updateGameState')
   updateGameState(client: Socket, payload: UpdateGameStateDto) {
     console.log(
-      'Server: received game state update from client: ',
+      'Game Socket Server: received game state update from client: ',
       payload.state,
     );
     const updatedGameState = { roomId: payload.roomId, state: payload.state };
@@ -58,7 +58,7 @@ export class GamesocketGateway {
   //update game objects
   @SubscribeMessage('game/updateGameObjects')
   updateGameObjects(client: Socket, payload: UpdateGameObjectsDto) {
-    //console.log('Server: received game object update from client: ', payload);
+    //console.log('Game Socket Server: received game object update from client: ', payload);
     this.game_io
       .to(payload.roomId.toString())
       .emit('game/updateGameObjects', payload);
@@ -66,7 +66,7 @@ export class GamesocketGateway {
 
   // @SubscribeMessage('game/discconect')
   // handleDisconnect(client: Socket) {
-  //   console.log(`Client disconnected: ${client.id}`);
+  //   console.log(`Game Socket Server: Client disconnected: ${client.id}`);
 
   @SubscribeMessage('game/remove')
   remove(@MessageBody() id: number) {

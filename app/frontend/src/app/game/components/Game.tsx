@@ -56,6 +56,9 @@ export default function GameComponent() {
 			gameSocket.on(`game/updateGameState`, (payload: UpdateGameStateDto) => {
 				console.log(`Game: received game state update`, payload.roomId, payload.state);
 				setGameState(payload.state);
+				updateGameState(payload);
+
+
 
 				//todo send message to server with game state updates
 			});
@@ -114,7 +117,6 @@ export default function GameComponent() {
 
 
 
-
 	// create game instance when canvas is available and there are two players
 	useEffect(() => {
 		if (!game && canvasRef.current && instanceType !== 2) {
@@ -124,10 +126,6 @@ export default function GameComponent() {
 			setGame(newGame);
 			console.log("Game: created");
 			canvasRef.current.focus();
-			// if (instanceType === 2) {
-			// } else if (instanceType == 1) {
-			// 	console.log("Game: Waiting for second player to join");
-			// }
 		} else if (!canvasRef.current){
 			console.log("Game: waiting for canvas ref");
 		} else if (!gameData) {
@@ -154,7 +152,6 @@ export default function GameComponent() {
 			setGameState(GameState.STARTED);
 			canvasRef.current.focus();
 			gameSocket.emit("game/updateGameState", {roomId: roomId, state: GameState.STARTED});
-			// game.startGame();
 		} else if (gameState === GameState.FINISHED) {
 			console.log("Game: game finished add more code cleanup code here!!");
 			// todo add code
@@ -164,19 +161,9 @@ export default function GameComponent() {
 
 	}, [gameState, canvasRef.current, game]);
 	
-	// return the canvas
-	return (
-		<>
-			{waitingForPlayers ? (
-				<p>Waiting for second player to join...</p>
-			) : (
-				<canvas ref={canvasRef} tabIndex={0} />
-		)}
-		</>
-	);
-
-
-//functions
+	
+	
+	//functions
 	// fetch game data from server
 	async function fetchGame(userID: string) {
 		const url = `${constants.API_GAME}getGame/${userID}`;
@@ -195,7 +182,7 @@ export default function GameComponent() {
 			console.error(error);
 		}
 	}
-
+	
 	async function refreshData(id: number) {
 		const url = `${constants.API_GAME}${id}`;
 		console.log(`Game: fetching game data for gameId: ${id} from: "${url}"`);
@@ -212,4 +199,39 @@ export default function GameComponent() {
 		}
 	}
 
+	async function updateGameState(payload: UpdateGameStateDto) {
+		const url = `${constants.API_GAME}${payload.roomId}`;
+		console.log(`Game: updating game state for game: ${payload.roomId} from: "${url}"`);
+		const properties = {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(payload),
+		};
+		try {
+			const Response: any = await fetch(url, properties);
+			if (Response === 1) {
+				throw new Error(`updateGameState: No game data found`);
+			} else {
+				console.log(`Game: game state updated`);
+			}
+		}
+		catch (error) {
+			console.error(error);
+		}
+	}
+			
+
+
+	// return the canvas
+	return (
+		<>
+			{waitingForPlayers ? (
+				<p>Waiting for second player to join...</p>
+			) : (
+				<canvas ref={canvasRef} tabIndex={0} />
+		)}
+		</>
+	);
 }	
