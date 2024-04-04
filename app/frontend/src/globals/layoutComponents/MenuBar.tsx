@@ -19,7 +19,7 @@ export default function MenuBar(): JSX.Element {
 
 	return (
 		<>
-			<nav className="navbar navbar-expand-md">
+			<nav className="navbar navbar-expand-md white-box pb-2">
 				<FontBangers>
 					<a className="navbar-brand" href="/">PONG</a>
 					<button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
