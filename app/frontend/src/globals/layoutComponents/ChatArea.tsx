@@ -30,7 +30,7 @@ export default function ChatArea() {
 					statusChangeCallback={statusChangeCallback}
 					indexInUserList={indexInUserList} /> 
 			&nbsp;&nbsp;
-			<span className='username' onClick={()=>setSecondUser(user.id)}>{user.firstName} {user.lastName}</span>
+			<span onClick={()=>setSecondUser(user.id)}>{user.firstName} {user.lastName}</span>
 			&nbsp;
 			<b><UnreadMessages secondUserId={user.id} indexInUserList={indexInUserList} statusChangeCallBack={statusChangeCallback} /></b>
 			<UserContextMenu user={user} />

@@ -22,9 +22,9 @@ export default function ChooseUser() : JSX.Element {
 		return (
 			<>
 				<li key={user.id}> 
-					<a onClick={() => setConnectionStatus(user)}> 
+					<span onClick={() => setConnectionStatus(user)}> 
 						{user.firstName} {user.lastName} - {user.email}
-					</a>
+					</span>
 				</li>
 			</>
 		)

@@ -53,6 +53,14 @@
     width: 25%;
 }
 
+/* In case of small screens, divide page and chat 50/50 */
+@media screen and (max-width: 992px) {
+    .page, .chat-area {
+        width: 50% !important;
+    }
+}
+
+/* place to chat */
 .chat-box{
     height: 80%;
 }
@@ -61,39 +69,12 @@
     height: 100%;
 }
 
+/* place to find users */
 .chat-users {
     min-height: 20%;
 }
 
-.row {
-    padding: 0;
-    margin: 0;
-}
-
-@media screen and (max-width: 992px) {
-    .page, .chat-area {
-        width: 50% !important;
-    }
-}
-
-.userlist ul {
-    padding-left: 8px !important;
-}
-
-.userlist li {
-    list-style-type: none !important;
-}
-
-.userlist .username:hover {
-	font-weight: bolder;
-	cursor: pointer;
-}
-
-.chatMessages p{
-	color: blue;
-	margin-bottom: -2pt;
-}
-
+/* iframe settings for developer pages */
 .iframe-holder {
     height: 100%;
 }
@@ -101,4 +82,27 @@
 .iframe-holder iframe {
     width: 100%;
     height: 100%;
+}
+
+/* remove standard padding of all rows and cols */
+.row,
+.col {
+    padding: 0;
+    margin: 0;
+}
+
+/* remove dot in front of li element */
+.userlist li {
+    list-style-type: none !important;
+}
+
+/* remove ul indentation */
+.userlist ul {
+    padding-left: 0px !important;
+}
+
+/* make user bold when hovered over */
+.userlist span:hover {
+	font-weight: bolder;
+	cursor: pointer;
 }

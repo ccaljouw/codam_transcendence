@@ -27,6 +27,8 @@
     background-color: #ffffffbb;
     border: 4px double black;
     text-overflow: clip;
+    padding: 20px;
+    padding-top: 10px;
 }
 
 .chat-messages {
