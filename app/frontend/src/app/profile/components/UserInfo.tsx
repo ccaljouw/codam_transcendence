@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import DataField from '@ft_global/functionComponents/DataField';
