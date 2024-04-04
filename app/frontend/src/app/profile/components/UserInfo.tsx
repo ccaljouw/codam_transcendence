@@ -14,7 +14,7 @@ function EditableUserName() {
 	const {data: updatedUser, isLoading, error, fetcher} = useFetch<UpdateUserDto, UserProfileDto>();
 
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault(); // check if needed
+		event.preventDefault();
 		await fetcher({url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: FormToUpdateUserDto(event)})
 	}
 
@@ -28,13 +28,11 @@ function EditableUserName() {
 
 	return (
 		<>
-			<div className="row">
+			{editMode == false? <>
 				<DataField name="Username" data={currentUser.userName}/>
-			</div>
-			{editMode == false? 
 				<button className="btn btn-primary" onClick={() => setEditMode(true)}>Edit</button>
-					:
-				<form onSubmit={handleSubmit} acceptCharset='utf-8'>
+				</>:
+				<form onSubmit={handleSubmit} acceptCharset='utf-8' >
 					<label htmlFor="floatingInput">New userName:</label>
 					<input id="floatingInput" className="form-control" type="text" name="userName" required minLength={3} maxLength={30} autoComplete="off" placeholder={currentUser.userName}></input>
 					{isLoading == true && <p>Updating userName...</p>}
