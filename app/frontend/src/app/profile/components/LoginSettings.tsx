@@ -1,11 +1,10 @@
 "use client";
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, FormEvent} from 'react';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import DataField from "@ft_global/functionComponents/DataField";
 import FormInput from 'src/globals/functionComponents/form/FormInput';
 import useFetch from 'src/globals/functionComponents/useFetch';
 import { constants } from 'src/globals/constants.globalvar';
-import { FormEvent } from 'react';
 import { UpdateUserDto, UserProfileDto } from '@ft_dto/users';
 import { FontBangers } from 'src/globals/layoutComponents/Font';
 
@@ -71,7 +70,6 @@ export default function LoginSettings(): JSX.Element {
 						Button to Enable two-factor authentication, link to change password
 					</p>
 					{updatedUser != null && <p>User settings updated!</p>}
-
 					<button className="btn btn-primary" onClick={toggleEditMode}>Edit</button>
 				</>
 			}
