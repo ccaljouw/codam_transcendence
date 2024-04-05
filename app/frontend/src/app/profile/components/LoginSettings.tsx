@@ -60,6 +60,7 @@ export default function LoginSettings(): JSX.Element {
 			<FontBangers>
 				<h3>User information</h3>
 			</FontBangers>
+<<<<<<< HEAD
 			{editMode == false && 
 				<>
 					<p>From context:</p>
@@ -92,6 +93,15 @@ export default function LoginSettings(): JSX.Element {
 					{error && <p>Error: {error.message}</p>}
 				</>
 			}
+=======
+			<p>From context:</p>
+			<DataField name="Login name" data={currentUser.loginName} />
+			<DataField name="First name" data={currentUser.firstName} />
+			<DataField name="Last name" data={currentUser.lastName} />
+			<p>
+				Button to Enable two-factor authentication, link to change password
+			</p>
+>>>>>>> main
 		</>
 	);
 }

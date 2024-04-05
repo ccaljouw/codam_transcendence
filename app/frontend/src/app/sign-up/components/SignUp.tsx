@@ -4,7 +4,7 @@ import { CreateUserDto, UserProfileDto } from '@ft_dto/users';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import { constants } from '@ft_global/constants.globalvar'
 import useFetch from '@ft_global/functionComponents/useFetch';
-import FormInput from 'src/globals/functionComponents/form/FormInput';
+import FormInput from '@ft_global/functionComponents/form/FormInput';
 import { FontBangers } from 'src/globals/layoutComponents/Font';
 
 export default function SignUp(): JSX.Element {
