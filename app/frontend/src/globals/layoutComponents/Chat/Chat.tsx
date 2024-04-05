@@ -125,12 +125,12 @@ export default function Chat({ user2: otherUserForDm, chatID: chatId }: { user2?
 							e.preventDefault();
 							sendMessage(currentUser.id, otherUserForDm ? otherUserForDm : 0, currentChat, currentUser, message, chatSocket, setMessage);
 						}}>
-							<input
+							<input className="form-control"
 								type='text'
 								value={message}
 								onChange={(e) => setMessage(e.target.value)}
 							/>
-							<button type='submit'>send</button>
+							<button className="btn btn-primary" type='submit'>send</button>
 						</form>
 					</div>
 				</>}

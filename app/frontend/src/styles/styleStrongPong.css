@@ -1,6 +1,17 @@
+:root {
+    --strongpong-red: #EC3C37;
+    --strongpong-yellow: #F0CD13;
+    --strongpong-pink: #F2A28D;
+    --strongpong-black: #000000;
+    --strongpong-blue: #1998CB;
+    --strongpong-dark-blue: #1948cb;
+    --strongpong-white: #F8DED7;
+    --strongpong-white-transparent: #F8DED7A8;
+}
+
 .root-layout {
-    background-image: radial-gradient(circle at center, #F2A28D 30%, transparent 20%),
-        repeating-conic-gradient(at 75% 50%, #F0CD13 10%, #Ec3C37 15%, #F0CD13 20%);
+    background-image: radial-gradient(circle at center, var(--strongpong-pink) 30%, transparent 20%),
+        repeating-conic-gradient(at 75% 50%, var(--strongpong-yellow) 10%, var(--strongpong-red) 15%, var(--strongpong-yellow) 20%);
     background-size: 10px 10px, cover;
     background-repeat: repeat, repeat;
 }
@@ -17,15 +28,15 @@
 @media screen and (max-width: 992px) {
     .root-layout {
         background-image: 
-            radial-gradient(circle at center, #F2A28D 30%, transparent 20%),
-            repeating-conic-gradient(at 50% 50%, #F0CD13 10%, #Ec3C37 15%, #F0CD13 20%);
+            radial-gradient(circle at center, var(--strongpong-pink) 30%, transparent 20%),
+            repeating-conic-gradient(at 50% 50%, var(--strongpong-yellow) 10%,var(--strongpong-red) 15%, var(--strongpong-yellow) 20%);
     }
 }
 
 .white-box {
     border-radius: 5px;
-    background-color: #f8ded7bb;
-    border: 4px double black;
+    background-color: var(--strongpong-white-transparent);
+    border: 4px double var(--strongpong-black);
     text-overflow: clip;
     padding: 20px;
     padding-top: 10px;
@@ -33,16 +44,26 @@
 
 .chat-messages {
     overflow-y: scroll;
+    /* background-color: var(--strongpong-white); */
 }
 
 .chat-messages p {
-    color: #1998CB;
+    color: var(--strongpong-dark-blue);
     margin-bottom: -2pt;
 }
 
 .btn-primary {
-    --bs-btn-bg: #1998CB;
-    --bs-btn-border-color: #1998CB;
+    --bs-btn-bg: var(--strongpong-blue);
+    --bs-btn-border-color: var(--strongpong-blue);
+}
+
+.form-control {
+    /* todo: choose */
+    background: white;
+    background: var(--strongpong-white-transparent);
+    background: var(--strongpong-white);
+
+
 }
 
 /* Below is work in progress */
