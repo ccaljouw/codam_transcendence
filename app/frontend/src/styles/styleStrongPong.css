@@ -10,7 +10,8 @@
 }
 
 .root-layout {
-    background-image: radial-gradient(circle at center, var(--strongpong-pink) 30%, transparent 20%),
+    background-image: 
+        radial-gradient(circle at center, var(--strongpong-pink) 30%, transparent 20%),
         repeating-conic-gradient(at 75% 50%, var(--strongpong-yellow) 10%, var(--strongpong-red) 15%, var(--strongpong-yellow) 20%);
     background-size: 10px 10px, cover;
     background-repeat: repeat, repeat;
