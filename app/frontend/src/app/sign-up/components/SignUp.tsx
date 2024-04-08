@@ -51,12 +51,12 @@ export default function SignUp(): JSX.Element {
 					<FontBangers>
 						<h3>Sign up to play</h3>
 					</FontBangers>
-					<FormInput type="text" name="firstName" required={false} text="First Name"/>
-					<FormInput type="text" name="lastName" required={false} text="Last Name"/>
-					<FormInput type="text" name="userName" required={false} text="Username"/>
-					<FormInput type="email" name="email" required={false} text="Email address"/>
-					<FormInput type="text" name="loginName" required={false} text="Login name"/>
-					<FormInput type="password" name="hash" required={false} text="Password"/>
+					<FormInput type="text" name="firstName" required={true} text="First Name"/>
+					<FormInput type="text" name="lastName" required={true} text="Last Name"/>
+					<FormInput type="text" name="userName" required={true} text="Username"/>
+					<FormInput type="email" name="email" required={true} text="Email address"/>
+					<FormInput type="text" name="loginName" required={true} text="Login name"/>
+					<FormInput type="password" name="hash" required={true} text="Password"/>
 					<button className="btn btn-primary w-10 py-2 mt-3" type="submit">Sign up</button>
 					</form>
 				}
