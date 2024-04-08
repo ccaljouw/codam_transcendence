@@ -66,11 +66,11 @@ export class Game {
 		//todo add instance condition
 		if (this.gameState == `FINISHED` && sentFinished == false) {
 			cancelAnimationFrame(this.currentAnimationFrame);
-			sentFinished = true;
 			const payload = {roomId: this.roomId, state: GameState.FINISHED, winner: this.winner?.getSide(), score1: this.players[0].getScore(), score2: this.players[1].getScore()};
 			this.gameSocket.emit("game/updateGameState", payload);
 			this.gameSocket.off(`game/updateGameObjects`);
 			this.gameSocket.off(`game/updateGameState`);
+			sentFinished = true;
 			return;
 		}
 

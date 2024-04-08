@@ -121,7 +121,7 @@ export class GameService {
     }
   }
 
-  async update(updateGameStateDto: UpdateGameStateDto) {
+  async update(updateGameStateDto: UpdateGameStateDto): Promise<boolean> {
     if (updateGameStateDto.state === undefined) {
       console.log(`backend - game: can't update because state not defined`);
       return;
@@ -136,10 +136,10 @@ export class GameService {
       });
       if (game) {
         console.log(`backend - game: Game: game state updated`);
-        return 0;
+        return true;
       } else {
         console.log(`backend - game: Game: game state not updated`);
-        return 1;
+        return false;
       }
     } catch (error) {
       throw new NotFoundException(

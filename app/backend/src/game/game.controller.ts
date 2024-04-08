@@ -29,7 +29,7 @@ export class GameController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Returns game with specified id'})
-  @ApiOkResponse({ type: UpdateGameDto }) 
+  @ApiOkResponse({ type: UpdateGameDto })
   @ApiNotFoundResponse({ description: 'Game with #${id} does not exist' })
 
   findOne(@Param('id', ParseIntPipe) id: number) {

@@ -7,6 +7,7 @@ import { InstanceTypes } from '../../../../../game/utils/constants.tsx'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { constants } from '@ft_global/constants.globalvar.tsx'
 import DataFetcherJson from 'src/globals/functionComponents/DataFetcherJson.tsx'
+import useFetch from 'src/globals/functionComponents/useFetch.tsx'
 
 
 export default function GameComponent() {
@@ -20,17 +21,19 @@ export default function GameComponent() {
 	const [gameState, setGameState] = useState<GameState>(GameState.WAITING);
 	const [waitingForPlayers, setWaitingForPlayers] = useState<boolean>(true);
 	const [instanceType, setInstanceType] = useState<InstanceTypes>(InstanceTypes.observer) // 0 for player 1, 1 for player 2, 2 for observer
-	
+	const {data: fetchedGameData, isLoading: loadingGame, error: errorGame, fetcher: gameFetcher} = useFetch<null, UpdateGameDto>();
+	const {data: updatedGameState, isLoading: loadingGameState, error: errorGameState, fetcher: gameStatePatcher} = useFetch<UpdateGameStateDto, boolean>();
+
+
 	// fetch game data
 	useEffect(() => {
 		if (userId) {
-			fetchGame(userId);
+			fetchGame(`${constants.API_GAME}getGame/${userId}`);
 		}
 	}, []);
 
 
-	
-	// set up websocket connection and join room
+		// set up websocket connection and join room
 	useEffect(() => {
 		if (gameData && roomId === 0) {
 			setRoomId(gameData.id);
@@ -47,7 +50,7 @@ export default function GameComponent() {
 					//it there are less than two players in game, refresh game data
 					if (gameData.GameUsers!.length < 2) {
 						console.log("Game: less than two players in game, refreshing game data");
-						refreshData(gameData.id);
+						fetchGame(`${constants.API_GAME}${gameData.id}`);
 						console.log("Game: refreshed game data");
 					}
 				}
@@ -56,10 +59,7 @@ export default function GameComponent() {
 			gameSocket.on(`game/updateGameState`, (payload: UpdateGameStateDto) => {
 				console.log(`Game: received game state update`, payload.roomId, payload.state);
 				setGameState(payload.state);
-				updateGameState(payload);
-
-
-
+				patchGameState(payload);
 				//todo send message to server with game state updates
 			});
 			
@@ -73,6 +73,8 @@ export default function GameComponent() {
 		}, [gameData]);
 
 
+
+
 	useEffect(() => {
 		if (gameData && gameData.GameUsers && gameData.GameUsers.length === 2) {
 			console.log("Gamedata!!!: ", gameData);
@@ -81,6 +83,7 @@ export default function GameComponent() {
 			console.log("WAITING FOR SECOND PLAYER!!!");
 		}
 	}, [gameData]);
+
 
 //create observer game
 // /	useEffect(() => {
@@ -159,64 +162,28 @@ export default function GameComponent() {
 	}, [gameState, canvasRef.current, game]);
 	
 	
-	
-	//functions
-	// fetch game data from server
-	async function fetchGame(userID: string) {
-		const url = `${constants.API_GAME}getGame/${userID}`;
-		console.log(`Game: fetching game data for user: ${userID} from: "${url}"`);
-		
-		try {
-			const data: UpdateGameDto = await DataFetcherJson({ url: url });
-			console.log('Game data: ', data);
-			if (!data) {
-				throw new Error(`No game data found`);
-			} else {
-				setGameData(data);
-				// console.log(`Game: game data and room set`);
-			}
-		}	catch (error) {
-			console.error(error);
+	useEffect(() => {
+		if (fetchedGameData != null) {
+			setGameData(fetchedGameData);
 		}
-	}
-	
-	async function refreshData(id: number) {
-		const url = `${constants.API_GAME}${id}`;
-		console.log(`Game: fetching game data for gameId: ${id} from: "${url}"`);
-		try {
-			const data: UpdateGameDto = await DataFetcherJson({ url: url });
-			console.log('Game data found in refresh: ', data);
-			if (!data) {
-				throw new Error(`refresh data: No game data found`);
-			} else {
-				setGameData(data);
-			}
-		}	catch (error) {
-			console.error(error);
-		}
-	}
+	}, [fetchedGameData]);
 
-	async function updateGameState(payload: UpdateGameStateDto) {
-		const url = `${constants.API_GAME}${payload.roomId}`;
-		console.log(`!!!!Game: updating game state for game: ${payload.roomId} from: "${url}" to "${payload.state}"`);
-		const properties = {
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(payload),
-		};
-		try {
-			const Response: any = await fetch(url, properties);
-			if (Response === 1) {
-				throw new Error(`updateGameState: No game data found`);
-			} else {
+
+	async function fetchGame(url: string) {
+		await gameFetcher({url: url});
+	}
+	
+
+	useEffect(() => {
+		if (updatedGameState != null ) {
+			if (updatedGameState === true) {
 				console.log(`Game: game state updated`);
 			}
 		}
-		catch (error) {
-			console.error(error);
-		}
+	}, [updatedGameState]);
+
+	async function patchGameState(payload: UpdateGameStateDto) {
+		await gameStatePatcher({url: `${constants.API_GAME}${payload.roomId}`, fetchMethod:'PATCH', payload: payload});
 	}
 
 
