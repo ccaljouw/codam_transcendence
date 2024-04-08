@@ -153,12 +153,9 @@ export default function GameComponent() {
 			const payload: UpdateGameStateDto = {roomId: roomId, state: GameState.STARTED};
 			gameSocket.emit("game/updateGameState", payload);
 		} else if (gameState === GameState.FINISHED) {
-			// const payload: UpdateGameStateDto = {roomId: roomId, state: GameState.FINISHED};
-			// gameSocket.emit("game/updateGameState", payload);
 			console.log("Game: game finished add more code cleanup code here!!");
 			// todo add code
 		}
-
 	}, [gameState, canvasRef.current, game]);
 	
 	
@@ -221,7 +218,7 @@ export default function GameComponent() {
 			console.error(error);
 		}
 	}
-			
+
 
 	// return the canvas
 	return (

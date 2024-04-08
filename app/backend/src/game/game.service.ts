@@ -126,7 +126,9 @@ export class GameService {
       console.log(`backend - game: can't update because state not defined`);
       return;
     }
-    console.log(`backend - game: updating game state to : ${updateGameStateDto.state} for game: ${updateGameStateDto.roomId}`);
+    console.log(
+      `backend - game: updating game state to : ${updateGameStateDto.state} for game: ${updateGameStateDto.roomId}`,
+    );
     try {
      const game = await this.db.game.update({
         where: { id: updateGameStateDto.roomId },
@@ -140,7 +142,9 @@ export class GameService {
         return 1;
       }
     } catch (error) {
-      throw new NotFoundException(`User with id ${updateGameStateDto.roomId} does not exist.`);
+      throw new NotFoundException(
+        `User with id ${updateGameStateDto.roomId} does not exist.`,
+      );
     }
   }
 }
