@@ -3,6 +3,7 @@ import { TranscendenceContext } from "@ft_global/contextprovider.globalvar";
 import { constants } from "@ft_global/constants.globalvar";
 // import DataFetcherJson from "./DataFetcherJson";
 import useFetch from "./useFetch";
+import { OnlineStatus } from "@prisma/client";
 
 /**
  * Function to display unread messages next to a user (hopefully later on also next to a chat, but that needs work)
@@ -33,15 +34,15 @@ export default function UnreadMessages(props: {secondUserId:number, indexInUserL
 
   // Update unread messages when messageToUserNotInRoom is sent
   useEffect(() => {
-	if (messageToUserNotInRoom === undefined)
+	if (messageToUserNotInRoom === undefined) // If messageToUserNotInRoom is not set, return
 		return ;
-	if (parseInt(messageToUserNotInRoom.room) === chatId)
+	if (parseInt(messageToUserNotInRoom.room) === chatId) // If the message is for the current chat, adjust the unread messages
 	{
 		setUnreadMessages(unreadMessages + 1);
 		props.statusChangeCallBack(props.indexInUserList);
 		return ;
 	}
-	if (messageToUserNotInRoom.userId === props.secondUserId)
+	if (messageToUserNotInRoom.userId === props.secondUserId)  // If we reach this point, the chatId is not set, so we need to fetch it if the message is from the user
 	{
 		fetchChatId();
 		return ;
@@ -49,19 +50,18 @@ export default function UnreadMessages(props: {secondUserId:number, indexInUserL
   },[messageToUserNotInRoom]);
 
   useEffect(() => {
-	if (chatIdFromDb)
+	if (chatIdFromDb) // If chatId is set, update the state
 		setChatId(chatIdFromDb);
   }
   ,[chatIdFromDb]);
 
   useEffect(() => {
-	console.log("unreads useEffect", unreadsFromDb, chatIdFromDb);
-	if (unreadsFromDb)
+	if (unreadsFromDb && unreadMessages !== unreadsFromDb) // if unreadsFromDb have arrived and are different from the current state, update the state
 		setUnreadMessages(unreadsFromDb);
   },[unreadsFromDb]);
 
   const fetchChatId = async () => {
-	if(!currentUser.id || !props.secondUserId)
+	if(!currentUser.id || !props.secondUserId || chatId !== -1)
 		return;
 	await chatIdFetcher({url: constants.CHAT_CHECK_IF_DM_EXISTS + `${currentUser.id}/${props.secondUserId}`});
   }

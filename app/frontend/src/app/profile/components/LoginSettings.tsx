@@ -3,13 +3,16 @@ import { useContext } from 'react';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 // import DataField from "@ft_global/functionComponents/DataField";
 import DataField from "../../../globals/functionComponents/DataField";
+import { FontBangers } from 'src/globals/layoutComponents/Font';
 
 export default function LoginSettings(): JSX.Element {
 	const {currentUser} = useContext(TranscendenceContext);
 
 	return (
 		<>
-			<h1>User information</h1>
+			<FontBangers>
+				<h3>User information</h3>
+			</FontBangers>
 			<p>From context:</p>
 			<DataField name="Login name" data={currentUser.loginName} />
 			<DataField name="First name" data={currentUser.firstName} />
