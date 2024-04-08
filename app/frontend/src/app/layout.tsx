@@ -2,9 +2,9 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import '../styles/stylesheet.css';
 // import '../styles/styleSimpleGrid.css'; // JMA: leave this for now for easy switching
 import '../styles/styleStrongPong.css';
-import { comic_neue } from 'src/globals/layoutComponents/Font';
 import { ContextProvider } from '@ft_global/contextprovider.globalvar';
-import BootstrapClient from '@ft_global/layoutComponents/BootstrapClient.tsx';
+import { comic_neue } from '@ft_global/layoutComponents/Font';
+import BootstrapClient from '@ft_global/layoutComponents/BootstrapClient';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }){
 	console.log("root rerender");
