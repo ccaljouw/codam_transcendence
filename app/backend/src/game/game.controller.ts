@@ -41,7 +41,7 @@ export class GameController {
   @ApiOkResponse({ type: UpdateGameStateDto })
 
   update(@Param('id', ParseIntPipe) id: number, @Body() updateGameStateDto: UpdateGameStateDto) : Promise<number> {
-    return this.gameService.update(id, updateGameStateDto);
+    return this.gameService.update(updateGameStateDto);
   }
 
   @Delete(':id')

@@ -54,7 +54,7 @@ export default function GameComponent() {
 			});
 			
 			gameSocket.on(`game/updateGameState`, (payload: UpdateGameStateDto) => {
-				console.log(`Game: received game state update!!!!!!`, payload.roomId, payload.state);
+				console.log(`Game: received game state update`, payload.roomId, payload.state);
 				setGameState(payload.state);
 				updateGameState(payload);
 
@@ -149,15 +149,15 @@ export default function GameComponent() {
 	useEffect(() => {
 		if (gameState === GameState.READY_TO_START && game !== null && canvasRef.current) {
 			console.log("Game: starting game");
-			setGameState(GameState.STARTED);
 			canvasRef.current.focus();
-			gameSocket.emit("game/updateGameState", {roomId: roomId, state: GameState.STARTED});
+			const payload: UpdateGameStateDto = {roomId: roomId, state: GameState.STARTED};
+			gameSocket.emit("game/updateGameState", payload);
 		} else if (gameState === GameState.FINISHED) {
+			// const payload: UpdateGameStateDto = {roomId: roomId, state: GameState.FINISHED};
+			// gameSocket.emit("game/updateGameState", payload);
 			console.log("Game: game finished add more code cleanup code here!!");
 			// todo add code
 		}
-
-
 
 	}, [gameState, canvasRef.current, game]);
 	
@@ -201,7 +201,7 @@ export default function GameComponent() {
 
 	async function updateGameState(payload: UpdateGameStateDto) {
 		const url = `${constants.API_GAME}${payload.roomId}`;
-		console.log(`Game: updating game state for game: ${payload.roomId} from: "${url}"`);
+		console.log(`!!!!Game: updating game state for game: ${payload.roomId} from: "${url}" to "${payload.state}"`);
 		const properties = {
 			method: 'PATCH',
 			headers: {
@@ -222,7 +222,6 @@ export default function GameComponent() {
 		}
 	}
 			
-
 
 	// return the canvas
 	return (

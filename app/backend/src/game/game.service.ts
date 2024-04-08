@@ -122,15 +122,21 @@ export class GameService {
   }
 
   async update(updateGameStateDto: UpdateGameStateDto) {
-    console.log(`backend - game: Game: updating game state`);
+    if (updateGameStateDto.state === undefined) {
+      console.log(`backend - game: can't update because state not defined`);
+      return;
+    }
+    console.log(`backend - game: updating game state to : ${updateGameStateDto.state} for game: ${updateGameStateDto.roomId}`);
     try {
-      const game = await this.db.game.update({
+     const game = await this.db.game.update({
         where: { id: updateGameStateDto.roomId },
         data: { state: updateGameStateDto.state },
       });
       if (game) {
+        console.log(`backend - game: Game: game state updated`);
         return 0;
       } else {
+        console.log(`backend - game: Game: game state not updated`);
         return 1;
       }
     } catch (error) {
