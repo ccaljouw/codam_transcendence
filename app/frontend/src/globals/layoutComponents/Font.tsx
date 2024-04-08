@@ -24,3 +24,13 @@ export function FontPopArt({children} : {children: React.ReactNode}) : JSX.Eleme
         </>
     );
 }
+
+export function H3({text} : {text: string}) : JSX.Element {
+    return (
+        <>
+            <FontBangers>
+                <h3>{text}</h3>
+            </FontBangers>
+        </>
+    );
+}
