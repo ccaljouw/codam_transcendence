@@ -8,7 +8,7 @@ import { constants } from "@ft_global/constants.globalvar";
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import ChatArea from "./layoutComponents/ChatArea";
 import MenuBar from "./layoutComponents/MenuBar";
-import Login from "./layoutComponents//Login";
+import Login from "./layoutComponents/Login/LoginScreen";
 import useFetch from "./functionComponents/useFetch";
 
 // Context for the entire app

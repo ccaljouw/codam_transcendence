@@ -11,6 +11,9 @@
 
 export class constants {
 	static BACKEND_BASEURL = 'http://localhost:3001/';
+	static FRONTEND_BASEURL = 'http://localhost:3000'; //todo: JMA: consider adding '/' at end of url
+
+	static API_LOGIN_42 = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-66c50cf4e54a51062bc5f0c110035ff12e1b0427cc1066c11d6e5c220a2ed1dc';
 
 	static API_USERS = this.BACKEND_BASEURL + 'users/';
 	static API_REGISTER = this.API_USERS + 'register/';
