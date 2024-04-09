@@ -9,5 +9,6 @@ import { TokenService } from './token.service';
 	imports:	[SocketServerModule],
   controllers: [UsersController],
   providers: [UsersService, PrismaService, TokenService],
+  exports: [UsersService],
 })
 export class UsersModule {}
