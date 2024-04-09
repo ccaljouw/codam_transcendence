@@ -6,7 +6,6 @@ import { Game } from '../../../../../game/components/Game.ts'
 import { InstanceTypes } from '../../../../../game/utils/constants.ts'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { constants } from '@ft_global/constants.globalvar.tsx'
-import DataFetcherJson from 'src/globals/functionComponents/DataFetcherJson.tsx'
 import useFetch from 'src/globals/functionComponents/useFetch.tsx'
 
 

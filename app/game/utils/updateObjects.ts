@@ -47,7 +47,7 @@ function emmitBallPosition(game: Game, deltaTime: number, config: keyof typeof C
 
   game.ball?.updateBall(game.gameState, deltaTime);
   
-  if (game.instanceType === 0 && game.elapasedTimeSincceLastUpdate >= CON.config[config].socketUpdateInterval) { //todo change to 2 (observer)
+  if (game.instanceType === 0 && game.elapasedTimeSincceLastUpdate >= CON.config[config].socketUpdateInterval) { //todo change to observer
     game.gameSocket.emit("game/updateGameObjects", {
       roomId: game.roomId,
       ballX: game.ball?.movementComponent.getX(),
@@ -63,7 +63,7 @@ function emmitBallPosition(game: Game, deltaTime: number, config: keyof typeof C
 }
 
 function interpolateBallPosition(game: Game, config: keyof typeof CON.config) {
-  if (game.instanceType === 1) {
+  if (game.instanceType === 1) { //todo change to not observer
     let targetBallSettings: {x: number, y: number, dx: number, dy: number};
     if (game.receivedUpdatedGameObjects.ballX! > 0) {
       targetBallSettings = { x: game.receivedUpdatedGameObjects.ballX!, y: game.receivedUpdatedGameObjects.ballY!, dx: game.receivedUpdatedGameObjects.ballDX!, dy: game.receivedUpdatedGameObjects.ballDY!};
@@ -82,7 +82,7 @@ function interpolateBallPosition(game: Game, config: keyof typeof CON.config) {
 }
 
 export function checkForGoals(game: Game, config: keyof typeof CON.config) {
-  if (game.instanceType !== 0) { //todo change to 2 (observer)
+  if (game.instanceType !== 0) { //todo change to not observer
     return;
   }
 
@@ -92,6 +92,7 @@ export function checkForGoals(game: Game, config: keyof typeof CON.config) {
       return;
     }
   }
+  
   let winner = checkWinCondition(game.players, config) ?? -1;
   if (winner !== -1) {
     game.endGame(winner!);
