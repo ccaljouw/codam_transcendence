@@ -1,4 +1,4 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import { Controller, Get, Param, Req } from '@nestjs/common';
 import { AuthService } from './authentication.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserProfileDto } from '@ft_dto/users';
@@ -19,5 +19,10 @@ export class AuthController {
   callback(@Req() req): Promise<UserProfileDto> {
     console.log("Callback controller called");
     return this.authService.handleCallback(req.query.code);
+  }
+
+  @Get(':api42_code')
+  checkCode(@Param('code') code: string): Promise<UserProfileDto> {
+    return this.authService.get42User(code);
   }
 }
