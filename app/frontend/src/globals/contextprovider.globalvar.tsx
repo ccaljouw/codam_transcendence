@@ -50,6 +50,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 
 		// Listener for status changes of other users
 		transcendenceSocket.on('socket/statusChange', (payload: WebsocketStatusChangeDto) => {
+			console.log('User status change:', payload);
 			setSomeUserUpdatedTheirStatus(payload);
 		});
 
@@ -130,40 +131,8 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 				token: transcendenceSocket.id? transcendenceSocket.id : '',
 				userId: currentUser.id
 			}
-			// const patchUserResponse = await fetch(constants.API_USERS + currentUser.id, { // using fetch here, maybe we should use useFetch instead
-			// 	method: 'PATCH',
-			// 	headers: {
-			// 		'Content-Type': 'application/json',
-			// 	},
-			// 	body: JSON.stringify(patchUserData),
-			// });
 			patchUserFetcher({url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: patchUserData});
 			addTokenFetcher({url: constants.API_ADD_TOKEN, fetchMethod: 'POST', payload: addTokenData });
-			// const addTokenResponse = await fetch(constants.API_ADD_TOKEN, {
-			// 	method: 'POST',
-			// 	headers: {
-			// 		'Content-Type': 'application/json',
-			// 	},
-			// 	body: JSON.stringify({ token: transcendenceSocket.id, userId: currentUser.id }),
-			// });
-			// if (!patchUserResponse.ok || !addTokenResponse.ok) {
-			// 	throw new Error('Failed to patch data');
-			// } else {
-				// console.log('Getting ready for socket status change');
-				// const data = await patchUserResponse.json() as UserProfileDto;
-				// const statusUpdate: WebsocketStatusChangeDto = {
-				// 	userId: data.id,
-				// 	userName: data.userName,
-				// 	token: (transcendenceSocket.id ? transcendenceSocket.id : ''),
-				// 	status: OnlineStatus.ONLINE
-				// }
-				// console.log('User status updated to online:', data.id,data.userName, transcendenceSocket.id, statusUpdate);
-				// setCurrentUser(data);
-				// transcendenceSocket.emit('socket/statusChange', statusUpdate); // Emit the status change to the socket
-			// }
-		// } catch (error) {
-		// 	console.error('Error updating online status:', error);
-		// }
 	};
 
 	return (
@@ -177,7 +146,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 					<div className="page">
 						{children}
 					</div>
-					<div className="chat">
+					<div className="chat-area">
 						<ChatArea />
 					</div>
 				</div>}

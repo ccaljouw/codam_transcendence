@@ -1,8 +1,12 @@
+import { FontBangers } from "src/globals/layoutComponents/Font";
+
 export default function Leaderboard() : JSX.Element {
 	return (
 		<>
 			<div className="text-center">
-				<h1>Leaderboard</h1>
+				<FontBangers>
+					<h3>Leaderboard</h3>
+				</FontBangers>
 				<p>Jaberkro<br/>Jaberkro2<br/>TranscendenceTesters<br/></p>
 			</div>
 		</>

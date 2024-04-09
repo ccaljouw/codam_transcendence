@@ -6,10 +6,27 @@
     border: 3px solid green;
 }
 
-.chat {
+.chat-area {
     border: 3px solid blue;
+}
+
+.chat-box {
+    border: 3px solid orange;
 }
 
 .col {
     border: 3px solid purple;
+}
+
+
+.chat-title {
+    border: 3px solid palevioletred;
+}
+
+.chat-messages {
+    border: 3px solid palevioletred;
+}
+
+.chat-input {
+    border: 3px solid palevioletred;
 }

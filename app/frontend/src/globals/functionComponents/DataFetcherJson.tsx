@@ -1,5 +1,5 @@
-
-    {url} : {url:string}
+export default async function DataFetcherJson(
+	{url} : {url:string}
 ) {
 	try {
 		const response: Response = await fetch(url);
@@ -16,4 +16,3 @@
 		return (error);
 	}
 }
-
