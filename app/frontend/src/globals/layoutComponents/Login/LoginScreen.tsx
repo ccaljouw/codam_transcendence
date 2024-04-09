@@ -8,6 +8,11 @@ import ChooseUser from 'src/globals/layoutComponents/Login/ChooseUser';
 import Seed from 'src/app/dev/test/components/Seed'; //todo: this is tmp, remove later
 import Auth42Button from './Auth42Button';
 
+// function isLoggedIn() : boolean {
+
+// 	return true;
+// }
+
 export default function Login() : JSX.Element { 
 	const { data: user, isLoading, error, fetcher: userFetcher } = useFetch<null, UserProfileDto>();
 	const { data: users, isLoading: usersLoading, error: usersError, fetcher: usersFetcher } = useFetch<null, UserProfileDto[]>(); //todo: remove later
