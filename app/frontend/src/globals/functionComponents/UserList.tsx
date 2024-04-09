@@ -59,7 +59,7 @@ export default function UserList(props: UserListProps): JSX.Element {
 
 	return (
 		<UserListContext.Provider value={{contextMenuClickSent, triggerContextMenuClick}}> 
-		<div className='userlist text-start'>
+		<div className='userlist'>
 			{usersFromDbLoading && <p>Loading users...</p>}
 			{userFromDbError && <p>Error: {userFromDbError.message}</p>}
 			{userList && <ul>{
