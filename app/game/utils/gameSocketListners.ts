@@ -33,7 +33,8 @@ export function setSocketListeners(gameData: UpdateGameDto, socket: typeof trans
     }
 
     if (payload.winner != undefined && game.instanceType < 2) {
-      game.endGame(payload.winner!);
+      game.winner = game.players[payload.winner];
+      game.gameState = GameState.FINISHED;
     }
     
     // if (payload.resetMatch === 1) {
@@ -51,9 +52,9 @@ export function setSocketListeners(gameData: UpdateGameDto, socket: typeof trans
   });
 
   gameSocket.on(`game/updateGameState`, (payload: UpdateGameStateDto) => {
-    // if (game.gameState === GameState.FINISHED) {
-    //   return;
-    // }
+    if (game.gameState === GameState.FINISHED) {
+      return;
+    }
     console.log(`Script: received game state update from server`, payload.roomId, payload.state, payload?.winner, payload?.score1, payload?.score2);
     game.gameState = payload.state;
 

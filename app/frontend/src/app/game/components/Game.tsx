@@ -2,8 +2,8 @@
 import { useRef, useEffect, useState, use } from 'react'
 import { GameState } from '@prisma/client'
 import { UpdateGameDto, UpdateGameStateDto } from '@ft_dto/game'
-import { Game } from '../../../../../game/components/Game.tsx'
-import { InstanceTypes } from '../../../../../game/utils/constants.tsx'
+import { Game } from '../../../../../game/components/Game.ts'
+import { InstanceTypes } from '../../../../../game/utils/constants.ts'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { constants } from '@ft_global/constants.globalvar.tsx'
 import DataFetcherJson from 'src/globals/functionComponents/DataFetcherJson.tsx'
@@ -58,8 +58,10 @@ export default function GameComponent() {
 			
 			gameSocket.on(`game/updateGameState`, (payload: UpdateGameStateDto) => {
 				console.log(`Game: received game state update`, payload.roomId, payload.state);
-				setGameState(payload.state);
 				patchGameState(payload);
+				if (gameState !== payload.state) {
+					setGameState(payload.state);
+				}
 				//todo send message to server with game state updates
 			});
 			

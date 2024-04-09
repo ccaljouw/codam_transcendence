@@ -65,11 +65,13 @@ export class Game {
 		
 		//todo add instance condition
 		if (this.gameState == `FINISHED` && sentFinished == false) {
+			console.log("script: game finished. Cancelling animation frame");
 			cancelAnimationFrame(this.currentAnimationFrame);
 			const payload = {roomId: this.roomId, state: GameState.FINISHED, winner: this.winner?.getSide(), score1: this.players[0].getScore(), score2: this.players[1].getScore()};
 			this.gameSocket.emit("game/updateGameState", payload);
 			this.gameSocket.off(`game/updateGameObjects`);
 			this.gameSocket.off(`game/updateGameState`);
+			this.endGame(this.winner?.getSide()!);
 			sentFinished = true;
 			return;
 		}
@@ -111,6 +113,7 @@ export class Game {
   
 
 	endGame(winningSide: number) {
+		console.log("script: endGame called");
 		this.gameState = `FINISHED`;
 		this.winner = this.players[winningSide];
 		this.messageFields[0]?.setText(this.winner?.getName() + " won the match!");

@@ -2,7 +2,7 @@ import { Wall } from "../gameObjects/Wall"
 import { Paddle } from "../gameObjects/Paddle"
 import { Ball } from "../gameObjects/Ball"
 import { SoundFX } from "../gameObjects/SoundFX"
-import * as CON from "../utils/constants"
+import * as CON from "./constants"
 
 
 function detectWallCollisions(ball: Ball, walls: Wall[], soundFX: SoundFX, config: keyof typeof CON.config) {
