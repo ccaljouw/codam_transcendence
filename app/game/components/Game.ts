@@ -17,7 +17,7 @@ import { initializeGameObjects, drawGameObjects, resetGameObjects } from "../uti
 
 
 export class Game {
-	canvas: HTMLCanvasElement;
+	canvas?: HTMLCanvasElement;
 	keyListener: KeyListenerComponent = new KeyListenerComponent();
 	lastFrameTime: number = 0;
 	elapasedTimeSincceLastUpdate: number = 0;
@@ -42,12 +42,12 @@ export class Game {
 	gameData: UpdateGameDto | null = null;
 	currentAnimationFrame: number = 0;
 
-	constructor(newCanvas: HTMLCanvasElement, instanceType: CON.InstanceTypes, data: UpdateGameDto) {
+	constructor(newCanvas: HTMLCanvasElement | undefined, instanceType: CON.InstanceTypes, data: UpdateGameDto) {
 		this.gameData = data; //todo import from server
 		this.instanceType = instanceType;
 		this.roomId = this.gameData.id;
-		this.canvas = newCanvas;
-		this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
+		this.canvas = newCanvas? newCanvas : undefined;
+		this.ctx = this.canvas?.getContext("2d") as CanvasRenderingContext2D;
 		this.gameUsers = this.gameData.GameUsers as UpdateGameUserDto [];
 		initializeGameObjects(this, this.config);
 		setTheme(this, this.theme);
@@ -76,7 +76,7 @@ export class Game {
 			return;
 		}
 
-		if (this.gameState == `WAITING` && this.instanceType < 2) {
+		if (this.gameState == `WAITING` && this.instanceType < 2 && this.canvas) {
 			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 			this.messageFields[0].setText(CON.config[this.config].startMessage);
 		}
@@ -86,7 +86,7 @@ export class Game {
 			checkForGoals(this, this.config);
 		}
 		
-		if (this.instanceType < 2 ) {
+		if (this.instanceType < 2 && this.canvas) {
 				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 				drawGameObjects(this);
 				this.currentAnimationFrame = requestAnimationFrame(this.gameLoop.bind(this));
@@ -117,7 +117,7 @@ export class Game {
 		this.gameState = `FINISHED`;
 		this.winner = this.players[winningSide];
 		this.messageFields[0]?.setText(this.winner?.getName() + " won the match!");
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		this.ctx.clearRect(0, 0, this.canvas!.width, this.canvas!.height);
 		drawGameObjects(this);
 		console.log("player: ", this.winner?.getSide(), this.winner?.getName(), " won the match");
 	}
