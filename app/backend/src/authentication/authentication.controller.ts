@@ -1,4 +1,4 @@
-import { Controller, Get, Redirect, Req } from '@nestjs/common';
+import { Controller, Get, Req } from '@nestjs/common';
 import { AuthService } from './authentication.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserProfileDto } from '@ft_dto/users';

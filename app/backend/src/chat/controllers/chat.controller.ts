@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UpdateChatMessageDto, CreateChatSocketDto, CreateChatMessageDto, FetchChatMessageDto } from '@ft_dto/chat';
-import { ChatMessageService } from './chat-messages.service';
-import { ChatService } from './chat.service';
+import { UpdateChatMessageDto, CreateChatSocketDto, CreateChatMessageDto, FetchChatMessageDto, UpdateInviteDto } from '@ft_dto/chat';
+import { ChatMessageService } from '../services/chat-messages.service';
+import { ChatService } from '../services/chat.service';
 
 
 @Controller('chat')
@@ -62,8 +62,7 @@ export class ChatMessagesController {
 	@Post('messageToDB')
 	@ApiOperation({ summary: 'Returns id of message that is has added to the database' })
 	@ApiOkResponse({ type: Number })
-	async messageToDB(@Body() createChatMessageDto: CreateChatMessageDto) {
-		await this.chatMessageService.messageToDB(createChatMessageDto);
-		return;
+	messageToDB(@Body() createChatMessageDto: CreateChatMessageDto) {
+		return this.chatMessageService.messageToDB(createChatMessageDto);
 	}
 }

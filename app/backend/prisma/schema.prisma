@@ -60,7 +60,7 @@ model Tokens {
     id     Int    @id @default(autoincrement())
     token  String @unique
     userId Int
-	chatId Int?
+	  chatId Int?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -124,6 +124,20 @@ model GameUser {
     user   User @relation(fields: [userId], references: [id])
 }
 
+model Invite {
+  id          Int  @id @default(autoincrement())
+  chatId      Int
+  senderId    Int
+  recipientId Int
+
+  state       InviteStatus @default(SENT)
+  type        InviteType
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  expiredAt DateTime @default(now()) //change
+}
+
 // ***************************************************************** //
 //			ENUMS
 
@@ -152,4 +166,17 @@ enum GameState {
     STARTED
     FINISHED
     ABORTED
+}
+
+enum InviteType {
+  FRIEND
+  CHAT
+  GAME
+}
+
+enum InviteStatus {
+  SENT
+  ACCEPTED
+  REJECTED
+  EXPIRED
 }
