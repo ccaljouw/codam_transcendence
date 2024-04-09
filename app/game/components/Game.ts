@@ -1,6 +1,7 @@
 import { UpdateGameDto, UpdateGameUserDto, UpdateGameObjectsDto } from '@ft_dto/game'
 import { GameState } from '@prisma/client'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
+// import { GamesocketGateway } from '../../backend/src/game/gamesocket.gateway'
 import { SoundFX } from "../gameObjects/SoundFX"
 import { Wall } from "../gameObjects/Wall"
 import { GameObject } from "../gameObjects/GameObject"
@@ -31,6 +32,7 @@ export class Game {
 	receivedUpdatedGameObjects: UpdateGameObjectsDto = {roomId: -1, ballX: -1, ballY: -1, ballDirection: -1, ballSpeed: 0, ballDX: -1, ballDY: -1, paddle1Y: -1, paddle2Y: -1, score1: -1, score2: -1, resetGame: -1, resetMatch: -1, winner: -1};
 	instanceType: CON.InstanceTypes = CON.InstanceTypes.observer;
 	gameSocket:	typeof transcendenceSocket = transcendenceSocket;
+	// backendSocket: typeof GamesocketGateway = GamesocketGateway;
 	soundFX: SoundFX = new SoundFX();
 	theme: keyof typeof CON.themes = "classic";
 	config: keyof typeof CON.config = "test";
@@ -51,8 +53,9 @@ export class Game {
 		this.gameUsers = this.gameData.GameUsers as UpdateGameUserDto [];
 		initializeGameObjects(this, this.config);
 		setTheme(this, this.theme);
-		setSocketListeners(this.gameData, this.gameSocket, this);
-	
+		if (instanceType !== CON.InstanceTypes.observer) {
+			setSocketListeners(this);
+		}
 		console.log("script: instance type: ", this.instanceType); //todo: remove
 	}
 	

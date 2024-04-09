@@ -4,9 +4,9 @@ import { transcendenceSocket } from '@ft_global/socket.globalvar';
 import { UpdateGameObjectsDto, UpdateGameStateDto, UpdateGameDto } from '@ft_dto/game';
 
 
-export function setSocketListeners(gameData: UpdateGameDto, socket: typeof transcendenceSocket, game: Game) {
-  const roomId: number = gameData.id;
-  const gameSocket = socket;
+export function setSocketListeners(game: Game) {
+  const roomId: number = game.gameData!.id;
+  const gameSocket = game.gameSocket;
   let gamerunning = false;
 
   gameSocket.emit("game/joinRoom", roomId);
@@ -17,7 +17,7 @@ export function setSocketListeners(gameData: UpdateGameDto, socket: typeof trans
       return;
     }
     
-    console.log(`Script (${gameData.id}) received game objects update`, payload);
+    console.log(`Script (${game.gameData!.id}) received game objects update`, payload);
 
     if (payload.roomId !== undefined) {
       game.receivedUpdatedGameObjects = {
