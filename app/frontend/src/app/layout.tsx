@@ -6,11 +6,8 @@ import { ContextProvider } from '@ft_global/contextprovider.globalvar';
 import { comic_neue } from '@ft_global/layoutComponents/Font';
 import BootstrapClient from '@ft_global/layoutComponents/BootstrapClient';
 import ChatArea from 'src/globals/layoutComponents/ChatArea';
-import useAuthentication from 'src/globals/functionComponents/useAuthentication';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }){
-	// const {loginUser} = useAuthentication();
-	// const {currentUser} = useContext(TranscendenceContext);
 
 	console.log("root rerender");
     return (
