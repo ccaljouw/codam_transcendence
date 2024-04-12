@@ -39,3 +39,5 @@ export default function Page() : JSX.Element {
 		</>
 	);
 }
+
+//todo: JMA: look up slug
