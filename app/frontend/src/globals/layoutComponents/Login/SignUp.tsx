@@ -5,7 +5,7 @@ import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import { constants } from '@ft_global/constants.globalvar'
 import useFetch from '@ft_global/functionComponents/useFetch';
 import FormInput from '@ft_global/functionComponents/form/FormInput';
-import { FontBangers } from 'src/globals/layoutComponents/Font';
+import { H3 } from 'src/globals/layoutComponents/Font';
 
 export default function SignUp(): JSX.Element {
 	const { data: user, isLoading, error, fetcher } = useFetch<CreateUserDto, UserProfileDto>();
@@ -48,16 +48,15 @@ export default function SignUp(): JSX.Element {
 				{user != null && <p>User created with id {user.id}</p>}
 				{user == null &&
 					<form onSubmit={handleSubmit}>
-					<FontBangers>
-						<h3>Sign up to play</h3>
-					</FontBangers>
+					<H3 text='Sign up'/>
+					<p>It's quick and easy.</p>
 					<FormInput type="text" name="firstName" required={true} text="First Name"/>
 					<FormInput type="text" name="lastName" required={true} text="Last Name"/>
 					<FormInput type="text" name="userName" required={true} text="Username"/>
 					<FormInput type="email" name="email" required={true} text="Email address"/>
 					<FormInput type="text" name="loginName" required={true} text="Login name"/>
 					<FormInput type="password" name="hash" required={true} text="Password"/>
-					<button className="btn btn-primary w-10 py-2 mt-3" type="submit">Sign up</button>
+					<button className="btn btn-primary w-10 py-2 mt-3" type="submit">Sign Up</button>
 					</form>
 				}
 			</div>

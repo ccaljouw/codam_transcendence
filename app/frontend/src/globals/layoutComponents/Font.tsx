@@ -1,5 +1,5 @@
-import { Comic_Neue, Bangers } from '@next/font/google';
-import Pop_Art from '@next/font/local';
+import { Comic_Neue, Bangers } from 'next/font/google';
+import Pop_Art from 'next/font/local';
 
 export const bangers = Bangers({weight: "400", preload: false, variable: '--my-font-bangers'});
 export const comic_neue = Comic_Neue({weight: "400", preload: false, variable: '--my-font-comic_neue'});

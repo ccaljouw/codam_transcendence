@@ -1,18 +1,18 @@
-import { useContext, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { UserProfileDto } from '@ft_dto/users';
 import { constants } from '@ft_global/constants.globalvar';
-import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import useFetch from '@ft_global/functionComponents/useFetch';
 import SignUp from 'src/globals/layoutComponents/Login/SignUp';
 import ChooseUser from 'src/globals/layoutComponents/Login/ChooseUser';
 import Seed from 'src/app/dev/test/components/Seed'; //todo: this is tmp, remove later
 import Auth42Button from './Auth42Button';
 
-import { FontBangers } from '../Font';
+import { FontBangers, H3 } from '../Font';
 import CheckAlreadyLoggedIn from './CheckAlreadyLoggedIn';
 
-export default function Login() : JSX.Element { 
+function LoginOptions () : JSX.Element {
 	const { data: users, isLoading: usersLoading, error: usersError, fetcher: usersFetcher } = useFetch<null, UserProfileDto[]>(); //todo: remove later
+	const [loginOption, setLoginOption] = useState<string>("choose"); //todo: JMA: change to login
 
 	useEffect (() => {
 		fetchUsers();
@@ -23,16 +23,22 @@ export default function Login() : JSX.Element {
 		await usersFetcher({url: constants.API_ALL_USERS});
 	}
 
+	//todo: JMA: remove this option in the end
+	const handleChooseClick = () => {
+		setLoginOption("choose")
+	}
+
+	const handleLoginClick = () => {
+		setLoginOption("login")
+	}
+
+	const handleSignUpClick = () => {
+		setLoginOption("signUp")
+	}
+
 	return (
 		<>
-			<div className="content-area">
-				<div className="col col-6 login">
-					<FontBangers>
-						<h1>STRONGPONG</h1>
-						<p>Play pong and build stronger relationships</p>
-					</FontBangers>
-				</div>
-				{usersLoading && <p>Loading...</p>}
+			{usersLoading && <p>Loading...</p>}
 				{usersError && <p>Error: {usersError.message}</p>}
 				{users != null && users.length == 0 && 
 					<div className="page">
@@ -42,18 +48,48 @@ export default function Login() : JSX.Element {
 				}
 				{users != null && users.length > 0 && 
 					<>
-						<CheckAlreadyLoggedIn />
 						<div className="col login">
-							<ChooseUser />
+							<button className="btn btn-primary" onClick={handleChooseClick}>Choose user from list</button>
+							{loginOption == "choose" &&
+								<ChooseUser />
+							}
 						</div>
 						<div className="col login">
-							<SignUp />
+							<button className="btn btn-primary" onClick={handleLoginClick}>Login</button>
+							{loginOption == "login" &&
+								<p>Here will be the login form</p>
+								// <Login />
+							}
 						</div>
+						<div className="col login">
+							<button className="btn btn-primary" onClick={handleSignUpClick}>Create new account</button>
+							{loginOption == "signUp" &&
+								<SignUp />
+							}
+						</div>
+						<H3 text='OR'/>
 						<div className="col login">
 							<Auth42Button />
 						</div>
 					</>
 				}
+		</>
+	);
+}
+
+export default function LoginScreen() : JSX.Element { 
+	return (
+		<>
+			<div className="content-area">
+				<div className="col col-6 login">
+					<FontBangers>
+						<h1>STRONGPONG</h1>
+						<p>Play pong and build stronger relationships</p>
+					</FontBangers>
+				</div>
+				<div className="col col-6 login">
+					<LoginOptions />
+				</div>
 			</div>
 		</>
 	);

@@ -12,7 +12,7 @@ export default function Auth42Button() : JSX.Element {
 	return (
 		<>
 			<Link className="btn btn-primary" href={`${url}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`}>
-				Login with 42
+				Continue with Auth42
 			</Link>
 		</>
 	);
