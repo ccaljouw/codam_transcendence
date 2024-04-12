@@ -6,9 +6,7 @@ import SignUp from 'src/globals/layoutComponents/Login/SignUp';
 import ChooseUser from 'src/globals/layoutComponents/Login/ChooseUser';
 import Seed from 'src/app/dev/test/components/Seed'; //todo: this is tmp, remove later
 import Auth42Button from './Auth42Button';
-
 import { FontBangers, H3 } from '../Font';
-import CheckAlreadyLoggedIn from './CheckAlreadyLoggedIn';
 
 function LoginOptions () : JSX.Element {
 	const { data: users, isLoading: usersLoading, error: usersError, fetcher: usersFetcher } = useFetch<null, UserProfileDto[]>(); //todo: remove later
