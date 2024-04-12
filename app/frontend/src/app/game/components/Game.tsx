@@ -32,7 +32,7 @@ export default function GameComponent() {
 	}, []);
 
 
-		// set up websocket connection and join room
+	// set up websocket connection and join room
 	useEffect(() => {
 		if (gameData && roomId === 0) {
 			setRoomId(gameData.id);

@@ -32,9 +32,9 @@ export class SoundFX {
   playWallHit() {
     this.play(100, 0.1);
   }
-  
+
   playGoal() {
-    this.play(500, 0.1);
+    this.play(150, 0.3);
   }
   
   playCountdown2() {

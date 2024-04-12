@@ -11,7 +11,6 @@ import {
 		lineInitializer,
 		canvasInitializer } from "./initializers";
 
-
 export function initializeGameObjects(game: Game, config: keyof typeof CON.config) {
   if (game.instanceType < 2) {
     canvasInitializer(game.canvas!, config);

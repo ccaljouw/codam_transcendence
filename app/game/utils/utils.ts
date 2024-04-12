@@ -162,7 +162,7 @@ export function	setTheme(game: Game, theme: keyof typeof CON.themes) {
 	game.lines.forEach(line => line.setColor(CON.themes[theme].lineColor));
 	game.backgroundFill?.setColor(CON.themes[theme].backgroundColor);
 	game.ball?.setColor(CON.themes[theme].ballColor);
-	game.ctx.clearRect(0, 0, game.canvas.width, game.canvas.height);
+	game.ctx.clearRect(0, 0, game.canvas!.width, game.canvas!.height);
 	drawGameObjects(game);
 }
 

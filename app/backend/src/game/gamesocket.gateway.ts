@@ -43,10 +43,9 @@ export class GamesocketGateway {
       'Game Socket Server: received game state update from client: ',
       payload.state,
     );
-    const updatedGameState = { roomId: payload.roomId, state: payload.state };
     this.game_io
       .to(payload.roomId.toString())
-      .emit('game/updateGameState', updatedGameState);
+      .emit('game/updateGameState', payload);
     // this.gamesocketService.update(payload);
     // console.log(`Updating game state: ${payload.roomId} to ${payload.state}`);
     // if (payload.state === `READY_TO_START`) {

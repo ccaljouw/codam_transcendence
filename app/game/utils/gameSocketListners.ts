@@ -1,6 +1,6 @@
 import { Game } from '../components/Game';
 import { GameState } from '@prisma/client';
-import { transcendenceSocket } from '@ft_global/socket.globalvar';
+// import { transcendenceSocket } from '@ft_global/socket.globalvar';
 import { UpdateGameObjectsDto, UpdateGameStateDto, UpdateGameDto } from '@ft_dto/game';
 
 
@@ -32,16 +32,11 @@ export function setSocketListeners(game: Game) {
       game.resetGame();
     }
 
-    if (payload.winner != undefined && game.instanceType < 2) {
-      game.winner = game.players[payload.winner];
-      game.gameState = GameState.FINISHED;
-    }
-    
-    // if (payload.resetMatch === 1) {
-    //   game.resetMatch();
+    // if (payload.winner != undefined && game.instanceType < 2) {
+    //   game.winner = game.players[payload.winner];
+    //   game.gameState = GameState.FINISHED;
     // }
-
-
+    
     if (payload.paddle1Y! > 0 || payload.paddle2Y! > 0) {
       setNewPaddlePositions(game, payload.paddle1Y!, payload.paddle2Y!);
     }
@@ -55,9 +50,16 @@ export function setSocketListeners(game: Game) {
     if (game.gameState === GameState.FINISHED) {
       return;
     }
-    console.log(`Script: received game state update from server`, payload.roomId, payload.state, payload?.winner, payload?.score1, payload?.score2);
-    game.gameState = payload.state;
 
+    console.log(`Script: received game state update from server`, payload.roomId, payload.state, payload.winner);
+    
+    if (payload.state === GameState.FINISHED) {
+      game.finishGame(payload.winner);
+      return;
+    } 
+
+    game.gameState = payload.state;
+ 
     if (game.gameState === GameState.STARTED && !gamerunning) {
       gamerunning = true;
       game.startGame();

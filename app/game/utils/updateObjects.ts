@@ -4,6 +4,12 @@ import { Ball } from "../gameObjects/Ball"
 import { detectCollision } from "./collisionDetection"
 import { detectScore, checkWinCondition } from "./utils"
 import { GameState } from "@prisma/client"
+import { UpdateGameStateDto } from "@ft_dto/game"
+
+// import { GamesocketGateway } from '../../backend/src/game/gamesocket.gateway'
+// import { transcendenceSocket } from '@ft_global/socket.globalvar'
+
+//todo split per instance type and adjust imports 
 
 
 export function updateObjects(game: Game, deltaTime: number, config: keyof typeof CON.config) {
@@ -16,7 +22,6 @@ export function updateObjects(game: Game, deltaTime: number, config: keyof typeo
 
 
 function updatePaddles(game: Game, deltaTime: number, config: keyof typeof CON.config) {
-  // console.log("script: updatePaddles");
   let paddleMoved = game.paddels.map(paddle => paddle.updatePaddle(game.gameState, deltaTime, config));
   if (paddleMoved.some(moved => moved === true) && game.elapasedTimeSincceLastUpdate >= CON.config[config].socketUpdateInterval) {
     if (game.instanceType === 0) {
@@ -38,13 +43,11 @@ function updateBall(game: Game, deltaTime: number, config: keyof typeof CON.conf
   if (game.gameState !== GameState.STARTED) {
     return;
   }
-  // console.log("script: updateBall");
   emmitBallPosition(game, deltaTime, config);
   interpolateBallPosition(game, config);
 }
 
 function emmitBallPosition(game: Game, deltaTime: number, config: keyof typeof CON.config) {
-
   game.ball?.updateBall(game.gameState, deltaTime);
   
   if (game.instanceType === 0 && game.elapasedTimeSincceLastUpdate >= CON.config[config].socketUpdateInterval) { //todo change to observer
@@ -93,11 +96,12 @@ export function checkForGoals(game: Game, config: keyof typeof CON.config) {
     }
   }
   
-  let winner = checkWinCondition(game.players, config) ?? -1;
-  if (winner !== -1) {
-    game.endGame(winner!);
-    game.gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, winner: winner});
-    return;
+  let winningSide: number = checkWinCondition(game.players, config) ?? -1;
+  if (winningSide !== -1) {
+    const payload : UpdateGameStateDto  = {roomId: game.roomId, state: GameState.FINISHED, winner: winningSide, score1: game.players[0].getScore(), score2: game.players[1].getScore()};
+    game.gameSocket.emit("game/updateGameState", payload);
+    game.finishGame(winningSide);
+  
   } else {
     game.resetGame();
     game.gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, resetGame: 1});

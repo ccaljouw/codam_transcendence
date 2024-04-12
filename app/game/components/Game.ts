@@ -62,20 +62,10 @@ export class Game {
 
 	gameLoop(currentTime:number) {
 		let deltaTime = (currentTime - this.lastFrameTime) / 1000;
-		let sentFinished = false;
-
 		this.lastFrameTime = currentTime;
 		
-		//todo add instance condition
-		if (this.gameState == `FINISHED` && sentFinished == false) {
-			console.log("script: game finished. Cancelling animation frame");
-			cancelAnimationFrame(this.currentAnimationFrame);
-			const payload = {roomId: this.roomId, state: GameState.FINISHED, winner: this.winner?.getSide(), score1: this.players[0].getScore(), score2: this.players[1].getScore()};
-			this.gameSocket.emit("game/updateGameState", payload);
-			this.gameSocket.off(`game/updateGameObjects`);
-			this.gameSocket.off(`game/updateGameState`);
-			this.endGame(this.winner?.getSide()!);
-			sentFinished = true;
+	//todo add instance condition
+		if (this.gameState == `FINISHED` ) {
 			return;
 		}
 
@@ -96,34 +86,37 @@ export class Game {
 		}
 	}
 
-	// resetMatch() {
-	// 	resetGameObjects(this);
-	//	this.players.forEach(player => player.resetScore());
-	//	game.messageFields.forEach(message => message.setText(""));
-	// 	this.startGame();
-	// }
+	finishGame(winningSide: number) {
+		if (this.gameState === `FINISHED`) {
+			return;
+		}
+	
+		this.gameState = `FINISHED`;
+		
+		this.winner = this.players[winningSide];
+		if (this.canvas) {
+			this.messageFields[0]?.setText(this.winner?.getName() + " won the match!");
+			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+			drawGameObjects(this);
+		}
+
+		cancelAnimationFrame(this.currentAnimationFrame);
+		console.log("player: ", this.winner?.getSide(), this.winner?.getName(), " won the match");
+		// this.gameSocket.off(`game/updateGameObjects`);
+		// this.gameSocket.off(`game/updateGameState`);
+	}
 
 
 	resetGame() {
 		if (this.gameState === `FINISHED`) {
 			return;
 		}
+		console.log("script: resetGame called");
 		resetGameObjects(this);
-		console.log("script: GOAL! detected. Resetting game.");
 		this.messageFields[0]?.setText("GOAL!");
 		countdown(this, this.config);
 	}
-  
-
-	endGame(winningSide: number) {
-		console.log("script: endGame called");
-		this.gameState = `FINISHED`;
-		this.winner = this.players[winningSide];
-		this.messageFields[0]?.setText(this.winner?.getName() + " won the match!");
-		this.ctx.clearRect(0, 0, this.canvas!.width, this.canvas!.height);
-		drawGameObjects(this);
-		console.log("player: ", this.winner?.getSide(), this.winner?.getName(), " won the match");
-	}
+ 
 
 	//to start the game
 	startGame() {
