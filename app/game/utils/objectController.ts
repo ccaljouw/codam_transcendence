@@ -14,7 +14,7 @@ import {
 
 export function initializeGameObjects(game: Game, config: keyof typeof CON.config) {
   if (game.instanceType < 2) {
-    canvasInitializer(game.canvas, config);
+    canvasInitializer(game.canvas!, config);
     keyListenerInitializer(game.keyListener, game, config);
     messageFieldInitializer(game.messageFields, config);
   }
