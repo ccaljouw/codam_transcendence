@@ -1,11 +1,11 @@
 import { useContext, useEffect } from 'react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
-import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
-import useFetch from 'src/globals/functionComponents/useFetch';
 import { UserProfileDto } from '@ft_dto/users';
+import useFetch from '@ft_global/functionComponents/useFetch';
 import { constants } from '@ft_global/constants.globalvar';
+import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 
-export default function CheckAlreadyLoggedIn() {
+export default function CheckAlreadyLoggedIn() : JSX.Element{
 	const {currentUser, setCurrentUser} = useContext(TranscendenceContext);
 	const { data: user, fetcher: userFetcher } = useFetch<null, UserProfileDto>();
     const idFromSession = sessionStorage.getItem('userId');
@@ -22,14 +22,12 @@ export default function CheckAlreadyLoggedIn() {
 				console.log("fetching user with id: " + idFromSession);
 				fetchUser(constants.API_USERS + +idFromSession);
 			}
-			return ;
 		}
 		else if (code != null)
 		{
 			console.log("User logged in with auth42. Code: " + code);
 			fetchUser(constants.API_AUTH42 + code);
 			router.push(pathname);
-			return ;
 		}
 	}, []);
 	
@@ -37,7 +35,6 @@ export default function CheckAlreadyLoggedIn() {
 		if (user != null)
 		{
 			setLoggedUser(user);
-			return ;
 		}	
 	}, [user]);	
 	
@@ -46,9 +43,10 @@ export default function CheckAlreadyLoggedIn() {
 	}
 	
     const  setLoggedUser = (user: UserProfileDto) => {
-		console.log("Setting new user with id " + user.id + " in LoginScreen");
+		console.log("Setting user with id " + user.id + " in LoginScreen");
 		setCurrentUser(user);
 		sessionStorage.setItem('userId', JSON.stringify(user.id));
 	}
-    return ;
+
+    return (<></>);
 }

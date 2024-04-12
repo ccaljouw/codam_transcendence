@@ -8,65 +8,14 @@ import ChooseUser from 'src/globals/layoutComponents/Login/ChooseUser';
 import Seed from 'src/app/dev/test/components/Seed'; //todo: this is tmp, remove later
 import Auth42Button from './Auth42Button';
 
-// import setUser from '../../functionComponents/SetUser';
 import { FontBangers } from '../Font';
 import CheckAlreadyLoggedIn from './CheckAlreadyLoggedIn';
 
-function userIsSet(idFromSession: number) : boolean {
-	const {currentUser} = useContext(TranscendenceContext);
-
-	if (currentUser != null && idFromSession == currentUser.id)
-		return true;
-	return false;
-}
-
 export default function Login() : JSX.Element { 
 	const { data: users, isLoading: usersLoading, error: usersError, fetcher: usersFetcher } = useFetch<null, UserProfileDto[]>(); //todo: remove later
-	// const { data: user, fetcher: userFetcher } = useFetch<null, UserProfileDto>();
-	// const idFromSession = sessionStorage.getItem('userId');
-	// const searchParams = useSearchParams();
-	// const code = searchParams.get('code');
-	// const {currentUser, setCurrentUser} = useContext(TranscendenceContext);
-
-	// useEffect(() => {
-	// 	if (user != null)
-	// 	{
-	// 		setLoggedUser(user);
-	// 		return ;
-	// 	}
-	// }, [user]);
-
-	// const  fetchUser = async (url: string) => {
-	// 	userFetcher({url: url});
-	// }
-
-	// const  setLoggedUser = async (user: UserProfileDto) => {
-	// 	console.log("Setting new user with id " + user.id + " in LoginScreen");
-	// 	setCurrentUser(user);
-	// 	sessionStorage.setItem('userId', JSON.stringify(user.id));
-	// }
 
 	useEffect (() => {
-		// if (idFromSession != null)
-		// {
-		// 	console.log("User already logged in. Id: " + idFromSession);
-		// 	if (Object.keys(currentUser).length == 0)
-		// 	{
-		// 		console.log("fetching user with id: " + idFromSession);
-		// 		fetchUser(constants.API_USERS + +idFromSession);
-		// 	}
-		// 	return ;
-		// }
-		// else if (code != null)
-		// {
-		// 	console.log("User logged in with auth42. Code: " + code);
-		// 	fetchUser(constants.API_AUTH42 + code);
-		// 	return ;
-		// }
-		// else 
-		{
-			fetchUsers();
-		}
+		fetchUsers();
 	}, []);
 
 	const fetchUsers = async () => {
@@ -83,14 +32,6 @@ export default function Login() : JSX.Element {
 						<p>Play pong and build stronger relationships</p>
 					</FontBangers>
 				</div>
-				{/* <div className="col col-6 login">
-					<Auth42Button />
-				</div> */}
-
-				{/* todo jma: add 3 buttons for login options */}
-			{/* <div className="col login"> */}
-
-			{/* </div> */}
 				{usersLoading && <p>Loading...</p>}
 				{usersError && <p>Error: {usersError.message}</p>}
 				{users != null && users.length == 0 && 
