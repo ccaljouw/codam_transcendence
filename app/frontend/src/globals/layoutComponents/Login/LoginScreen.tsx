@@ -8,41 +8,66 @@ import ChooseUser from 'src/globals/layoutComponents/Login/ChooseUser';
 import Seed from 'src/app/dev/test/components/Seed'; //todo: this is tmp, remove later
 import Auth42Button from './Auth42Button';
 
-// function isLoggedIn() : boolean {
+// import setUser from '../../functionComponents/SetUser';
+import { FontBangers } from '../Font';
+import CheckAlreadyLoggedIn from './CheckAlreadyLoggedIn';
 
-// 	return true;
-// }
+function userIsSet(idFromSession: number) : boolean {
+	const {currentUser} = useContext(TranscendenceContext);
+
+	if (currentUser != null && idFromSession == currentUser.id)
+		return true;
+	return false;
+}
 
 export default function Login() : JSX.Element { 
-	const { data: user, isLoading, error, fetcher: userFetcher } = useFetch<null, UserProfileDto>();
 	const { data: users, isLoading: usersLoading, error: usersError, fetcher: usersFetcher } = useFetch<null, UserProfileDto[]>(); //todo: remove later
-	const {currentUser, setCurrentUser} = useContext(TranscendenceContext);
+	// const { data: user, fetcher: userFetcher } = useFetch<null, UserProfileDto>();
+	// const idFromSession = sessionStorage.getItem('userId');
+	// const searchParams = useSearchParams();
+	// const code = searchParams.get('code');
+	// const {currentUser, setCurrentUser} = useContext(TranscendenceContext);
+
+	// useEffect(() => {
+	// 	if (user != null)
+	// 	{
+	// 		setLoggedUser(user);
+	// 		return ;
+	// 	}
+	// }, [user]);
+
+	// const  fetchUser = async (url: string) => {
+	// 	userFetcher({url: url});
+	// }
+
+	// const  setLoggedUser = async (user: UserProfileDto) => {
+	// 	console.log("Setting new user with id " + user.id + " in LoginScreen");
+	// 	setCurrentUser(user);
+	// 	sessionStorage.setItem('userId', JSON.stringify(user.id));
+	// }
 
 	useEffect (() => {
-		const idFromSession = sessionStorage.getItem('userId');
-
-		if (idFromSession != null && +idFromSession > 0)
+		// if (idFromSession != null)
+		// {
+		// 	console.log("User already logged in. Id: " + idFromSession);
+		// 	if (Object.keys(currentUser).length == 0)
+		// 	{
+		// 		console.log("fetching user with id: " + idFromSession);
+		// 		fetchUser(constants.API_USERS + +idFromSession);
+		// 	}
+		// 	return ;
+		// }
+		// else if (code != null)
+		// {
+		// 	console.log("User logged in with auth42. Code: " + code);
+		// 	fetchUser(constants.API_AUTH42 + code);
+		// 	return ;
+		// }
+		// else 
 		{
-			if (+idFromSession == currentUser.id)
-			{
-				return ;
-			}
-			else
-				userFetcher({url: constants.API_USERS + +idFromSession});
-		}
-		else {
 			fetchUsers();
 		}
 	}, []);
-
-	useEffect(() => {
-		console.log("user already exists in login");
-		if (user != null)
-		{
-			setCurrentUser(user);
-			return ;
-		}
-	}, [user]);
 
 	const fetchUsers = async () => {
 		console.log("fetching users in Login");
@@ -52,8 +77,21 @@ export default function Login() : JSX.Element {
 	return (
 		<>
 			<div className="content-area">
-				{(isLoading || usersLoading )&& <p>Loading...</p>}
-				{error && <p>Error: {error.message}</p>}
+				<div className="col col-6 login">
+					<FontBangers>
+						<h1>STRONGPONG</h1>
+						<p>Play pong and build stronger relationships</p>
+					</FontBangers>
+				</div>
+				{/* <div className="col col-6 login">
+					<Auth42Button />
+				</div> */}
+
+				{/* todo jma: add 3 buttons for login options */}
+			{/* <div className="col login"> */}
+
+			{/* </div> */}
+				{usersLoading && <p>Loading...</p>}
 				{usersError && <p>Error: {usersError.message}</p>}
 				{users != null && users.length == 0 && 
 					<div className="page">
@@ -63,6 +101,7 @@ export default function Login() : JSX.Element {
 				}
 				{users != null && users.length > 0 && 
 					<>
+						<CheckAlreadyLoggedIn />
 						<div className="col login">
 							<ChooseUser />
 						</div>
@@ -73,8 +112,7 @@ export default function Login() : JSX.Element {
 							<Auth42Button />
 						</div>
 					</>
-				}			
-
+				}
 			</div>
 		</>
 	);

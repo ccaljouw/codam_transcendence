@@ -65,6 +65,11 @@
     background: var(--strongpong-white);
 }
 
+.navbar .active {
+    /* //todo */
+    background-color: purple; 
+}
+
 /* Below is work in progress */
 
 /* .white-box {
