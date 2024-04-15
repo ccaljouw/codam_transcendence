@@ -104,6 +104,7 @@ type Config = {
 	paddleOffset_X: number;
 	paddleHeightFactor: number;
 	paddleGap: number;
+	AILevel: number;
 };
 
 
@@ -145,6 +146,7 @@ function parseConfig(jsonConfig: any): Record<string, Config> {
 			paddleOffset_X: parseInt(value.paddleOffset_X, 10),
 			paddleHeightFactor: parseFloat(value.paddleHeightFactor),
 			paddleGap: parseInt(value.paddleGap, 10),
+			AILevel: parseFloat(value.AILevel),
 		};
 	}
 	return config;
@@ -184,5 +186,5 @@ export enum InstanceTypes {
 
 export enum PlayerSide {
 	left,
-	right
+	right,
 }

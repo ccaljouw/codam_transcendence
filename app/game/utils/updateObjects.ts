@@ -11,6 +11,10 @@ import { transcendenceSocket } from '@ft_global/socket.globalvar'
 
 
 export function updateObjects(game: Game, deltaTime: number, config: keyof typeof CON.config) {
+  if (game.gameState !== GameState.STARTED) {
+    return;
+  }
+
   game.elapasedTimeSincceLastUpdate += deltaTime;
 
   updatePaddles(game, deltaTime, config);
@@ -20,7 +24,7 @@ export function updateObjects(game: Game, deltaTime: number, config: keyof typeo
 
 function updatePaddles(game: Game, deltaTime: number, config: keyof typeof CON.config) {
   const gameSocket = transcendenceSocket;
-  let paddleMoved = game.paddels.map(paddle => paddle.updatePaddle(game.gameState, deltaTime, config));
+  let paddleMoved = game.paddels.map(paddle => paddle.updatePaddle(deltaTime, config, game.ball as Ball));
   if (paddleMoved.some(moved => moved === true) && game.elapasedTimeSincceLastUpdate >= CON.config[config].socketUpdateInterval) {
     if (game.instanceType === 0) {
       gameSocket.emit("game/updateGameObjects", {
@@ -38,9 +42,6 @@ function updatePaddles(game: Game, deltaTime: number, config: keyof typeof CON.c
 }
 
 function updateBall(game: Game, deltaTime: number, config: keyof typeof CON.config) {
-  if (game.gameState !== GameState.STARTED) {
-    return;
-  }
   emmitBallPosition(game, deltaTime, config);
   interpolateBallPosition(game, config);
 }

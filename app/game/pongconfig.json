@@ -41,7 +41,9 @@
     "paddleWidth": "20",
     "paddleOffset_X": "20",
     "paddleHeightFactor": ".25",
-    "paddleGap": "2"
+    "paddleGap": "2",
+
+    "AILevel": "0.7"
   },
   
   "test": {
@@ -49,7 +51,7 @@
     "screenHeight": "666",
 
     "countdownTime": "1",
-    "winningScore": "2",
+    "winningScore": "10",
     "collisionCooldown": "500",
     "ballWidth": "20",
     "ballBaseSpeed": "7",
@@ -86,7 +88,9 @@
     "paddleWidth": "20",
     "paddleOffset_X": "20",
     "paddleHeightFactor": ".25",
-    "paddleGap": "2"
+    "paddleGap": "2",
+
+    "AILevel": "0.7"
   },
 
   "twoPlayerOnePC": {
@@ -131,6 +135,8 @@
     "paddleWidth": "20",
     "paddleOffset_X": "20",
     "paddleHeightFactor": ".25",
-    "paddleGap": "2"
+    "paddleGap": "2",
+
+    "AILevel": "0.7"
   }
 }

@@ -1,8 +1,9 @@
 import { GameObject } from './GameObject'
 import { MovementComponent } from '../components/MovementComponent'
+import { Ball } from './Ball'
 import { KeyListenerComponent } from '../components/KeyListenerComponent'
 import * as CON from '../utils/constants'
-import { GameState } from '@prisma/client'
+
 
 export class Paddle extends GameObject {
 	public	movementComponent: MovementComponent;
@@ -55,20 +56,44 @@ export class Paddle extends GameObject {
 		}
 	}
 
+	public updateAiPaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball, margin: number): boolean {
+    if (ball == null || ball.movementComponent.getSpeed() === 0) {
+        return false;
+    }
+		
+    const AIlevel = CON.config[config].AILevel;
+    const paddleSpeed = CON.config[config].paddleBaseSpeed / AIlevel;
+		const ballY = ball.movementComponent.getY();
+    const dampingFactor = Math.min(1, AIlevel / 10 + 0.5);
+    const effectivePaddleSpeed = paddleSpeed * dampingFactor;
+    const lerpFactor = deltaTime * effectivePaddleSpeed;
+    
+    // interpolation 
+    const initialY = this.movementComponent.getY();
+    const targetY = ballY;
 
-	public updatePaddle(state: GameState, deltaTime: number, config: keyof typeof CON.config) {
-		if (state != `STARTED`) {
-			return false;
-		}
+		this.y += + lerpFactor * (targetY - this.movementComponent.getY());
+    this.checkBounds(config);
+
+		return Math.abs(this.y - initialY) > margin;
+}
+
+
+	public updatePaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball | null): boolean {
 		let hasMoved = false;
 		const margin = .5;
+
+		if (this.name == `AI`) {
+			return this.updateAiPaddle(deltaTime, config, ball as Ball, margin);
+		}
+
 		if (this.keyListener.checkKeysPressed()) {
 			let initialY = this.y;
 			this.movementComponent.update(deltaTime);
 			this.y = this.movementComponent.getY();
 			this.checkBounds(config);
 			
-			hasMoved = Math.abs(initialY - this.y) > margin;
+			hasMoved = Math.abs(this.y - initialY) > margin;
 		}
 		return hasMoved;
 	}
