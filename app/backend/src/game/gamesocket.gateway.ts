@@ -46,12 +46,6 @@ export class GamesocketGateway {
     this.game_io
       .to(payload.roomId.toString())
       .emit('game/updateGameState', payload);
-    // this.gamesocketService.update(payload);
-    // console.log(`Updating game state: ${payload.roomId} to ${payload.state}`);
-    // if (payload.state === `READY_TO_START`) {
-    //   this.game_io.to(payload.roomId.toString()).emit('game/message', "test from emit");
-    //   console.log(`Game: game ready to start braidcast sent`);
-    // }
   }
 
   //update game objects

@@ -49,7 +49,7 @@ export function setSocketListeners(game: Game) {
     console.log(`Script: received game state update from server`, payload.roomId, payload.state, payload.winner);
     
     if (payload.state === GameState.FINISHED) {
-      game.finishGame(payload.winner);
+      game.finishGame(payload.winner!);
       return;
     } 
 

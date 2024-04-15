@@ -33,19 +33,22 @@ export class SoundFX {
     this.play(100, 0.1);
   }
 
-  playGoal() {
-    this.play(150, 0.3);
-  }
-  
   playCountdown2() {
     this.play(300, 0.1);
   }
+  
   playCountdown1() {
     this.play(400, 0.1);
   }
+  
   playStart() {
     this.play(500, 0.3);
   }
+  
+  playGoal() {
+    this.play(440, 0.1);
+  }
+
   
   reinitialize() {
     this.audioContext.close();

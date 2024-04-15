@@ -5,8 +5,6 @@ import { detectCollision } from './collisionDetection'
 import { detectScore, checkWinCondition } from './utils'
 import { GameState } from '@prisma/client'
 import { UpdateGameStateDto } from '@ft_dto/game'
-
-// import { GamesocketGateway } from '../../backend/src/game/gamesocket.gateway'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 
 //todo split per instance type and adjust imports 

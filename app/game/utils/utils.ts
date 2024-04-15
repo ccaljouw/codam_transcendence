@@ -7,12 +7,10 @@ import { TextComponent } from '../components/TextComponent'
 import { drawGameObjects } from './objectController'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 
-
 export function drawGameObject(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, color: string) {
 	ctx.fillStyle = color;
 	ctx.fillRect(x, y, width, height);
 }
-
 
 export function getNormalizedDistance(ball: GameObject, paddle: GameObject) {
 	let paddleCenter = paddle.getY() + paddle.getHeight() / 2;
@@ -22,7 +20,6 @@ export function getNormalizedDistance(ball: GameObject, paddle: GameObject) {
 	return normalizedDistance;		
 }
 
-
 export function switchDirectionForRightPaddle(newDirection: number, normalizedDistance: number) {
 	if (normalizedDistance < 0) {
 		return (Math.PI * 3) - newDirection;
@@ -31,13 +28,11 @@ export function switchDirectionForRightPaddle(newDirection: number, normalizedDi
 	}
 }
 
-
 function clearMessageFields(messageFields: TextComponent[]) {
 	for (let message of messageFields) {
 		message.setText("");
 	}
 }
-
 
 // export function startKeyPressed(game: Game, config: keyof typeof CON.config) {
 // 	if (game.gameState == `FINISHED`) {
@@ -58,7 +53,7 @@ export function countdown(game: Game, config: keyof typeof CON.config) {
 			clearMessageFields(game.messageFields);
 			clearInterval(interval);
 			if (game.instanceType === 0 && game.ball?.movementComponent.getSpeed() === 0) {
-				game.ball?.getStartValues(config, game);
+				game.ball?.getStartValues(config, game); //todo change to observer
 			}
 		}
 	}, 1000);
@@ -74,9 +69,7 @@ export function countdown(game: Game, config: keyof typeof CON.config) {
 // 	}
 // }
 
-
 export function checkWinCondition(players: PlayerComponent[], config: keyof typeof CON.config) {
-	// console.log("Checking win condition");
 	let winningScore = CON.config[config].winningScore;
 	for (let player of players) {
 		if (player.getScore() >= winningScore) {
@@ -93,7 +86,6 @@ export function settleScore(players: PlayerComponent[], thisSideScored: CON.Play
 	gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, score1: players[0].getScore(), score2: players[1].getScore()});
 }
 
-
 export function detectScore(ball: Ball, players: PlayerComponent[], config: keyof typeof CON.config, game: Game) {
 	if (ball.getX() < 0) {
 		settleScore(players, 1, game);
@@ -105,7 +97,6 @@ export function detectScore(ball: Ball, players: PlayerComponent[], config: keyo
 	}
 	return false;
 }
-
 
 function setPaddleTheme(game: Game, theme: keyof typeof CON.themes) {
 	game.paddels.forEach(paddle => paddle.setColor(CON.themes[theme].leftPaddleColor));
@@ -138,7 +129,6 @@ function setPlayerTheme(game: Game, theme: keyof typeof CON.themes) {
 	});
 }
 	
-
 function setMessageTheme(game: Game, theme: keyof typeof CON.themes) {
 	game.messageFields.forEach(message => {
 		if (message.getName() == "left") {
@@ -154,7 +144,6 @@ function setMessageTheme(game: Game, theme: keyof typeof CON.themes) {
 	});
 }
 
-
 export function	setTheme(game: Game, theme: keyof typeof CON.themes) {
 	game.theme = theme;
 	setPaddleTheme(game, theme);
@@ -168,4 +157,3 @@ export function	setTheme(game: Game, theme: keyof typeof CON.themes) {
 	game.ctx.clearRect(0, 0, game.canvas!.width, game.canvas!.height);
 	drawGameObjects(game);
 }
-
