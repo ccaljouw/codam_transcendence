@@ -3,6 +3,7 @@ import { PrismaService } from 'src/database/prisma.service';
 import { UpdateChatUserDto } from '@ft_dto/chat'
 import { Socket } from 'socket.io';
 import { TokenService } from 'src/users/token.service';
+import { CreateInviteDto } from '@ft_dto/chat/create-invite.dto';
 
 
 @Injectable()
@@ -92,6 +93,4 @@ export class ChatSocketService {
 		}
 		return;
 	}
-
-
 }

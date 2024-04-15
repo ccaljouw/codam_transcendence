@@ -14,7 +14,7 @@ export default function Logout(): JSX.Element {
         sessionStorage.clear();
 		setCurrentUser({} as UserProfileDto);
 		transcendenceSocket.disconnect();
-        router.push('/');
+    router.push('/');
 		transcendenceSocket.connect();
     },[]);
 
