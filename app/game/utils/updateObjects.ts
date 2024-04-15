@@ -7,7 +7,7 @@ import { GameState } from '@prisma/client'
 import { UpdateGameStateDto } from '@ft_dto/game'
 
 // import { GamesocketGateway } from '../../backend/src/game/gamesocket.gateway'
-// import { transcendenceSocket } from '@ft_global/socket.globalvar'
+import { transcendenceSocket } from '@ft_global/socket.globalvar'
 
 //todo split per instance type and adjust imports 
 
@@ -21,16 +21,17 @@ export function updateObjects(game: Game, deltaTime: number, config: keyof typeo
 }
 
 function updatePaddles(game: Game, deltaTime: number, config: keyof typeof CON.config) {
+  const gameSocket = transcendenceSocket;
   let paddleMoved = game.paddels.map(paddle => paddle.updatePaddle(game.gameState, deltaTime, config));
   if (paddleMoved.some(moved => moved === true) && game.elapasedTimeSincceLastUpdate >= CON.config[config].socketUpdateInterval) {
     if (game.instanceType === 0) {
-      game.gameSocket.emit("game/updateGameObjects", {
+      gameSocket.emit("game/updateGameObjects", {
         roomId: game.roomId,
         paddle1Y: game.paddels[0].movementComponent.getY()
       });
     }
     if (game.instanceType === 1) {
-      game.gameSocket.emit("game/updateGameObjects", {
+      gameSocket.emit("game/updateGameObjects", {
         roomId: game.roomId,
         paddle2Y: game.paddels[1].movementComponent.getY()
       });
@@ -50,7 +51,8 @@ function emmitBallPosition(game: Game, deltaTime: number, config: keyof typeof C
   game.ball?.updateBall(game.gameState, deltaTime);
   
   if (game.instanceType === 0 && game.elapasedTimeSincceLastUpdate >= CON.config[config].socketUpdateInterval) { //todo change to observer
-    game.gameSocket.emit("game/updateGameObjects", {
+    const gameSocket = transcendenceSocket;
+    gameSocket.emit("game/updateGameObjects", {
       roomId: game.roomId,
       ballX: game.ball?.movementComponent.getX(),
       ballY: game.ball?.movementComponent.getY(),
@@ -84,6 +86,7 @@ function interpolateBallPosition(game: Game, config: keyof typeof CON.config) {
 }
 
 export function checkForGoals(game: Game, config: keyof typeof CON.config) {
+  const gameSocket = transcendenceSocket;
   if (game.instanceType !== 0) { //todo change to not observer
     return;
   }
@@ -98,11 +101,11 @@ export function checkForGoals(game: Game, config: keyof typeof CON.config) {
   let winningSide: number = checkWinCondition(game.players, config) ?? -1;
   if (winningSide !== -1) {
     const payload : UpdateGameStateDto  = {roomId: game.roomId, state: GameState.FINISHED, winner: winningSide, score1: game.players[0].getScore(), score2: game.players[1].getScore()};
-    game.gameSocket.emit("game/updateGameState", payload);
+    gameSocket.emit("game/updateGameState", payload);
     game.finishGame(winningSide);
   
   } else {
     game.resetGame();
-    game.gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, resetGame: 1});
+    gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, resetGame: 1});
   }
 }

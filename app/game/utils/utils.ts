@@ -5,6 +5,7 @@ import { Game } from '../components/Game'
 import * as CON from './constants'
 import { TextComponent } from '../components/TextComponent'
 import { drawGameObjects } from './objectController'
+import { transcendenceSocket } from '@ft_global/socket.globalvar'
 
 
 export function drawGameObject(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, color: string) {
@@ -86,8 +87,10 @@ export function checkWinCondition(players: PlayerComponent[], config: keyof type
 }
 
 export function settleScore(players: PlayerComponent[], thisSideScored: CON.PlayerSide, game: Game) {
+	const gameSocket = transcendenceSocket;
+
 	players[thisSideScored].setScore(players[thisSideScored].getScore() + 1);
-	game.gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, score1: players[0].getScore(), score2: players[1].getScore()});
+	gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, score1: players[0].getScore(), score2: players[1].getScore()});
 }
 
 

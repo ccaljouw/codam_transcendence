@@ -1,12 +1,12 @@
 import { Game } from '../components/Game'
 import { GameState } from '@prisma/client'
-// import { transcendenceSocket } from '@ft_global/socket.globalvar'
+import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { UpdateGameObjectsDto, UpdateGameStateDto, UpdateGameDto } from '@ft_dto/game'
 
 
 export function setSocketListeners(game: Game) {
+  const gameSocket = transcendenceSocket;
   const roomId: number = game.gameData!.id;
-  const gameSocket = game.gameSocket;
   let gamerunning = false;
 
   gameSocket.emit("game/joinRoom", roomId);

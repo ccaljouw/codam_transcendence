@@ -4,6 +4,7 @@ import { getNormalizedDistance, switchDirectionForRightPaddle } from '../utils/u
 import * as CON from '../utils/constants'
 import { Game } from '../components/Game'
 import { GameState } from '@prisma/client'
+import { transcendenceSocket } from '@ft_global/socket.globalvar'
 
 export class Ball extends GameObject {
 	public	movementComponent: MovementComponent;
@@ -66,6 +67,7 @@ export class Ball extends GameObject {
 	}
 
 	public getStartValues(config: keyof typeof CON.config, game: Game) {
+		const gameSocket = transcendenceSocket;
 		if (game.gameState != GameState.STARTED) {
 			return;
 		}
@@ -90,7 +92,7 @@ export class Ball extends GameObject {
 		this.movementComponent.setSpeed(speed);
 		
 		console.log("Script: startvalues set to direction: ", direction, " and speed: ", speed);
-		game.gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, ballDirection: direction, ballSpeed: speed});
+		gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, ballDirection: direction, ballSpeed: speed});
 	} 
 
 
