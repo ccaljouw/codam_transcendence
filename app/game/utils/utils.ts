@@ -1,10 +1,10 @@
-import { GameObject } from "../gameObjects/GameObject"
-import { Ball } from "../gameObjects/Ball"
-import { PlayerComponent } from "../components/PlayerComponent"
-import { Game } from "../components/Game"
-import * as CON from "./constants"
-import { TextComponent } from "../components/TextComponent"
-import { drawGameObjects } from "./objectController"
+import { GameObject } from '../gameObjects/GameObject'
+import { Ball } from '../gameObjects/Ball'
+import { PlayerComponent } from '../components/PlayerComponent'
+import { Game } from '../components/Game'
+import * as CON from './constants'
+import { TextComponent } from '../components/TextComponent'
+import { drawGameObjects } from './objectController'
 
 
 export function drawGameObject(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, color: string) {

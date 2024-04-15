@@ -1,9 +1,9 @@
-import { GameObject } from "./GameObject"
-import { MovementComponent } from "../components/MovementComponent"
-import { getNormalizedDistance, switchDirectionForRightPaddle } from "../utils/utils"
-import * as CON from "../utils/constants"
-import { Game } from "../components/Game"
-import { GameState } from "@prisma/client"
+import { GameObject } from './GameObject'
+import { MovementComponent } from '../components/MovementComponent'
+import { getNormalizedDistance, switchDirectionForRightPaddle } from '../utils/utils'
+import * as CON from '../utils/constants'
+import { Game } from '../components/Game'
+import { GameState } from '@prisma/client'
 
 export class Ball extends GameObject {
 	public	movementComponent: MovementComponent;

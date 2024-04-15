@@ -2,19 +2,19 @@ import { UpdateGameDto, UpdateGameUserDto, UpdateGameObjectsDto } from '@ft_dto/
 import { GameState } from '@prisma/client'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 // import { GamesocketGateway } from '../../backend/src/game/gamesocket.gateway'
-import { SoundFX } from "../gameObjects/SoundFX"
-import { Wall } from "../gameObjects/Wall"
-import { GameObject } from "../gameObjects/GameObject"
-import { Paddle } from "../gameObjects/Paddle"
-import { Ball } from "../gameObjects/Ball"
-import { KeyListenerComponent } from "./KeyListenerComponent"
-import { PlayerComponent } from "./PlayerComponent"
-import { TextComponent } from "./TextComponent"
-import * as CON from "../utils/constants"
-import { setSocketListeners } from "../utils/gameSocketListners"
-import { updateObjects, checkForGoals } from "../utils/updateObjects"
-import { countdown, setTheme } from "../utils/utils"
-import { initializeGameObjects, drawGameObjects, resetGameObjects } from "../utils/objectController"
+import { SoundFX } from '../gameObjects/SoundFX'
+import { Wall } from '../gameObjects/Wall'
+import { GameObject } from '../gameObjects/GameObject'
+import { Paddle } from '../gameObjects/Paddle'
+import { Ball } from '../gameObjects/Ball'
+import { KeyListenerComponent } from './KeyListenerComponent'
+import { PlayerComponent } from './PlayerComponent'
+import { TextComponent } from './TextComponent'
+import * as CON from '../utils/constants'
+import { setSocketListeners } from '../utils/gameSocketListners'
+import { updateObjects, checkForGoals } from '../utils/updateObjects'
+import { countdown, setTheme } from '../utils/utils'
+import { initializeGameObjects, drawGameObjects, resetGameObjects } from '../utils/objectController'
 
 
 export class Game {

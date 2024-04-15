@@ -1,13 +1,13 @@
-import { Paddle } from "../gameObjects/Paddle"
-import { Wall } from "../gameObjects/Wall";
-import { GameObject } from "../gameObjects/GameObject"
-import { PlayerComponent } from "../components/PlayerComponent"
-import { Game } from "../components/Game"
-import { KeyListenerComponent } from "../components/KeyListenerComponent"
-import { TextComponent } from "../components/TextComponent"
-// import { startKeyPressed } from "./utils"
+import { Paddle } from '../gameObjects/Paddle'
+import { Wall } from '../gameObjects/Wall'
+import { GameObject } from '../gameObjects/GameObject'
+import { PlayerComponent } from '../components/PlayerComponent'
+import { Game } from '../components/Game'
+import { KeyListenerComponent } from '../components/KeyListenerComponent'
+import { TextComponent } from '../components/TextComponent'
+// import { startKeyPressed } from './utils'
 import { UpdateUserDto } from '@ft_dto/users'
-import * as CON from "./constants"
+import * as CON from './constants'
 import { UpdateGameUserDto } from '@ft_dto/game'
 
 

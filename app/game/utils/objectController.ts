@@ -1,7 +1,7 @@
-import { Game } from "../components/Game"
-import { GameObject } from "../gameObjects/GameObject"
-import { Ball } from "../gameObjects/Ball"
-import * as CON from "./constants"
+import { Game } from '../components/Game'
+import { GameObject } from '../gameObjects/GameObject'
+import { Ball } from '../gameObjects/Ball'
+import * as CON from './constants'
 import {
 	 	wallInitializer,
 		paddleInitializer,

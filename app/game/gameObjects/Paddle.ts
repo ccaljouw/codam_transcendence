@@ -1,8 +1,8 @@
-import { GameObject } from "./GameObject"
-import { MovementComponent } from "../components/MovementComponent"
-import { KeyListenerComponent } from "../components/KeyListenerComponent"
-import * as CON from "../utils/constants"
-import { GameState } from "@prisma/client"
+import { GameObject } from './GameObject'
+import { MovementComponent } from '../components/MovementComponent'
+import { KeyListenerComponent } from '../components/KeyListenerComponent'
+import * as CON from '../utils/constants'
+import { GameState } from '@prisma/client'
 
 export class Paddle extends GameObject {
 	public	movementComponent: MovementComponent;

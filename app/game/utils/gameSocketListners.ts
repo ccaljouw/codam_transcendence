@@ -1,7 +1,7 @@
-import { Game } from '../components/Game';
-import { GameState } from '@prisma/client';
-// import { transcendenceSocket } from '@ft_global/socket.globalvar';
-import { UpdateGameObjectsDto, UpdateGameStateDto, UpdateGameDto } from '@ft_dto/game';
+import { Game } from '../components/Game'
+import { GameState } from '@prisma/client'
+// import { transcendenceSocket } from '@ft_global/socket.globalvar'
+import { UpdateGameObjectsDto, UpdateGameStateDto, UpdateGameDto } from '@ft_dto/game'
 
 
 export function setSocketListeners(game: Game) {
@@ -32,11 +32,6 @@ export function setSocketListeners(game: Game) {
       game.resetGame();
     }
 
-    // if (payload.winner != undefined && game.instanceType < 2) {
-    //   game.winner = game.players[payload.winner];
-    //   game.gameState = GameState.FINISHED;
-    // }
-    
     if (payload.paddle1Y! > 0 || payload.paddle2Y! > 0) {
       setNewPaddlePositions(game, payload.paddle1Y!, payload.paddle2Y!);
     }
@@ -66,8 +61,6 @@ export function setSocketListeners(game: Game) {
     }
   });
 }
-
-
 
 function setNewScore(game: Game, score1: number, score2: number) {
   if (score1 >= 0)   {

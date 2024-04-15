@@ -1,5 +1,5 @@
-import myThemes from "../pongthemes.json"
-import myConfig from "../pongconfig.json"
+import myThemes from '../pongthemes.json'
+import myConfig from '../pongconfig.json'
 
 type Theme = {
 	leftPaddleColor: string;

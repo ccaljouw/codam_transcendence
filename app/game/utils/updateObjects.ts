@@ -1,10 +1,10 @@
-import { Game } from "../components/Game"
-import * as CON from "./constants"
-import { Ball } from "../gameObjects/Ball"
-import { detectCollision } from "./collisionDetection"
-import { detectScore, checkWinCondition } from "./utils"
-import { GameState } from "@prisma/client"
-import { UpdateGameStateDto } from "@ft_dto/game"
+import { Game } from '../components/Game'
+import * as CON from './constants'
+import { Ball } from '../gameObjects/Ball'
+import { detectCollision } from './collisionDetection'
+import { detectScore, checkWinCondition } from './utils'
+import { GameState } from '@prisma/client'
+import { UpdateGameStateDto } from '@ft_dto/game'
 
 // import { GamesocketGateway } from '../../backend/src/game/gamesocket.gateway'
 // import { transcendenceSocket } from '@ft_global/socket.globalvar'
@@ -19,7 +19,6 @@ export function updateObjects(game: Game, deltaTime: number, config: keyof typeo
   updateBall(game, deltaTime, config);
   // game.messageFields.forEach(message => message.update());
 }
-
 
 function updatePaddles(game: Game, deltaTime: number, config: keyof typeof CON.config) {
   let paddleMoved = game.paddels.map(paddle => paddle.updatePaddle(game.gameState, deltaTime, config));

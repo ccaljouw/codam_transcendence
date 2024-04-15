@@ -1,5 +1,5 @@
-import { TextComponent } from "./TextComponent"
-import * as CON from "../utils/constants"
+import { TextComponent } from './TextComponent'
+import * as CON from '../utils/constants'
 
 export class PlayerComponent {
 	private _id: string = "";	
