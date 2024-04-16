@@ -32,7 +32,7 @@ export default function MenuBar(): JSX.Element {
 							<div className="collapse navbar-collapse" id="navbarNav">
 								<div className="navbar-nav">
 									<MenuLink href="/" title="Home" />
-									<MenuLink href={"/profile/" + currentUser.userName} title="Profile" />
+									<MenuLink href={"/profile/" + currentUser.id} title="Profile" />
 									<MenuLink href="/play" title="Play" />
 									<MenuLink href="/logout" title="Logout" />
 								</div>

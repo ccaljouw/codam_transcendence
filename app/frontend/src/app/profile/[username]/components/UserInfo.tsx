@@ -45,21 +45,21 @@ function EditableUserName() {
 	);
 }
 
-export default function UserInfo({user} : {user: UserProfileDto}): JSX.Element {
-	const {currentUser} = useContext(TranscendenceContext);
-
+export default function UserInfo({user, editable} : {user: UserProfileDto, editable: boolean}): JSX.Element {
 	return (
 		<>
 			<FontBangers>
 				<h3>User information</h3>
 			</FontBangers>
 			<p>From database:</p>
-			<DataField name="Avatar" data={currentUser.avatarId} />
-			<EditableUserName/>
-			<DataField name="Online" data={currentUser.online} />
-			<DataField name="Rank" data={"#" + currentUser.rank} /> 
+			<DataField name="Avatar" data={user.avatarId} />
+			{editable? <EditableUserName/> : <DataField name="Username" data={user.userName}/>}
+			<DataField name="Online" data={user.online} /> 
+			<DataField name="Rank" data={"#" + user.rank} /> 
 		</>
 	);
 }
 
 //todo: consider to use these: 🔒 🔓
+
+//todo: id and online status not properly shown yet, fix this
