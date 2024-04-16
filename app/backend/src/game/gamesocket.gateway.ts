@@ -31,11 +31,11 @@ export class GamesocketGateway {
       .emit('game/message', `Player ${player?.id} joined the room`);
   }
 
-  @SubscribeMessage('game/message')
-  handleMessage(client: Socket, payload: string) {
-    console.log(`Game Socket Server Got message: ${payload}`);
-    this.game_io.emit('game/message', payload);
-  }
+  // @SubscribeMessage('game/message')
+  // handleMessage(client: Socket, payload: string) {
+  //   console.log(`Game Socket Server Got message: ${payload}`);
+  //   this.game_io.emit('game/message', payload);
+  // }
 
   @SubscribeMessage('game/updateGameState')
   updateGameState(client: Socket, payload: UpdateGameStateDto) {
@@ -46,12 +46,12 @@ export class GamesocketGateway {
     this.game_io
       .to(payload.roomId.toString())
       .emit('game/updateGameState', payload);
+
+    this.gamesocketService.update(payload);
   }
 
-  //update game objects
   @SubscribeMessage('game/updateGameObjects')
   updateGameObjects(client: Socket, payload: UpdateGameObjectsDto) {
-    //console.log('Game Socket Server: received game object update from client: ', payload);
     this.game_io
       .to(payload.roomId.toString())
       .emit('game/updateGameObjects', payload);

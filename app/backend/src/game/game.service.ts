@@ -130,7 +130,7 @@ export class GameService {
       `backend - game: updating game state to : ${updateGameStateDto.state} for game: ${updateGameStateDto.roomId}`,
     );
     try {
-     const game = await this.db.game.update({
+      const game = await this.db.game.update({
         where: { id: updateGameStateDto.roomId },
         data: { state: updateGameStateDto.state },
       });

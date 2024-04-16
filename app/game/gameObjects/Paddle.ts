@@ -56,27 +56,47 @@ export class Paddle extends GameObject {
 		}
 	}
 
-	public updateAiPaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball, margin: number): boolean {
+	public updateAiPaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball): boolean {
+		let hasMoved = false;
+		const margin = 0.5;
+
     if (ball == null || ball.movementComponent.getSpeed() === 0) {
         return false;
     }
-		
+
     const AIlevel = CON.config[config].AILevel;
     const paddleSpeed = CON.config[config].paddleBaseSpeed / AIlevel;
-		const ballY = ball.movementComponent.getY();
-    const dampingFactor = Math.min(1, AIlevel / 10 + 0.5);
-    const effectivePaddleSpeed = paddleSpeed * dampingFactor;
-    const lerpFactor = deltaTime * effectivePaddleSpeed;
-    
-    // interpolation 
-    const initialY = this.movementComponent.getY();
-    const targetY = ballY;
 
-		this.y += + lerpFactor * (targetY - this.movementComponent.getY());
+    // Get current and target y positions
+    const currentY = this.movementComponent.getY();
+    const targetY = ball.movementComponent.getY();
+
+		if ( Math.abs(currentY - targetY) < margin) {
+			return false;
+		}
+
+
+
+		
+    // Calculate required movement towards the ball
+    const requiredMovement = targetY - currentY;
+
+    // Damping factor to moderate the AI response based on difficulty level
+    const dampingFactor = Math.min(1, AIlevel / 10 + 0.5);
+
+
+		// set speedY
+
+		let initialY = this.y;
+    this.movementComponent.update(deltaTime);
+		this.y = this.movementComponent.getY();
     this.checkBounds(config);
 
-		return Math.abs(this.y - initialY) > margin;
+		hasMoved = Math.abs(this.y - initialY) > margin;
+    return hasMoved;
 }
+
+
 
 
 	public updatePaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball | null): boolean {
@@ -84,7 +104,7 @@ export class Paddle extends GameObject {
 		const margin = .5;
 
 		if (this.name == `AI`) {
-			return this.updateAiPaddle(deltaTime, config, ball as Ball, margin);
+			return this.updateAiPaddle(deltaTime, config, ball as Ball);
 		}
 
 		if (this.keyListener.checkKeysPressed()) {

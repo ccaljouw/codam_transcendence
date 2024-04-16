@@ -21,7 +21,7 @@ export default function GameComponent() {
 	const [waitingForPlayers, setWaitingForPlayers] = useState<boolean>(true);
 	const [instanceType, setInstanceType] = useState<InstanceTypes>(InstanceTypes.observer) // 0 for player 1, 1 for player 2, 2 for observer
 	const {data: fetchedGameData, isLoading: loadingGame, error: errorGame, fetcher: gameFetcher} = useFetch<null, UpdateGameDto>();
-	const {data: updatedGameState, isLoading: loadingGameState, error: errorGameState, fetcher: gameStatePatcher} = useFetch<UpdateGameStateDto, boolean>();
+	const {data: updatedGameState, isLoading: loadingGameState, error: errorGameState, fetcher:  gameStatePatcher} = useFetch<UpdateGameStateDto, boolean>();
 
 
 	// fetch game data
@@ -57,11 +57,9 @@ export default function GameComponent() {
 			
 			gameSocket.on(`game/updateGameState`, (payload: UpdateGameStateDto) => {
 				console.log(`Game: received game state update`, payload.roomId, payload.state);
-				patchGameState(payload);
 				if (gameState !== payload.state) {
 					setGameState(payload.state);
 				}
-				//todo send message to server with game state updates
 			});
 			
 			} else if (!gameData){
@@ -72,7 +70,6 @@ export default function GameComponent() {
 				gameSocket?.off(`game/${roomId }`); //todo check where the disconnct should be
 			}
 		}, [gameData]);
-
 
 
 
@@ -182,10 +179,6 @@ export default function GameComponent() {
 			}
 		}
 	}, [updatedGameState]);
-
-	async function patchGameState(payload: UpdateGameStateDto) {
-		await gameStatePatcher({url: `${constants.API_GAME}${payload.roomId}`, fetchMethod:'PATCH', payload: payload});
-	}
 
 
 	// return the canvas

@@ -52,7 +52,7 @@ export class Game {
 		if (instanceType !== CON.InstanceTypes.observer) {
 			setSocketListeners(this);
 		}
-		console.log("script: instance type: ", this.instanceType); //todo: remove
+		// console.log("script: instance type: ", this.instanceType);
 	}
 	
 
@@ -114,7 +114,6 @@ export class Game {
 	}
  
 
-	//to start the game
 	startGame() {
 		this.gameState = `STARTED`;
 		countdown(this, this.config);
