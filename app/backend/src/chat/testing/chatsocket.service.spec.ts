@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ChatSocketService } from '../chatsocket.service';
+import { ChatSocketService } from '../services/chatsocket.service';
 
 describe('GameService', () => {
   let service: ChatSocketService;

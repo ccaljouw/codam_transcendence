@@ -45,7 +45,7 @@ function EditableUserName() {
 	);
 }
 
-export default function UserInfo(): JSX.Element {
+export default function UserInfo({user} : {user: UserProfileDto}): JSX.Element {
 	const {currentUser} = useContext(TranscendenceContext);
 
 	return (

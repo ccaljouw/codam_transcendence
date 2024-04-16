@@ -8,7 +8,7 @@ import { constants } from 'src/globals/constants.globalvar';
 import { UpdateUserDto, UserProfileDto } from '@ft_dto/users';
 import { FontBangers } from 'src/globals/layoutComponents/Font';
 
-export default function LoginSettings(): JSX.Element {
+export default function LoginSettings({user} : {user: UserProfileDto}): JSX.Element {
 	const {currentUser, setCurrentUser} = useContext(TranscendenceContext);
 	const [editMode, setEditMode] = useState<boolean>(false);
 	const {data: updatedUser, isLoading, error, fetcher} = useFetch<UpdateUserDto, UserProfileDto>();

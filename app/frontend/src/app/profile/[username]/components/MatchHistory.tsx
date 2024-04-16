@@ -1,6 +1,7 @@
+import { UserProfileDto } from '@ft_dto/users';
 import { FontBangers } from 'src/globals/layoutComponents/Font';
 
-export default function MatchHistory() : JSX.Element {
+export default function MatchHistory({user} : {user: UserProfileDto}) : JSX.Element {
     return (
         <>
             <FontBangers>
