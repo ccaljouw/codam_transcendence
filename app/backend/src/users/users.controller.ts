@@ -48,7 +48,7 @@ export class UsersController {
   @ApiNotFoundResponse({ description: "No users in the database" })
 
   findAllButMe(@Param('id', ParseIntPipe) id: number) : Promise<UserProfileDto[]> {
-	return this.usersService.findAllButMe(id);
+	  return this.usersService.findAllButMe(id);
   }
 
   @Get(':id')

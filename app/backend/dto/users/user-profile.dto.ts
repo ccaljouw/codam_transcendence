@@ -1,12 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { OnlineStatus, Tokens, User } from "@prisma/client";
+import { OnlineStatus, Token42, Tokens, User } from "@prisma/client";
+import { Exclude } from "class-transformer";
 
 export class UserProfileDto implements User {
-
-	hash: string;
-
-	// @ApiProperty({ required: false })
-	// token: Tokens[];
 
 	@ApiProperty({ required: false })
 	id: number;
@@ -41,6 +37,12 @@ export class UserProfileDto implements User {
 	@ApiProperty({ required: false })
 	updatedAt: Date;
 
-	// dmId: number;
+  // dmId: number;
+  
+  @Exclude()
+	hash: string;
+
+  @Exclude()
+  token42: string;
 
 }

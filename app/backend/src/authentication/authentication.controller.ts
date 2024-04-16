@@ -8,21 +8,23 @@ import { UserProfileDto } from '@ft_dto/users';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('login')
+  @Get('login/:api42_code')
+  callback(@Param('api42_code') code: string): Promise<UserProfileDto> {
+    console.log('in controller callback: ', code);
+    return this.authService.callback(code)
+  }
+
+  @Get('login') //moved to frontend
   @ApiOperation({ summary: 'Redirects the user to the 42 authorization URL'})
   login(@Req() req):  { url: string }  {
     const authUrl = this.authService.getAuthorizationUrl();
     return { url: authUrl };
   }
 
-  @Get('callback')
-  callback(@Req() req): Promise<UserProfileDto> {
-    console.log("Callback controller called");
-    return this.authService.handleCallback(req.query.code);
-  }
+  // @Get('callback') moved to frontend
+  // callback(@Req() req): Promise<UserProfileDto> {
+  //   console.log("Callback controller called");
+  //   return this.authService.handleCallback(req.query.code);
+  // }
 
-  @Get(':api42_code')
-  checkCode(@Param('code') code: string): Promise<UserProfileDto> {
-    return this.authService.get42User(code);
-  }
 }

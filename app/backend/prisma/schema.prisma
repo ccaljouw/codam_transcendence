@@ -32,12 +32,12 @@ model User {
     loginName String @unique
     hash      String
 
-    userName  String? //if no userName is provided loginName is used
+    userName  String? @unique
     email     String?
     firstName String?
     lastName  String?
+    token42   String?
     token     Tokens[]
-	// token	 String?
 
     avatarId Int          @default(1)
     online   OnlineStatus @default(OFFLINE)
@@ -60,11 +60,26 @@ model Tokens {
     id     Int    @id @default(autoincrement())
     token  String @unique
     userId Int
-	chatId Int?
+	  chatId Int?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     user      User     @relation(fields: [userId], references: [id])
+}
+
+model Token42 {
+  id            Int     @id @default(autoincrement())
+  userId        Int     @unique
+  access_token  String  @unique
+  token_type    String
+  refresh_token String
+  scope         String
+
+  createdAt           DateTime
+  expiresAt           DateTime
+  secret_valid_until  DateTime
+
+  // user          User     @relation(fields: [userId], references: [id])
 }
 
 model Chat {

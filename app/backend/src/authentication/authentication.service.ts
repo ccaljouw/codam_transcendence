@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { UserProfileDto, CreateUserDto } from '@ft_dto/users';
 import { UsersService } from 'src/users/users.service';
+import { HttpService } from '@nestjs/axios'
+import { AxiosResponse } from 'axios'
+import { Observable, lastValueFrom, map } from 'rxjs';
 
 @Injectable()
 export class AuthService {
 
-  constructor (private readonly userService: UsersService) {};
+  constructor (
+    private readonly userService: UsersService, 
+    private readonly httpService: HttpService,
+  ) {};
 
   getAuthorizationUrl(): string {
     const auth_url: string = `https://api.intra.42.fr/oauth/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${encodeURIComponent(process.env.REDIRECT_URI)}&response_type=code&scope=${process.env.SCOPE}&state=${process.env.STATE}`;
@@ -13,28 +19,41 @@ export class AuthService {
     return auth_url;
   }
 
-  async handleCallback(code: string): Promise<UserProfileDto> {
-    console.log("Callback function called");
-    
-    // Logic to exchange the authorization code for an access token
-    const token = this.exchangeCodeForToken(code);
-    console.log("Token: ", token);
-    
-    // get userinfo 42
-    const user : CreateUserDto = { loginName: 'newUser' , hash: 'ajsgfjha' };
-    
-    // create new user and return userProfile
-    return await this.userService.create(user);
+  async exchangeCodeForToken(code: string) : Promise<Observable<AxiosResponse<any>>>{
+    console.log("code: ", code);
+    const formData = new FormData();
+    formData.append('grant_type', process.env.GRANT_TYPE);
+    formData.append('client_id', process.env.CLIENT_ID);
+    formData.append('client_secret', process.env.SECRET);
+    formData.append('code', code);
+    formData.append('redirect_uri', process.env.REDIRECT_URI);
+    formData.append('state', process.env.STATE)
+
+    try {
+      const token42 = await lastValueFrom(this.httpService.post('https://api.intra.42.fr/oauth/token', formData, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded', // Set proper Content-Type header
+        },
+      }))
+      console.log('Response data:', token42.data);
+      return token42.data;
+    }
+    catch(error) {
+      console.error('Error sending POST request to exchange token:', error);
+      throw error;
+    }
   }
 
-  private exchangeCodeForToken(code: string): string {
+  private get42User(token42: string) {
 
-    // Implement the OAuth token exchange logic here
-
-    return 'your_access_token';
   }
 
-  async get42User(code: string) {
+  async callback(code: string) : Promise<UserProfileDto> {
+    console.log("authentication callback: ", code);
+    const token42 = this.exchangeCodeForToken(code);
+    //  store token in db
+    // const user42 = this.get42User(token42); // move to userservice?
+    //  create new transcendence user
     return this.userService.findOne(1); //change
   }
 }
