@@ -1,8 +1,8 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserProfileDto } from "@ft_dto/users";
 import { TranscendenceContext } from "../contextprovider.globalvar";
 import useFetch from "./useFetch";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { constants } from "../constants.globalvar";
 
 type authenticationOutput = {
@@ -11,18 +11,21 @@ type authenticationOutput = {
 	storeUser: (user: UserProfileDto) => void,
 }
 
-export default function useAuthentication () : authenticationOutput {
+export default function useAuthentication() : authenticationOutput {
 	const { currentUser, setCurrentUser } = useContext(TranscendenceContext);
-	const codeFromUrl = useSearchParams().get('code');
+	const params = useSearchParams();
+	const codeFromUrl = params.get('code');
 	const { data: user, fetcher: userFetcher } = useFetch<null, UserProfileDto>();
-	const idFromStorage = sessionStorage.getItem('userId');
+	const [idFromStorage, setIdFromStorage] = useState<string | null>(null);
 
 	useEffect (() => {
-
+		setIdFromStorage(sessionStorage.getItem('userId'));
 		if (idFromStorage != null)
 			loginUser(constants.API_USERS + idFromStorage);
 		if (codeFromUrl != null)
+		{
 			loginUser(constants.API_AUTH42 + codeFromUrl);
+		}
 	}, []);
 
 	const loginUser = (url: string) : void  => {
