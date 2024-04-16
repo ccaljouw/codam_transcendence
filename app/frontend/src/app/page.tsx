@@ -1,4 +1,3 @@
-"use client";
 import Welcome from "./components/Welcome.tsx";
 import Leaderboard from './components/Leaderboard.tsx';
 

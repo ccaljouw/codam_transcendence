@@ -6,9 +6,13 @@ import { ContextProvider } from '@ft_global/contextprovider.globalvar';
 import { comic_neue } from '@ft_global/layoutComponents/Font';
 import BootstrapClient from '@ft_global/layoutComponents/BootstrapClient';
 import ChatArea from 'src/globals/layoutComponents/ChatArea';
+import { Metadata } from 'next';
 
-export default async function RootLayout({ children }: { children: React.ReactNode }){
+export const metadata: Metadata = {
+	title: 'STRONGPONG',
+}
 
+export default async function RootLayout({ children }: { children: React.ReactNode }) : Promise<JSX.Element> {
 	console.log("root rerender");
     return (
 		<html lang="en" >

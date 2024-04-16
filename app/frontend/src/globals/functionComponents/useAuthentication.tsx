@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { UserProfileDto } from "@ft_dto/users";
 import { TranscendenceContext } from "../contextprovider.globalvar";
 import useFetch from "./useFetch";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { constants } from "../constants.globalvar";
 
 type authenticationOutput = {
@@ -17,6 +17,8 @@ export default function useAuthentication() : authenticationOutput {
 	const codeFromUrl = params.get('code');
 	const { data: user, fetcher: userFetcher } = useFetch<null, UserProfileDto>();
 	const [idFromStorage, setIdFromStorage] = useState<string | null>(null);
+	const router = useRouter();
+	const pathname = usePathname();
 
 	useEffect (() => {
 		setIdFromStorage(sessionStorage.getItem('userId'));
@@ -25,6 +27,7 @@ export default function useAuthentication() : authenticationOutput {
 		if (codeFromUrl != null)
 		{
 			loginUser(constants.API_AUTH42 + codeFromUrl);
+			router.push(pathname);
 		}
 	}, []);
 
