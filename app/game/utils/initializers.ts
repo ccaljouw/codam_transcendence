@@ -20,7 +20,7 @@ export function canvasInitializer (canvas: HTMLCanvasElement, config: keyof type
 export function paddleInitializer (paddels: Paddle[], config: keyof typeof CON.config, type: CON.InstanceTypes) {
 	const paddleHeight = CON.config[config].screenHeight * CON.config[config].paddleHeightFactor;
 	const leftPaddle = new Paddle(
-		"left",
+		"AI",
 		CON.config[config].paddleOffset_X,
 		CON.config[config].screenHeight / 2 - paddleHeight / 2,
 		CON.config[config].paddleWidth,

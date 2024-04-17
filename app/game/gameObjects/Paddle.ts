@@ -57,55 +57,53 @@ export class Paddle extends GameObject {
 	}
 
 	public updateAiPaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball): boolean {
-		let hasMoved = false;
-		const margin = 0.5;
-
     if (ball == null || ball.movementComponent.getSpeed() === 0) {
         return false;
     }
 
-    const AIlevel = CON.config[config].AILevel;
-    const paddleSpeed = CON.config[config].paddleBaseSpeed / AIlevel;
+		let hasMoved = false;
+		const margin = 2;
+		const AIlevel = CON.config[config].AILevel;
 
-    // Get current and target y positions
+		//calculate distance to ball
     const currentY = this.movementComponent.getY();
     const targetY = ball.movementComponent.getY();
+		const deltaY = targetY - currentY;
 
-		if ( Math.abs(currentY - targetY) < margin) {
-			return false;
+		//if ball is far away, set paddle to center
+		if (Math.abs(deltaY) > margin) {
+			const requiredMovement = targetY - currentY;
+			const dampingFactor = Math.min(1, AIlevel / 10 + 0.5);
+
+			//set speedy to 0 if ball is far away with max speed of CON.config[config].paddleBaseSpeed
+			if (Math.abs(requiredMovement) > 100) {
+				this.movementComponent.setSpeed(0);
+			} else {
+				const speed = Math.min(CON.config[config].paddleBaseSpeed, Math.abs(requiredMovement) * dampingFactor);
+				this.movementComponent.setSpeed(speed);
+			}
+			
+			//set direction of paddle
+			this.movementComponent.setDirection(requiredMovement > 0 ? 0.5 * Math.PI : 1.5 * Math.PI);
+			this.movementComponent.update(deltaTime);
+
+			//update paddle position
+			this.y = this.movementComponent.getY();
+			this.checkBounds(config);
+			hasMoved = true;
 		}
-
-
-
-		
-    // Calculate required movement towards the ball
-    const requiredMovement = targetY - currentY;
-
-    // Damping factor to moderate the AI response based on difficulty level
-    const dampingFactor = Math.min(1, AIlevel / 10 + 0.5);
-
-
-		// set speedY
-
-		let initialY = this.y;
-    this.movementComponent.update(deltaTime);
-		this.y = this.movementComponent.getY();
-    this.checkBounds(config);
-
-		hasMoved = Math.abs(this.y - initialY) > margin;
     return hasMoved;
-}
-
+	}
 
 
 
 	public updatePaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball | null): boolean {
-		let hasMoved = false;
-		const margin = .5;
-
 		if (this.name == `AI`) {
 			return this.updateAiPaddle(deltaTime, config, ball as Ball);
 		}
+		
+		let hasMoved = false;
+		const margin = .5;
 
 		if (this.keyListener.checkKeysPressed()) {
 			let initialY = this.y;
