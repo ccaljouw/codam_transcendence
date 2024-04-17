@@ -68,21 +68,16 @@ export class Paddle extends GameObject {
 		//calculate distance to ball
     const currentY = this.movementComponent.getY();
     const targetY = ball.movementComponent.getY();
-		const deltaY = targetY - currentY;
+		const requiredMovement = targetY - currentY;
 
 		//if ball is far away, set paddle to center
-		if (Math.abs(deltaY) > margin) {
-			const requiredMovement = targetY - currentY;
-			const dampingFactor = Math.min(1, AIlevel / 10 + 0.5);
-
-			//set speedy to 0 if ball is far away with max speed of CON.config[config].paddleBaseSpeed
-			if (Math.abs(requiredMovement) > 100) {
-				this.movementComponent.setSpeed(0);
-			} else {
-				const speed = Math.min(CON.config[config].paddleBaseSpeed, Math.abs(requiredMovement) * dampingFactor);
-				this.movementComponent.setSpeed(speed);
-			}
-			
+		if (Math.abs(requiredMovement) > margin) {
+			const dampingFactor = Math.min(1, AIlevel * 0.1);
+	
+					
+			const speed = Math.min(CON.config[config].paddleBaseSpeed, Math.abs(requiredMovement) * dampingFactor);
+			this.movementComponent.setSpeed(speed);
+	
 			//set direction of paddle
 			this.movementComponent.setDirection(requiredMovement > 0 ? 0.5 * Math.PI : 1.5 * Math.PI);
 			this.movementComponent.update(deltaTime);
@@ -91,6 +86,7 @@ export class Paddle extends GameObject {
 			this.y = this.movementComponent.getY();
 			this.checkBounds(config);
 			hasMoved = true;
+			
 		}
     return hasMoved;
 	}
