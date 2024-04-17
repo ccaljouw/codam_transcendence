@@ -24,7 +24,7 @@ export class UsersService {
 				where: { id },
 				data: updateUserDto,
 			});
-			delete user.hash;	
+			delete user.hash;
 			return user;
 		}
 		catch (error) {

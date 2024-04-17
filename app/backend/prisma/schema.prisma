@@ -36,7 +36,7 @@ model User {
     email     String?
     firstName String?
     lastName  String?
-    token42   String?
+    token42   Token42?
     token     Tokens[]
 
     avatarId Int          @default(1)
@@ -58,8 +58,8 @@ model User {
 
 model Tokens {
     id     Int    @id @default(autoincrement())
-    token  String @unique
     userId Int
+    token  String @unique
 	  chatId Int?
 
     createdAt DateTime @default(now())
@@ -71,15 +71,15 @@ model Token42 {
   id            Int     @id @default(autoincrement())
   userId        Int     @unique
   access_token  String  @unique
-  token_type    String
-  refresh_token String
-  scope         String
+  token_type    String?
+  refresh_token String?
+  scope         String?
 
-  createdAt           DateTime
-  expiresAt           DateTime
-  secret_valid_until  DateTime
+  createdAt           DateTime?
+  expiresAt           DateTime?
+  secret_valid_until  DateTime?
 
-  // user          User     @relation(fields: [userId], references: [id])
+  user          User     @relation(fields: [userId], references: [id])
 }
 
 model Chat {

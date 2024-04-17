@@ -41,8 +41,4 @@ export class UserProfileDto implements User {
   
   @Exclude()
 	hash: string;
-
-  @Exclude()
-  token42: string;
-
 }
