@@ -8,7 +8,6 @@ import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { constants } from '@ft_global/constants.globalvar.tsx'
 import useFetch from 'src/globals/functionComponents/useFetch.tsx'
 
-
 export default function GameComponent() {
 	const gameSocket = transcendenceSocket;
 	const canvasRef = useRef< HTMLCanvasElement | null >(null);
@@ -25,6 +24,7 @@ export default function GameComponent() {
 
 
 	// fetch game data
+	//todo add trancendancesocket.id (token) to get id
 	useEffect(() => {
 		if (userId) {
 			fetchGame(`${constants.API_GAME}getGame/${userId}`);
@@ -32,7 +32,7 @@ export default function GameComponent() {
 	}, []);
 
 
-	// set up websocket connection and join room
+	// join room when game data is available
 	useEffect(() => {
 		if (gameData && roomId === 0) {
 			setRoomId(gameData.id);
@@ -72,7 +72,7 @@ export default function GameComponent() {
 		}, [gameData]);
 
 
-
+	// check if there are two players in the game	
 	useEffect(() => {
 		if (gameData && gameData.GameUsers && gameData.GameUsers.length === 2) {
 			console.log("Gamedata!!!: ", gameData);
@@ -94,6 +94,7 @@ export default function GameComponent() {
 // 	} , [playersInGame, gameData]);
 
 
+	// set waiting for players to false when there are two players in the game
 	useEffect(() => {
 		if (playersInGame === 2) {
 			setWaitingForPlayers(false);
@@ -117,7 +118,6 @@ export default function GameComponent() {
 	}, [playersInGame]);
 
 
-
 	// create game instance when canvas is available and there are two players
 	useEffect(() => {
 		if (!game && canvasRef.current && instanceType !== 2) {
@@ -133,7 +133,6 @@ export default function GameComponent() {
 			console.log("Game: waiting for game data");
 		}
 	}, [canvasRef.current, instanceType, gameData]);
-	
 
 
 	// send ready to start message to server when game is ready
@@ -146,7 +145,7 @@ export default function GameComponent() {
 	}, [game]);
 	
 	
-	//start game when game state is ready to start
+	// start game when game state is ready to start
 	useEffect(() => {
 		if (gameState === GameState.READY_TO_START && game !== null && canvasRef.current) {
 			console.log("Game: starting game");
@@ -159,7 +158,8 @@ export default function GameComponent() {
 		}
 	}, [gameState, canvasRef.current, game]);
 	
-	
+
+	// update game state when game state is updated
 	useEffect(() => {
 		if (fetchedGameData != null) {
 			setGameData(fetchedGameData);
@@ -167,11 +167,12 @@ export default function GameComponent() {
 	}, [fetchedGameData]);
 
 
+	// fetch game data
 	async function fetchGame(url: string) {
 		await gameFetcher({url: url});
 	}
 	
-
+	// update game state
 	useEffect(() => {
 		if (updatedGameState != null ) {
 			if (updatedGameState === true) {

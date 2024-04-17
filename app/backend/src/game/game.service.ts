@@ -2,6 +2,7 @@ import { UpdateGameStateDto } from '@ft_dto/game';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateGameDto } from 'dto/game/create-game.dto';
 import { PrismaService } from 'src/database/prisma.service';
+import { Socket } from 'socket.io';
 
 @Injectable()
 export class GameService {
@@ -46,6 +47,14 @@ export class GameService {
 
   async create(createGameDto: CreateGameDto) {
     return await this.db.game.create({ data: createGameDto });
+  }
+
+  async Disconnect(client: Socket) {
+    console.log('Backend Game: disconnect service called');
+    console.log('My token is:', client.id);
+    // set all games with token that are in sate waiting or in state started to abandoned in db
+    // get the game id from the db with the token
+    // emit to all player gamestateupdate => finished
   }
 
   addUser(gameId: number, userId: number) {
@@ -121,7 +130,7 @@ export class GameService {
     }
   }
 
-  async update(updateGameStateDto: UpdateGameStateDto): Promise<boolean> {
+  async update(updateGameStateDto: UpdateGameStateDto) {
     if (updateGameStateDto.state === undefined) {
       console.log(`backend - game: can't update because state not defined`);
       return;

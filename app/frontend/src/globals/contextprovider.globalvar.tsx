@@ -69,7 +69,6 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 			transcendenceSocket.off('socket/messageToUserNotInRoom');
 			transcendenceSocket.off('connect');
 		}
-
 	}, [])
 
 	// Update the user's status to online when the user logs in

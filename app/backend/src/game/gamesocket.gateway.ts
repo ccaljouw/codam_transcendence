@@ -1,7 +1,6 @@
 import {
   WebSocketGateway,
   SubscribeMessage,
-  MessageBody,
   WebSocketServer,
 } from '@nestjs/websockets';
 import { GameService } from './game.service';
@@ -31,12 +30,6 @@ export class GamesocketGateway {
       .emit('game/message', `Player ${player?.id} joined the room`);
   }
 
-  // @SubscribeMessage('game/message')
-  // handleMessage(client: Socket, payload: string) {
-  //   console.log(`Game Socket Server Got message: ${payload}`);
-  //   this.game_io.emit('game/message', payload);
-  // }
-
   @SubscribeMessage('game/updateGameState')
   updateGameState(client: Socket, payload: UpdateGameStateDto) {
     console.log(
@@ -59,11 +52,6 @@ export class GamesocketGateway {
 
   // @SubscribeMessage('game/discconect')
   // handleDisconnect(client: Socket) {
-  //   console.log(`Backend Game Socket Server: Client disconnected: ${client.id}`);
+  //   console.log(`!!!!!!!!!!Backend Game Socket Server: Client disconnected: ${client.id}`);
   // }
-
-  @SubscribeMessage('game/remove')
-  remove(@MessageBody() id: number) {
-    return this.gamesocketService.remove(id);
-  }
 }
