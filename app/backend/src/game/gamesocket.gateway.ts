@@ -59,7 +59,8 @@ export class GamesocketGateway {
 
   // @SubscribeMessage('game/discconect')
   // handleDisconnect(client: Socket) {
-  //   console.log(`Game Socket Server: Client disconnected: ${client.id}`);
+  //   console.log(`Backend Game Socket Server: Client disconnected: ${client.id}`);
+  // }
 
   @SubscribeMessage('game/remove')
   remove(@MessageBody() id: number) {
