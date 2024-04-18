@@ -2,8 +2,8 @@
 import { useRef, useEffect, useState, use } from 'react'
 import { GameState } from '@prisma/client'
 import { UpdateGameDto, UpdateGameStateDto } from '@ft_dto/game'
-import { Game } from '../../../../../game/components/Game.ts'
-import { InstanceTypes } from '../../../../../game/utils/constants.ts'
+import { Game } from '@ft_game/components/Game.ts'
+import { InstanceTypes } from '@ft_game/utils/constants.ts'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { constants } from '@ft_global/constants.globalvar.tsx'
 import useFetch from 'src/globals/functionComponents/useFetch.tsx'
@@ -45,12 +45,12 @@ export default function GameComponent() {
 					console.log("Game: refreshed game data");
 				}
 				//for message received whem player leaves game 
-				if (gameState === GameState.STARTED && gameData.GameUsers!.length === 2) {
-					fetchGame(`${constants.API_GAME}${gameData.id}`);
-					if (gameData.GameUsers!.length < 2) {
-						setGameState(GameState.FINISHED);
-					}
-				}
+				// if (gameState === GameState.STARTED && gameData.GameUsers!.length === 2) {
+				// 	fetchGame(`${constants.API_GAME}${gameData.id}`);
+				// 	if (gameData.GameUsers!.length < 2) {
+				// 		setGameState(GameState.FINISHED);
+				// 	}
+				// }
 			}; 
 		
 			const handleGameStateUpdate = (payload: UpdateGameStateDto) => {
@@ -71,7 +71,6 @@ export default function GameComponent() {
 	// check if there are two players in the game	
 	useEffect(() => {
 		if (gameData && gameData.GameUsers && gameData.GameUsers.length === 2) {
-			console.log("Game: two players in game!");
 			setWaitingForPlayers(false);
 		} else {
 			console.log("Game: less than two players in game");
@@ -100,10 +99,6 @@ export default function GameComponent() {
 			const newGame = new Game(canvasRef.current, instanceType, gameData!);
 			setGame(newGame);
 			canvasRef.current.focus();
-		} else if (!canvasRef.current){
-			console.log("Game: waiting for canvas ref");
-		} else if (!gameData) {
-			console.log("Game: waiting for game data");
 		}
 	}, [canvasRef, instanceType, gameData, game]);
 
