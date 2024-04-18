@@ -1,4 +1,4 @@
-import { UpdateGameStateDto } from '@ft_dto/game';
+import { UpdateGameDto, UpdateGameStateDto } from '@ft_dto/game';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateGameDto } from 'dto/game/create-game.dto';
 import { PrismaService } from 'src/database/prisma.service';
@@ -9,7 +9,7 @@ export class GameService {
   constructor(private db: PrismaService) {}
 
   async getGame(userId: number) {
-    let game;
+    let game: UpdateGameDto;
 
     try {
       game = await this.db.game.findFirst({
@@ -38,6 +38,7 @@ export class GameService {
           });
         }
       }
+
       return game;
     } catch (error) {
       console.log(`error getting game`);
@@ -55,6 +56,7 @@ export class GameService {
     // set all games with token that are in sate waiting or in state started to abandoned in db
     // get the game id from the db with the token
     // emit to room (gameid) gameStateUpdate => finished
+    //alternatively disconnect the usdes from the socket / room
   }
 
   addUser(gameId: number, userId: number) {

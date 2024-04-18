@@ -77,7 +77,7 @@ function setNewScore(game: Game, score1: number, score2: number) {
   }
 }
 
-function setNewPaddlePositions(game: Game, paddle1Y: number, paddle2Y: number) {
+export function setNewPaddlePositions(game: Game, paddle1Y: number, paddle2Y: number) {
   if (game.instanceType === 0 && paddle2Y > 0) {
     game.paddels[1].setY(paddle2Y);
    }

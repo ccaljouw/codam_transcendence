@@ -13,6 +13,7 @@ import { setSocketListeners } from '../utils/gameSocketListners'
 import { updateObjects, checkForGoals } from '../utils/updateObjects'
 import { countdown, setTheme } from '../utils/utils'
 import { initializeGameObjects, drawGameObjects, resetGameObjects } from '../utils/objectController'
+import { setObserverSocket } from 'utils/gameBackendSocket'
 
 
 export class Game {
@@ -51,8 +52,11 @@ export class Game {
 		setTheme(this, this.theme);
 		if (instanceType !== CON.InstanceTypes.observer) {
 			setSocketListeners(this);
-		}
-		// console.log("script: instance type: ", this.instanceType);
+		} 
+		//else if (instanceType === CON.InstanceTypes.observer) {
+		// 	setObserverSocket(this);
+		// }
+		console.log("script: instance type: ", this.instanceType);
 	}
 	
 

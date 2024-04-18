@@ -83,17 +83,6 @@ export default function GameComponent() {
 	}, [gameData]);
 
 
-//create observer game
-// /	useEffect(() => {
-// 		if (gameData && playersingame === 2) {
-// 			console.log("Game: creating game instance of type: ", instanceType.observer);
-// 			const newGame = new Game(canvasRef.current!, instanceType, gameData!);
-// 			setGame(newGame);
-// 			console.log("Game: created observer instance");
-// 		}
-// 	} , [playersInGame, gameData]);
-
-
 	// set waiting for players to false when there are two players in the game
 	useEffect(() => {
 		if (playersInGame === 2) {
@@ -102,7 +91,7 @@ export default function GameComponent() {
 	}, [playersInGame]);
 
 	
-	//set type of game instance. 0 for observer, 1 for player 1, 2 for player 2
+	//set type of game instance. 
 	useEffect(() => {
 		if (playersInGame === 2) {
 			if (gameData!.GameUsers && gameData!.GameUsers[0]) {
@@ -159,7 +148,7 @@ export default function GameComponent() {
 	}, [gameState, canvasRef.current, game]);
 	
 
-	// update game state when game state is updated
+	// update game data
 	useEffect(() => {
 		if (fetchedGameData != null) {
 			setGameData(fetchedGameData);
