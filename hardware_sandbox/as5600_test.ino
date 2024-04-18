@@ -62,12 +62,11 @@ void loop()
   filteredValue = filteredValue + filterAlpha * (mappedValue - filteredValue);
   
   // Output the filtered value
-  printf("float: %f, raw: %d\n", filteredValue, sensorValue);
-  
-  
-
-
-  delay(50);
+  if (filteredValue){
+//    printf("float: %f, raw: %d\n", filteredValue, sensorValue);
+      Serial.print(filteredValue);  
+  }  
+ delay(50);
 }
 
 // Function to map float values

@@ -18,6 +18,7 @@ interface SerialPortOptions {
 export default function SensorValue() : JSX.Element {
     function updateReceivedData(data: string) {
         const receivedDataElement = document.getElementById('receivedData');
+		console.log(data);
         if (receivedDataElement != null)
             receivedDataElement.innerText = data;
     }
