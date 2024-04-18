@@ -13,7 +13,7 @@ import { setSocketListeners } from '../utils/gameSocketListners'
 import { updateObjects, checkForGoals } from '../utils/updateObjects'
 import { countdown, setTheme } from '../utils/utils'
 import { initializeGameObjects, drawGameObjects, resetGameObjects } from '../utils/objectController'
-import { setObserverSocket } from 'utils/gameBackendSocket'
+// import { setObserverSocket } from 'utils/gameBackendSocket'
 
 
 export class Game {
