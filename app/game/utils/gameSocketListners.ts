@@ -60,6 +60,12 @@ export function setSocketListeners(game: Game) {
       game.startGame();
     }
   });
+
+  //diconnect handling
+  gameSocket.on(`disconnect`, (reason) => {
+    console.log(`Script: disconnected from server, reason: ${reason}`);
+    game.gameState = GameState.FINISHED;
+  });
 }
 
 function setNewScore(game: Game, score1: number, score2: number) {

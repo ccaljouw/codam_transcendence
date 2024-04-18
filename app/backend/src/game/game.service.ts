@@ -54,7 +54,7 @@ export class GameService {
     console.log('My token is:', client.id);
     // set all games with token that are in sate waiting or in state started to abandoned in db
     // get the game id from the db with the token
-    // emit to all player gamestateupdate => finished
+    // emit to room (gameid) gameStateUpdate => finished
   }
 
   addUser(gameId: number, userId: number) {

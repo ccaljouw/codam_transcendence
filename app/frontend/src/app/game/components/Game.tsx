@@ -143,7 +143,7 @@ export default function GameComponent() {
 			gameSocket.emit("game/updateGameState", payload);
 		}
 	}, [game]);
-	
+
 	
 	// start game when game state is ready to start
 	useEffect(() => {

@@ -20,7 +20,7 @@ export function canvasInitializer (canvas: HTMLCanvasElement, config: keyof type
 export function paddleInitializer (paddels: Paddle[], config: keyof typeof CON.config, type: CON.InstanceTypes) {
 	const paddleHeight = CON.config[config].screenHeight * CON.config[config].paddleHeightFactor;
 	const leftPaddle = new Paddle(
-		"AI",
+		"left",
 		CON.config[config].paddleOffset_X,
 		CON.config[config].screenHeight / 2 - paddleHeight / 2,
 		CON.config[config].paddleWidth,
@@ -47,7 +47,6 @@ export function paddleInitializer (paddels: Paddle[], config: keyof typeof CON.c
 
 
 export function wallInitializer (walles: Wall[], config: keyof typeof CON.config) {
-	
 	if (CON.config[config].leftBackWall == true) {
 		walles.push(new Wall("LeftBackTopWall",
 			1,
