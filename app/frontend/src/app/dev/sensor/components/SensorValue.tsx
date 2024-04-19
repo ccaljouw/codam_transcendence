@@ -7,12 +7,10 @@ interface Serial {
 interface SerialPort {
     open(options: SerialPortOptions): Promise<void>;
     readable: ReadableStream;
-    // Define other properties and methods as needed
 }
 
 interface SerialPortOptions {
     baudRate: number;
-    // Add other options if necessary
 }
 
 export default function SensorValue() : JSX.Element {
@@ -23,7 +21,7 @@ export default function SensorValue() : JSX.Element {
     }
 
     async function connectToESP8266() {
-        //The line below makes the code ignore the navigator.serial warning
+        //todo: consider changing this: The line below makes the code ignore the navigator.serial warning
         //@ts-ignore
         const serial = navigator.serial as Serial;
         if (!serial)
@@ -37,6 +35,7 @@ export default function SensorValue() : JSX.Element {
             
             // Start reading data from the serial port
             const reader = port.readable.getReader();
+            //todo: make getline function
             while (true) {
                 const { value, done } = await reader.read();
                 if (done) break;
@@ -47,11 +46,6 @@ export default function SensorValue() : JSX.Element {
             console.error('Serial port error:', error);
         }
     }
-
-    // function handleClick() {
-    //     // Event listener for the connect button
-    //     document?.getElementById('connectButton')?.addEventListener('click', connectToESP8266);
-    // };
 
     return (
         <>
