@@ -36,7 +36,6 @@ export class SocketServerProvider {
   }
 
   async handleDisconnect(client: Socket) {
-    // console.log('Client info now:...');
     this.gameSocketService.Disconnect(client);
     try {
       const disconnectedUser = await this.tokenService.findUserByToken(

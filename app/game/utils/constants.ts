@@ -1,5 +1,5 @@
-import myThemes from '../pongthemes.json'
-import myConfig from '../pongconfig.json'
+import myThemes from '../pongThemes.json'
+import myConfig from '../pongConfig.json'
 
 type Theme = {
 	leftPaddleColor: string;
@@ -83,6 +83,7 @@ type Config = {
 	paddleBaseSpeed: number;
 	socketUpdateInterval: number;
 	interpolationFactor: number;
+	sensorInput: boolean;
 	leftPaddleUpKey: string;
 	leftPaddleDownKey: string;
 	rightPaddleUpKey: string;
@@ -125,6 +126,7 @@ function parseConfig(jsonConfig: any): Record<string, Config> {
 			socketUpdateInterval: parseFloat(value.socketUpdateInterval),
 			interpolationFactor: parseFloat(value.interpolationFactor),
 			paddleBaseSpeed: parseInt(value.paddleBaseSpeed, 10),
+			sensorInput: value.sensorInput === true,
 			leftPaddleUpKey: value.leftPaddleUpKey,
 			leftPaddleDownKey: value.leftPaddleDownKey,
 			rightPaddleUpKey: value.rightPaddleUpKey,

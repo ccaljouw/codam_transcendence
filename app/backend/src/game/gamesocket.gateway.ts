@@ -22,12 +22,16 @@ export class GamesocketGateway {
 
   @SubscribeMessage('game/joinRoom')
   joinRoom(client: Socket, roomId: number) {
-    console.log(`Game Socket Server: someone is joining the room: ${roomId}`);
-    client.join(roomId.toString());
-    const player = this.game_io.sockets.sockets.get(client.id);
-    this.game_io
-      .to(roomId.toString())
-      .emit('game/message', `Player ${player?.id} joined the room`);
+    try {
+      console.log(`Game Socket Server: someone is joining the room: ${roomId}`);
+      client.join(roomId.toString());
+      const player = this.game_io.sockets.sockets.get(client.id);
+      this.game_io
+        .to(roomId.toString())
+        .emit('game/message', `Player ${player?.id} joined the room`);
+    } catch (error) {
+      console.log(`Game Socket Server: error joining room: ${roomId}`);
+    }
   }
 
   @SubscribeMessage('game/updateGameState')
@@ -50,8 +54,9 @@ export class GamesocketGateway {
       .emit('game/updateGameObjects', payload);
   }
 
-  // @SubscribeMessage('game/discconect')
-  // handleDisconnect(client: Socket) {
-  //   console.log(`!!!!!!!!!!Backend Game Socket Server: Client disconnected: ${client.id}`);
-  // }
+  // todo add code based on tracked game id's. here or in game service
+  @SubscribeMessage('disconnect')
+  handleDisconnect(client: Socket) {
+    console.log('Game Socket Server: client disconnected: ', client.id);
+  }
 }

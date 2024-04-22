@@ -115,7 +115,10 @@ export function lineInitializer (lines: GameObject[], config: keyof typeof CON.c
 
 
 export function keyListenerInitializer (listener: KeyListenerComponent, game: Game, config: keyof typeof CON.config) {
- 	listener.addKeyCallback(" ", () => {
+	if(CON.config[config].sensorInput === true) {
+		return;
+	}
+	listener.addKeyCallback(" ", () => {
 		console.log("Space pressed");
 		//startKeyPressed(game, config);
 	});

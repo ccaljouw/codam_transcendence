@@ -42,7 +42,7 @@ export class Game {
 	currentAnimationFrame: number = 0;
 
 	constructor(newCanvas: HTMLCanvasElement | undefined, instanceType: CON.InstanceTypes, data: UpdateGameDto) {
-		this.gameData = data; //todo import from server
+		this.gameData = data;
 		this.instanceType = instanceType;
 		this.roomId = this.gameData.id;
 		this.canvas = newCanvas? newCanvas : undefined;
