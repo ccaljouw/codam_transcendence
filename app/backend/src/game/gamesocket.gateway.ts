@@ -67,11 +67,11 @@ export class GamesocketGateway {
       };
       this.gamesocketService.update(payload);
 
-      //todo: game blijft nog zichtbaar bij andere user...
+      payload.state = 'FINISHED';
       this.game_io
-      .to(payload.roomId.toString())
-      .emit('game/updateGameObjects', payload);
+        .to(payload.roomId.toString())
+        .emit('game/updateGameObjects', payload);
     }
   }
 }
-    
+

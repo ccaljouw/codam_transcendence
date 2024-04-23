@@ -3,7 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateGameDto } from 'dto/game/create-game.dto';
 import { PrismaService } from 'src/database/prisma.service';
 import { Socket } from 'socket.io';
-import { GameState, PrismaPromise } from '@prisma/client';
+import { GameState } from '@prisma/client';
 
 @Injectable()
 export class GameService {
@@ -160,7 +160,7 @@ export class GameService {
     }
   }
 
-  async findGameForClientId(clientId: string) : Promise<number | null>{
+  async findGameForClientId(clientId: string): Promise<number | null> {
     console.log('getting game for clientId: ', clientId);
     try {
       // Check if there is a GameUser with the provided clientId
@@ -169,7 +169,6 @@ export class GameService {
           clientId: clientId
         }
       });
-  
       if (gameUser) {
         // If a GameUser is found, access its associated Game
         const game = await this.db.game.findUnique({
@@ -180,7 +179,6 @@ export class GameService {
             }
           }
         });
-  
         if (game) {
           // Game containing the GameUser with the provided clientId exists
           console.log('Game found:', game);
