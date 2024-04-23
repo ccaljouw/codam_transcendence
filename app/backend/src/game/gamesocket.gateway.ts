@@ -58,5 +58,15 @@ export class GamesocketGateway {
   @SubscribeMessage('disconnect')
   handleDisconnect(client: Socket) {
     console.log('Game Socket Server: client disconnected: ', client.id);
+
+    gameId: Number = ...
+
+    const payload: UpdateGameStateDto = {
+      roomId: gameId,
+      state: 'FINISHED',
+    };
+    this.game_io
+      .to(payload.roomId.toString())
+      .emit('game/updateGameObjects', payload);
   }
 }

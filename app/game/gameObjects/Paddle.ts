@@ -56,7 +56,7 @@ export class Paddle extends GameObject {
 		}
 	}
 
-	public updateAiPaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball): boolean {
+	private updateAiPaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball): boolean {
     if (ball == null || ball.movementComponent.getSpeed() === 0) {
         return false;
     }
@@ -91,12 +91,25 @@ export class Paddle extends GameObject {
     return hasMoved;
 	}
 
+	// private AnalogupdatePaddle(deltaTime: number, config: keyof typeof CON.config): boolean {
+	// 	let hasMoved = false;
+	// 	const paddleMinY = CON.config[config].wallWidth + CON.config[config].paddleGap;
+	// 	const paddleMaxY = CON.config[config].screenHeight - this.height - CON.config[config].wallWidth - CON.config[config].paddleGap;
+
+
+	// 	return hasMoved;
+	
+	// }
 
 
 	public updatePaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball | null): boolean {
 		if (this.name == `AI`) {
 			return this.updateAiPaddle(deltaTime, config, ball as Ball);
 		}
+
+		// if (CON.config[config].sensorInput === true) {
+		// 	return this.AnalogupdatePaddle(deltaTime, config);
+		// }
 		
 		let hasMoved = false;
 		const margin = .5;

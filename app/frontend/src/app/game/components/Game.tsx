@@ -25,6 +25,7 @@ export default function GameComponent() {
 	//todo add trancendancesocket.id (token) to get id
 	useEffect(() => {
 		if (userId) {
+			console.log("transendance socket id: ", gameSocket.id);
 			fetchGame(`${constants.API_GAME}getGame/${userId}`);
 		}
 	}, [userId]);
