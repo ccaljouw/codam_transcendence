@@ -46,6 +46,11 @@ export function setSocketListeners(game: Game) {
       return;
     }
 
+    if (game.gameState === GameState.ABORTED) {
+      game.abortGame();
+      return;
+    }
+
     console.log(`Script: received game state update from server`, payload.roomId, payload.state, payload.winner);
     
     if (payload.state === GameState.FINISHED) {
@@ -54,18 +59,15 @@ export function setSocketListeners(game: Game) {
     } 
 
     game.gameState = payload.state;
- 
+    
     if (game.gameState === GameState.STARTED && !gamerunning) {
       gamerunning = true;
       game.startGame();
     }
+    
   });
 
-  //diconnect handling
-  gameSocket.on(`disconnect`, (reason) => {
-    console.log(`Script: disconnected from server, reason: ${reason}`);
-    game.gameState = GameState.FINISHED;
-  });
+
 }
 
 function setNewScore(game: Game, score1: number, score2: number) {

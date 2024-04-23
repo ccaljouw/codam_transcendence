@@ -106,6 +106,15 @@ export class Game {
 		// this.gameSocket.off(`game/updateGameState`);
 	}
 
+	abortGame() {
+		console.log('Script: in aborted game function');
+		if (this.canvas) {
+			this.messageFields[0]?.setText("Other player left the game");
+			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+			drawGameObjects(this);
+		}
+		cancelAnimationFrame(this.currentAnimationFrame);
+	}
 
 	resetGame() {
 		if (this.gameState === `FINISHED`) {

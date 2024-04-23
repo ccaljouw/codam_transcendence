@@ -67,11 +67,9 @@ export class GamesocketGateway {
       };
       this.gamesocketService.update(payload);
 
-      payload.state = 'FINISHED';
       this.game_io
         .to(payload.roomId.toString())
         .emit('game/updateGameObjects', payload);
     }
   }
 }
-
