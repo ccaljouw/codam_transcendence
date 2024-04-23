@@ -4,8 +4,8 @@ import { CreateUserDto, UserProfileDto } from '@ft_dto/users';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import { constants } from '@ft_global/constants.globalvar'
 import useFetch from '@ft_global/functionComponents/useFetch';
-import FormInput from '@ft_global/functionComponents/FormInput';
-import { FontBangers } from 'src/globals/layoutComponents/Font';
+import FormInput from '@ft_global/functionComponents/form/FormInput';
+import { H3 } from 'src/globals/layoutComponents/Font';
 
 export default function SignUp(): JSX.Element {
 	const { data: user, isLoading, error, fetcher } = useFetch<CreateUserDto, UserProfileDto>();
@@ -16,9 +16,8 @@ export default function SignUp(): JSX.Element {
 		if (user != null)
 		{
 			sessionStorage.setItem('userId', JSON.stringify(user.id));
-			sessionStorage.setItem('userName', JSON.stringify(user.userName));
-			sessionStorage.setItem('loginName', JSON.stringify(user.loginName)); //todo: move to context
 			setCurrentUser(user);
+			console.log("setting userId in sessionStorage from signup");
 		}
 	}, [user])
 
@@ -49,16 +48,15 @@ export default function SignUp(): JSX.Element {
 				{user != null && <p>User created with id {user.id}</p>}
 				{user == null &&
 					<form onSubmit={handleSubmit}>
-					<FontBangers>
-						<h3>Sign up to play</h3>
-					</FontBangers>
-					<FormInput types="text" text="First Name" theName="firstName"/>
-					<FormInput types="text" text="Last Name" theName="lastName"/>
-					<FormInput types="text" text="Username" theName="userName"/>
-					<FormInput types="email" text="Email address" theName="email"/>
-					<FormInput types="text" text="Login name" theName="loginName"/>
-					<FormInput types="password" text="Password" theName="hash"/>	
-					<button className="btn btn-dark w-10 py-2 mt-3" type="submit" >Sign up</button>
+					<H3 text='Sign up'/>
+					<p>It's quick and easy.</p>
+					<FormInput type="text" name="firstName" required={true} text="First Name"/>
+					<FormInput type="text" name="lastName" required={true} text="Last Name"/>
+					<FormInput type="text" name="userName" required={true} text="Username"/>
+					<FormInput type="email" name="email" required={true} text="Email address"/>
+					<FormInput type="text" name="loginName" required={true} text="Login name"/>
+					<FormInput type="password" name="hash" required={true} text="Password"/>
+					<button className="btn btn-dark w-10 py-2 mt-3" type="submit">Sign Up</button>
 					</form>
 				}
 			</div>

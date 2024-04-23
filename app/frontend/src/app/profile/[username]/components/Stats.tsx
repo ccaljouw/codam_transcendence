@@ -1,7 +1,8 @@
+import { UserProfileDto } from "@ft_dto/users";
 import DataField from "@ft_global/functionComponents/DataField";
 import { FontBangers } from 'src/globals/layoutComponents/Font';
 
-export default function Stats() : JSX.Element {
+export default function Stats({user} : {user: UserProfileDto}) : JSX.Element {
     return (
         <>
             <FontBangers>

@@ -1,6 +1,7 @@
+import { UserProfileDto } from '@ft_dto/users';
 import { FontBangers } from 'src/globals/layoutComponents/Font';
 
-export default function Blocked() : JSX.Element {
+export default function Blocked({user} : {user: UserProfileDto}) : JSX.Element {
 	return (
         <>
             <FontBangers>

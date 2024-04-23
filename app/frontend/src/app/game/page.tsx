@@ -7,8 +7,8 @@ export default function Page() {
 		<>
 		<div className={styles.game}>
 			<div className={"text-center white-box " + styles.gameMenu}>
-				<Link className="btn btn-primary" href="/play" >Leave Game</Link>
-				<Link className="btn btn-primary" href="#" >placeholder</Link>
+				<Link className="btn btn-dark" href="/play">Leave Game</Link>
+				<Link className="btn btn-dark" href="#">placeholder</Link>
 			</div>
 			<GameComponent />
 		</div>

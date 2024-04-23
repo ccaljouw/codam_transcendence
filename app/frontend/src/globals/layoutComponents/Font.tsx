@@ -1,5 +1,5 @@
-import { Comic_Neue, Bangers } from '@next/font/google';
-import Pop_Art from '@next/font/local';
+import { Comic_Neue, Bangers } from 'next/font/google';
+import Pop_Art from 'next/font/local';
 
 export const bangers = Bangers({weight: "400", preload: false, variable: '--my-font-bangers'});
 export const comic_neue = Comic_Neue({weight: "400", preload: false, variable: '--my-font-comic_neue'});
@@ -21,6 +21,16 @@ export function FontPopArt({children} : {children: React.ReactNode}) : JSX.Eleme
     return (
         <>
             <div className={pop_art.className}>{children}</div>
+        </>
+    );
+}
+
+export function H3({text} : {text: string}) : JSX.Element {
+    return (
+        <>
+            <FontBangers>
+                <h3>{text}</h3>
+            </FontBangers>
         </>
     );
 }

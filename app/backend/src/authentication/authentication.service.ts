@@ -34,7 +34,7 @@ export class AuthService {
     return 'your_access_token';
   }
 
-  private get42UserInfo() {
-
+  async get42User(code: string) {
+    return this.userService.findOne(1); //change
   }
 }
