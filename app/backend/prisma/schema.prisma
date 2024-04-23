@@ -108,7 +108,7 @@ model ChatMessages {
 model Game {
     id    Int       @id @default(autoincrement())
     state GameState
-
+    clientId  String?
     GameUsers GameUser[]
 }
 

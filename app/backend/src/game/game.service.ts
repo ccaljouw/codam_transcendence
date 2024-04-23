@@ -8,7 +8,7 @@ import { Socket } from 'socket.io';
 export class GameService {
   constructor(private db: PrismaService) {}
 
-  async getGame(userId: number) {
+  async getGame(userId: number, clientId: string) {
     let game: UpdateGameDto;
 
     try {
@@ -17,7 +17,7 @@ export class GameService {
         include: { GameUsers: { include: { user: true } } },
       });
       if (!game) {
-        game = await this.create({ state: `WAITING` });
+        game = await this.create({ state: `WAITING`, clientId });
         await this.addUser(game.id, userId);
         game = await this.db.game.findFirst({
           where: { id: game.id },
@@ -57,7 +57,6 @@ export class GameService {
     // set all games with token that are in sate waiting or in state started to abandoned in db
     // get the game id from the db with the token
     // emit to room (gameid) gameStateUpdate => finished
-    //alternatively disconnect the usdes from the socket / room
   }
 
   addUser(gameId: number, userId: number) {
@@ -160,7 +159,19 @@ export class GameService {
     }
   }
 
-  async handleDisconnect(client: Socket) {
-    console.log(`I AM IN THE HANDLE DISCONNECT ${client.id}`);
+  async findGameForClientId(clientId: string) {
+    console.log('getting game for clientId: ', clientId);
+  //   try {
+  //     const game = await this.db.game.findFirst({
+  //       where: { clientId },
+  //     });
+  //     console.log('found game: ', game.id);
+  //     return game.id;
+  //   } catch (error) {
+  //     throw new NotFoundException(
+  //       `User with id does not exist.`,
+  //     );
+  //   }
+    return 2;
   }
 }
