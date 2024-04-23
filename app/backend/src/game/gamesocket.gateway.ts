@@ -56,19 +56,22 @@ export class GamesocketGateway {
 
   // todo add code based on tracked game id's. here or in game service
   @SubscribeMessage('disconnect')
-  handleDisconnect(client: Socket) {
-    console.log('Game Socket Server: client disconnected: ', client.id);
-    const gameId: number = this.gamesocketService.findGameForClientId(client.id);
+  async handleDisconnect(client: Socket) {
+    const gameId = await this.gamesocketService.findGameForClientId(client.id);
     console.log('Game Socket Server: gameId: ', gameId);
 
-  //   const payload: UpdateGameStateDto = {
-  //     roomId: gameId,
-  //     state: 'FINISHED',
-  //   };
-  //   this.game_io
-  //     .to(payload.roomId.toString())
-  //     .emit('game/updateGameObjects', payload);
-  // }
+    if (gameId) {
+      const payload: UpdateGameStateDto = {
+        roomId: gameId,
+        state: 'ABORTED',
+      };
+      this.gamesocketService.update(payload);
+
+      //todo: game blijft nog zichtbaar bij andere user...
+      this.game_io
+      .to(payload.roomId.toString())
+      .emit('game/updateGameObjects', payload);
+    }
   }
 }
     
