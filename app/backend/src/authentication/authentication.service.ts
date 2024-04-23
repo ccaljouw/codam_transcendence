@@ -4,6 +4,8 @@ import { UsersService } from 'src/users/users.service';
 import { HttpService } from '@nestjs/axios'
 import { AxiosResponse } from 'axios'
 import { Observable, lastValueFrom, map } from 'rxjs';
+import { PrismaService } from 'src/database/prisma.service';
+import { Create42TokenDto } from '@ft_dto/authentication/create-token.dto';
 
 @Injectable()
 export class AuthService {
@@ -11,6 +13,7 @@ export class AuthService {
   constructor (
     private readonly userService: UsersService, 
     private readonly httpService: HttpService,
+    private readonly db: PrismaService,
   ) {};
 
   getAuthorizationUrl(): string {
@@ -32,7 +35,7 @@ export class AuthService {
     try {
       const token42 = await lastValueFrom(this.httpService.post('https://api.intra.42.fr/oauth/token', formData, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded', // Set proper Content-Type header
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
       }))
       console.log('Response data:', token42.data);
@@ -50,7 +53,9 @@ export class AuthService {
 
   async callback(code: string) : Promise<UserProfileDto> {
     console.log("authentication callback: ", code);
-    const token42 = this.exchangeCodeForToken(code);
+    let token42 = await this.exchangeCodeForToken(code);
+    console.log("token received: ", token42);
+    // this.db.token42.create(token42) 
     //  store token in db
     // const user42 = this.get42User(token42); // move to userservice?
     //  create new transcendence user
