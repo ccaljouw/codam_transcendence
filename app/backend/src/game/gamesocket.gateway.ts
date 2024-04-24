@@ -7,6 +7,7 @@ import { GameService } from './game.service';
 import { SocketServerProvider } from '../socket/socketserver.gateway';
 import { Server, Socket } from 'socket.io';
 import { UpdateGameObjectsDto, UpdateGameStateDto } from 'dto/game';
+import { GameState } from '@prisma/client';
 
 @WebSocketGateway({
   cors: true,
@@ -58,18 +59,18 @@ export class GamesocketGateway {
   @SubscribeMessage('disconnect')
   async handleDisconnect(client: Socket) {
     const gameId = await this.gamesocketService.findGameForClientId(client.id);
-    console.log('Game Socket Server: gameId: ', gameId);
+    console.log('Game Socket Server: gameId: ', gameId, ' disconnected');
 
     if (gameId) {
       const payload: UpdateGameStateDto = {
         roomId: gameId,
-        state: 'ABORTED',
+        state: GameState.ABORTED,
       };
       this.gamesocketService.update(payload);
 
       this.game_io
         .to(payload.roomId.toString())
-        .emit('game/updateGameObjects', payload);
+        .emit('game/updateGameState', payload);
     }
   }
 }

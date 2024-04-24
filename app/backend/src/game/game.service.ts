@@ -166,7 +166,7 @@ export class GameService {
       // Check if there is a GameUser with the provided clientId
       const gameUser = await this.db.gameUser.findFirst({
         where: {
-          clientId: clientId
+          clientId: clientId,
         }
       });
       if (gameUser) {
@@ -176,8 +176,8 @@ export class GameService {
             id: gameUser.gameId,
             state: {
               in: [GameState.WAITING, GameState.READY_TO_START, GameState.STARTED]
-            }
-          }
+            },
+          },
         });
         if (game) {
           // Game containing the GameUser with the provided clientId exists

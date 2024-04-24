@@ -107,13 +107,15 @@ export class Game {
 	}
 
 	abortGame() {
-		console.log('Script: in aborted game function');
+		this.gameState = `FINISHED`;
+		
 		if (this.canvas) {
 			this.messageFields[0]?.setText("Other player left the game");
 			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 			drawGameObjects(this);
 		}
 		cancelAnimationFrame(this.currentAnimationFrame);
+		console.log("script: game aborted");
 	}
 
 	resetGame() {

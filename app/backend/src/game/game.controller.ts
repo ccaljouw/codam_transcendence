@@ -22,8 +22,6 @@ import { UpdateGameStateDto } from 'dto/game/update-game-state.dto';
 export class GameController {
   constructor(private readonly gameService: GameService) {}
 
-  
-  
   @Get('all')
   @ApiOperation({ summary: 'Returns all games currently in the database' })
   @ApiOkResponse({ type: [UpdateGameDto] })
@@ -31,7 +29,7 @@ export class GameController {
   findAll(): Promise<UpdateGameDto[]> {
     return this.gameService.findAll();
   }
-  
+
   @Get('getGame/:userId/:clientId')
   @ApiOperation({
     summary:
@@ -41,15 +39,15 @@ export class GameController {
     @Param('userId', ParseIntPipe) userId: number,
     @Param('clientId') clientId: string,
   ): Promise<UpdateGameDto> {
-    console.log('in get game')
-    console.log('userId: ',  userId);
+    console.log('in get game');
+    console.log('userId: ', userId);
     console.log('clientId', clientId);
     const game = await this.gameService.getGame(userId, clientId);
     console.log(game.GameUsers[0]);
     console.log(game.GameUsers[1]);
     return game;
   }
-  
+
   @Get(':id')
   @ApiOperation({ summary: 'Returns game with specified id' })
   @ApiOkResponse({ type: UpdateGameDto })
@@ -60,7 +58,9 @@ export class GameController {
 
   @Get(':clientId')
   @ApiOperation({ summary: 'Returns gameId of game that contains clientId' })
-  @ApiNotFoundResponse({ description: `No games with this clientId in the database` })
+  @ApiNotFoundResponse({
+    description: `No games with this clientId in the database`,
+  })
   findMany(@Param('clientId') clientId: string) {
     return this.gameService.findGameForClientId(clientId);
   }

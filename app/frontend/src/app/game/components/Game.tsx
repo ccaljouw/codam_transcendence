@@ -23,7 +23,7 @@ export default function GameComponent() {
 
 	// fetch game data
 	useEffect(() => {
-		if (userId) {
+		if (userId && game === null) {
 			console.log("transendance socket id: ", gameSocket.id);
 			fetchGame(`${constants.API_GAME}getGame/${userId}/${gameSocket.id}`);
 		}
@@ -44,13 +44,6 @@ export default function GameComponent() {
 					fetchGame(`${constants.API_GAME}${gameData.id}`);
 					console.log("Game: refreshed game data");
 				}
-				//for message received whem player leaves game 
-				// if (gameState === GameState.STARTED && gameData.GameUsers!.length === 2) {
-				// 	fetchGame(`${constants.API_GAME}${gameData.id}`);
-				// 	if (gameData.GameUsers!.length < 2) {
-				// 		setGameState(GameState.FINISHED);
-				// 	}
-				// }
 			}; 
 		
 			const handleGameStateUpdate = (payload: UpdateGameStateDto) => {
@@ -70,7 +63,7 @@ export default function GameComponent() {
 	
 	// check if there are two players in the game	
 	useEffect(() => {
-		if (gameData && gameData.GameUsers && gameData.GameUsers.length === 2) {
+		if (gameData && gameData.GameUsers && gameData.GameUsers.length === 2 && gameState === GameState.WAITING) {
 			setWaitingForPlayers(false);
 		} else {
 			console.log("Game: less than two players in game");
@@ -80,7 +73,7 @@ export default function GameComponent() {
 
 	// set instance type
 	useEffect(() => {
-		if (waitingForPlayers === false) {
+		if (waitingForPlayers === false && gameState === GameState.WAITING && gameData && userId) {
 				const userIdNum = parseInt(userId || '0');
 				const firstUserId = gameData?.GameUsers?.[0]?.user.id || 0;
 				setInstanceType(userIdNum === firstUserId ? InstanceTypes.left : InstanceTypes.right);
@@ -91,7 +84,7 @@ export default function GameComponent() {
 
 	// create game instance when canvas is available and there are two players
 	useEffect(() => {
-		if (waitingForPlayers === true) {
+		if (waitingForPlayers === true || game?.gameState === GameState.FINISHED || game?.gameState === GameState.ABORTED) {
 			return;
 		}
 		if (!game && canvasRef.current && instanceType !== InstanceTypes.observer) {
@@ -105,7 +98,7 @@ export default function GameComponent() {
 
 	// send ready to start message to server when game is ready
 	useEffect(() => {
-		if (game !== null) {
+		if (game !== null && gameState === GameState.WAITING) {
 			const payload: UpdateGameStateDto = {roomId: roomId, state: GameState.READY_TO_START};
 			gameSocket.emit("game/updateGameState", payload);
 		}
@@ -114,6 +107,11 @@ export default function GameComponent() {
 	
 	// start game when game state is ready to start
 	useEffect(() => {
+		if (gameState === GameState.ABORTED) {
+			console.log("Game: game aborted add more code cleanup code here!!");
+			// todo add code
+			return;
+		}
 		if (gameState === GameState.FINISHED) {
 			console.log("Game: game finished add more code cleanup code here!!");
 			// todo add code
