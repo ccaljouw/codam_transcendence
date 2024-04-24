@@ -15,15 +15,19 @@ export default function useAuthentication() : authenticationOutput {
 	const { currentUser, setCurrentUser } = useContext(TranscendenceContext);
 	const params = useSearchParams();
 	const codeFromUrl = params.get('code');
-	const { data: user, fetcher: userFetcher } = useFetch<null, UserProfileDto>();
+	const {data: user, fetcher: userFetcher} = useFetch<null, UserProfileDto>();
 	const [idFromStorage, setIdFromStorage] = useState<string | null>(null);
 	const router = useRouter();
 	const pathname = usePathname();
 
 	useEffect (() => {
-		setIdFromStorage(sessionStorage.getItem('userId'));
-		if (idFromStorage != null)
-			loginUser(constants.API_USERS + idFromStorage);
+		const id = sessionStorage.getItem('userId');
+		if (id != null)
+		{
+			setIdFromStorage(id);
+			console.log("user already logged in, fetching user " + id);
+			loginUser(constants.API_USERS + id);
+		}
 		if (codeFromUrl != null)
 		{
 			loginUser(constants.API_AUTH42 + codeFromUrl);

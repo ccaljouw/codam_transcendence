@@ -17,7 +17,7 @@ export default function Auth42Button() : JSX.Element {
 
 	return (
 		<>
-			<Link className="btn btn-primary" href={`${url}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`}>
+			<Link className="btn btn-dark btn-block" href={`${url}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`}>
 				Continue with Auth42
 			</Link>
 		</>

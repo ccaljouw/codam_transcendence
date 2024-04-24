@@ -70,7 +70,7 @@ export default function LoginSettings({user} : {user: UserProfileDto}): JSX.Elem
 						Button to Enable two-factor authentication, link to change password
 					</p>
 					{updatedUser != null && <p>User settings updated!</p>}
-					<button className="btn btn-primary" onClick={toggleEditMode}>Edit</button>
+					<button className="btn btn-dark" onClick={toggleEditMode}>Edit</button>
 				</>
 			}
 			{editMode == true && 
@@ -83,8 +83,8 @@ export default function LoginSettings({user} : {user: UserProfileDto}): JSX.Elem
 						<FormInput type="text" name="loginName" required={false} text="Login name"/>
 						<FormInput type="password" name="hash" required={false} text="Password"/>	
 						<FormInput type="password" name="hash2" required={false} text="Confirm password"/>
-						<button className="btn btn-primary" type="submit" >Save changes</button>
-						<button className="btn btn-primary" onClick={toggleEditMode}>Cancel</button>
+						<button className="btn btn-dark" type="submit" >Save changes</button>
+						<button className="btn btn-dark" onClick={toggleEditMode}>Cancel</button>
 					</form>
 					{isLoading && <p>Loading...</p>}
 					{error && <p>Error: {error.message}</p>}

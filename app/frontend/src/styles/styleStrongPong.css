@@ -3,6 +3,7 @@
     --strongpong-yellow: #F0CD13;
     --strongpong-pink: #F2A28D;
     --strongpong-black: #000000;
+    --strongpong-grey: #303030;
     --strongpong-blue: #1998CB;
     --strongpong-dark-blue: #1948cb;
     --strongpong-white: #F8DED7;
@@ -17,21 +18,44 @@
     background-repeat: repeat, repeat;
 }
 
-.navbar, 
-.page, 
-.chat-area,
-.login {
-    padding-top: 10px;
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
 @media screen and (max-width: 992px) {
     .root-layout {
         background-image: 
             radial-gradient(circle at center, var(--strongpong-pink) 30%, transparent 20%),
             repeating-conic-gradient(at 50% 50%, var(--strongpong-yellow) 10%,var(--strongpong-red) 15%, var(--strongpong-yellow) 20%);
     }
+}
+
+.index-fill {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.index-left {
+    padding-left: 20px;
+    padding-right: 10px;
+}
+
+.index-middle {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.index-right {
+    padding-left: 10px;
+    padding-right: 20px;
+}
+
+.padding-top-10 {
+    padding-top: 10px;
+}
+
+.navbar {
+    margin: 20px;
+}
+
+.content-area {
+    margin-bottom: 20px;
 }
 
 .white-box {
@@ -41,6 +65,11 @@
     text-overflow: clip;
     padding: 20px;
     padding-top: 10px;
+    padding-bottom: 0px;
+}
+
+.btn {
+    margin-bottom: 10px;
 }
 
 .chat-messages {
@@ -53,44 +82,9 @@
     margin-bottom: -2pt;
 }
 
-.btn-primary {
-    --bs-btn-bg: var(--strongpong-blue);
-    --bs-btn-border-color: var(--strongpong-blue);
-}
-
 .form-control {
     /* todo: choose */
     background: white;
     background: var(--strongpong-white-transparent);
     background: var(--strongpong-white);
 }
-
-.navbar .active {
-    background-color: purple; 
-}
-
-/* Below is work in progress */
-
-/* .white-box {
-    border-radius:50px;
-    background-color: white;
-    filter: contrast(50) invert(0);
-    mix-blend-mode: color-burn;
-    isolation: isolate;
-} */
-       
-/* .white-box::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-            
-    border-radius:50px;
-    background-image: radial-gradient(
-        circle at center,
-        black 3%,
-        transparent 65%
-      ), radial-gradient(circle at center, black 3%, transparent 65%);
-    background-size: 1rem 1rem;
-    background-position: 0 0, 0.5rem 0.5rem;
-    mask-image: radial-gradient(circle at center, rgb(0 0 0), rgb(0 0 0 / 0.3));
-} */

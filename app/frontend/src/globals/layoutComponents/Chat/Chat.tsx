@@ -130,7 +130,7 @@ export default function Chat({ user2: otherUserForDm, chatID: chatId }: { user2?
 								value={message}
 								onChange={(e) => setMessage(e.target.value)}
 							/>
-							<button className="btn btn-primary" type='submit' disabled={message.length > 0 ? false : true}>send</button>
+							<button className="btn btn-dark" type='submit' disabled={message.length > 0 ? false : true}>send</button>
 						</form>
 					</div>
 				</>}

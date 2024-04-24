@@ -46,27 +46,22 @@ function LoginOptions() : JSX.Element {
 			}
 			{users != null && users.length > 0 && 
 				<>
-					<div className="col login">
-						<button className="btn btn-primary" onClick={handleChooseClick}>Choose user from list</button>
-						{loginOption == "choose" &&
-							<ChooseUser />
-						}
+					<div className="col col-8 mt-0 index-middle">
+						<div className="row">
+							<div className="btn-group p-0" role="group">
+								<button type="button" className={`btn btn-dark ${loginOption == "choose" ? "active" : ""}`} onClick={handleChooseClick}>Choose user from list</button>
+								<button type="button" className={`btn btn-dark ${loginOption == "login" ? "active" : ""}`} onClick={handleLoginClick}>Login</button>
+								<button type="button" className={`btn btn-dark ${loginOption == "signUp" ? "active" : ""}`} onClick={handleSignUpClick}>Create new account</button>
+							</div>
+						</div>
+							{loginOption == "choose" && <ChooseUser />}
+							{loginOption == "login" && <p>Here will be the login form</p>}
+							{loginOption == "signUp" && <SignUp />}
 					</div>
-					<div className="col login">
-						<button className="btn btn-primary" onClick={handleLoginClick}>Login</button>
-						{loginOption == "login" &&
-							<p>Here will be the login form</p>
-						}
-					</div>
-					<div className="col login">
-						<button className="btn btn-primary" onClick={handleSignUpClick}>Create new account</button>
-						{loginOption == "signUp" &&
-							<SignUp />
-						}
-					</div>
-					<H3 text='OR'/>
-					<div className="col login">
-						<Auth42Button />
+					<div className="col col-4 mt-0 index-right">
+						<div className="row">
+							<Auth42Button />
+						</div>
 					</div>
 				</>
 			}
@@ -78,15 +73,18 @@ export default function LoginScreen() : JSX.Element {
 	return (
 		<>
 			<div className="content-area">
-				<div className="col col-6 login">
+				<div className="col col-3 mt-0 index-left">
 					<FontBangers>
 						<h1>STRONGPONG</h1>
 						<p>Play pong and build stronger relationships</p>
 					</FontBangers>
 				</div>
-				<div className="col col-6 login">
-					<LoginOptions />
+				<div className="col col-9 mt-0">
+					<div className="row">
+						<LoginOptions />
+					</div>
 				</div>
+				
 			</div>
 		</>
 	);

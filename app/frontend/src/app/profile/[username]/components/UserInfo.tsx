@@ -30,15 +30,15 @@ function EditableUserName() {
 		<>
 			{editMode == false? <>
 				<DataField name="Username" data={currentUser.userName}/>
-				<button className="btn btn-primary" onClick={() => setEditMode(true)}>Edit</button>
+				<button className="btn btn-dark" onClick={() => setEditMode(true)}>Edit</button>
 				</>:
 				<form onSubmit={handleSubmit} acceptCharset='utf-8' >
 					<label htmlFor="floatingInput">New userName:</label>
 					<input id="floatingInput" className="form-control" type="text" name="userName" required minLength={3} maxLength={30} autoComplete="off" placeholder={currentUser.userName}></input>
 					{isLoading == true && <p>Updating userName...</p>}
 					{error != null && <p>Not possible to update userName: {error.message}</p>}
-					<button className="btn btn-primary" type="submit">Save changes</button>
-					<button className="btn btn-primary" onClick={() => setEditMode(false)}>Cancel</button>
+					<button className="btn btn-dark" type="submit">Save changes</button>
+					<button className="btn btn-dark" onClick={() => setEditMode(false)}>Cancel</button>
 				</form>
 			}
 		</>

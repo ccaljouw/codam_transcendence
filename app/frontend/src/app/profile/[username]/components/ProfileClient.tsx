@@ -6,7 +6,7 @@ import GameSettings from "./GameSettings.tsx";
 import LoginSettings from "./LoginSettings.tsx";
 import Blocked from "./Blocked.tsx";
 import { H3 } from '@ft_global/layoutComponents/Font';
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect } from "react";
 import useFetch from "src/globals/functionComponents/useFetch.tsx";
 import { UserProfileDto } from "@ft_dto/users/user-profile.dto.ts";
@@ -17,11 +17,15 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 	const {currentUser} = useContext(TranscendenceContext);
 	const {data: user, isLoading, error, fetcher} = useFetch<null, UserProfileDto>();
 	const pathname = usePathname();
+	const router = useRouter();
 	
 	useEffect(() => {
 		console.log(pathname);
 		if (pathname != `/profile/${userName}`)
-			console.log("pathname has to be updated"); //todo: JMA: update pathname
+		{
+			router.push(pathname);
+		}
+			// console.log("pathname has to be updated"); //todo: JMA: update pathname
 		fetchUser();
 	}, []);
 
@@ -39,9 +43,10 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 			}
 			{user != null && user.userName != null ? 
 				<>
-					<H3 text={`Profile page of ${user.userName}`}/>  
+					<div className="white-box">
+						<H3 text={`Profile page of ${user.userName}`} />  
+					</div>
 					<div className="row">
-						<p>The information below is public:</p>
 						<div className="col col-lg-4 col-md-6 col-12 white-box">
 							<UserInfo user={user} editable={user.userName == currentUser.userName}/>
 						</div>
@@ -54,7 +59,6 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 					</div>
 					{user.userName == currentUser.userName &&
 						<div className="row">
-							<p>The information below is only visible to you:</p>
 							<div className="col col-lg-4 col-md-6 col-12 white-box">
 								<GameSettings user={user}/>
 							</div>

@@ -20,10 +20,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 				<div className={`root-layout ${comic_neue.className}`}>
 					<ContextProvider>
 						<div className="content-area">
-							<div className="page">
+							<div className="page index-left">
 								{children}
 							</div>
-							<div className="chat-area">
+							<div className="chat-area index-right">
 								<ChatArea />
 							</div>
 						</div>

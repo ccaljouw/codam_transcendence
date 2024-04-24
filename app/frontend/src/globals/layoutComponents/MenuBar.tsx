@@ -7,10 +7,9 @@ import { FontBangers, FontPopArt } from './Font';
 
 function MenuLink({href, title}:{href:string, title:string}){
 	const pathname = usePathname();
-	const background = pathname === href ? "active" : "inactive";
 
 	return (
-		<Link className={ "nav-link " + { background } } href={href}>{title}</Link>
+		<Link className={`nav-link ${pathname === href ? "active" : "inactive"}`} href={href}>{title}</Link>
 	);
 }
 
@@ -19,7 +18,7 @@ export default function MenuBar(): JSX.Element {
 
 	return (
 		<>
-			<nav className="navbar navbar-expand-md white-box pb-2">
+			<nav className="navbar navbar-expand-md white-box pb-2 index-fill pt-0">
 				<FontBangers>
 					<a className="navbar-brand" href="/">STRONGPONG</a>
 					<button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
