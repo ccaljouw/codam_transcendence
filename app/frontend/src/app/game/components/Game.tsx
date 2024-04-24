@@ -89,7 +89,9 @@ export default function GameComponent() {
 		}
 		if (!game && canvasRef.current && instanceType !== InstanceTypes.observer) {
 			console.log("Game: creating game instance of type: ", instanceType);
-			const newGame = new Game(canvasRef.current, instanceType, gameData!);
+
+			//set required configuration in constants
+			const newGame = new Game(canvasRef.current, instanceType, gameData!, constants.configuration, constants.theme);
 			setGame(newGame);
 			canvasRef.current.focus();
 		}

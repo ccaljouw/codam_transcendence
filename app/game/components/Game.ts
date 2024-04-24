@@ -13,43 +13,44 @@ import { setSocketListeners } from '../utils/gameSocketListners'
 import { updateObjects, checkForGoals } from '../utils/updateObjects'
 import { countdown, setTheme } from '../utils/utils'
 import { initializeGameObjects, drawGameObjects, resetGameObjects } from '../utils/objectController'
-// import { setObserverSocket } from 'utils/gameBackendSocket'
 
 
 export class Game {
 	canvas?: HTMLCanvasElement;
+	ctx: CanvasRenderingContext2D;
+	gameData: UpdateGameDto | null = null;
+	theme: string;
+	config: string;
+	instanceType: CON.InstanceTypes = CON.InstanceTypes.observer;
+	gameState: GameState = GameState.WAITING;
 	keyListener: KeyListenerComponent = new KeyListenerComponent();
-	lastFrameTime: number = 0;
-	elapasedTimeSincceLastUpdate: number = 0;
+	soundFX: SoundFX = new SoundFX();
 	gameUsers: UpdateGameUserDto [] = [];
 	walls: Wall [] = [] ;
 	lines: GameObject [] = [];
-	backgroundFill: GameObject | null = null;
-	ctx: CanvasRenderingContext2D;
 	paddels: Paddle [] = [];
 	players: PlayerComponent [] = [];
+	ball: Ball | null = null;
+	messageFields: TextComponent [] = [];
+	backgroundFill: GameObject | null = null;
 	receivedUpdatedGameObjects: UpdateGameObjectsDto = {roomId: -1, ballX: -1, ballY: -1, ballDirection: -1, ballSpeed: 0, ballDX: -1, ballDY: -1, paddle1Y: -1, paddle2Y: -1, score1: -1, score2: -1, resetGame: -1, resetMatch: -1, winner: -1};
-	instanceType: CON.InstanceTypes = CON.InstanceTypes.observer;
-	soundFX: SoundFX = new SoundFX();
-	theme: keyof typeof CON.themes = "classic";
-	config: keyof typeof CON.config = "test";
-	gameState: GameState = GameState.WAITING;
 	winner: PlayerComponent | null = null;
 	roomId: number = 0;
-	messageFields: TextComponent [] = [];
-	ball: Ball | null = null;
-	gameData: UpdateGameDto | null = null;
+	elapasedTimeSincceLastUpdate: number = 0;
+	lastFrameTime: number = 0;
 	currentAnimationFrame: number = 0;
 
-	constructor(newCanvas: HTMLCanvasElement | undefined, instanceType: CON.InstanceTypes, data: UpdateGameDto) {
+	constructor(newCanvas: HTMLCanvasElement | undefined, instanceType: CON.InstanceTypes, data: UpdateGameDto, givenConfig: string, givenTheme: string) {
+		this.config = givenConfig;
+		this.theme = givenTheme;
 		this.gameData = data;
 		this.instanceType = instanceType;
 		this.roomId = this.gameData.id;
 		this.canvas = newCanvas? newCanvas : undefined;
 		this.ctx = this.canvas?.getContext("2d") as CanvasRenderingContext2D;
 		this.gameUsers = this.gameData.GameUsers as UpdateGameUserDto [];
-		initializeGameObjects(this, this.config);
-		setTheme(this, this.theme);
+		initializeGameObjects(this);
+		setTheme(this);
 		if (instanceType !== CON.InstanceTypes.observer) {
 			setSocketListeners(this);
 		} 
@@ -75,8 +76,8 @@ export class Game {
 		}
 		
 		if (this.gameState == `STARTED`) {
-			updateObjects(this, deltaTime, this.config);
-			checkForGoals(this, this.config);
+			updateObjects(this, deltaTime);
+			checkForGoals(this);
 		}
 		
 		if (this.instanceType < 2 && this.canvas) {
@@ -121,13 +122,13 @@ export class Game {
 		console.log("script: resetGame called");
 		resetGameObjects(this);
 		this.messageFields[0]?.setText("GOAL!");
-		countdown(this, this.config);
+		countdown(this);
 	}
  
 
 	startGame() {
 		this.gameState = `STARTED`;
-		countdown(this, this.config);
+		countdown(this);
 		this.gameLoop(1);
 	}
 }

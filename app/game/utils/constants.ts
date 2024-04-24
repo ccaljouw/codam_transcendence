@@ -190,3 +190,9 @@ export enum PlayerSide {
 	left,
 	right,
 }
+
+export enum configTypes {
+	standard,
+	test,
+	strongPong,
+}

@@ -34,17 +34,17 @@ function clearMessageFields(messageFields: TextComponent[]) {
 	}
 }
 
-// export function startKeyPressed(game: Game, config: keyof typeof CON.config) {
+// export function startKeyPressed(game: Game) {
 // 	if (game.gameState == `FINISHED`) {
 // 		game.resetMatch();
 // 	} else if (game.gameState == `WAITING`){
 // 		game.gameState = `STARTED`;
-// 		countdown(game, config);
+// 		countdown(game);
 // 	}
 // }
 
-export function countdown(game: Game, config: keyof typeof CON.config) {
-	let count = CON.config[config].countdownTime;
+export function countdown(game: Game) {
+	let count = CON.config[game.config].countdownTime;
 	let interval = setInterval(() => {
 		game.messageFields[0]?.setText(count.toString());
 		count--;
@@ -53,7 +53,7 @@ export function countdown(game: Game, config: keyof typeof CON.config) {
 			clearMessageFields(game.messageFields);
 			clearInterval(interval);
 			if (game.instanceType === 0 && game.ball?.movementComponent.getSpeed() === 0) {
-				game.ball?.getStartValues(config, game); //todo change to observer
+				game.ball?.getStartValues(game.config, game); //todo change to observer
 			}
 		}
 	}, 1000);
@@ -69,9 +69,9 @@ export function countdown(game: Game, config: keyof typeof CON.config) {
 // 	}
 // }
 
-export function checkWinCondition(players: PlayerComponent[], config: keyof typeof CON.config) {
-	let winningScore = CON.config[config].winningScore;
-	for (let player of players) {
+export function checkWinCondition(game: Game) {
+	let winningScore = CON.config[game.config].winningScore;
+	for (let player of game.players) {
 		if (player.getScore() >= winningScore) {
 			return player.getSide();
 		}
@@ -79,81 +79,81 @@ export function checkWinCondition(players: PlayerComponent[], config: keyof type
 	return -1;
 }
 
-export function settleScore(players: PlayerComponent[], thisSideScored: CON.PlayerSide, game: Game) {
+export function settleScore(thisSideScored: CON.PlayerSide, game: Game) {
 	const gameSocket = transcendenceSocket;
 
-	players[thisSideScored].setScore(players[thisSideScored].getScore() + 1);
-	gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, score1: players[0].getScore(), score2: players[1].getScore()});
+	game.players[thisSideScored].setScore(game.players[thisSideScored].getScore() + 1);
+	gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, score1: game.players[0].getScore(), score2: game.players[1].getScore()});
 }
 
-export function detectScore(ball: Ball, players: PlayerComponent[], config: keyof typeof CON.config, game: Game) {
+export function detectScore(ball: Ball, game: Game) {
 	if (ball.getX() < 0) {
-		settleScore(players, 1, game);
+		settleScore(1, game);
 		return true;
 	}
-	else if (ball.getX() + ball.getWidth() > CON.config[config].screenWidth) {
-		settleScore(players, 0, game);
+	else if (ball.getX() + ball.getWidth() > CON.config[game.config].screenWidth) {
+		settleScore(0, game);
 		return true;
 	}
 	return false;
 }
 
-function setPaddleTheme(game: Game, theme: keyof typeof CON.themes) {
-	game.paddels.forEach(paddle => paddle.setColor(CON.themes[theme].leftPaddleColor));
-	game.paddels.forEach(paddle => paddle.setColor(CON.themes[theme].rightPaddleColor));
+function setPaddleTheme(game: Game) {
+	game.paddels.forEach(paddle => paddle.setColor(CON.themes[game.theme].leftPaddleColor));
+	game.paddels.forEach(paddle => paddle.setColor(CON.themes[game.theme].rightPaddleColor));
 }
 
-function setWallTheme(game: Game, theme: keyof typeof CON.themes) {
-	game.walls.forEach(wall => wall.setColor(CON.themes[theme].backWallColor));
-	game.walls.forEach(wall => wall.setColor(CON.themes[theme].wallColor));
+function setWallTheme(game: Game) {
+	game.walls.forEach(wall => wall.setColor(CON.themes[game.theme].backWallColor));
+	game.walls.forEach(wall => wall.setColor(CON.themes[game.theme].wallColor));
 }
 
-function setPlayerTheme(game: Game, theme: keyof typeof CON.themes) {
+function setPlayerTheme(game: Game) {
 	game.players.forEach(player => {
 		if (player.getSide() == 0) {
-			player.nameField?.setSize(CON.themes[theme].leftPlayerSize);
-			player.nameField?.setColor(CON.themes[theme].leftPlayerColor);
-			player.nameField?.setFont(CON.themes[theme].leftPlayerFont);
-			player.scoreField?.setSize(CON.themes[theme].leftScoreFieldSize);
-			player.scoreField?.setColor(CON.themes[theme].leftScoreFieldColor);
-			player.scoreField?.setFont(CON.themes[theme].leftScoreFieldFont);
+			player.nameField?.setSize(CON.themes[game.theme].leftPlayerSize);
+			player.nameField?.setColor(CON.themes[game.theme].leftPlayerColor);
+			player.nameField?.setFont(CON.themes[game.theme].leftPlayerFont);
+			player.scoreField?.setSize(CON.themes[game.theme].leftScoreFieldSize);
+			player.scoreField?.setColor(CON.themes[game.theme].leftScoreFieldColor);
+			player.scoreField?.setFont(CON.themes[game.theme].leftScoreFieldFont);
 		}
 		else {
-			player.nameField?.setSize(CON.themes[theme].rightPlayerSize);
-			player.nameField?.setColor(CON.themes[theme].rightPlayerColor);
-			player.nameField?.setFont(CON.themes[theme].rightPlayerFont);
-			player.scoreField?.setSize(CON.themes[theme].rightScoreFieldSize);
-			player.scoreField?.setColor(CON.themes[theme].rightScoreFieldColor);
-			player.scoreField?.setFont(CON.themes[theme].rightScoreFieldFont);
+			player.nameField?.setSize(CON.themes[game.theme].rightPlayerSize);
+			player.nameField?.setColor(CON.themes[game.theme].rightPlayerColor);
+			player.nameField?.setFont(CON.themes[game.theme].rightPlayerFont);
+			player.scoreField?.setSize(CON.themes[game.theme].rightScoreFieldSize);
+			player.scoreField?.setColor(CON.themes[game.theme].rightScoreFieldColor);
+			player.scoreField?.setFont(CON.themes[game.theme].rightScoreFieldFont);
 		}
 	});
 }
 	
-function setMessageTheme(game: Game, theme: keyof typeof CON.themes) {
+function setMessageTheme(game: Game) {
 	game.messageFields.forEach(message => {
 		if (message.getName() == "left") {
-			message.setColor(CON.themes[theme].bottomLeftTextColor);
-			message.setFont(CON.themes[theme].bottomLeftTextFont);
-			message.setSize(CON.themes[theme].bottomLeftTextSize);
+			message.setColor(CON.themes[game.theme].bottomLeftTextColor);
+			message.setFont(CON.themes[game.theme].bottomLeftTextFont);
+			message.setSize(CON.themes[game.theme].bottomLeftTextSize);
 		}
 		else if (message.getName() == "right") {
-			message.setColor(CON.themes[theme].bottomRightTextColor);
-			message.setFont(CON.themes[theme].bottomRightTextFont);
-			message.setSize(CON.themes[theme].bottomRightTextSize);
+			message.setColor(CON.themes[game.theme].bottomRightTextColor);
+			message.setFont(CON.themes[game.theme].bottomRightTextFont);
+			message.setSize(CON.themes[game.theme].bottomRightTextSize);
 		}
 	});
 }
 
-export function	setTheme(game: Game, theme: keyof typeof CON.themes) {
-	game.theme = theme;
-	setPaddleTheme(game, theme);
-	setWallTheme(game, theme);
-	setPlayerTheme(game, theme);
-	setMessageTheme(game, theme);
+export function	setTheme(game: Game) {
+	game.theme = game.theme;
+	setPaddleTheme(game);
+	setWallTheme(game);
+	setPlayerTheme(game);
+	setMessageTheme(game);
 
-	game.lines.forEach(line => line.setColor(CON.themes[theme].lineColor));
-	game.backgroundFill?.setColor(CON.themes[theme].backgroundColor);
-	game.ball?.setColor(CON.themes[theme].ballColor);
+	game.lines.forEach(line => line.setColor(CON.themes[game.theme].lineColor));
+	game.backgroundFill?.setColor(CON.themes[game.theme].backgroundColor);
+	game.ball?.setColor(CON.themes[game.theme].ballColor);
 	game.ctx.clearRect(0, 0, game.canvas!.width, game.canvas!.height);
 	drawGameObjects(game);
 }

@@ -11,19 +11,19 @@ import {
 		lineInitializer,
 		canvasInitializer } from "./initializers";
 
-export function initializeGameObjects(game: Game, config: keyof typeof CON.config) {
+export function initializeGameObjects(game: Game) {
   if (game.instanceType < 2) {
-    canvasInitializer(game.canvas!, config);
-    keyListenerInitializer(game.keyListener, game, config);
-    messageFieldInitializer(game.messageFields, config);
+    canvasInitializer(game.canvas!, game.config);
+    keyListenerInitializer(game.keyListener, game, game.config);
+    messageFieldInitializer(game.messageFields, game.config);
   }
   
-  paddleInitializer(game.paddels, config, game.instanceType);
-  wallInitializer(game.walls, config);
-  lineInitializer(game.lines, config);
-  playerInitializer(game.players, config, game.gameUsers);
-  keyListenerInitializer(game.keyListener, game, config);
-  game.backgroundFill = new GameObject("background", 0, 0, CON.config[config].screenWidth, CON.config[config].screenHeight, 'black');
+  paddleInitializer(game.paddels, game.config, game.instanceType);
+  wallInitializer(game.walls, game.config);
+  lineInitializer(game.lines, game.config);
+  playerInitializer(game.players, game.config, game.gameUsers);
+  keyListenerInitializer(game.keyListener, game, game.config);
+  game.backgroundFill = new GameObject("background", 0, 0, CON.config[game.config].screenWidth, CON.config[game.config].screenHeight, 'black');
   setBall(game);
 }
 

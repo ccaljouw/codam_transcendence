@@ -62,6 +62,7 @@
     "socketUpdateInterval": "0.01",
     "interpolationFactor": "0.4",
     
+    "sensorInput": "false",
     "leftPaddleUpKey": "ArrowUp",
     "leftPaddleDownKey": "ArrowDown",
     "rightPaddleUpKey": "ArrowUp",
@@ -94,7 +95,7 @@
     "AILevel": "0.7"
   },
 
-  "twoPlayerOnePC": {
+  "strongPong": {
     "screenWidth": "1000",
     "screenHeight": "666",
 
@@ -109,6 +110,7 @@
     "socketUpdateInterval": "0.01",
     "interpolationFactor": "0.4",
 
+    "sensorInput": "true",
     "leftPaddleUpKey": "w",
     "leftPaddleDownKey": "s",
     "rightPaddleUpKey": "ArrowUp",

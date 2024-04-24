@@ -10,24 +10,24 @@ import { transcendenceSocket } from '@ft_global/socket.globalvar'
 //todo split per instance type and adjust imports 
 
 
-export function updateObjects(game: Game, deltaTime: number, config: keyof typeof CON.config) {
+export function updateObjects(game: Game, deltaTime: number) {
   if (game.gameState !== GameState.STARTED) {
     return;
   }
 
   game.elapasedTimeSincceLastUpdate += deltaTime;
 
-  updatePaddles(game, deltaTime, config);
-  updateBall(game, deltaTime, config);
+  updatePaddles(game, deltaTime);
+  updateBall(game, deltaTime);
   // game.messageFields.forEach(message => message.update());
 }
 
-function updatePaddles(game: Game, deltaTime: number, config: keyof typeof CON.config) {
+function updatePaddles(game: Game, deltaTime: number) {
   const gameSocket = transcendenceSocket;
 
-  CON.config[config].socketUpdateInterval
-  let paddleMoved = game.paddels.map(paddle => paddle.updatePaddle(deltaTime, config, game.ball as Ball));
-  if (paddleMoved.some(moved => moved === true) && game.elapasedTimeSincceLastUpdate >= CON.config[config].socketUpdateInterval) {
+  CON.config[game.config].socketUpdateInterval
+  let paddleMoved = game.paddels.map(paddle => paddle.updatePaddle(deltaTime, game.config, game.ball as Ball));
+  if (paddleMoved.some(moved => moved === true) && game.elapasedTimeSincceLastUpdate >= CON.config[game.config].socketUpdateInterval) {
     if (game.instanceType === 0) {
       gameSocket.emit("game/updateGameObjects", {
         roomId: game.roomId,
@@ -43,15 +43,15 @@ function updatePaddles(game: Game, deltaTime: number, config: keyof typeof CON.c
   }
 }
 
-function updateBall(game: Game, deltaTime: number, config: keyof typeof CON.config) {
-  emmitBallPosition(game, deltaTime, config);
-  interpolateBallPosition(game, config);
+function updateBall(game: Game, deltaTime: number) {
+  emmitBallPosition(game, deltaTime);
+  interpolateBallPosition(game);
 }
 
-function emmitBallPosition(game: Game, deltaTime: number, config: keyof typeof CON.config) {
+function emmitBallPosition(game: Game, deltaTime: number) {
   game.ball?.updateBall(game.gameState, deltaTime);
   
-  if (game.instanceType === 0 && game.elapasedTimeSincceLastUpdate >= CON.config[config].socketUpdateInterval) { //todo change to observer
+  if (game.instanceType === 0 && game.elapasedTimeSincceLastUpdate >= CON.config[game.config].socketUpdateInterval) { //todo change to observer
     const gameSocket = transcendenceSocket;
     gameSocket.emit("game/updateGameObjects", {
       roomId: game.roomId,
@@ -67,7 +67,7 @@ function emmitBallPosition(game: Game, deltaTime: number, config: keyof typeof C
   }
 }
 
-function interpolateBallPosition(game: Game, config: keyof typeof CON.config) {
+function interpolateBallPosition(game: Game) {
   if (game.instanceType === 1) { //todo change to not observer
     let targetBallSettings: {x: number, y: number, dx: number, dy: number};
     if (game.receivedUpdatedGameObjects.ballX! > 0) {
@@ -78,28 +78,28 @@ function interpolateBallPosition(game: Game, config: keyof typeof CON.config) {
       const currentDX = game.ball?.movementComponent.getSpeedX();
       const currentDY = game.ball?.movementComponent.getSpeedY();
 
-      game.ball?.movementComponent.setX(currentX! + (targetBallSettings.x - currentX!) * CON.config[config].interpolationFactor);
-      game.ball?.movementComponent.setY(currentY! + (targetBallSettings.y - currentY!) * CON.config[config].interpolationFactor);
-      game.ball?.movementComponent.setSpeedX(currentDX! + (targetBallSettings.dx - currentDX!) * CON.config[config].interpolationFactor);
-      game.ball?.movementComponent.setSpeedY(currentDY! + (targetBallSettings.dy - currentDY!) * CON.config[config].interpolationFactor);
+      game.ball?.movementComponent.setX(currentX! + (targetBallSettings.x - currentX!) * CON.config[game.config].interpolationFactor);
+      game.ball?.movementComponent.setY(currentY! + (targetBallSettings.y - currentY!) * CON.config[game.config].interpolationFactor);
+      game.ball?.movementComponent.setSpeedX(currentDX! + (targetBallSettings.dx - currentDX!) * CON.config[game.config].interpolationFactor);
+      game.ball?.movementComponent.setSpeedY(currentDY! + (targetBallSettings.dy - currentDY!) * CON.config[game.config].interpolationFactor);
     }
   }
 }
 
-export function checkForGoals(game: Game, config: keyof typeof CON.config) {
+export function checkForGoals(game: Game) {
   const gameSocket = transcendenceSocket;
   if (game.instanceType !== 0) { //todo change to not observer
     return;
   }
 
   if (game.ball) {
-    let goal = detectScore(game.ball as Ball, game.players, config, game);
+    let goal = detectScore(game.ball as Ball, game);
     if (goal === false) {
       return;
     }
   }
   
-  let winningSide: number = checkWinCondition(game.players, config) ?? -1;
+  let winningSide: number = checkWinCondition(game) ?? -1;
   if (winningSide !== -1) {
     const payload : UpdateGameStateDto  = {roomId: game.roomId, state: GameState.FINISHED, winner: winningSide, score1: game.players[0].getScore(), score2: game.players[1].getScore()};
     gameSocket.emit("game/updateGameState", payload);
