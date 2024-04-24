@@ -57,10 +57,6 @@ export class Paddle extends GameObject {
 	}
 
 	private updateAiPaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball): boolean {
-    if (ball == null || ball.movementComponent.getSpeed() === 0) {
-        return false;
-    }
-
 		let hasMoved = false;
 		const margin = 2;
 		const AIlevel = CON.config[config].AILevel;
@@ -86,30 +82,59 @@ export class Paddle extends GameObject {
 			this.y = this.movementComponent.getY();
 			this.checkBounds(config);
 			hasMoved = true;
-			
 		}
     return hasMoved;
 	}
 
-	// private AnalogupdatePaddle(deltaTime: number, config: keyof typeof CON.config): boolean {
-	// 	let hasMoved = false;
-	// 	const paddleMinY = CON.config[config].wallWidth + CON.config[config].paddleGap;
-	// 	const paddleMaxY = CON.config[config].screenHeight - this.height - CON.config[config].wallWidth - CON.config[config].paddleGap;
+	private AnalogupdatePaddle(deltaTime: number, config: keyof typeof CON.config): boolean {
+		const margin = 3;
+		// let hasMoved = false;
+		
+		//todo: get sensor input
+		let sensorInputValue = 0; //-1 to 1
 
+		//todo: do not calculate here
+		const paddleMinY = CON.config[config].wallWidth + CON.config[config].paddleGap;
+		const paddleMaxY = CON.config[config].screenHeight - this.height - CON.config[config].wallWidth - CON.config[config].paddleGap;
+		const paddleRange = paddleMaxY - paddleMinY;
 
-	// 	return hasMoved;
-	
-	// }
+		//simply set nuew position
+		const requiredPaddlePosition = paddleRange * sensorInputValue + paddleMinY;
+		if (requiredPaddlePosition - this.y < margin) {
+			return false;
+		}
+		this.y = requiredPaddlePosition;
+		return true
+		
+		
+		// calculate useing speed and delta time
+		// const currentY = this.movementComponent.getY();
+		// const requiredMovement = requiredPaddlePosition - currentY;
+		// if (Math.abs(requiredMovement) > margin) {
+		// 	const speed = Math.min(CON.config[config].paddleBaseSpeed, Math.abs(requiredMovement));
+		// 	this.movementComponent.setSpeed(speed);
+		// 	this.movementComponent.setDirection(requiredMovement > 0 ? 0.5 * Math.PI : 1.5 * Math.PI);
+		// 	this.movementComponent.update(deltaTime);
+		// 	this.y = this.movementComponent.getY();
+		// 	this.checkBounds(config);
+		// 	hasMoved = true;
+		// }
+		// return hasMoved;
+	}
 
 
 	public updatePaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball | null): boolean {
+    if (ball == null || ball.movementComponent.getSpeed() === 0) {
+			return false;
+		}
+
 		if (this.name == `AI`) {
 			return this.updateAiPaddle(deltaTime, config, ball as Ball);
 		}
 
-		// if (CON.config[config].sensorInput === true) {
-		// 	return this.AnalogupdatePaddle(deltaTime, config);
-		// }
+		if (CON.config[config].sensorInput === true) {
+			return this.AnalogupdatePaddle(deltaTime, config);
+		}
 		
 		let hasMoved = false;
 		const margin = .5;

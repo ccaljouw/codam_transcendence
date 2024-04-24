@@ -90,16 +90,13 @@ export class Game {
 		if (this.gameState === `FINISHED`) {
 			return;
 		}
-	
 		this.gameState = `FINISHED`;
-		
 		this.winner = this.players[winningSide];
 		if (this.canvas) {
 			this.messageFields[0]?.setText(this.winner?.getName() + " won the match!");
 			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 			drawGameObjects(this);
 		}
-
 		cancelAnimationFrame(this.currentAnimationFrame);
 		console.log("player: ", this.winner?.getSide(), this.winner?.getName(), " won the match");
 		// this.gameSocket.off(`game/updateGameObjects`);
@@ -108,7 +105,6 @@ export class Game {
 
 	abortGame() {
 		this.gameState = `FINISHED`;
-		
 		if (this.canvas) {
 			this.messageFields[0]?.setText("Other player left the game");
 			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
