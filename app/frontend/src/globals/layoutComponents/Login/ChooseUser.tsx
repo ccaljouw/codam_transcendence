@@ -9,20 +9,17 @@ import { FontBangers } from 'src/globals/layoutComponents/Font';
 export default function ChooseUser() : JSX.Element {
 	const {setCurrentUser} = useContext(TranscendenceContext);
 
-	const setConnectionStatus = (user: UserProfileDto) => {
-		console.log("I should do something with my connection status");
-		sessionStorage.setItem('loginName', user.loginName); 
-		sessionStorage.setItem('userName', user.userName);
-		sessionStorage.setItem('userId', JSON.stringify(user.id)); //todo: do this in contextprovider?
+	const setLoggedUser = (user: UserProfileDto) => {
+		console.log("Setting new user with id " + user.id + " in ChooseUser");
 		setCurrentUser(user);
-		console.log(`User set to ${user.id}`);
+		sessionStorage.setItem('userId', JSON.stringify(user.id));
 	}
 
 	const setCurrentUserDisplayFunc = (user: UserProfileDto) => {
 		return (
 			<>
 				<li key={user.id}> 
-					<span onClick={() => setConnectionStatus(user)}> 
+					<span onClick={() => setLoggedUser(user)}> 
 						{user.firstName} {user.lastName} - {user.email}
 					</span>
 				</li>

@@ -1,6 +1,7 @@
+import { UserProfileDto } from '@ft_dto/users';
 import { FontBangers } from 'src/globals/layoutComponents/Font';
 
-export default function GameSettings() : JSX.Element {
+export default function GameSettings({user} : {user: UserProfileDto}) : JSX.Element {
 	return (
         <>
             <FontBangers>

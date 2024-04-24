@@ -1,3 +1,4 @@
+"use client";
 import { useContext } from "react";
 import { TranscendenceContext } from "@ft_global/contextprovider.globalvar";
 import { FontBangers } from "src/globals/layoutComponents/Font";

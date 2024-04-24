@@ -1,15 +1,15 @@
 .userLink {
-    color: blue;
+    color: var(--strongpong-dark-blue);
 	text-decoration: none;
 }
 
 .userLink:hover {
-    color: red;
+    color: var(--strongpong-red);
 	cursor: pointer;
 }
 
 .userlink_item:hover {
-	text-shadow: 0 0 5px #FF0000;
+	/* text-shadow: 0 0 5px #FF0000; */
 	cursor: pointer;
 }
 

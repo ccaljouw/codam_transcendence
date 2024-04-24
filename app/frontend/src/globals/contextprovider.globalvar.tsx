@@ -6,11 +6,10 @@ import { ChatMessageToRoomDto } from "@ft_dto/chat";
 import { WebsocketStatusChangeDto, CreateTokenDto } from '@ft_dto/socket'
 import { constants } from "@ft_global/constants.globalvar";
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
-import ChatArea from "./layoutComponents/ChatArea";
 import MenuBar from "./layoutComponents/MenuBar";
-import Login from "./layoutComponents//Login";
-import DottedCircles from "./layoutComponents/DottedCircles";
+import LoginScreen from "./layoutComponents/Login/LoginScreen";
 import useFetch from "./functionComponents/useFetch";
+import useAuthentication from "./functionComponents/useAuthentication";
 
 // Context for the entire app
 interface TranscendenceContextVars {
@@ -37,11 +36,11 @@ export const TranscendenceContext = createContext<TranscendenceContextVars>({
 });
 
 export function ContextProvider({ children }: { children: React.ReactNode }) {
-
 	const [someUserUpdatedTheirStatus, setSomeUserUpdatedTheirStatus] = useState<WebsocketStatusChangeDto>({} as WebsocketStatusChangeDto);
 	const [messageToUserNotInRoom, setMessageToUserNotInRoom] = useState<ChatMessageToRoomDto>({} as ChatMessageToRoomDto);
 	const [currentChatRoom, setCurrentChatRoom] = useState<number>(-1);
 	const [currentUser, setCurrentUser] = useState<UserProfileDto>({} as UserProfileDto);
+	const {user} = useAuthentication();
 	const {data: userPatch, isLoading: userPatchLoading, error: userPatchError, fetcher: patchUserFetcher} = useFetch<UpdateUserDto, UserProfileDto>();
 	const {data: addToken, isLoading: addTokenLoading, error: addTokenError, fetcher: addTokenFetcher} = useFetch<CreateTokenDto, boolean>();
 
@@ -69,7 +68,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 			transcendenceSocket.off('socket/messageToUserNotInRoom');
 			transcendenceSocket.off('connect');
 		}
-	}, [])
+	}, []);
 
 	// Update the user's status to online when the user logs in
 	useEffect(() => {
@@ -94,7 +93,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		if (userPatch) {
 			setCurrentUser(userPatch);
 		}
-	}, [userPatch])
+	}, [userPatch]);
 
 	useEffect(() => {
 		if (addToken) {
@@ -107,7 +106,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 			console.log('User status updated to online:', currentUser.id,currentUser.userName, transcendenceSocket.id, statusUpdate);
 			transcendenceSocket.emit('socket/statusChange', statusUpdate); // Emit the status change to the socket
 		}
-	}, [addToken])
+	}, [addToken]);
 
 	useEffect(() => {
 		if (userPatchError) {
@@ -116,7 +115,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		if (addTokenError) {
 			console.error('Error adding token:', addTokenError);
 		}
-	}, [userPatchError, addTokenError])
+	}, [userPatchError, addTokenError]);
 
 	// Function to update the user's online status
 	const setUserStatusToOnline = async () => {
@@ -134,21 +133,20 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 			addTokenFetcher({url: constants.API_ADD_TOKEN, fetchMethod: 'POST', payload: addTokenData });
 	};
 
+	//todo: JMA: find out why this is needed, because it is also placed in useAuthentication
+	useEffect(() => {
+		if (user != null)
+		{
+			console.log("updating currentUser from contextProvider")
+			setCurrentUser(user);
+		}
+	}, [user]);
+
 	return (
 		<>
 			<TranscendenceContext.Provider value={contextValues}>
-				{/* <DottedCircles /> { //JMA: Leave this for now */}
-				<MenuBar />
-				{!currentUser.id && <Login />}
-				{currentUser.id && 
-				<div className="content-area">
-					<div className="page">
-						{children}
-					</div>
-					<div className="chat-area">
-						<ChatArea />
-					</div>
-				</div>}
+				<MenuBar/>
+				{currentUser.id? <>{children}</> : <LoginScreen />}
 			</TranscendenceContext.Provider>
 		</>
 	)
