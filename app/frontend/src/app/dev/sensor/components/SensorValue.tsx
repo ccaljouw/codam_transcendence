@@ -28,6 +28,7 @@ export default function SensorValue() : JSX.Element {
         const serial = navigator.serial as Serial;
         if (!serial)
         {
+            console.log("Only available in Chrome");
             return ;
         }
         try {
@@ -47,11 +48,6 @@ export default function SensorValue() : JSX.Element {
             console.error('Serial port error:', error);
         }
     }
-
-    // function handleClick() {
-    //     // Event listener for the connect button
-    //     document?.getElementById('connectButton')?.addEventListener('click', connectToESP8266);
-    // };
 
     return (
         <>

@@ -8,9 +8,7 @@
 //  Check if your sensor matches the one used in the example.
 //  Optionally adjust the code.
 
-
 #include "AS5600.h"
-
 
 AS5600 as5600;   //  use default Wire
 
@@ -18,14 +16,13 @@ int sensorValue;
 float filteredValue = 0.0;
 
 // Define constants for mapping
-const int sensorMin = 0;
-const int sensorMax = 4096;
+const int sensorMin = 2300; //0
+const int sensorMax = 3800; //4096
 const float outputMin = -1.0;
 const float outputMax = 1.0;
 
 // Define constants for noise filtering
 const float filterAlpha = 0.1; // Adjust this value for the desired filtering strength
-
 
 void setup()
 {
@@ -60,12 +57,18 @@ void loop()
   
   // Apply noise filtering
   filteredValue = filteredValue + filterAlpha * (mappedValue - filteredValue);
+
+  //cut off edges that are bigger than sensorMax or smaller than sensorMin
+  if (filteredValue > 1.0)
+    filteredValue = 1.0;
+  else if (filteredValue < -1.0)
+    filteredValue = -1.0;
   
   // Output the filtered value
-  printf("float: %f, raw: %d\n", filteredValue, sensorValue);
-  
-  
-
+  Serial.print("float: ");
+  Serial.print(filteredValue);
+  Serial.print(", raw: ");
+  Serial.println(sensorValue);
 
   delay(50);
 }
