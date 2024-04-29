@@ -1,7 +1,7 @@
 "use client";
 import { useContext, useState, useEffect, FormEvent} from 'react';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
-import DataField from "@ft_global/functionComponents/DataField";
+import StaticDataField from "src/app/profile/[username]/components/utils/StaticDataField";
 import FormInput from 'src/globals/functionComponents/form/FormInput';
 import useFetch from 'src/globals/functionComponents/useFetch';
 import { constants } from 'src/globals/constants.globalvar';
@@ -62,27 +62,28 @@ export default function LoginSettings({user} : {user: UserProfileDto}): JSX.Elem
 			{editMode == false && 
 				<>
 					<p>From context:</p>
-					<DataField name="Login name" data={currentUser.loginName} />
-					<DataField name="First name" data={currentUser.firstName} />
-					<DataField name="Last name" data={currentUser.lastName} />
-					<DataField name="Email" data={currentUser.email} />
+					<StaticDataField name="Login name" data={currentUser.loginName} />
+					<StaticDataField name="First name" data={currentUser.firstName} />
+					<StaticDataField name="Last name" data={currentUser.lastName} />
+					<StaticDataField name="Email" data={currentUser.email} />
 					<p>
 						Button to Enable two-factor authentication, link to change password
 					</p>
 					{updatedUser != null && <p>User settings updated!</p>}
 					<button className="btn btn-dark" onClick={toggleEditMode}>Edit</button>
+					
 				</>
 			}
 			{editMode == true && 
 				<>
 					<form onSubmit={handleSubmit}>
 						<h1>Change your login information</h1>
-						<FormInput type="text" name="firstName" required={false} text="First Name"/>
-						<FormInput type="text" name="lastName" required={false} text="Last Name"/>
-						<FormInput type="email" name="email" required={false} text="Email"/>
-						<FormInput type="text" name="loginName" required={false} text="Login name"/>
-						<FormInput type="password" name="hash" required={false} text="Password"/>	
-						<FormInput type="password" name="hash2" required={false} text="Confirm password"/>
+						<FormInput type="text" name="firstName" text="First Name"/>
+						<FormInput type="text" name="lastName" text="Last Name"/>
+						<FormInput type="email" name="email" text="Email"/>
+						<FormInput type="text" name="loginName" text="Login name"/>
+						<FormInput type="password" name="hash" text="Password"/>	
+						<FormInput type="password" name="hash2" text="Confirm password"/>
 						<button className="btn btn-dark" type="submit" >Save changes</button>
 						<button className="btn btn-dark" onClick={toggleEditMode}>Cancel</button>
 					</form>

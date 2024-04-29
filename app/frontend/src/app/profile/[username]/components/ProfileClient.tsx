@@ -47,25 +47,25 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 						<H3 text={`Profile page of ${user.userName}`} />  
 					</div>
 					<div className="row">
-						<div className="col col-lg-4 col-md-6 col-12 white-box">
+						<div className="col col-lg-6 col-md-12 white-box">
 							<UserInfo user={user} editable={user.userName == currentUser.userName}/>
 						</div>
-						<div className="col col-lg-4 col-md-6 col-12 white-box">
+						<div className="col col-lg-6 col-md-12 white-box">
 							<Stats user={user}/>
 						</div>
-						<div className="col col-lg-4 col-md-6 col-12 white-box">
+						<div className="col col-lg-6 col-md-12 white-box">
 							<MatchHistory user={user}/>
 						</div>
 					</div>
 					{user.userName == currentUser.userName &&
 						<div className="row">
-							<div className="col col-lg-4 col-md-6 col-12 white-box">
+							<div className="col col-lg-6 col-md-12 white-box">
 								<GameSettings user={user}/>
 							</div>
-							<div className="col col-lg-4 col-md-6 col-12 white-box">
+							<div className="col col-lg-6 col-md-12 white-box">
 								<LoginSettings user={user}/>
 							</div>
-							<div className="col col-lg-4 col-md-6 col-12 white-box">
+							<div className="col col-lg-6 col-md-12 white-box">
 								<Blocked user={user}/>
 							</div>
 						</div>
