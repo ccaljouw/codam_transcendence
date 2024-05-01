@@ -1,9 +1,12 @@
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { ChatSocketService } from './services/chatsocket.service';
-import { ChatMessageToRoomDto } from '@ft_dto/chat';
+import { ChatMessageToRoomDto, InviteSocketMessageDto } from '@ft_dto/chat';
 import { Server, Socket } from 'socket.io';
 import { SocketServerProvider } from '../socket/socketserver.gateway';
 import { ChatMessageService } from './services/chat-messages.service';
+import { InviteService } from './services/invite.service';
+import { TokenService } from 'src/users/token.service';
+import { ChatService } from './services/chat.service';
 
 @WebSocketGateway({
 	cors: true
@@ -12,45 +15,48 @@ export class ChatSocketGateway {
 	constructor(
 		private readonly chatSocketService: ChatSocketService,
 		private readonly chatMessageService: ChatMessageService,
-		private readonly commonServer: SocketServerProvider	// import global Websocket-server
-	) { 
+		private readonly commonServer: SocketServerProvider,	// import global Websocket-server
+		private readonly tokenService: TokenService,
+		private readonly inviteService: InviteService,
+		private readonly chatDbService: ChatService
+	) {
 	}
 
 	@WebSocketServer()
 	chat_io: Server = this.commonServer.socketIO;
-	
+
 	// This is the function that is called when a message is sent.
 	@SubscribeMessage('chat/message')
 	handleMessage(_client: Socket, payload: string) {
-		console.log(`Got message: ${payload}`);
-		this.chat_io.emit('chat/message', payload);
-		return ;
+		return;
 	}
 
 	// This is the function that is called when a message is sent to a room.
 	@SubscribeMessage('chat/msgToRoom')
 	async handleMessageToRoom(_client: Socket, payload: ChatMessageToRoomDto) {
-		console.log(`Got message from ${payload.userId} to room: ${payload.room} -> ${payload.message},`);
-		const messageToChat : ChatMessageToRoomDto= {
+		let invite = null;
+		if (payload.inviteId)
+			invite = await this.inviteService.findOne(payload.inviteId);
+		const messageToChat: ChatMessageToRoomDto = {
 			userId: payload.userId,
 			userName: payload.userName,
 			message: payload.message,
 			room: payload.room,
-			action: false
+			action: false,
+			inviteId: payload.inviteId,
+			invite: invite
 		};
-		
-		this.chat_io.to(payload.room).emit('chat/messageFromRoom', messageToChat);
-		const messageResult = await this.chatMessageService.messageToDB({chatId: parseInt(payload.room), userId: payload.userId, content: payload.message}); //replace with api call in frontend?
+
+		const messageResult = await this.chatMessageService.messageToDB({ chatId: parseInt(payload.room), userId: payload.userId, content: payload.message, inviteId: payload.inviteId }); //replace with api call in frontend?
 		const tokenArray = await this.chatSocketService.getUserTokenArray(messageResult.usersNotInRoom);
 		tokenArray.forEach(element => {
 			if (element !== null) // if the user is online (ie has a token that is not null) but not in the room, send notification
 			{
-				console.log("Emitting to usernotinroom for " + payload.room + element)
 				this.chat_io.to(element).emit('chat/messageToUserNotInRoom', messageToChat);
 			}
 		});
-		console.log(`Sending username ${payload.userName} and message ${payload.message} to room`);
-		return ;
+		this.chat_io.to(payload.room).emit('chat/messageFromRoom', messageToChat);
+		return;
 	}
 
 	// This is the function that is called when a user joins a room.
@@ -58,8 +64,8 @@ export class ChatSocketGateway {
 	async joinRoom(client: Socket, payload: ChatMessageToRoomDto) {
 		await client.join(payload.room);
 		const user = await this.chatSocketService.getChatUserById(parseInt(payload.room), payload.userId);
-		if (!user?.isInChatRoom){ // if user is not already in chatroom, emit status change message
-			const statusChangeMessage : ChatMessageToRoomDto = {
+		if (!user?.isInChatRoom) { // if user is not already in chatroom, emit status change message
+			const statusChangeMessage: ChatMessageToRoomDto = {
 				userId: payload.userId,
 				userName: payload.userName,
 				room: payload.room,
@@ -68,31 +74,35 @@ export class ChatSocketGateway {
 			};
 			this.chat_io.to(payload.room).emit('chat/messageFromRoom', statusChangeMessage);
 		}
-		console.log(`Joined room ${payload.room} with user ${payload.userName}`);
-		await this.chatSocketService.changeChatUserStatus({client: client, userId: payload.userId, chatId: parseInt(payload.room), isInChatRoom: true});
-		await this.chatMessageService.resetUnreadMessages({userId: payload.userId, chatId: parseInt(payload.room)});
 	}
 
 	// This is the function that is called when a user leaves a room.
 	@SubscribeMessage('chat/leaveRoom')
 	async leaveRoom(client: Socket, payload: ChatMessageToRoomDto) {
 		// this.chat_io
-		await this.chatSocketService.changeChatUserStatus({client: client, userId: payload.userId, chatId: parseInt(payload.room), isInChatRoom: false});
+		await this.chatSocketService.changeChatUserStatus({ token: client.id, userId: payload.userId, chatId: parseInt(payload.room), isInChatRoom: false });
 		const userStillInChatRoom = await this.chatSocketService.isUserInChatRoom(parseInt(payload.room), payload.userId);
 		if (!userStillInChatRoom) // if all tokens for the user have left the chatroom, emit status change message
 		{
-			console.log(` << ${payload.userName} has left room ${payload.room}>> `)
-			console.log(payload.message);
-			const statusChangeMessage : ChatMessageToRoomDto = {
+			const statusChangeMessage: ChatMessageToRoomDto = {
 				userId: payload.userId,
 				userName: payload.userName,
 				room: payload.room,
 				message: "LEAVE",
 				action: true
 			};
-			console.log(`EMITTING: ${statusChangeMessage.message} to room ${payload.room}`);
 			this.chat_io.to(payload.room).emit('chat/messageFromRoom', statusChangeMessage);
 		}
 		client.leave(payload.room);
+	}
+
+	@SubscribeMessage('invite/inviteResponse')
+	async friendInviteResponse(client: Socket, payload: InviteSocketMessageDto) {
+		if (payload.directMessageId == -1)	// If the direct message id is not set, find it.
+			payload.directMessageId = (await this.chatDbService.findDMChat(payload.userId, payload.senderId)).id;
+		const tokens = await this.tokenService.findAllTokensAsStringForUser(payload.senderId);
+		for (const token of tokens) {
+			this.chat_io.to(token).emit('invite/inviteResponse', payload);
+		}
 	}
 }

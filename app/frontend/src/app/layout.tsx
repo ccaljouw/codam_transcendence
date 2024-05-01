@@ -5,7 +5,7 @@ import '../styles/styleStrongPong.css';
 import { ContextProvider } from '@ft_global/contextprovider.globalvar';
 import { comic_neue } from '@ft_global/layoutComponents/Font';
 import BootstrapClient from '@ft_global/layoutComponents/BootstrapClient';
-import ChatArea from 'src/globals/layoutComponents/ChatArea';
+import ChatArea from 'src/globals/layoutComponents/Chat/ChatArea';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

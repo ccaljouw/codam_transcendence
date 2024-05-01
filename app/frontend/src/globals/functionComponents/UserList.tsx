@@ -6,6 +6,8 @@ import { OnlineStatus } from "@prisma/client";
 interface UserListProps {
 	userDisplayFunction: (user: UserProfileDto, indexInUserList: number, statusChangeCallback: (idx: number, newStatus? : OnlineStatus) => void) => JSX.Element;
 	fetchUrl: string;
+	// updateUnreadCounter?: (val: number) => void;
+	className?: string;
 }
 
 interface UserListContextVars {
@@ -59,7 +61,7 @@ export default function UserList(props: UserListProps): JSX.Element {
 
 	return (
 		<UserListContext.Provider value={{contextMenuClickSent, triggerContextMenuClick}}> 
-		<div className='userlist'>
+		<div className={"userlist text-start " + props.className}>
 			{usersFromDbLoading && <p>Loading users...</p>}
 			{userFromDbError && <p>Error: {userFromDbError.message}</p>}
 			{userList && <ul>{

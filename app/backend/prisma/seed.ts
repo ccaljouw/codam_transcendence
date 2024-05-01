@@ -53,13 +53,60 @@ async function addDummyUsers() {
 			lastName: 'Wesseling',
 		},
 	});
-	console.log({ user1, user2, user3, user4 });
+	const user5 = await prisma.user.upsert({
+		where: { loginName: 'Friend' },
+		update: {},
+		create: {
+			userName: 'FriendFromCarlo',
+			loginName: 'friendcarlo',
+			email: 'carlofriend@student.codam.nl',
+			hash: 'pwd',
+			firstName: 'Friend',
+			lastName: 'Friendowitz',
+		},
+	});
+	const user6 = await prisma.user.upsert({
+		where: { loginName: 'BlockedByCarien' },
+		update: {},
+		create: {
+			userName: 'BlockByCarien',
+			loginName: 'blockcarien',
+			email: 'blockcarien@student.codam.nl',
+			hash: 'pwd',
+			firstName: 'Blocked',
+			lastName: 'ByCarien',
+		},
+	});
+	// Establish friendship between users
+	await prisma.user.update({
+		where: { loginName: 'friendcarlo' },
+		data: {
+			friends: { connect: { loginName: 'cwesseli' } }
+		}
+
+	});
+
+	await prisma.user.update({
+		where: { loginName: 'cwesseli' },
+		data: {
+			friends: { connect: { loginName: 'friendcarlo' } }
+		}
+	});
+
+	// Block user6 by user1
+	await prisma.user.update({
+		where: { loginName: 'ccaljouw' },
+		data: {
+			blocked: { connect: { loginName: 'blockcarien' } }
+		}
+	});
+	console.log({ user1, user2, user3, user4, user5, user6 });
 }
 
 // todo: add userState to dummy data
 
 async function main() {
-  addDummyUsers();
+	addDummyUsers();
 }
 
 // execute

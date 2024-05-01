@@ -25,7 +25,6 @@ export class InviteController {
   @ApiNotFoundResponse({ description: "No invites in the database" })
   
   findAll() : Promise<UpdateInviteDto[]> {
-    console.log("in findAllInvites");
     return this.inviteService.findAll();
   }
   
@@ -115,5 +114,19 @@ export class InviteController {
   @ApiOkResponse({ type: UpdateInviteDto })
   updateIvite(@Body() updateInviteDto: UpdateInviteDto) {
     return this.inviteService.updateIvite(updateInviteDto);
+  }
+
+  @Get('respondToFriendRequest/:id/:accept')
+  @ApiOperation({ summary: 'Returns updated invite'})
+  @ApiOkResponse({ type: UpdateInviteDto })
+  respondToFriendInvite(@Param('id', ParseIntPipe) id: number, @Param('accept') accept: string) {
+	return this.inviteService.respondToFriendRequest(id, accept === "true" ? true : false);
+  }
+
+  @Get('respondToGameRequest/:id/:accept')
+  @ApiOperation({ summary: 'Returns updated invite'})
+  @ApiOkResponse({ type: UpdateInviteDto })
+  respondToGameInvite(@Param('id', ParseIntPipe) id: number, @Param('accept') accept: string) {
+	return this.inviteService.updateIvite({ id, state: (accept === "true" ? InviteStatus.ACCEPTED : InviteStatus.REJECTED) });
   }
 }
