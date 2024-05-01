@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import EditButton from "./EditButton";
 
-export type optionalAttributes<T> = {
+export type optionalAttributes = {
     type: string,
-	data: T;
+	data: string;
 	name: string,
 	required?: boolean,
 	autoComplete?: string,
@@ -11,11 +11,10 @@ export type optionalAttributes<T> = {
 	maxLength?: number,
 }
 
-export default function EditableDataField({name, data, attributes} : {name:string, data:any, attributes:optionalAttributes<T>}) {
+export default function EditableDataField({name, data, attributes} : {name:string, data:string, attributes:optionalAttributes}): JSX.Element {
 	const [editMode, setEditMode] = useState<boolean>(false);
 
 	useEffect(() => {
-		console.log("reload from editableDatafield");
 		setEditMode(false);
 	}, [data]);
 
