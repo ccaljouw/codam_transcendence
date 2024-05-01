@@ -25,9 +25,11 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 		{
 			router.push(pathname);
 		}
-			// console.log("pathname has to be updated"); //todo: JMA: update pathname
-		fetchUser();
 	}, []);
+
+	useEffect(() => {
+		fetchUser();
+	}, [currentUser]);
 
 	const fetchUser = async () => {
 		await fetcher({url: constants.API_USERS + userName});
@@ -61,9 +63,6 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 						<div className="row">
 							<div className="col col-lg-6 col-md-12 white-box">
 								<GameSettings user={user}/>
-							</div>
-							<div className="col col-lg-6 col-md-12 white-box">
-								<LoginSettings user={user}/>
 							</div>
 							<div className="col col-lg-6 col-md-12 white-box">
 								<Blocked user={user}/>

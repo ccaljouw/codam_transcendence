@@ -1,19 +1,46 @@
+import { useEffect, useState } from "react";
 import EditButton from "./EditButton";
 
-export default function EditableDataField({name, data, onClick} : {name:string, data: any, onClick:() => void}) {
+export type optionalAttributes<T> = {
+    type: string,
+	data: T;
+	name: string,
+	required?: boolean,
+	autoComplete?: string,
+	minLength?: number,
+	maxLength?: number,
+}
+
+export default function EditableDataField({name, data, attributes} : {name:string, data:any, attributes:optionalAttributes<T>}) {
+	const [editMode, setEditMode] = useState<boolean>(false);
+
+	useEffect(() => {
+		console.log("reload from editableDatafield");
+		setEditMode(false);
+	}, [data]);
+
 	return (
 		<>
-			<div className="row">
 				<div className="col col-3">
 					<p>{name}</p>
 				</div>
-				<div className="col col-7">
-					<b>{data? data : "Loading data..."}</b>
+				<div className="col col-6">
+					{editMode == false?
+						<b>{data? data : "Loading data..."}</b>
+						:
+						<input id="floatingInput" className="form-control form-control-sm" placeholder={data} {... attributes}></input>
+					}
 				</div>
-				<div className="col col-2 justify-content-end">
-					<EditButton onClick={onClick}/>
+				<div className="col col-3 align-self-end">
+					{editMode == false?
+						<EditButton onClick={() => setEditMode(true)}/>
+						:
+						<>
+							<button className="btn btn-outline-dark btn-sm" type="submit">Save</button>
+							<button className="btn btn-dark btn-sm" onClick={() => setEditMode(false)}>Cancel</button>
+						</>
+					}
 				</div>
-			</div>
 		</>
 	);
 }
