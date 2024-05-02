@@ -2,7 +2,7 @@
 import { createContext, useEffect, useState } from "react";
 import { OnlineStatus } from "@prisma/client";
 import { UserProfileDto, UpdateUserDto } from "@ft_dto/users";
-import { ChatMessageToRoomDto } from "@ft_dto/chat";
+import { ChatMessageToRoomDto, UpdateChatDto } from "@ft_dto/chat";
 import { WebsocketStatusChangeDto, CreateTokenDto } from '@ft_dto/socket'
 import { constants } from "@ft_global/constants.globalvar";
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
@@ -17,10 +17,16 @@ interface TranscendenceContextVars {
 	setCurrentUser: (val: UserProfileDto) => void;
 	someUserUpdatedTheirStatus: WebsocketStatusChangeDto;
 	setSomeUserUpdatedTheirStatus: (val: WebsocketStatusChangeDto) => void;
-	currentChatRoom: number;
-	setCurrentChatRoom: (val: number) => void;
+	currentChatRoom: UpdateChatDto;
+	setCurrentChatRoom: (val: UpdateChatDto) => void;
+	newChatRoom: {room: number, count: number};
+	setNewChatRoom: (val: {room: number, count: number}) => void;
 	messageToUserNotInRoom: ChatMessageToRoomDto;
 	setMessageToUserNotInRoom: (val: ChatMessageToRoomDto) => void;
+	allUsersUnreadCounter: number;
+	setAllUsersUnreadCounter: (val: number) => void;
+	friendsUnreadCounter: number;
+	setFriendsUnreadCounter: (val: number) => void;
 }
 
 // Initialize the context
@@ -29,27 +35,36 @@ export const TranscendenceContext = createContext<TranscendenceContextVars>({
 	setCurrentUser: () => { },
 	someUserUpdatedTheirStatus: {} as WebsocketStatusChangeDto,
 	setSomeUserUpdatedTheirStatus: () => { },
-	currentChatRoom: -1,
+	currentChatRoom: {id: -1} as UpdateChatDto,
 	setCurrentChatRoom: () => { },
+	newChatRoom: {room: -1, count: 0},
+	setNewChatRoom: () => { },
 	messageToUserNotInRoom: {} as ChatMessageToRoomDto,
-	setMessageToUserNotInRoom: () => { }
+	setMessageToUserNotInRoom: () => { },
+	allUsersUnreadCounter: 0,
+	setAllUsersUnreadCounter: () => { },
+	friendsUnreadCounter: 0,
+	setFriendsUnreadCounter: () => { },
 });
 
 export function ContextProvider({ children }: { children: React.ReactNode }) {
 	const [someUserUpdatedTheirStatus, setSomeUserUpdatedTheirStatus] = useState<WebsocketStatusChangeDto>({} as WebsocketStatusChangeDto);
 	const [messageToUserNotInRoom, setMessageToUserNotInRoom] = useState<ChatMessageToRoomDto>({} as ChatMessageToRoomDto);
-	const [currentChatRoom, setCurrentChatRoom] = useState<number>(-1);
+	const [currentChatRoom, setCurrentChatRoom] = useState<UpdateChatDto>({id: -1} as UpdateChatDto);
+	const [newChatRoom, setNewChatRoom] = useState<{room: number, count: number}>({room: -1, count: 0});
 	const [currentUser, setCurrentUser] = useState<UserProfileDto>({} as UserProfileDto);
 	const {user} = useAuthentication();
+	const [allUsersUnreadCounter, setAllUsersUnreadCounter] = useState<number>(0);
+	const [friendsUnreadCounter, setFriendsUnreadCounter] = useState(0);
 	const {data: userPatch, isLoading: userPatchLoading, error: userPatchError, fetcher: patchUserFetcher} = useFetch<UpdateUserDto, UserProfileDto>();
 	const {data: addToken, isLoading: addTokenLoading, error: addTokenError, fetcher: addTokenFetcher} = useFetch<CreateTokenDto, boolean>();
+	const {data: unreadMessageCount, isLoading: unreadMessageCountLoading, error: unreadMessageCountError, fetcher: unreadMessageCountFetcher} = useFetch<null, number>();
+	const {data: unreadsFromFriends, isLoading: unreadsFromFriendsLoading, error: unreadsFromFriendsError, fetcher: unreadsFromFriendsFetcher} = useFetch<number, number>();
 
 	useEffect(() => {
-		// console.log("CONTEXT ", transcendenceSocket.id, currentUser.id,);
 
 		// Listener for status changes of other users
 		transcendenceSocket.on('socket/statusChange', (payload: WebsocketStatusChangeDto) => {
-			console.log('User status change:', payload);
 			setSomeUserUpdatedTheirStatus(payload);
 		});
 
@@ -63,7 +78,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 			setUserStatusToOnline();
 		});
 
-		return () => { // Cleanup socket listeners
+		return () => { // Cleanup socket listener
 			transcendenceSocket.off('socket/statusChange');
 			transcendenceSocket.off('socket/messageToUserNotInRoom');
 			transcendenceSocket.off('connect');
@@ -72,10 +87,24 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 
 	// Update the user's status to online when the user logs in
 	useEffect(() => {
-		if (transcendenceSocket.id && transcendenceSocket.id != '0' && currentUser.id != 0) {
+		if (transcendenceSocket.id && transcendenceSocket.id != '0' && currentUser && currentUser.id !== undefined && currentUser.id != 0) {
 			setUserStatusToOnline();
+			unreadMessageCountFetcher({url: constants.CHAT_MESSAGES_UNREAD_FOR_USER + currentUser.id});
+			unreadsFromFriendsFetcher({ url: constants.CHAT_UNREAD_MESSAGES_FROM_FRIENDS + currentUser.id });
 		}
 	}, [currentUser.id])
+
+	useEffect(() => {
+		if (unreadMessageCount) {
+			setAllUsersUnreadCounter(unreadMessageCount);
+		}
+	}, [unreadMessageCount]);
+
+	useEffect(() => {
+		if (unreadsFromFriends) {
+			setFriendsUnreadCounter(unreadsFromFriends);
+		}
+	}, [unreadsFromFriends]);
 
 	// Context values to be passed to the children components
 	const contextValues: TranscendenceContextVars = {
@@ -85,8 +114,14 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		setSomeUserUpdatedTheirStatus,
 		currentChatRoom,
 		setCurrentChatRoom,
+		newChatRoom,
+		setNewChatRoom,
 		messageToUserNotInRoom,
-		setMessageToUserNotInRoom
+		setMessageToUserNotInRoom,
+		allUsersUnreadCounter,
+		setAllUsersUnreadCounter,
+		friendsUnreadCounter,
+		setFriendsUnreadCounter
 	}
 
 	useEffect(() => {
@@ -103,10 +138,9 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 				token: (transcendenceSocket.id ? transcendenceSocket.id : ''),
 				status: OnlineStatus.ONLINE
 			}
-			console.log('User status updated to online:', currentUser.id,currentUser.userName, transcendenceSocket.id, statusUpdate);
 			transcendenceSocket.emit('socket/statusChange', statusUpdate); // Emit the status change to the socket
 		}
-	}, [addToken]);
+	}, [addToken, currentUser.id, transcendenceSocket.id])
 
 	useEffect(() => {
 		if (userPatchError) {
@@ -119,9 +153,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 
 	// Function to update the user's online status
 	const setUserStatusToOnline = async () => {
-		console.log('Setting user status to online');
 		if (!currentUser.id) return;
-		// try {
 			const patchUserData: UpdateUserDto = {
 				online: OnlineStatus.ONLINE,
 			}
@@ -137,7 +169,6 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	useEffect(() => {
 		if (user != null)
 		{
-			console.log("updating currentUser from contextProvider")
 			setCurrentUser(user);
 		}
 	}, [user]);

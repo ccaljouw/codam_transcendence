@@ -1,8 +1,8 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateChatDto } from './create-chat.dto';
-import { IsInt, IsNotEmpty } from 'class-validator';
+import { IsArray, IsInt, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { ChatType, ChatUsers } from '@prisma/client';
+import { ChatUsers } from '@prisma/client';
 import { UpdateChatUserDto } from './update-chatUser.dto';
 
 export class UpdateChatDto extends PartialType(CreateChatDto) {
@@ -16,6 +16,7 @@ export class UpdateChatDto extends PartialType(CreateChatDto) {
   @ApiProperty({ required: false, type: Number })
   ownerId?: number;
 
+	@IsArray()
   @ApiProperty({ required: false, type: UpdateChatUserDto })
   users?:   ChatUsers[]
 

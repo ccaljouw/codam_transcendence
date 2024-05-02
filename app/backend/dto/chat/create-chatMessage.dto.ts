@@ -1,6 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Chat, ChatType } from "@prisma/client";
-import { IsInt, IsNotEmpty, IsString } from "class-validator";
+import { IsInt, IsNotEmpty, IsOptional, IsString, Validate, ValidateNested } from "class-validator";
 
 export class CreateChatMessageDto {
 
@@ -18,4 +17,8 @@ export class CreateChatMessageDto {
   @IsInt()
   @ApiProperty({ required: true, type: Number })
   userId: number;
+
+  @IsInt()
+  @ApiProperty({ required: false, type: Number })
+  inviteId?: number;
 }

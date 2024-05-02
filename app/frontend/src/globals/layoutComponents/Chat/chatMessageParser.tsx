@@ -1,23 +1,76 @@
-import { ChatMessageToRoomDto } from "@ft_dto/chat";
+import { ChatMessageToRoomDto, UpdateChatDto } from "@ft_dto/chat";
+import { fetchProps } from "src/globals/functionComponents/useFetch";
+import { inviteCallbackProps } from "./inviteFunctions";
+import { UserProfileDto } from "@ft_dto/users";
+import { Socket } from "socket.io-client";
+import { friendInviteParser } from "./friendInvite";
+import { gameInviteParser } from "./gameInvite";
+
+
+export interface parserProps {
+	inviteCallback: (props: inviteCallbackProps) => void,
+	currentChatRoom: UpdateChatDto,
+	currentUser: UserProfileDto,
+	chatSocket: Socket,
+	friendInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>,
+	gameInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>,
+	chatInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>
+}
 
 export const messageParser = (
-	message: ChatMessageToRoomDto,
-	currentUserId: number
-	) : string  | null=> {
+	message: ChatMessageToRoomDto, context: parserProps
+): JSX.Element => {
+	const { inviteCallback, currentChatRoom, currentUser, chatSocket, friendInviteFetcher, gameInviteFetcher, chatInviteFetcher } = context;
 	if (message.action) {
-		console.log(`Received action message: ${message.message} ${message.userId} ${message.userName} ${message.room}`);
-		if (message.message == "JOIN" && message.userId == currentUserId) // If the user is the current user, we don't want to show the message.	
-				return null;
+		if (message.userId == currentUser.id) // If the user is the current user, we don't want to show the message.	
+			return <></>
 		switch (message.message) {
 			case "JOIN":
-				return `<< ${message.userName} has joined the chat >>`;
-				break;
+				return <>{'<<'} {message.userName} has joined the chat {'>>'}</>
 			case "LEAVE":
-				return `<< ${message.userName} has left the chat >>`;
-				break;
+				return <>{'<<'} {message.userName} has left the chat {'>>'}</>
 		}
-	} else {
-		return `${message.userName}: ${message.message}`;
 	}
-	return null;
+	else if (message.inviteId) {
+		return inviteParser(message, currentChatRoom, currentUser, chatSocket, inviteCallback, friendInviteFetcher, gameInviteFetcher, chatInviteFetcher);
+	}
+	else {
+		return <>{message.userName}: {message.message}</>
+	}
+	return <></>;
+}
+
+const inviteParser = (
+	message: ChatMessageToRoomDto,
+	currentChatRoom: UpdateChatDto,
+	currentUser: UserProfileDto,
+	chatSocket: Socket,
+	inviteCallback: (props: inviteCallbackProps) => void,
+	friendInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>,
+	gameInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>,
+	chatInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>
+): JSX.Element => {
+	if (!message.invite)
+		return <></>;
+
+	const inviteCallbackProps: inviteCallbackProps = {
+		inviteId: message.invite.id,
+		accept: false,
+		senderId: message.invite.senderId,
+		inviteType: message.invite.type,
+		currentChatRoom: currentChatRoom,
+		currentUser: currentUser,
+		chatSocket: chatSocket,
+		friendInviteFetcher: friendInviteFetcher,
+		gameInviteFetcher: gameInviteFetcher,
+		chatInviteFetcher: chatInviteFetcher
+	}
+
+	switch (message.invite.type) {
+		case "FRIEND":
+			return friendInviteParser(message, currentUser, inviteCallback, inviteCallbackProps);
+		case "GAME":
+			return gameInviteParser(message, currentUser, inviteCallback, inviteCallbackProps);
+	}
+	return <>Error parsing invite</>;
 }
