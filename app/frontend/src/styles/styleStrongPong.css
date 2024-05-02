@@ -82,9 +82,6 @@
 }
 
 .form-control {
-    /* todo: choose */
-    background: white;
-    background: var(--strongpong-white-transparent);
     background: var(--strongpong-white);
 }
 
