@@ -1,7 +1,7 @@
 import { Controller, ParseIntPipe, Body, Param, Get, Post, Patch, Delete } from '@nestjs/common';
 import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { CreateUserDto, UpdateUserDto,UserProfileDto } from '@ft_dto/users';
+import { CreateUserDto, UpdateUserDto, UserProfileDto } from '@ft_dto/users';
 import { CreateTokenDto } from '@ft_dto/users/create-token.dto';
 import { TokenService } from './token.service';
 
@@ -9,70 +9,80 @@ import { TokenService } from './token.service';
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
-  constructor(
-	private readonly usersService: UsersService,
-	private readonly tokenService: TokenService,
-	) {}
-  
-  // TODO: update endpoints to include access token
-  @Post('register')
-  @ApiOperation({ summary: 'Adds user to database and returns id for this user'})
-  @ApiCreatedResponse({ description: 'User successfully created', type: Number })
+	constructor(
+		private readonly usersService: UsersService,
+		private readonly tokenService: TokenService,
+	) { }
 
-  register(@Body() createUser: CreateUserDto) : Promise<UserProfileDto> {
-    return this.usersService.create(createUser);
-  }
+	// TODO: update endpoints to include access token
+	@Post('register')
+	@ApiOperation({ summary: 'Adds user to database and returns id for this user' })
+	@ApiCreatedResponse({ description: 'User successfully created', type: Number })
 
-  @Post('token')
-  @ApiOperation({ summary: 'Adds token with user id to database'})
-  @ApiCreatedResponse({ description: 'Token successfully created', type: Number })
+	register(@Body() createUser: CreateUserDto): Promise<UserProfileDto> {
+		return this.usersService.create(createUser);
+	}
 
-  addToken(@Body() createToken: CreateTokenDto) : Promise<boolean> {
-	console.log(`Adding token ${createToken.token} for user ${createToken.userId}`);
-	
-	return this.tokenService.addTokenWithStaleCheck(createToken);
-  }
+	@Post('token')
+	@ApiOperation({ summary: 'Adds token with user id to database' })
+	@ApiCreatedResponse({ description: 'Token successfully created', type: Number })
 
-  @Get('all')
-  @ApiOperation({ summary: 'Returns all users currently in the database'})
-  @ApiOkResponse({ type: [UserProfileDto] })
-  @ApiNotFoundResponse({ description: "No users in the database" })
+	addToken(@Body() createToken: CreateTokenDto): Promise<boolean> {
+		console.log(`Adding token ${createToken.token} for user ${createToken.userId}`);
 
-  findAll() : Promise<UserProfileDto[]> {
-    return this.usersService.findAll();
-  }
+		return this.tokenService.addTokenWithStaleCheck(createToken);
+	}
 
-  @Get('allButMe/:id')
-  @ApiOperation({ summary: 'Returns all users currently in the database except the one with the specified id'})
-  @ApiOkResponse({ type: [UserProfileDto] })
-  @ApiNotFoundResponse({ description: "No users in the database" })
+	@Get('all')
+	@ApiOperation({ summary: 'Returns all users currently in the database' })
+	@ApiOkResponse({ type: [UserProfileDto] })
+	@ApiNotFoundResponse({ description: "No users in the database" })
 
-  findAllButMe(@Param('id', ParseIntPipe) id: number) : Promise<UserProfileDto[]> {
-	  return this.usersService.findAllButMe(id);
-  }
+	findAll(): Promise<UserProfileDto[]> {
+		return this.usersService.findAll();
+	}
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Returns user with specified id'})
-  @ApiOkResponse({ type: UserProfileDto }) 
-  @ApiNotFoundResponse({ description: 'User with #${id} does not exist' })
+	@Get('allButMe/:id')
+	@ApiOperation({ summary: 'Returns all users currently in the database except the one with the specified id' })
+	@ApiOkResponse({ type: [UserProfileDto] })
+	@ApiNotFoundResponse({ description: "No users in the database" })
 
-  findOne(@Param('id', ParseIntPipe) id: number) : Promise<UserProfileDto> {
-    return this.usersService.findOne(id);
-  }
+	findAllButMe(@Param('id', ParseIntPipe) id: number): Promise<UserProfileDto[]> {
+		return this.usersService.findAllButMe(id);
+	}
 
-  @Patch(':id')
-  @ApiOperation({ summary: 'Updates user with specified id'})
-  @ApiOkResponse({ type: UserProfileDto })
+	@Get('friendsFrom/:id')
+	@ApiOperation({ summary: 'Returns all friends of the user with the specified id' })
+	@ApiOkResponse({ type: [UserProfileDto] })
+	@ApiNotFoundResponse({ description: "No friends in the database" })
 
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) : Promise<UserProfileDto> {
-    return this.usersService.update(id, updateUserDto);
-  }
+	findFriendsFrom(@Param('id', ParseIntPipe) id: number): Promise<UserProfileDto[]> {
+		console.log("Finding friends for user: " + id);
+		return this.usersService.findFriendsFrom(id);
+	}
 
-  @Delete(':id')
-  @ApiOperation({ summary: 'Deletes user with specified id'})
-  @ApiOkResponse({ description: 'User successfully deleted', type: UserProfileDto })
+	@Get(':id')
+	@ApiOperation({ summary: 'Returns user with specified id' })
+	@ApiOkResponse({ type: UserProfileDto })
+	@ApiNotFoundResponse({ description: 'User with #${id} does not exist' })
 
-  remove(@Param('id', ParseIntPipe) id: number) : Promise<UserProfileDto> {
-    return this.usersService.remove(id);
-  }
+	findOne(@Param('id', ParseIntPipe) id: number): Promise<UserProfileDto> {
+		return this.usersService.findOne(id);
+	}
+
+	@Patch(':id')
+	@ApiOperation({ summary: 'Updates user with specified id' })
+	@ApiOkResponse({ type: UserProfileDto })
+
+	update(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto): Promise<UserProfileDto> {
+		return this.usersService.update(id, updateUserDto);
+	}
+
+	@Delete(':id')
+	@ApiOperation({ summary: 'Deletes user with specified id' })
+	@ApiOkResponse({ description: 'User successfully deleted', type: UserProfileDto })
+
+	remove(@Param('id', ParseIntPipe) id: number): Promise<UserProfileDto> {
+		return this.usersService.remove(id);
+	}
 }

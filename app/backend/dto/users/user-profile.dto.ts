@@ -38,6 +38,11 @@ export class UserProfileDto implements User {
 	updatedAt: Date;
 
   // dmId: number;
+	@ApiProperty({ required: false })
+	friends?: UserProfileDto[];
+
+	@ApiProperty({ required: false })
+	blocked?: UserProfileDto[];
   
   @Exclude()
 	hash: string;

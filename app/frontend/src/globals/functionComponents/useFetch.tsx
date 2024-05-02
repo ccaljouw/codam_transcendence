@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-type fetchProps<T> = {
+export type fetchProps<T> = {
     url: string,
     fetchMethod?: string,
     payload?: T | null,
@@ -22,7 +22,7 @@ export default function useFetch<T, U>(): fetchOutput<T, U> {
         url,
         fetchMethod,
         payload,
-    }: fetchProps<T> ): Promise<void> => {
+    } : fetchProps<T> ) : Promise<void> => {
         setIsLoading(true);
         try {
             const response = await fetch(url, {
@@ -30,11 +30,9 @@ export default function useFetch<T, U>(): fetchOutput<T, U> {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload),
             });
-
             if (!response.ok) {
                 throw new Error("Response not ok: " + response.status + ": " + response.statusText);
             }
-
             setData(await response.json() as U);
         } catch (e: any) {
             console.log("useFetch error: ", e);

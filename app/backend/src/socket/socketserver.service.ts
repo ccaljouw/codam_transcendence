@@ -1,6 +1,6 @@
 import { Inject, Injectable, forwardRef } from "@nestjs/common";
 import { Socket } from "socket.io";
-import { ChatSocketService } from "src/chat/chatsocket.service";
+import { ChatSocketService } from "src/chat/services/chatsocket.service";
 import { TokenService } from "src/users/token.service";
 
 @Injectable()
@@ -14,7 +14,7 @@ export class SocketServerService {
 		try {
 			const chatIdFromToken = await this.tokens.findChatIdByToken(client.id); // get chatId from token
 			if (chatIdFromToken) // if user is in a chatroom, change the status (this function will check if user is still in that room on another client)
-				await this.chat.changeChatUserStatus({client, userId: id, chatId: chatIdFromToken, isInChatRoom: false});
+				await this.chat.changeChatUserStatus({token: client.id, userId: id, chatId: chatIdFromToken, isInChatRoom: false});
 			const lastTokenOfUserRemoved = await this.tokens.removeToken(client.id); // remove Tokens returns true if this is the last token of this user
 			if (lastTokenOfUserRemoved) // if this is the last token of the user, set user online in all chats
 				await this.chat.setChatUserOfflineInAllChats(id);

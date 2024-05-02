@@ -46,11 +46,11 @@ model User {
     chats ChatUsers[]
     games GameUser[]
 
-	// friends User[] @relation("Friends")
-	// friendOf User[] @relation("Friends")
+	friends User[] @relation("Friends")
+	friendOf User[] @relation("Friends")
 
-	// blocked User[] @relation("Blocked")
-	// blockedBy User[] @relation("Blocked")
+	blocked User[] @relation("Blocked")
+	blockedBy User[] @relation("Blocked")
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -60,7 +60,7 @@ model Tokens {
     id     Int    @id @default(autoincrement())
     userId Int
     token  String @unique
-	  chatId Int?
+	    chatId Int?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -90,7 +90,7 @@ model Chat {
     createdAt DateTime       @default(now())
     updatedAt DateTime       @updatedAt
     users     ChatUsers[]
-    berichten ChatMessages[]
+    messages ChatMessages[]
 }
 
 model ChatUsers {
@@ -118,6 +118,8 @@ model ChatMessages {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     chat      Chat     @relation(fields: [chatId], references: [id])
+	invite       Invite?  @relation(fields: [inviteId], references: [id])
+  	inviteId     Int? @unique
 }
 
 model Game {
@@ -139,13 +141,30 @@ model GameUser {
     user   User @relation(fields: [userId], references: [id])
 }
 
+model Invite {
+  id          Int  @id @default(autoincrement())
+  chatId      Int
+  senderId    Int
+  recipientId Int
+
+  state       InviteStatus @default(SENT)
+  type        InviteType
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  expiredAt DateTime @default(now()) //change\\
+  chatMessage   ChatMessages? @relation()
+//   chatMessageId Int?
+
+}
+
 // ***************************************************************** //
 //			ENUMS
 
 enum OnlineStatus {
     OFFLINE
-    ONLINE
     IN_GAME
+    ONLINE
 }
 
 enum ChatType {
@@ -167,4 +186,17 @@ enum GameState {
     STARTED
     FINISHED
     ABORTED
+}
+
+enum InviteType {
+  FRIEND
+  CHAT
+  GAME
+}
+
+enum InviteStatus {
+  SENT
+  ACCEPTED
+  REJECTED
+  EXPIRED
 }
