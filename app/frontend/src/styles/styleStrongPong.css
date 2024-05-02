@@ -88,3 +88,8 @@
     background: var(--strongpong-white-transparent);
     background: var(--strongpong-white);
 }
+
+.dropdown-menu {
+    background: var(--strongpong-white);
+    /* !important; */
+}
