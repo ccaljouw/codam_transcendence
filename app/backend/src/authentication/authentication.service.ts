@@ -47,8 +47,8 @@ export class AuthService {
     }
   }
 
-  private get42User(token42: string) {
-
+  async get42User(token42: string) {
+      return this.userService.findOne(1); //change
   }
 
   async callback(code: string) : Promise<UserProfileDto> {

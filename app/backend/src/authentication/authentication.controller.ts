@@ -21,6 +21,11 @@ export class AuthController {
     return { url: authUrl };
   }
 
+  @Get(':api42_code')
+  checkCode(@Param('code') code: string): Promise<UserProfileDto> {
+    return this.authService.get42User(code);
+  }
+
   // @Get('callback') moved to frontend
   // callback(@Req() req): Promise<UserProfileDto> {
   //   console.log("Callback controller called");
