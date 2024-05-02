@@ -44,7 +44,6 @@ export default function UserInfo({user, editable} : {user: UserProfileDto, edita
 				</form>
 			}
 			<StaticDataField name="Online" data={user.online} /> 
-			<StaticDataField name="Rank" data={"#" + user.rank} />
 
 			{editable == true && user.userName == currentUser.userName && <>
 				<hr></hr>

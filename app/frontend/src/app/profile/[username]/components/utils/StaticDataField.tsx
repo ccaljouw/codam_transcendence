@@ -6,7 +6,7 @@ export default function StaticDataField({name, data}: {name:string, data: any}) 
 					<p>{name}</p>
 				</div>
 				<div className="col col-9">
-					<b>{data? data : "Loading data..."}</b>
+					<b>{data != null? data : "Loading data..."}</b>
 				</div>
 			</div>
 		</>
