@@ -3,7 +3,6 @@ import EditButton from "./EditButton";
 
 export type optionalAttributes = {
     type: string,
-	data: string;
 	name: string,
 	required?: boolean,
 	autoComplete?: string,

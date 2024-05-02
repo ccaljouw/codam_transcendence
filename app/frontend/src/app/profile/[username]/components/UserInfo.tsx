@@ -13,11 +13,11 @@ import { optionalAttributes } from 'src/app/profile/[username]/components/utils/
 export default function UserInfo({user, editable} : {user: UserProfileDto, editable: boolean}): JSX.Element {
 	const {currentUser, setCurrentUser} = useContext(TranscendenceContext);
 	const {data: updatedUser, isLoading, error, fetcher} = useFetch<UpdateUserDto, UserProfileDto>();
-	const usernameAttributes: optionalAttributes<string>={type:"text", data:user.userName, name:"userName", required:true, autoComplete:"off", minLength:3, maxLength:30};
-	const firstnameAttributes: optionalAttributes<string>={type:"text", data:user.firstName, name:"firstName", required:true, autoComplete:"off", minLength:1, maxLength:30};
-	const lastnameAttributes: optionalAttributes<string>={type:"text", data:user.lastName, name:"lastName", required:true, autoComplete:"off", minLength:1, maxLength:30};
-	const emailAttributes: optionalAttributes<string>={type:"email", data:user.email, name:"email", required:true, autoComplete:"on"};
-	const hashAttributes: optionalAttributes<string>={type:"password", data:"********", name:"hash", required:true, autoComplete:"off", minLength:3, maxLength:30};
+	const usernameAttributes: optionalAttributes={type:"text", name:"userName", required:true, autoComplete:"off", minLength:3, maxLength:30};
+	const firstnameAttributes: optionalAttributes={type:"text", name:"firstName", required:true, autoComplete:"off", minLength:1, maxLength:30};
+	const lastnameAttributes: optionalAttributes={type:"text", name:"lastName", required:true, autoComplete:"off", minLength:1, maxLength:30};
+	const emailAttributes: optionalAttributes={type:"email", name:"email", required:true, autoComplete:"on"};
+	const hashAttributes: optionalAttributes={type:"password", name:"hash", required:true, autoComplete:"off", minLength:3, maxLength:30};
 	
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		console.log("submitting form field entry");

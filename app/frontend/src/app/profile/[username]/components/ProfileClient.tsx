@@ -3,7 +3,6 @@ import UserInfo from "./UserInfo.tsx";
 import Stats from "./Stats.tsx";
 import MatchHistory from "./MatchHistory.tsx";
 import GameSettings from "./GameSettings.tsx";
-import LoginSettings from "./LoginSettings.tsx";
 import Blocked from "./Blocked.tsx";
 import { H3 } from '@ft_global/layoutComponents/Font';
 import { usePathname, useRouter } from "next/navigation";

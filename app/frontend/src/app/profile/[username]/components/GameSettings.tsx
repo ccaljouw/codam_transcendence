@@ -7,7 +7,7 @@ export default function GameSettings({user} : {user: UserProfileDto}) : JSX.Elem
             <FontBangers>
                 <h3>Game settings</h3>
             </FontBangers>
-            <p>Not from database yet:</p>
+            <p>This might not be needed anymore and will be removed(?)</p>
             <p>Color preference: default</p>
         </>
 	);
