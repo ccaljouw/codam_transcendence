@@ -4,7 +4,7 @@ import { FontBangers } from 'src/globals/layoutComponents/Font';
 import Achievements from "./utils/Achievements";
 
 export default function Stats({user} : {user: UserProfileDto}) : JSX.Element {
-    const achievements= [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+    const testAchievements= [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 
     return (
         <>
@@ -16,7 +16,7 @@ export default function Stats({user} : {user: UserProfileDto}) : JSX.Element {
             <hr></hr>
             <StaticDataField name="Win/Loss Ratio " data="1.0" />
             <hr></hr>
-            <Achievements achievements={achievements}/>
+            <Achievements achievements={testAchievements}/>
         </>
     );
 }
