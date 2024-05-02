@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-type fetchProps<T> = {
+export type fetchProps<T> = {
     url: string,
     fetchMethod?: string,
     payload?: T | null,

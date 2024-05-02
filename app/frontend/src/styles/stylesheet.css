@@ -17,7 +17,6 @@
 }
 
 .page, 
-.chat-area,
 .chat-box,
 .chat-messages,
 .chat-users {
@@ -27,7 +26,6 @@
 }
 
 .page, 
-.chat-area,
 .chat-box,
 .chat-box .white-box {
     display: flex;
@@ -48,30 +46,71 @@
     width: 75%;
 }
 
-/* This is where the chat component is placed */
-.chat-area {
-    width: 25%;
-}
 
 /* In case of small screens, divide page and chat 50/50 */
 @media screen and (max-width: 992px) {
-    .page, .chat-area {
-        width: 50% !important;
+	.page, .chat-area {
+		width: 50% !important;
     }
+}
+
+/* This is where the chat component is placed */
+.chat-area {
+	width: 25%;
+	height: 100%;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
 }
 
 /* place to chat */
 .chat-box{
-    height: 80%;
+    height: 70%;
+	display: flex;
+	flex-direction: column;
+}
+
+.chat-input
+{
+	align-self: flex-start;
+	margin-top: auto;
+}
+
+.chat-input form {
+	display: flex;
 }
 
 .chat-box .white-box {
     height: 100%;
 }
 
+.invite-area{
+	border: 1px dotted red;
+}
+
+.invite-button {
+	color: red;
+	cursor: pointer;
+}
+
+.invite-button:hover{
+	color: blue;
+}
 /* place to find users */
 .chat-users {
-    min-height: 20%;
+	height: 30%;
+	position: relative;
+	align-self: flex-start;
+	margin-top: auto;
+	margin-left: 0px;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.chat-userlist{
+	flex-grow: 1;
+	overflow-y: auto;
 }
 
 /* iframe settings for developer pages */
@@ -104,5 +143,14 @@
 /* make user bold when hovered over */
 .userlist span:hover {
 	font-weight: bolder;
+	cursor: pointer;
+}
+
+.chat-selectedUserListType {
+	font-weight: bolder;
+	cursor: default;
+}
+
+.chat-userListType {
 	cursor: pointer;
 }

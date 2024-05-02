@@ -1,12 +1,20 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/database/prisma.service";
-import { CreateChatSocketDto, CreateInviteDto, UpdateChatDto, UpdateInviteDto } from "@ft_dto/chat";
+import { CreateDMDto, CreateInviteDto, UpdateChatDto, UpdateInviteDto } from "@ft_dto/chat";
 
 @Injectable()
 export class ChatService {
 	constructor(
 		private db: PrismaService
 	) { }
+
+	async findOne(id: number): Promise<UpdateChatDto> {
+		const chat = await this.db.chat.findUnique({
+			where: { id },
+			include: { users: true }
+		});
+		return chat;
+	}
 
 	async findDMChat(user1: number, user2: number): Promise<UpdateChatDto | null> {
 		// Check if chat exists
@@ -22,15 +30,13 @@ export class ChatService {
 			});
 		if (exists) // Return chat id if it exists
 		{
-			console.log(`Chat exists ${exists.id}`);
-			return ({ id: exists.id, ownerId: exists.ownerId, visibility: exists.visibility });
+			return (exists);
 		}
 		return null;
 	}
 
 	// This function is used to create a chat between two users.
-	async createDM(payload: CreateChatSocketDto): Promise<UpdateChatDto> {
-		console.log(`creating chat... for ${payload.user1Id} and ${payload.user2Id}`);
+	async createDM(payload: CreateDMDto): Promise<UpdateChatDto> {
 
 		const exists = await this.findDMChat(payload.user1Id, payload.user2Id);
 		if (exists) // Return chat id if it exists
@@ -45,7 +51,6 @@ export class ChatService {
 				visibility: "DM",
 			}
 		});
-		console.log(`Created chat ${newChat.id}`);
 
 		// Add users to chat
 		await this.db.chatUsers.createMany({
@@ -54,7 +59,6 @@ export class ChatService {
 				{ chatId: newChat.id, userId: payload.user2Id, lastRead: new Date() }
 			]
 		});
-		console.log(`Added users ${payload.user1Id} and ${payload.user2Id} to chat ${newChat.id}`);
 
 		return ({ id: newChat.id, ownerId: newChat.ownerId, visibility: newChat.visibility })
 	}

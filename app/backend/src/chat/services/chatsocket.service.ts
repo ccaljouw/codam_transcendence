@@ -1,9 +1,7 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { UpdateChatUserDto } from '@ft_dto/chat'
-import { Socket } from 'socket.io';
 import { TokenService } from 'src/users/token.service';
-import { CreateInviteDto } from '@ft_dto/chat/create-invite.dto';
 
 
 @Injectable()
@@ -15,7 +13,7 @@ export class ChatSocketService {
 	) { }
 
 	// TODO: should be moved to token service
-	async getUserTokenArray(ids: number[]): Promise<string[]> { 
+	async getUserTokenArray(ids: number[]): Promise<string[]> {
 		const users = await this.db.tokens.findMany({
 			where: {
 				userId: {
@@ -51,15 +49,12 @@ export class ChatSocketService {
 		return false;
 	}
 
-	async changeChatUserStatus(data: { client: Socket, userId: number, chatId: number, isInChatRoom: boolean }): Promise<UpdateChatUserDto | null> {
+	async changeChatUserStatus(data: { token: string, userId: number, chatId: number, isInChatRoom: boolean }): Promise<UpdateChatUserDto | null> {
 
-		console.log(`Changing chat user status for ${data.userId} with token ${data.client.id} in chat ${data.chatId} to ${data.isInChatRoom}`);
 
-		await this.tokenService.updateToken({ userId: data.userId, chatId: data.isInChatRoom ? data.chatId : 0, token: data.client.id }); // update token with chatId if user is in chatroom, else set chatId to 0
+		await this.tokenService.updateToken({ userId: data.userId, chatId: data.isInChatRoom ? data.chatId : 0, token: data.token }); // update token with chatId if user is in chatroom, else set chatId to 0
 		const userStillInChat = await this.isUserInChatRoom(data.chatId, data.userId);
-		console.log(`User still in chat: ${userStillInChat}, data.isInChatRoom: ${data.isInChatRoom}`);
 		if (!userStillInChat || data.isInChatRoom) { // if user is not in any chatroom, set isInChatRoom to false
-			console.log(`Updating user ${data.userId} in chat ${data.chatId} to ${data.isInChatRoom}`);
 			const updatedUser = await this.db.chatUsers.update({
 				where: {
 					chatId_userId: {
@@ -77,7 +72,6 @@ export class ChatSocketService {
 	}
 
 	async setChatUserOfflineInAllChats(userId: number) {
-		console.log(`Setting user ${userId} offline in all chats`);
 		const chatUserRecords = await this.db.chatUsers.findMany({
 			where: {
 				userId

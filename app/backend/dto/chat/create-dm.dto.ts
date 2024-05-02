@@ -1,6 +1,6 @@
 import { IsInt, IsNotEmpty } from "class-validator";
 
-export class CreateChatSocketDto {
+export class CreateDMDto {
 	@IsInt()
 	@IsNotEmpty()
 	user1Id: number = 0;
