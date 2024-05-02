@@ -74,7 +74,6 @@
 
 .chat-messages {
     overflow-y: scroll;
-    /* background-color: var(--strongpong-white); */
 }
 
 .chat-messages p {
@@ -91,5 +90,4 @@
 
 .dropdown-menu {
     background: var(--strongpong-white);
-    /* !important; */
 }
