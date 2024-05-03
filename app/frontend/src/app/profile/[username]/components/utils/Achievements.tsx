@@ -40,23 +40,17 @@ function ChooseAchievementElement({index} : {index:number}) : JSX.Element {
 
 export default function Achievements({achievements} : {achievements:number[]}) : JSX.Element {
 	const achievementList = achievements.map(achievement => 
-		<div key={achievement} className="col col-xl-2">
+		<div key={achievement} className="col col-sm-6 col-md-2">
 			<ChooseAchievementElement index={achievement}/>
 		</div>
 	);
 
 	return (
 		<>
-					<p>Achievements</p>
-			{/* <div className="row"> */}
-				{/* <div className="col col-3"> */}
-				{/* </div> */}
-				{/* <div className="col col-9 container"> */}
-					<div className="row justify-content-center">
-						{achievementList}
-					</div>
-				{/* </div> */}
-			{/* </div> */}
+			<p>Achievements</p>
+			<div className="row justify-content-start">
+				{achievementList}
+			</div>
 		</>
 	);
 }
