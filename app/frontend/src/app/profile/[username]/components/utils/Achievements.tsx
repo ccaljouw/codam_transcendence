@@ -1,8 +1,10 @@
+import { H3 } from "src/globals/layoutComponents/Font";
+
 function Achievement({icon, title, description} : {icon:string, title: string, description:string}) : JSX.Element {
 	return (
 		<>
-			<button className="btn btn-outline-dark" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-				{icon}
+			<button className="btn " role="button" data-bs-toggle="dropdown" aria-expanded="false">
+				<h4>{icon}</h4>
 			</button>
 			<ul className="dropdown dropdown-menu">
 				<li className="dropdown-header">{title}</li>
@@ -47,7 +49,7 @@ export default function Achievements({achievements} : {achievements:number[]}) :
 
 	return (
 		<>
-			<p>Achievements</p>
+			<H3 text="Achievements" />
 			<div className="row justify-content-start">
 				{achievementList}
 			</div>
