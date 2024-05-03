@@ -1,7 +1,7 @@
 function Achievement({icon, title, description} : {icon:string, title: string, description:string}) : JSX.Element {
 	return (
 		<>
-			<button className="btn btn-outline-dark" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+			<button className="btn" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 				{icon}
 			</button>
 			<ul className="dropdown dropdown-menu">
@@ -34,7 +34,7 @@ function ChooseAchievementElement({index} : {index:number}) : JSX.Element {
 							{id: "🏓", title: "POMG", description: "Awarded for being a StrongPong developer."}];
 							
 	if (index >= achievements.length)
-		return (<></>);
+		return (<Achievement icon="x" title="No Achievement" description="This achievement does not exist yet"/>);
 	return (<Achievement icon={achievements[index].id} title={achievements[index].title} description={achievements[index].description}/>);
 }
 
@@ -51,7 +51,7 @@ export default function Achievements({achievements} : {achievements:number[]}) :
 				<div className="col col-3">
 					<p>Achievements</p>
 				</div>
-				<div className="col col-9">
+				<div className="col col-9 container">
 					<div className="row justify-content-start">
 						{achievementList}
 					</div>
