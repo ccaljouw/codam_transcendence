@@ -12,17 +12,14 @@ import {
 		canvasInitializer } from "./initializers";
 
 export function initializeGameObjects(game: Game) {
-  if (game.instanceType < 2) {
-    canvasInitializer(game.canvas!, game.config);
-    keyListenerInitializer(game.keyListener, game, game.config);
-    messageFieldInitializer(game.messageFields, game.config);
-  }
-  
-  paddleInitializer(game.paddels, game.config, game.instanceType);
+  canvasInitializer(game);
+  keyListenerInitializer(game.keyListener, game.config);
+  messageFieldInitializer(game.messageFields, game.config);
+  paddleInitializer(game);
   wallInitializer(game.walls, game.config);
   lineInitializer(game.lines, game.config);
   playerInitializer(game.players, game.config, game.gameUsers);
-  keyListenerInitializer(game.keyListener, game, game.config);
+  keyListenerInitializer(game.keyListener, game.config);
   game.backgroundFill = new GameObject("background", 0, 0, CON.config[game.config].screenWidth, CON.config[game.config].screenHeight, 'black');
   setBall(game);
 }

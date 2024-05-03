@@ -7,8 +7,6 @@ import { GameState } from '@prisma/client'
 import { UpdateGameStateDto } from '@ft_dto/game'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 
-//todo split per instance type and adjust imports 
-
 
 export function updateObjects(game: Game, deltaTime: number) {
   if (game.gameState !== GameState.STARTED) {
@@ -51,7 +49,7 @@ function updateBall(game: Game, deltaTime: number) {
 function emmitBallPosition(game: Game, deltaTime: number) {
   game.ball?.updateBall(game.gameState, deltaTime);
   
-  if (game.instanceType === 0 && game.elapasedTimeSincceLastUpdate >= CON.config[game.config].socketUpdateInterval) { //todo change to observer
+  if (game.instanceType === 0 && game.elapasedTimeSincceLastUpdate >= CON.config[game.config].socketUpdateInterval) {
     const gameSocket = transcendenceSocket;
     gameSocket.emit("game/updateGameObjects", {
       roomId: game.roomId,
@@ -68,7 +66,7 @@ function emmitBallPosition(game: Game, deltaTime: number) {
 }
 
 function interpolateBallPosition(game: Game) {
-  if (game.instanceType === 1) { //todo change to not observer
+  if (game.instanceType === 1) {
     let targetBallSettings: {x: number, y: number, dx: number, dy: number};
     if (game.receivedUpdatedGameObjects.ballX! > 0) {
       targetBallSettings = { x: game.receivedUpdatedGameObjects.ballX!, y: game.receivedUpdatedGameObjects.ballY!, dx: game.receivedUpdatedGameObjects.ballDX!, dy: game.receivedUpdatedGameObjects.ballDY!};
@@ -88,7 +86,7 @@ function interpolateBallPosition(game: Game) {
 
 export function checkForGoals(game: Game) {
   const gameSocket = transcendenceSocket;
-  if (game.instanceType !== 0) { //todo change to not observer
+  if (game.instanceType !== 0) {
     return;
   }
 

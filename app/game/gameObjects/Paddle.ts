@@ -16,7 +16,7 @@ export class Paddle extends GameObject {
 	}
 
 	
-	public setKeyListerns(paddle: Paddle, keyUp: string, keyDown: string, config: keyof typeof CON.config) {
+	public setKeyListerns(paddle: Paddle, keyUp: string, keyDown: string, config: string) {
 		if (paddle == null) {
 			throw new Error("Paddle is not initialized");
 		}

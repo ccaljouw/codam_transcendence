@@ -183,7 +183,7 @@ export enum MessageFields {
 export enum InstanceTypes {
 	left,
 	right,
-	observer
+	notSet
 }
 
 export enum PlayerSide {

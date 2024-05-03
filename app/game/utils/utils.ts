@@ -53,7 +53,7 @@ export function countdown(game: Game) {
 			clearMessageFields(game.messageFields);
 			clearInterval(interval);
 			if (game.instanceType === 0 && game.ball?.movementComponent.getSpeed() === 0) {
-				game.ball?.getStartValues(game.config, game); //todo change to observer
+				game.ball?.getStartValues(game.config, game);
 			}
 		}
 	}, 1000);
@@ -145,7 +145,6 @@ function setMessageTheme(game: Game) {
 }
 
 export function	setTheme(game: Game) {
-	game.theme = game.theme;
 	setPaddleTheme(game);
 	setWallTheme(game);
 	setPlayerTheme(game);

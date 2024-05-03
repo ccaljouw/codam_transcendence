@@ -11,42 +11,42 @@ import * as CON from './constants'
 import { UpdateGameUserDto } from '@ft_dto/game'
 
 
-export function canvasInitializer (canvas: HTMLCanvasElement, config: keyof typeof CON.config) {
-	canvas.width = CON.config[config].screenWidth;
-	canvas.height = CON.config[config].screenHeight;
+export function canvasInitializer (game: Game ) {
+	game.canvas!.width = CON.config[game.config].screenWidth;
+	game.canvas!.height = CON.config[game.config].screenHeight;
 }
 
 
-export function paddleInitializer (paddels: Paddle[], config: keyof typeof CON.config, type: CON.InstanceTypes) {
-	const paddleHeight = CON.config[config].screenHeight * CON.config[config].paddleHeightFactor;
+export function paddleInitializer (game: Game ) {
+	const paddleHeight = CON.config[game.config].screenHeight * CON.config[game.config].paddleHeightFactor;
 	const leftPaddle = new Paddle(
 		"left",
-		CON.config[config].paddleOffset_X,
-		CON.config[config].screenHeight / 2 - paddleHeight / 2,
-		CON.config[config].paddleWidth,
+		CON.config[game.config].paddleOffset_X,
+		CON.config[game.config].screenHeight / 2 - paddleHeight / 2,
+		CON.config[game.config].paddleWidth,
 		paddleHeight,
 		CON.BASE_COLOR
 	);
 	const rightPaddle = new Paddle(
 		"right",
-		CON.config[config].screenWidth - CON.config[config].paddleOffset_X - CON.config[config].paddleWidth,
-		CON.config[config].screenHeight / 2 - paddleHeight / 2,
-		CON.config[config].paddleWidth,
+		CON.config[game.config].screenWidth - CON.config[game.config].paddleOffset_X - CON.config[game.config].paddleWidth,
+		CON.config[game.config].screenHeight / 2 - paddleHeight / 2,
+		CON.config[game.config].paddleWidth,
 		paddleHeight,
 		CON.BASE_COLOR
 	);
 
-	if (type === 0) {
-		leftPaddle.setKeyListerns(leftPaddle, CON.config[config].leftPaddleUpKey, CON.config[config].leftPaddleDownKey, config);
-	} else if (type === 1) {
-		rightPaddle.setKeyListerns(rightPaddle, CON.config[config].rightPaddleUpKey, CON.config[config].rightPaddleDownKey, config);
+	if (game.instanceType === 0) {
+		leftPaddle.setKeyListerns(leftPaddle, CON.config[game.config].leftPaddleUpKey, CON.config[game.config].leftPaddleDownKey, game.config);
+	} else if (game.instanceType === 1) {
+		rightPaddle.setKeyListerns(rightPaddle, CON.config[game.config].rightPaddleUpKey, CON.config[game.config].rightPaddleDownKey, game.config);
 	}
-	paddels.push(leftPaddle);
-	paddels.push(rightPaddle);
+	game.paddels.push(leftPaddle);
+	game.paddels.push(rightPaddle);
 }
 
 
-export function wallInitializer (walles: Wall[], config: keyof typeof CON.config) {
+export function wallInitializer (walles: Wall[], config: string) {
 	if (CON.config[config].leftBackWall == true) {
 		walles.push(new Wall("LeftBackTopWall",
 			1,
@@ -103,7 +103,7 @@ export function wallInitializer (walles: Wall[], config: keyof typeof CON.config
 }
 
 
-export function lineInitializer (lines: GameObject[], config: keyof typeof CON.config) {
+export function lineInitializer (lines: GameObject[], config: string) {
 	lines.push(new GameObject(
 		"centerLine",
 		(CON.config[config].screenWidth / 2) - (CON.config[config].lineWidth / 2),
@@ -114,7 +114,7 @@ export function lineInitializer (lines: GameObject[], config: keyof typeof CON.c
 }
 
 
-export function keyListenerInitializer (listener: KeyListenerComponent, game: Game, config: keyof typeof CON.config) {
+export function keyListenerInitializer (listener: KeyListenerComponent, config: string) {
 	if(CON.config[config].sensorInput === true) {
 		return;
 	}
@@ -125,7 +125,7 @@ export function keyListenerInitializer (listener: KeyListenerComponent, game: Ga
 }
 
 
-export function messageFieldInitializer (messageFields: TextComponent[], config: keyof typeof CON.config) {
+export function messageFieldInitializer (messageFields: TextComponent[], config: string) {
 	messageFields.push(new TextComponent("left",
 		"LEFT MESSAGE",
 		CON.BASE_FONT,
@@ -146,7 +146,7 @@ export function messageFieldInitializer (messageFields: TextComponent[], config:
 }
 
 
-export function playerInitializer (players: PlayerComponent[], config: keyof typeof CON.config, gameUsers: UpdateGameUserDto []) {
+export function playerInitializer (players: PlayerComponent[], config: string, gameUsers: UpdateGameUserDto []) {
 	var player1 : string = "placeholder name 1";
 	var player2 : string = "placehoder name 2";
 	

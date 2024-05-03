@@ -21,7 +21,7 @@ export class Game {
 	gameData: UpdateGameDto | null = null;
 	theme: string;
 	config: string;
-	instanceType: CON.InstanceTypes = CON.InstanceTypes.observer;
+	instanceType: CON.InstanceTypes = CON.InstanceTypes.notSet;
 	gameState: GameState = GameState.WAITING;
 	keyListener: KeyListenerComponent = new KeyListenerComponent();
 	soundFX: SoundFX = new SoundFX();
@@ -51,12 +51,7 @@ export class Game {
 		this.gameUsers = this.gameData.GameUsers as UpdateGameUserDto [];
 		initializeGameObjects(this);
 		setTheme(this);
-		if (instanceType !== CON.InstanceTypes.observer) {
-			setSocketListeners(this);
-		} 
-		//else if (instanceType === CON.InstanceTypes.observer) {
-		// 	setObserverSocket(this);
-		// }
+		setSocketListeners(this);
 		console.log("script: instance type: ", this.instanceType);
 	}
 	
@@ -65,12 +60,11 @@ export class Game {
 		let deltaTime = (currentTime - this.lastFrameTime) / 1000;
 		this.lastFrameTime = currentTime;
 		
-	//todo add instance condition
 		if (this.gameState == `FINISHED` ) {
 			return;
 		}
 
-		if (this.gameState == `WAITING` && this.instanceType < 2 && this.canvas) {
+		if (this.gameState == `WAITING` && this.canvas) {
 			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 			this.messageFields[0].setText(CON.config[this.config].startMessage);
 		}
@@ -80,7 +74,7 @@ export class Game {
 			checkForGoals(this);
 		}
 		
-		if (this.instanceType < 2 && this.canvas) {
+		if (this.canvas) {
 				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 				drawGameObjects(this);
 				this.currentAnimationFrame = requestAnimationFrame(this.gameLoop.bind(this));

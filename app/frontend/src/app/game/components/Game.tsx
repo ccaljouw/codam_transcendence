@@ -17,7 +17,7 @@ export default function GameComponent() {
 	const [roomId, setRoomId] = useState<number>(0);
 	const [gameState, setGameState] = useState<GameState>(GameState.WAITING);
 	const [waitingForPlayers, setWaitingForPlayers] = useState<boolean>(true);
-	const [instanceType, setInstanceType] = useState<InstanceTypes>(InstanceTypes.observer) // 0 for player 1, 1 for player 2, 2 for observer
+	const [instanceType, setInstanceType] = useState<InstanceTypes>(InstanceTypes.notSet) // 0 for player 1, 1 for player 2
 	const {data: fetchedGameData, isLoading: loadingGame, error: errorGame, fetcher: gameFetcher} = useFetch<null, UpdateGameDto>();
 
 
@@ -87,7 +87,7 @@ export default function GameComponent() {
 		if (waitingForPlayers === true || game?.gameState === GameState.FINISHED || game?.gameState === GameState.ABORTED) {
 			return;
 		}
-		if (!game && canvasRef.current && instanceType !== InstanceTypes.observer) {
+		if (!game && canvasRef.current && instanceType !== InstanceTypes.notSet) {
 			console.log("Game: creating game instance of type: ", instanceType);
 
 			//set required configuration in constants
