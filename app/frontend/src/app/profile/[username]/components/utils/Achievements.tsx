@@ -4,7 +4,7 @@ function Achievement({icon, title, description} : {icon:string, title: string, d
 			<button className="btn btn-outline-dark" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 				{icon}
 			</button>
-			<ul key={icon} className="dropdown dropdown-menu">
+			<ul className="dropdown dropdown-menu">
 				<li className="dropdown-header">{title}</li>
 				<li className="dropdown-item disabled">{description}   </li>
 			</ul>
@@ -40,7 +40,7 @@ function ChooseAchievementElement({index} : {index:number}) : JSX.Element {
 
 export default function Achievements({achievements} : {achievements:number[]}) : JSX.Element {
 	const achievementList = achievements.map(achievement => 
-		<div key={achievement} className="col col-2">
+		<div key={achievement} className="col">
 			<ChooseAchievementElement index={achievement}/>
 		</div>
 	);
@@ -52,7 +52,7 @@ export default function Achievements({achievements} : {achievements:number[]}) :
 					<p>Achievements</p>
 				</div>
 				<div className="col col-9">
-					<div className="row">
+					<div className="row justify-content-start">
 						{achievementList}
 					</div>
 				</div>
