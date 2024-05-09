@@ -167,7 +167,7 @@ export class GameService {
       const gameUser = await this.db.gameUser.findFirst({
         where: {
           clientId: clientId,
-        }
+        },
       });
       if (gameUser) {
         // If a GameUser is found, access its associated Game
@@ -175,7 +175,11 @@ export class GameService {
           where: {
             id: gameUser.gameId,
             state: {
-              in: [GameState.WAITING, GameState.READY_TO_START, GameState.STARTED]
+              in: [
+                GameState.WAITING,
+                GameState.READY_TO_START,
+                GameState.STARTED,
+              ],
             },
           },
         });
@@ -185,7 +189,7 @@ export class GameService {
           return game.id;
         } else {
           // GameUser exists but np associated Game not found with relevant status to abort
-          console.log('No game with relevant status found')
+          console.log('No game with relevant status found');
           return null;
         }
       } else {

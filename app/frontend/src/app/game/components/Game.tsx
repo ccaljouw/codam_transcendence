@@ -1,5 +1,5 @@
 "use client"
-import { useRef, useEffect, useState, use } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { GameState } from '@prisma/client'
 import { UpdateGameDto, UpdateGameStateDto } from '@ft_dto/game'
 import { Game } from '@ft_game/components/Game.ts'
@@ -7,6 +7,7 @@ import { InstanceTypes } from '@ft_game/utils/constants.ts'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { constants } from '@ft_global/constants.globalvar.tsx'
 import useFetch from 'src/globals/functionComponents/useFetch.tsx'
+
 
 export default function GameComponent() {
 	const gameSocket = transcendenceSocket;
@@ -135,9 +136,16 @@ export default function GameComponent() {
 		}
 	}, [fetchedGameData]);
 
+
 	async function fetchGame(url: string) {
 		await gameFetcher({url: url});
 	}
+
+	// function leaveGame() {
+	// 	const payload: UpdateGameStateDto = {roomId: roomId, state: GameState.ABORTED};
+	// 	gameSocket.emit("game/updateGameState", payload);
+	// 	console.log("Game: leaving game");
+	// }
 
 	
 	// return the canvas
