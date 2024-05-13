@@ -51,7 +51,7 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 			{error != null &&
 				<H3 text={`Oops, it seems that the user ${userName} does not exist...`}/>
 			}
-			{(user != null && user.userName != null) ? 
+			{user != null && user.userName != null ? 
 				<>
 					<div className="white-box">
 						<H3 text={`Profile page of ${user.userName}`} />  
