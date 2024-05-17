@@ -7,7 +7,8 @@ import { InstanceTypes } from '@ft_game/utils/constants.ts'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { constants } from '@ft_global/constants.globalvar.tsx'
 import useFetch from 'src/globals/functionComponents/useFetch.tsx'
-
+import styles from '../styles.module.css';
+import { useRouter } from 'next/navigation';
 
 export default function GameComponent() {
 	const gameSocket = transcendenceSocket;
@@ -20,6 +21,7 @@ export default function GameComponent() {
 	const [waitingForPlayers, setWaitingForPlayers] = useState<boolean>(true);
 	const [instanceType, setInstanceType] = useState<InstanceTypes>(InstanceTypes.notSet) // 0 for player 1, 1 for player 2
 	const {data: fetchedGameData, isLoading: loadingGame, error: errorGame, fetcher: gameFetcher} = useFetch<null, UpdateGameDto>();
+	const router = useRouter();
 
 
 	// fetch game data
@@ -117,7 +119,7 @@ export default function GameComponent() {
 		}
 		if (gameState === GameState.FINISHED) {
 			console.log("Game: game finished add more code cleanup code here!!");
-			// todo add code
+			// Router.push('/home');
 			return;
 		}
 		if (gameState === GameState.READY_TO_START && game && canvasRef.current) {
@@ -147,14 +149,31 @@ export default function GameComponent() {
 	// 	console.log("Game: leaving game");
 	// }
 
+	function handleClick() {
+
+		if (gameState !== GameState.FINISHED) {
+			const payload: UpdateGameStateDto = {roomId: roomId, state: GameState.ABORTED};
+			gameSocket.emit("game/updateGameState", payload);
+		}
+		console.log("Game: leaving game");
+		router.push('/play');
+
+	}
+
 	
 	// return the canvas
 	return (
 		<>
 			{waitingForPlayers ? (
 				<p>Waiting for second player to join...</p>
-			) : (
+			) : (<>
+			<div className={styles.game}>
+				<div className={"text-center white-box " + styles.gameMenu}>
+				<button className="btn btn-dark" onClick={handleClick}>Leave Game</button>
+			</div>
 				<canvas ref={canvasRef} tabIndex={0} />
+				</div>
+				</>
 		)}
 		</>
 	);
