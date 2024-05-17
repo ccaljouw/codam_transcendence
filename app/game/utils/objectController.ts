@@ -13,13 +13,12 @@ import {
 
 export function initializeGameObjects(game: Game) {
   canvasInitializer(game);
-  keyListenerInitializer(game.keyListener, game.config);
   messageFieldInitializer(game.messageFields, game.config);
   paddleInitializer(game);
   wallInitializer(game.walls, game.config);
   lineInitializer(game.lines, game.config);
   playerInitializer(game.players, game.config, game.gameUsers);
-  keyListenerInitializer(game.keyListener, game.config);
+  keyListenerInitializer(game);
   game.backgroundFill = new GameObject("background", 0, 0, CON.config[game.config].screenWidth, CON.config[game.config].screenHeight, 'black');
   setBall(game);
 }

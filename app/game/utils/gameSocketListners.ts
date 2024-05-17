@@ -50,7 +50,7 @@ export function setSocketListeners(game: Game) {
     }
 
     if (payload.state === GameState.ABORTED) {
-      game.abortGame();
+      game.abortGame(1);
       return;
     }
     
@@ -65,10 +65,7 @@ export function setSocketListeners(game: Game) {
       gamerunning = true;
       game.startGame();
     }
-    
   });
-
-
 }
 
 function setNewScore(game: Game, score1: number, score2: number) {

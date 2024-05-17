@@ -98,13 +98,17 @@ export class Game {
 		// this.gameSocket.off(`game/updateGameState`);
 	}
 
-	abortGame() {
-		this.gameState = `FINISHED`;
+	abortGame(n: number) {
 		if (this.canvas) {
-			this.messageFields[0]?.setText("Other player left the game");
+			if (n === 1) {
+				this.messageFields[0]?.setText("Other player left the game");
+			} else {
+				this.messageFields[0]?.setText("Game aborted");
+			}
 			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 			drawGameObjects(this);
 		}
+		this.gameState = `FINISHED`;
 		cancelAnimationFrame(this.currentAnimationFrame);
 		console.log("script: game aborted");
 	}

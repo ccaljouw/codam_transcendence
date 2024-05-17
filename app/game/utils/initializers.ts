@@ -6,6 +6,7 @@ import { Game } from '../components/Game'
 import { KeyListenerComponent } from '../components/KeyListenerComponent'
 import { TextComponent } from '../components/TextComponent'
 // import { startKeyPressed } from './utils'
+import { escapeKeyPressed } from './utils'
 import { UpdateUserDto } from '@ft_dto/users'
 import * as CON from './constants'
 import { UpdateGameUserDto } from '@ft_dto/game'
@@ -114,13 +115,18 @@ export function lineInitializer (lines: GameObject[], config: string) {
 }
 
 
-export function keyListenerInitializer (listener: KeyListenerComponent, config: string) {
-	if(CON.config[config].sensorInput === true) {
+export function keyListenerInitializer (game: Game) {
+	if(CON.config[game.config].sensorInput === true) {
 		return;
 	}
-	listener.addKeyCallback(" ", () => {
-		console.log("Space pressed");
-		//startKeyPressed(game, config);
+	game.keyListener.addKeyCallback(" ", () => {
+		console.log("Space pressed. No function added yet");
+		//startKeyPressed(game, game.config);
+	});
+	//add esc key to abort game
+	game.keyListener.addKeyCallback("Escape", () => {
+		console.log("Escape key pressed, aborting game")
+		escapeKeyPressed(game)
 	});
 }
 
