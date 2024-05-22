@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto, UserProfileDto, CreateUserDto } from '@ft_dto/users';
 import { PrismaService } from '../database/prisma.service';
+import { InviteStatus } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -28,7 +29,7 @@ export class UsersService {
 					blocked: true,
 				}
 			});
-			
+
 			user.friends.sort((a, b) => {
 				if (a.online !== b.online)
 					return b.online > a.online ? 1 : -1;
@@ -36,20 +37,19 @@ export class UsersService {
 			});
 
 			delete user.hash;
-			for (const friend of user.friends as UserProfileDto[])
-				{
-					delete friend.friends;
-					delete friend.blocked;
-					delete friend.hash;
-				}
-			for (const blocked of user.blocked as UserProfileDto[])
-			{
+			for (const friend of user.friends as UserProfileDto[]) {
+				delete friend.friends;
+				delete friend.blocked;
+				delete friend.hash;
+			}
+			for (const blocked of user.blocked as UserProfileDto[]) {
 				delete blocked.friends;
 				delete blocked.blocked;
 				delete blocked.hash;
 			}
 			return user;
 		}
+
 
 		catch (error) {
 			throw new NotFoundException(`Error updating user with id ${id}: ${error}`);
@@ -114,23 +114,21 @@ export class UsersService {
 
 	async findOne(id: number): Promise<UserProfileDto> {
 		try {
-			const user = await this.db.user.findUnique({ 
+			const user = await this.db.user.findUnique({
 				where: { id },
 				include: {
 					friends: true,
 					blocked: true,
 				}
-				
+
 			});
 			delete user.hash;
-			for (const friend of user.friends as UserProfileDto[])
-				{
-					delete friend.friends;
-					delete friend.blocked;
-					delete friend.hash;
-				}
-			for (const blocked of user.blocked as UserProfileDto[])
-			{
+			for (const friend of user.friends as UserProfileDto[]) {
+				delete friend.friends;
+				delete friend.blocked;
+				delete friend.hash;
+			}
+			for (const blocked of user.blocked as UserProfileDto[]) {
 				delete blocked.friends;
 				delete blocked.blocked;
 				delete blocked.hash;
@@ -139,6 +137,122 @@ export class UsersService {
 		}
 		catch (error) {
 			throw new NotFoundException(`User with id ${id} does not exist.`);
+		}
+	}
+
+	async blockUser(id: number, blockId: number): Promise<UserProfileDto> {
+
+		try {
+			const user = await this.db.user.update({
+				where: { id },
+				data: {
+					blocked: {
+						connect: { id: blockId }
+					}
+				},
+				include: {
+					friends: true,
+					blocked: true,
+				}
+			});
+			delete user.hash;
+			for (const friend of user.friends as UserProfileDto[]) {
+				delete friend.friends;
+				delete friend.blocked;
+				delete friend.hash;
+			}
+			for (const blocked of user.blocked as UserProfileDto[]) {
+				delete blocked.friends;
+				delete blocked.blocked;
+				delete blocked.hash;
+			}
+
+			// Expire any open invites sent to the blocked user
+			const openInvites = await this.db.invite.findMany({
+				where: {
+					AND: [
+						{ senderId: id },
+						{ recipientId: blockId },
+						{ state: InviteStatus.SENT }
+					]
+				}
+			});
+			for (const invite of openInvites)
+				await this.db.invite.update({
+					where: { id: invite.id },
+					data: { state: InviteStatus.EXPIRED }
+				});
+			
+			// Reject invites from the blocked user
+			const invites = await this.db.invite.findMany({
+				where: {
+					AND: [
+						{ senderId: blockId },
+						{ recipientId: id },
+						{ state: InviteStatus.SENT }
+					]
+				}
+			});
+			for (const invite of invites)
+				await this.db.invite.update({
+					where: { id: invite.id },
+					data: { state: InviteStatus.REJECTED }
+				});
+
+			if (user.friends.find(friend => friend.id === blockId))
+				return this.unFriend(id, blockId);
+			return user;
+
+		}
+		catch (error) {
+			throw new NotFoundException(`Error blocking user with id ${id}: ${error}`);
+		}
+
+	}
+
+	async unFriend(id: number, friendId: number): Promise<UserProfileDto> {
+		try {
+			await this.db.user.update({
+				where: { id: friendId },
+				data: {
+					friends: {
+						disconnect: { id }
+					}
+				}
+			});
+			return this.db.user.update({
+				where: { id },
+				data: {
+					friends: {
+						disconnect: { id: friendId }
+					}
+				},
+				include: {
+					friends: true,
+					blocked: true,
+				}
+			});
+		} catch (error) {
+			throw new NotFoundException(`Error unfriending user with id ${id}: ${error}`);
+		}
+	}
+
+	unBlockUser(id: number, unBlockId: number): Promise<UserProfileDto> {
+		try {
+			return this.db.user.update({
+				where: { id },
+				data: {
+					blocked: {
+						disconnect: { id: unBlockId }
+					}
+				},
+				include: {
+					friends: true,
+					blocked: true,
+				}
+			});
+		} catch (error) {
+			throw new NotFoundException(`Error unblocking user with id ${id}: ${error}`);
 		}
 	}
 

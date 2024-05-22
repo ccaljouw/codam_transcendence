@@ -21,6 +21,8 @@ export class constants {
 	static API_ALL_USERS_BUT_ME = this.API_USERS + 'allButMe/';
 	static API_ADD_TOKEN = this.API_USERS + 'token/';
 	static API_FRIENDS_FROM = this.API_USERS + 'friendsFrom/';
+	static API_BLOCK = this.API_USERS + 'block/';
+	static API_UNBLOCK = this.API_USERS + 'unblock/';
 
 	static API_CHAT = this.BACKEND_BASEURL + 'chat/';
 	static CHAT_CHECK_IF_DM_EXISTS = this.API_CHAT + 'checkIfDMExists/';

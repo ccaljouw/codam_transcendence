@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { OnlineStatus } from "@prisma/client";
 import { UserProfileDto, UpdateUserDto } from "@ft_dto/users";
 import { ChatMessageToRoomDto, UpdateChatDto } from "@ft_dto/chat";
@@ -10,6 +10,7 @@ import MenuBar from "./layoutComponents/MenuBar";
 import LoginScreen from "./layoutComponents/Login/LoginScreen";
 import useFetch from "./functionComponents/useFetch";
 import useAuthentication from "./functionComponents/useAuthentication";
+import { IsBlocked } from "./functionComponents/FriendOrBlocked";
 
 // Context for the entire app
 interface TranscendenceContextVars {
@@ -53,13 +54,14 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	const [currentChatRoom, setCurrentChatRoom] = useState<UpdateChatDto>({id: -1} as UpdateChatDto);
 	const [newChatRoom, setNewChatRoom] = useState<{room: number, count: number}>({room: -1, count: 0});
 	const [currentUser, setCurrentUser] = useState<UserProfileDto>({} as UserProfileDto);
+	const currentUserRef = useRef<UserProfileDto>(currentUser);
 	const {user} = useAuthentication();
 	const [allUsersUnreadCounter, setAllUsersUnreadCounter] = useState<number>(0);
 	const [friendsUnreadCounter, setFriendsUnreadCounter] = useState(0);
 	const {data: userPatch, isLoading: userPatchLoading, error: userPatchError, fetcher: patchUserFetcher} = useFetch<UpdateUserDto, UserProfileDto>();
 	const {data: addToken, isLoading: addTokenLoading, error: addTokenError, fetcher: addTokenFetcher} = useFetch<CreateTokenDto, boolean>();
-	const {data: unreadMessageCount, isLoading: unreadMessageCountLoading, error: unreadMessageCountError, fetcher: unreadMessageCountFetcher} = useFetch<null, number>();
-	const {data: unreadsFromFriends, isLoading: unreadsFromFriendsLoading, error: unreadsFromFriendsError, fetcher: unreadsFromFriendsFetcher} = useFetch<number, number>();
+	// const {data: unreadMessageCount, isLoading: unreadMessageCountLoading, error: unreadMessageCountError, fetcher: unreadMessageCountFetcher} = useFetch<null, number>();
+	// const {data: unreadsFromFriends, isLoading: unreadsFromFriendsLoading, error: unreadsFromFriendsError, fetcher: unreadsFromFriendsFetcher} = useFetch<number, number>();
 
 	useEffect(() => {
 
@@ -69,7 +71,14 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		});
 
 		// Listener for messenges to chats the user is subscribed to but not currently in
-		transcendenceSocket.on('chat/messageToUserNotInRoom', (payload: ChatMessageToRoomDto) => {
+		transcendenceSocket.on('chat/messageToUserNotInRoom', (payload: ChatMessageToRoomDto,) => {
+			console.log('Message to user not in room:', payload);
+			console.log("User blocked?", IsBlocked(payload.userId, currentUserRef.current));
+			console.log("Current user:", currentUserRef.current);
+			if (IsBlocked(payload.userId, currentUserRef.current)) {
+				console.log('User is blocked, not showing message');
+				return;
+			};
 			setMessageToUserNotInRoom(payload);
 		});
 
@@ -89,22 +98,14 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	useEffect(() => {
 		if (transcendenceSocket.id && transcendenceSocket.id != '0' && currentUser && currentUser.id !== undefined && currentUser.id != 0) {
 			setUserStatusToOnline();
-			unreadMessageCountFetcher({url: constants.CHAT_MESSAGES_UNREAD_FOR_USER + currentUser.id});
-			unreadsFromFriendsFetcher({ url: constants.CHAT_UNREAD_MESSAGES_FROM_FRIENDS + currentUser.id });
+			// unreadMessageCountFetcher({url: constants.CHAT_MESSAGES_UNREAD_FOR_USER + currentUser.id});
+			// unreadsFromFriendsFetcher({ url: constants.CHAT_UNREAD_MESSAGES_FROM_FRIENDS + currentUser.id });
 		}
 	}, [currentUser.id])
 
 	useEffect(() => {
-		if (unreadMessageCount) {
-			setAllUsersUnreadCounter(unreadMessageCount);
-		}
-	}, [unreadMessageCount]);
-
-	useEffect(() => {
-		if (unreadsFromFriends) {
-			setFriendsUnreadCounter(unreadsFromFriends);
-		}
-	}, [unreadsFromFriends]);
+		currentUserRef.current = currentUser;
+	}, [currentUser]);
 
 	// Context values to be passed to the children components
 	const contextValues: TranscendenceContextVars = {

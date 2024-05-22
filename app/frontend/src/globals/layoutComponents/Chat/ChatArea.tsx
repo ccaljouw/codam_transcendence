@@ -9,7 +9,7 @@ import UnreadMessages from '@ft_global/functionComponents/UnreadMessages';
 import Chat from './Chat';
 import UserContextMenu from '../UserContextMenu/UserContextMenu';
 import { OnlineStatus } from '@prisma/client';
-import { HasFriends, IsFriend } from 'src/globals/functionComponents/FriendOrBlocked';
+import { HasFriends, IsBlocked, IsFriend } from 'src/globals/functionComponents/FriendOrBlocked';
 
 
 export default function ChatArea() {
@@ -37,6 +37,8 @@ export default function ChatArea() {
 		if (HasFriends(currentUser)) {
 			setUserListType(UserListType.Friends);
 		}
+		else
+			setUserListType(UserListType.AllUsers);
 	}, [currentUser]);
 
 	useEffect(() => {
@@ -45,18 +47,12 @@ export default function ChatArea() {
 			return
 		}
 		window.document.title = `STRONGPONG (${allUsersUnreadCounter}) `;
-
-
 	}, [allUsersUnreadCounter]);
 
-	useEffect(() => {
-		if (messageToUserNotInRoom.room) {
-			setAllUsersUnreadCounter(allUsersUnreadCounter + 1);
-			if (IsFriend(messageToUserNotInRoom.userId, currentUser)) {
-				setFriendsUnreadCounter(friendsUnreadCounter + 1);
-			}
-		}
-	}, [messageToUserNotInRoom]);
+	useEffect(() =>{
+		setAllUsersUnreadCounter(0);
+		setFriendsUnreadCounter(0);
+	}, [userListType])
 
 	const selectSecondUserDisplayFunc = (user: UserProfileDto, indexInUserList: number, statusChangeCallback: (idx: number, newStatus?: OnlineStatus) => void) => {
 		return (
@@ -68,7 +64,7 @@ export default function ChatArea() {
 						statusChangeCallback={statusChangeCallback}
 						indexInUserList={indexInUserList} />
 					&nbsp;&nbsp;
-					<span onClick={() => setSecondUser(user.id)}>{user.firstName} {user.lastName}</span>
+					<span className={IsBlocked(user.id, currentUser) ? 'blocked' : ''} onClick={() => setSecondUser(user.id)}>{user.firstName} {user.lastName}</span>
 					&nbsp;
 					<b><UnreadMessages secondUserId={user.id} indexInUserList={indexInUserList} statusChangeCallBack={statusChangeCallback} /></b>
 					<UserContextMenu user={user} />
@@ -84,7 +80,7 @@ export default function ChatArea() {
 				: <><h3>Hello {currentUser.userName}, Who do you want to chat with?</h3></>
 			}
 			<div className='chat-users'>
-				<div className='chat-userTypeSelect'>
+				<div className='chat-userTypeSelect' key={currentUser.friends?.length}>
 					{userListType == UserListType.Friends ?
 						<><span className='chat-selectedUserListType'>Friends {friendsUnreadCounter ? "(" + friendsUnreadCounter + ")" : ""}</span></>
 						: <span className='chat-userListType' onClick={() => setUserListType(UserListType.Friends)}>Friends {friendsUnreadCounter ? "(" + friendsUnreadCounter + ")" : ""}</span>

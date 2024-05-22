@@ -63,6 +63,10 @@
 	flex-direction: column;
 }
 
+.chat-area .blocked {
+	text-decoration: line-through;
+	color: gray;
+}
 /* place to chat */
 .chat-box{
     height: 70%;

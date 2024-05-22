@@ -105,9 +105,9 @@ export class ChatMessageService {
 
 	async unreadMessagesFromFriends(userId: number): Promise<number> {
 		const friends = await this.db.user.findUnique({ where: { id: userId } }).friends();
-		let friendChats : number[] = [];
+		let friendChats: number[] = [];
 		for (const friend of friends) {
-			const chat  =  await this.chatService.findDMChat(userId, friend.id);
+			const chat = await this.chatService.findDMChat(userId, friend.id);
 			if (chat) {
 				friendChats.push(chat.id);
 			}

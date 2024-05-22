@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateChatDto } from './create-chat.dto';
-import { IsArray, IsInt, IsNotEmpty } from 'class-validator';
+import { IsArray, IsDefined, IsInt, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { ChatUsers } from '@prisma/client';
 import { UpdateChatUserDto } from './update-chatUser.dto';
