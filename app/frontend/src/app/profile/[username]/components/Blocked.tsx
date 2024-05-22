@@ -7,7 +7,7 @@ export default function Blocked({user} : {user: UserProfileDto}) : JSX.Element {
             <FontBangers>
                 <h3>Blocked people</h3>
             </FontBangers>
-            <p>Not from database yet:</p>
+            <p>This will probably be removed from the profile page</p>
             <p>This element is closed by default and can be opened to see the people you blocked</p>
         </>
 	);
