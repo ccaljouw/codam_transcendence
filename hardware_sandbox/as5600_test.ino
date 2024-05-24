@@ -1,23 +1,27 @@
-//
-//    FILE: AS5600_demo.ino
-//  AUTHOR: Rob Tillaart
-// PURPOSE: demo
-//     URL: https://github.com/RobTillaart/AS5600
-//
-//  Examples may use AS5600 or AS5600L devices.
-//  Check if your sensor matches the one used in the example.
-//  Optionally adjust the code.
+/*
+  MESSAGE TO ALBERT 24th of May, 2024
+
+  #define BIKE_COLOR makes you choose which bike to upload code to
+
+  It is possible to configure the min, max and base value per bike
+*/
 
 #include "AS5600.h"
+
+// Uncomment which is applicable
+// #define BIKE_COLOR "black"
+#define BIKE_COLOR "brown"
 
 AS5600 as5600;   //  use default Wire
 
 int sensorValue;
 float filteredValue = 0.0;
+float mappedValue = 0.0;
 
 // Define constants for mapping
-const int sensorMin = 2300; //0
-const int sensorMax = 3800; //4096
+const int sensorMin = (BIKE_COLOR == "black"? 750 : 1040); //0
+const int sensorMax = (BIKE_COLOR == "black"? 2800 : 2800); //4096
+const int sensorBase = (BIKE_COLOR == "black"? 2048 : 2048); //2048
 const float outputMin = -1.0;
 const float outputMax = 1.0;
 
@@ -52,8 +56,12 @@ void loop()
 //   Serial.print("\t")
 //     Serial.println(as5600.rawAngle() * AS5600_RAW_TO_DEGREES);
     // Map the sensor value to the range of -1 to 1
-   sensorValue = as5600.readAngle();
-  float mappedValue = mapFloat(sensorValue, sensorMin, sensorMax, outputMin, outputMax);
+  sensorValue = as5600.readAngle();
+  if (sensorValue < sensorBase){
+    mappedValue = mapFloat(sensorValue, sensorMin, sensorBase, outputMin, 0.0);
+  } else {
+    mappedValue = mapFloat(sensorValue, sensorBase, sensorMax, 0.0, outputMax);
+  }
   
   // Apply noise filtering
   filteredValue = filteredValue + filterAlpha * (mappedValue - filteredValue);
@@ -70,7 +78,7 @@ void loop()
   Serial.print(", raw: ");
   Serial.println(sensorValue);
 
-  delay(50);
+  delay(100);
 }
 
 // Function to map float values
