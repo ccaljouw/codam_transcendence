@@ -46,11 +46,11 @@ model User {
     chats ChatUsers[]
     games GameUser[]
 
-	// friends User[] @relation("Friends")
-	// friendOf User[] @relation("Friends")
+	friends User[] @relation("Friends")
+	friendOf User[] @relation("Friends")
 
-	// blocked User[] @relation("Blocked")
-	// blockedBy User[] @relation("Blocked")
+	blocked User[] @relation("Blocked")
+	blockedBy User[] @relation("Blocked")
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -75,7 +75,7 @@ model Chat {
     createdAt DateTime       @default(now())
     updatedAt DateTime       @updatedAt
     users     ChatUsers[]
-    berichten ChatMessages[]
+    messages ChatMessages[]
 }
 
 model ChatUsers {
@@ -103,19 +103,21 @@ model ChatMessages {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     chat      Chat     @relation(fields: [chatId], references: [id])
+	invite       Invite?  @relation(fields: [inviteId], references: [id])
+  	inviteId     Int? @unique
 }
 
 model Game {
     id    Int       @id @default(autoincrement())
     state GameState
-
     GameUsers GameUser[]
 }
 
 model GameUser {
-    id    Int      @id @default(autoincrement())
-    score Int      @default(0)
-    win   Boolean?
+    id        Int      @id @default(autoincrement())
+    clientId  String
+    score     Int       @default(0)
+    win       Boolean?
 
     gameId Int
     game   Game @relation(fields: [gameId], references: [id])
@@ -135,7 +137,10 @@ model Invite {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  expiredAt DateTime @default(now()) //change
+  expiredAt DateTime @default(now()) //change\\
+  chatMessage   ChatMessages? @relation()
+//   chatMessageId Int?
+
 }
 
 // ***************************************************************** //
@@ -143,8 +148,8 @@ model Invite {
 
 enum OnlineStatus {
     OFFLINE
-    ONLINE
     IN_GAME
+    ONLINE
 }
 
 enum ChatType {
