@@ -52,7 +52,8 @@ export class Game {
 		initializeGameObjects(this);
 		setTheme(this);
 		setSocketListeners(this);
-		console.log("script: instance type: ", this.instanceType);
+		console.log("script: game created with config: ", this.config, " and theme: ", this.theme);
+		console.log("script: sensorInput = ", CON.config[this.config].sensorInput);
 	}
 	
 

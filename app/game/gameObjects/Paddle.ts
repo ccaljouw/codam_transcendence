@@ -88,18 +88,20 @@ export class Paddle extends GameObject {
 
 	private AnalogupdatePaddle(deltaTime: number, config: keyof typeof CON.config): boolean {
 		const margin = 3;
-		// let hasMoved = false;
 		
 		//todo: get sensor input
 		let sensorInputValue = 0; //-1 to 1
 
-		//todo: do not calculate here
+		//calculate paddle position
 		const paddleMinY = CON.config[config].wallWidth + CON.config[config].paddleGap;
 		const paddleMaxY = CON.config[config].screenHeight - this.height - CON.config[config].wallWidth - CON.config[config].paddleGap;
 		const paddleRange = paddleMaxY - paddleMinY;
 
-		//simply set nuew position
+		//calculate required paddle position
 		const requiredPaddlePosition = paddleRange * sensorInputValue + paddleMinY;
+		
+
+		//option 1: simply set new position (hacker verion)
 		if (requiredPaddlePosition - this.y < margin) {
 			return false;
 		}
@@ -107,7 +109,7 @@ export class Paddle extends GameObject {
 		return true
 		
 		
-		// calculate useing speed and delta time
+		// option 2: calculate using speed and delta time
 		// const currentY = this.movementComponent.getY();
 		// const requiredMovement = requiredPaddlePosition - currentY;
 		// if (Math.abs(requiredMovement) > margin) {
@@ -117,9 +119,9 @@ export class Paddle extends GameObject {
 		// 	this.movementComponent.update(deltaTime);
 		// 	this.y = this.movementComponent.getY();
 		// 	this.checkBounds(config);
-		// 	hasMoved = true;
+		// 	return = true;
 		// }
-		// return hasMoved;
+		// return false;
 	}
 
 
@@ -132,21 +134,25 @@ export class Paddle extends GameObject {
 			return this.updateAiPaddle(deltaTime, config, ball as Ball);
 		}
 
-		if (CON.config[config].sensorInput === true) {
+		//this value can be set in the pongConfig.json file: sensorInput = true
+		// to choose which config we use (there are three in the json file) you can specify it in the constants.globalvar.tsx file
+		if (CON.config[config].sensorInput) {
+			console.log("sensor input");
 			return this.AnalogupdatePaddle(deltaTime, config);
 		}
 		
-		let hasMoved = false;
-		const margin = .5;
-
 		if (this.keyListener.checkKeysPressed()) {
+			console.log("key input");
+			let hasMoved = false;
+			const margin = .5;
 			let initialY = this.y;
 			this.movementComponent.update(deltaTime);
 			this.y = this.movementComponent.getY();
 			this.checkBounds(config);
 			
 			hasMoved = Math.abs(this.y - initialY) > margin;
+			return hasMoved;
 		}
-		return hasMoved;
+		return false;
 	}
 }

@@ -14,7 +14,7 @@
     "socketUpdateInterval": "0.01",
     "interpolationFactor": "0.4",
 
-    "sensorInput": "false",
+    "sensorInput": "true",
     "leftPaddleUpKey": "ArrowUp",
     "leftPaddleDownKey": "ArrowDown",
     "rightPaddleUpKey": "ArrowUp",
@@ -62,7 +62,7 @@
     "socketUpdateInterval": "0.01",
     "interpolationFactor": "0.4",
     
-    "sensorInput": "false",
+    "sensorInput": "true",
     "leftPaddleUpKey": "ArrowUp",
     "leftPaddleDownKey": "ArrowDown",
     "rightPaddleUpKey": "ArrowUp",
