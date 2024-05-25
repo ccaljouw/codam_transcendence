@@ -1,4 +1,4 @@
-/*
+  /*
   MESSAGE TO ALBERT 24th of May, 2024
 
   #define BIKE_COLOR makes you choose which bike to upload code to
@@ -73,10 +73,10 @@ void loop()
     filteredValue = -1.0;
   
   // Output the filtered value
-  Serial.print("float: ");
-  Serial.print(filteredValue);
-  Serial.print(", raw: ");
-  Serial.println(sensorValue);
+//   Serial.print("float: ");
+  Serial.println(filteredValue, 4);
+//   Serial.print(", raw: ");
+//   Serial.println(sensorValue);
 
   delay(100);
 }

@@ -13,6 +13,7 @@ import { setSocketListeners } from '../utils/gameSocketListners'
 import { updateObjects, checkForGoals } from '../utils/updateObjects'
 import { countdown, setTheme } from '../utils/utils'
 import { initializeGameObjects, drawGameObjects, resetGameObjects } from '../utils/objectController'
+import { first } from 'rxjs'
 
 
 export class Game {
@@ -39,8 +40,10 @@ export class Game {
 	elapasedTimeSincceLastUpdate: number = 0;
 	lastFrameTime: number = 0;
 	currentAnimationFrame: number = 0;
+	firstBike: number = 0;
+	secondBike: number = 0;
 
-	constructor(newCanvas: HTMLCanvasElement | undefined, instanceType: CON.InstanceTypes, data: UpdateGameDto, givenConfig: string, givenTheme: string) {
+	constructor(newCanvas: HTMLCanvasElement | undefined, instanceType: CON.InstanceTypes, data: UpdateGameDto, givenConfig: string, givenTheme: string, context: any) {
 		this.config = givenConfig;
 		this.theme = givenTheme;
 		this.gameData = data;
@@ -49,18 +52,25 @@ export class Game {
 		this.canvas = newCanvas? newCanvas : undefined;
 		this.ctx = this.canvas?.getContext("2d") as CanvasRenderingContext2D;
 		this.gameUsers = this.gameData.GameUsers as UpdateGameUserDto [];
+		this.firstBike = context.firstBike.value;
+		this.secondBike = context.secondBike.value;
 		initializeGameObjects(this);
 		setTheme(this);
 		setSocketListeners(this);
 		console.log("script: game created with config: ", this.config, " and theme: ", this.theme);
 		console.log("script: sensorInput = ", CON.config[this.config].sensorInput);
+		context.subscribeToBikeUpdates(this.updateBikeValues.bind(this))
 	}
 	
+	updateBikeValues(firstBike: number, secondBike: number) {
+        this.firstBike = firstBike;
+        this.secondBike = secondBike;
+    }
 
 	gameLoop(currentTime:number) {
 		let deltaTime = (currentTime - this.lastFrameTime) / 1000;
 		this.lastFrameTime = currentTime;
-		
+		// console.log("Bike values: ", firstBike, secondBike);
 		if (this.gameState == `FINISHED` ) {
 			return;
 		}

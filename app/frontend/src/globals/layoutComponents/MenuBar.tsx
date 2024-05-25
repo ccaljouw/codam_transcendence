@@ -50,6 +50,8 @@ export default function MenuBar(): JSX.Element {
 													<li><Link className="dropdown-item" href="/dev/test/frontend">Test frontend</Link></li>
 													<li><Link className="dropdown-item" href="/dev/test/backend">Test backend</Link></li>
 													<li><Link className="dropdown-item" href="/dev/test/coverage">Test coverage</Link></li>
+													<li><hr className="dropdown-divider"/></li>
+										<li><Link className="dropdown-item" href="/dev/sensor">Sensor</Link></li>
 												</ul>
 											</li>
 										</> 

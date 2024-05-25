@@ -14,7 +14,7 @@
     "socketUpdateInterval": "0.01",
     "interpolationFactor": "0.4",
 
-    "sensorInput": "true",
+    "sensorInput": "false",
     "leftPaddleUpKey": "ArrowUp",
     "leftPaddleDownKey": "ArrowDown",
     "rightPaddleUpKey": "ArrowUp",
@@ -55,14 +55,14 @@
     "winningScore": "3",
     "collisionCooldown": "500",
     "ballWidth": "20",
-    "ballBaseSpeed": "7",
-    "ballSpeedIncrease": "1",
+    "ballBaseSpeed": "4",
+    "ballSpeedIncrease": "0.5",
     "paddleBaseSpeed": "10",
 
     "socketUpdateInterval": "0.01",
     "interpolationFactor": "0.4",
     
-    "sensorInput": "true",
+    "sensorInput": 1,
     "leftPaddleUpKey": "ArrowUp",
     "leftPaddleDownKey": "ArrowDown",
     "rightPaddleUpKey": "ArrowUp",
@@ -110,7 +110,7 @@
     "socketUpdateInterval": "0.01",
     "interpolationFactor": "0.4",
 
-    "sensorInput": "true",
+    "sensorInput": "false",
     "leftPaddleUpKey": "w",
     "leftPaddleDownKey": "s",
     "rightPaddleUpKey": "ArrowUp",

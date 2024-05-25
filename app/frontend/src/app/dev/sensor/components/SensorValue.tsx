@@ -1,58 +1,37 @@
 "use client";
 
-interface Serial {
-    requestPort(): Promise<SerialPort>;
-};
+import { useContext } from "react";
+import { TranscendenceContext } from "src/globals/contextprovider.globalvar";
 
-interface SerialPort {
-    open(options: SerialPortOptions): Promise<void>;
-    readable: ReadableStream;
-}
+export default function SensorValue(): JSX.Element {
+	const { setFirstBike, setSecondBike, connectToESP8266 } = useContext(TranscendenceContext);
 
-interface SerialPortOptions {
-    baudRate: number;
-}
-
-export default function SensorValue() : JSX.Element {
-    function updateReceivedData(data: string) {
-        const receivedDataElement = document.getElementById('receivedData');
+	function updateReceivedData(data: string) {
+		const receivedDataElement = document.getElementById('receivedData');
 		console.log(data);
-        if (receivedDataElement != null)
-            receivedDataElement.innerText = data;
-    }
+		const floatVal = parseFloat(data);
+		setFirstBike(floatVal);
+		if (receivedDataElement != null) {
+			receivedDataElement.innerText = `${data} [${floatVal}]`;
+		}
+	}
 
-    async function connectToESP8266() {
-        //todo: consider changing this: The line below makes the code ignore the navigator.serial warning
-        //@ts-ignore
-        const serial = navigator.serial as Serial;
-        if (!serial)
-        {
-            console.log("Only available in Chrome");
-            return ;
-        }
-        try {
-            // Request access to the serial port
-            const port = await serial.requestPort();
-            await port.open({ baudRate: 9600 });
-            
-            // Start reading data from the serial port
-            const reader = port.readable.getReader();
-            //todo: make getline function
-            while (true) {
-                const { value, done } = await reader.read();
-                if (done) break;
-                // Update received data on the webpage
-                updateReceivedData(new TextDecoder().decode(value));
-            }
-        } catch (error) {
-            console.error('Serial port error:', error);
-        }
-    }
+	function updateReceivedData2(data: string) {
+		const receivedDataElement = document.getElementById('receivedData2');
+		// console.log(data);
+		const floatVal = parseFloat(data);
+		setSecondBike(floatVal);
+		if (receivedDataElement != null) {
+			receivedDataElement.innerText = `${data} [${floatVal}]`;
+		}
+	}
 
-    return (
-        <>
-            <button onClick={connectToESP8266}>Connect to ESP8266</button>
-            <div id="receivedData"></div>
-        </>
-    );
+	return (
+		<>
+			<button onClick={() => connectToESP8266(updateReceivedData)}>Connect to first bike</button>
+			<div id="receivedData"></div>
+			<button onClick={() => connectToESP8266(updateReceivedData2)}>Connect to second bike</button>
+			<div id="receivedData2"></div>
+		</>
+	);
 }

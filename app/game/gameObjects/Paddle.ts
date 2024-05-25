@@ -3,11 +3,15 @@ import { MovementComponent } from '../components/MovementComponent'
 import { Ball } from './Ball'
 import { KeyListenerComponent } from '../components/KeyListenerComponent'
 import * as CON from '../utils/constants'
+import { useContext } from 'react'
+import { TranscendenceContext } from '@ft_global/contextprovider.globalvar'
+import { Console } from 'console'
 
 
 export class Paddle extends GameObject {
 	public	movementComponent: MovementComponent;
 	public	keyListener: KeyListenerComponent;
+	
 
 	constructor(name: string, x: number, y: number, width: number, height: number, color: string) {
 		super(name, x, y, width, height, color);
@@ -86,25 +90,26 @@ export class Paddle extends GameObject {
     return hasMoved;
 	}
 
-	private AnalogupdatePaddle(deltaTime: number, config: keyof typeof CON.config): boolean {
-		const margin = 3;
-		
+	private AnalogupdatePaddle(deltaTime: number, config: keyof typeof CON.config, analogVal: number): boolean {
+		// const margin = 10;
+		// console.log("Analog value: ", analogVal.toPrecision(6));
 		//todo: get sensor input
-		let sensorInputValue = 0; //-1 to 1
+		// let sensorInputValue = 0; //-1 to 1
 
 		//calculate paddle position
 		const paddleMinY = CON.config[config].wallWidth + CON.config[config].paddleGap;
 		const paddleMaxY = CON.config[config].screenHeight - this.height - CON.config[config].wallWidth - CON.config[config].paddleGap;
 		const paddleRange = paddleMaxY - paddleMinY;
-
+		// console.log("Analog paddleRange: ", paddleRange, "paddleMinY: ", paddleMinY, "paddleMaxY: ", paddleMaxY);
 		//calculate required paddle position
-		const requiredPaddlePosition = paddleRange * sensorInputValue + paddleMinY;
+		const requiredPaddlePosition = (paddleRange / 2)  + (analogVal * paddleRange)  + paddleMinY;
+		// console.log("Analog requiredPaddlePosition: ", requiredPaddlePosition, "TRUE? ", requiredPaddlePosition - this.y < margin);
 		
 
 		//option 1: simply set new position (hacker verion)
-		if (requiredPaddlePosition - this.y < margin) {
-			return false;
-		}
+		// if (requiredPaddlePosition - this.y < margin) {
+		// 	return false;
+		// }
 		this.y = requiredPaddlePosition;
 		return true
 		
@@ -125,7 +130,7 @@ export class Paddle extends GameObject {
 	}
 
 
-	public updatePaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball | null): boolean {
+	public updatePaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball | null, analogVal: number): boolean {
     if (ball == null || ball.movementComponent.getSpeed() === 0) {
 			return false;
 		}
@@ -138,7 +143,7 @@ export class Paddle extends GameObject {
 		// to choose which config we use (there are three in the json file) you can specify it in the constants.globalvar.tsx file
 		if (CON.config[config].sensorInput) {
 			console.log("sensor input");
-			return this.AnalogupdatePaddle(deltaTime, config);
+			return this.AnalogupdatePaddle(deltaTime, config, analogVal);
 		}
 		
 		if (this.keyListener.checkKeysPressed()) {
