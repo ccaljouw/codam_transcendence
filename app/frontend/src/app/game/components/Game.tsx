@@ -94,7 +94,7 @@ export default function GameComponent() {
 			console.log("Game: creating game instance of type: ", instanceType);
 
 			//set required configuration in constants
-			const newGame = new Game(canvasRef.current, instanceType, gameData!, constants.configuration, constants.theme);
+			const newGame = new Game(canvasRef.current, instanceType, gameData!, constants.configuration, constants.themes[gameData?.GameUsers?.[instanceType].user.theme]);
 			setGame(newGame);
 			canvasRef.current.focus();
 		}
@@ -143,11 +143,6 @@ export default function GameComponent() {
 		await gameFetcher({url: url});
 	}
 
-	// function leaveGame() {
-	// 	const payload: UpdateGameStateDto = {roomId: roomId, state: GameState.ABORTED};
-	// 	gameSocket.emit("game/updateGameState", payload);
-	// 	console.log("Game: leaving game");
-	// }
 
 	function handleClick() {
 

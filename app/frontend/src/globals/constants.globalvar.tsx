@@ -12,6 +12,7 @@
 export class constants {
 
 	static configuration = 'test';
+	static themes = ['classic', 'blackAndWhite', 'neon'];
 	static theme = 'classic';
 
 	static BACKEND_BASEURL = 'http://localhost:3001/';
