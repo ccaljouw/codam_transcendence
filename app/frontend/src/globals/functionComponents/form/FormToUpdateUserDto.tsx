@@ -30,6 +30,7 @@ export default function FormToUpdateUserDto (event: FormEvent<HTMLFormElement>) 
     }
 
     //todo: consider adding avatarId and online status
+    //todo: add game settings
 
     return (patchUser);
 }

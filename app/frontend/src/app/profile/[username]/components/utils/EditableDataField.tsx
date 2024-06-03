@@ -19,26 +19,26 @@ export default function EditableDataField({name, data, attributes} : {name:strin
 
 	return (
 		<>
-				<div className="col col-3">
-					<p>{name}</p>
-				</div>
-				<div className="col col-6">
-					{editMode == false?
-						<b>{data? data : "Loading data..."}</b>
-						:
-						<input id="floatingInput" className="form-control form-control-sm" placeholder={data} {... attributes}></input>
-					}
-				</div>
-				<div className="col col-3 align-self-end">
-					{editMode == false?
-						<EditButton onClick={() => setEditMode(true)}/>
-						:
-						<>
-							<button className="btn btn-outline-dark btn-sm" type="submit">Save</button>
-							<button className="btn btn-dark btn-sm" onClick={() => setEditMode(false)}>Cancel</button>
-						</>
-					}
-				</div>
+			<div className="col col-3">
+				<p>{name}</p>
+			</div>
+			<div className="col col-6">
+				{editMode == false?
+					<b>{data? data : "Loading data..."}</b>
+					:
+					<input className="form-control form-control-sm form-transparent" placeholder={data} {... attributes}></input>
+				}
+			</div>
+			<div className="col col-3 align-self-end">
+				{editMode == false?
+					<EditButton onClick={() => setEditMode(true)}/>
+					:
+					<>
+						<button className="btn btn-outline-dark btn-sm" type="submit">Save</button>
+						<button className="btn btn-dark btn-sm" onClick={() => setEditMode(false)}>Cancel</button>
+					</>
+				}
+			</div>
 		</>
 	);
 }
