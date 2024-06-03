@@ -26,7 +26,7 @@ export default function EditableDataField({name, data, attributes} : {name:strin
 				{editMode == false?
 					<b>{data? data : "Loading data..."}</b>
 					:
-					<input className="form-control form-control-sm form-transparent" placeholder={data} {... attributes}></input>
+					<input className="form-control form-control-sm" placeholder={data} {... attributes}></input>
 				}
 			</div>
 			<div className="col col-3 align-self-end">
