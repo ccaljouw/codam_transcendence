@@ -21,13 +21,19 @@ function ThemeOptions({theme}:{theme: number}) : JSX.Element[] {
 export default function GameSettings({user} : {user: UserProfileDto}) : JSX.Element {
 	const {currentUser, setCurrentUser} = useContext(TranscendenceContext);
 	const {data: updatedUser, isLoading, error, fetcher} = useFetch<UpdateUserDto, UserProfileDto>();
-
+	useEffect(() => {
+		if (updatedUser != null){
+			setCurrentUser(updatedUser);
+		}
+	}, [updatedUser]);
+	
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		console.log("submitting form field entry");
 		event.preventDefault();
 		await fetcher({url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: FormToUpdateUserDto(event)})
 	}
-
+	
+	// todo: show loading state and error when relevant 
 	return (
 		<>
 			<H3 text="Game settings"/>
