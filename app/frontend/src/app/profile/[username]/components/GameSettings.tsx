@@ -34,10 +34,9 @@ export default function GameSettings({user} : {user: UserProfileDto}) : JSX.Elem
 						<b>{user.email}</b>
 						:
 						<select className="form-select form-select-sm form-transparent">
-						<option value="default">Default</option>
-						<option value="retro">Retro</option>
-						<option value="blue">Blue</option>
-						<option value="rainbow">Rainbow</option>
+						<option value="classic">Classic</option>
+						<option value="blackAndWhite">Black & White</option>
+						<option value="neon">Neon</option>
 						</select>
 					}
 				</div>
