@@ -1,6 +1,5 @@
 import { UpdateUserDto, UserProfileDto } from '@ft_dto/users';
 import { H3 } from 'src/globals/layoutComponents/Font';
-import EditButton from './utils/EditButton';
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import useFetch from 'src/globals/functionComponents/useFetch';
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
