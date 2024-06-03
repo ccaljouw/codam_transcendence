@@ -155,21 +155,22 @@ export default function GameComponent() {
 
 	}
 
-	
+
 	// return the canvas
 	return (
 		<>
 			{waitingForPlayers ? (
-				<p>Waiting for second player to join...</p>
-			) : (<>
-			<div className={styles.game}>
-				<div className={"text-center white-box " + styles.gameMenu}>
-				<button className="btn btn-dark" onClick={handleClick}>Leave Game</button>
-			</div>
-				<canvas ref={canvasRef} tabIndex={0} />
+				<div className="white-box">
+					<p>Waiting for second player to join...</p>
 				</div>
-				</>
-		)}
+			) : (
+				<div className={`${styles.game} white-box`}>
+					<div className={`${styles.gameMenu} text-center row`}>
+						<button className="btn btn-dark" onClick={handleClick}>Leave Game</button>
+					</div>
+					<canvas ref={canvasRef} tabIndex={0} />
+				</div>
+			)}
 		</>
 	);
 }	

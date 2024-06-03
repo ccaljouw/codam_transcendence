@@ -8,7 +8,7 @@ export default function Stats({user} : {user: UserProfileDto}) : JSX.Element {
 
     return (
         <>
-            <H3 text="User stats"/>
+            <H3 text="statistics"/>
             <StaticDataField name="Rank" data={"#" + user.rank} />
             <StaticDataField name="Win/Loss Ratio " data="1.0" />
             {user.friends != null &&
@@ -20,4 +20,4 @@ export default function Stats({user} : {user: UserProfileDto}) : JSX.Element {
     );
 }
 
-// todo: get actual information from database
+// todo: get actual information from database for win/loss ratio

@@ -27,16 +27,16 @@ export default function GameSettings({user} : {user: UserProfileDto}) : JSX.Elem
 			<H3 text="Game settings"/>
 			<form onSubmit={handleSubmit} acceptCharset='utf-8' className="row">
 				<div className="col col-3">
-					<p>Color palette&nbsp;</p>
+					<p>Theme&nbsp;</p>
 				</div>
 				<div className="col col-6">
 					{editMode == false?
-						<b>{user.email}</b>
+						<b>{constants.themes[user.theme]}</b>
 						:
-						<select className="form-select form-select-sm form-transparent">
-						<option value="classic">Classic</option>
-						<option value="blackAndWhite">Black & White</option>
-						<option value="neon">Neon</option>
+						<select className="form-select form-select-sm">
+						<option value={0}>{constants.themes[0]}</option>
+						<option value={1}>{constants.themes[1]}</option>
+						<option value={2}>{constants.themes[2]}</option>
 						</select>
 					}
 				</div>
