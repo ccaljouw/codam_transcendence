@@ -38,11 +38,11 @@ export class ChatService {
 	// This function is used to create a chat between two users.
 	async createDM(payload: CreateDMDto): Promise<UpdateChatDto> {
 
-		const exists = await this.findDMChat(payload.user1Id, payload.user2Id);
-		if (exists) // Return chat id if it exists
-		{
-			return exists;
-		}
+    const exists = await this.findDMChat(payload.user1Id, payload.user2Id);
+    if (exists) {
+      // Return chat id if it exists
+      return exists;
+    }
 
 		// Create chat
 		const newChat = await this.db.chat.create({
@@ -60,6 +60,10 @@ export class ChatService {
 			]
 		});
 
-		return ({ id: newChat.id, ownerId: newChat.ownerId, visibility: newChat.visibility })
-	}
+    return {
+      id: newChat.id,
+      ownerId: newChat.ownerId,
+      visibility: newChat.visibility,
+    };
+  }
 }

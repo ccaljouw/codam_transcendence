@@ -15,6 +15,7 @@ rebuild: clean
 
 clean:
 	docker compose down
+	rm -rf app/backend/prisma/migrations
 
 fclean: clean
 	- docker rmi transcendence-backend

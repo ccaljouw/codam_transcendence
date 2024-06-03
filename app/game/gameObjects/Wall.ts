@@ -1,5 +1,5 @@
-import * as CON from "../utils/constants"
-import { GameObject } from "./GameObject"
+import * as CON from '../utils/constants'
+import { GameObject } from './GameObject'
 
 //type 0  is horizontal, 1 is vertical
 export class Wall extends GameObject {

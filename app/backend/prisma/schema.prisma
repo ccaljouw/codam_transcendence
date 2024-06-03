@@ -40,6 +40,7 @@ model User {
 	// token	 String?
 
     avatarId Int          @default(1)
+    theme    Int          @default(0)
     online   OnlineStatus @default(OFFLINE)
     rank     Int?         @default(-1)
 
@@ -110,14 +111,14 @@ model ChatMessages {
 model Game {
     id    Int       @id @default(autoincrement())
     state GameState
-
     GameUsers GameUser[]
 }
 
 model GameUser {
-    id    Int      @id @default(autoincrement())
-    score Int      @default(0)
-    win   Boolean?
+    id        Int      @id @default(autoincrement())
+    clientId  String
+    score     Int       @default(0)
+    win       Boolean?
 
     gameId Int
     game   Game @relation(fields: [gameId], references: [id])

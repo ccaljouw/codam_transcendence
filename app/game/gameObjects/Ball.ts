@@ -1,9 +1,10 @@
-import { GameObject } from "./GameObject"
-import { MovementComponent } from "../components/MovementComponent"
-import { getNormalizedDistance, switchDirectionForRightPaddle } from "../utils/utils"
-import * as CON from "../utils/constants"
-import { Game } from "../components/Game"
-import { GameState } from "@prisma/client"
+import { GameObject } from './GameObject'
+import { MovementComponent } from '../components/MovementComponent'
+import { getNormalizedDistance, switchDirectionForRightPaddle } from '../utils/utils'
+import * as CON from '../utils/constants'
+import { Game } from '../components/Game'
+import { GameState } from '@prisma/client'
+import { transcendenceSocket } from '@ft_global/socket.globalvar'
 
 export class Ball extends GameObject {
 	public	movementComponent: MovementComponent;
@@ -11,9 +12,18 @@ export class Ball extends GameObject {
 	private _lastCollisionWithPaddle: number = 0;
 	private _lastcollisionType: string = "";
 
-	constructor() {
-		super("Ball", CON.BALL_START_X, CON.BALL_START_Y, CON.BALL_WIDTH, CON.BALL_WIDTH, CON.BASE_COLOR);
-		this.movementComponent = new MovementComponent(0, 0, CON.BALL_START_X, CON.BALL_START_Y);
+	constructor(config: keyof typeof CON.config, theme: keyof typeof CON.themes) {
+		super("Ball",
+			CON.config[config].screenWidth / 2 - CON.config[config].ballWidth /2,
+			CON.config[config].screenHeight / 2 - CON.config[config].ballWidth /2,
+			CON.config[config].ballWidth,
+			CON.config[config].ballWidth,
+			CON.themes[theme].ballColor);
+		this.movementComponent = new MovementComponent(
+			0,
+			0,
+			CON.config[config].screenWidth / 2 - CON.config[config].ballWidth /2,
+			CON.config[config].screenHeight / 2 - CON.config[config].ballWidth /2);
 	}
 
 	
@@ -57,6 +67,7 @@ export class Ball extends GameObject {
 	}
 
 	public getStartValues(config: keyof typeof CON.config, game: Game) {
+		const gameSocket = transcendenceSocket;
 		if (game.gameState != GameState.STARTED) {
 			return;
 		}
@@ -81,7 +92,7 @@ export class Ball extends GameObject {
 		this.movementComponent.setSpeed(speed);
 		
 		console.log("Script: startvalues set to direction: ", direction, " and speed: ", speed);
-		game.gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, ballDirection: direction, ballSpeed: speed});
+		gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, ballDirection: direction, ballSpeed: speed});
 	} 
 
 

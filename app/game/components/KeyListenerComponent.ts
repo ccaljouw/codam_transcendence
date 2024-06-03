@@ -14,7 +14,6 @@ export class KeyListenerComponent {
 	
 	// Set the state for this key to pressed if it is not already and call the callback function.
 	private handleKeyDown(event: KeyboardEvent) {
-		// event.preventDefault(); // turn this on to disable normal key functionality like scrolling with arrows
 		const key = event.key;
 		if (!this._keyStates.get(key)) {
 			this._keyStates.set(key, true);
@@ -61,4 +60,4 @@ export class KeyListenerComponent {
 	public removeKeyCallback(key: string) {
 		this._keyMap.delete(key);
 	}
-  }
+}
