@@ -99,6 +99,7 @@
 /* place to find users */
 .chat-users {
 	height: 30%;
+	width: 100%;
 	position: relative;
 	align-self: flex-start;
 	margin-top: auto;

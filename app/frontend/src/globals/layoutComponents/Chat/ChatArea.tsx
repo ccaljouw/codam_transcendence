@@ -81,9 +81,9 @@ export default function ChatArea() {
 		<>
 			{secondUser || newChatRoom.room != -1 ?
 				<Chat key={newChatRoom.count} user2={secondUser} chatID={newChatRoom.room} />
-				: <><h3>Hello {currentUser.userName}, Who do you want to chat with?</h3></>
+				: <div className="white-box"><h3>Hello {currentUser.userName}, Who do you want to chat with?</h3></div>
 			}
-			<div className='chat-users'>
+			<div className='chat-users white-box'>
 				<div className='chat-userTypeSelect'>
 					{userListType == UserListType.Friends ?
 						<><span className='chat-selectedUserListType'>Friends {friendsUnreadCounter ? "(" + friendsUnreadCounter + ")" : ""}</span></>
