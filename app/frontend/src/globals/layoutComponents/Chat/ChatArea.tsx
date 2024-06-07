@@ -90,8 +90,8 @@ export default function ChatArea() {
 						: <span className='chat-userListType' onClick={() => setUserListType(UserListType.Friends)}>Friends {friendsUnreadCounter ? "(" + friendsUnreadCounter + ")" : ""}</span>
 					} |
 					{userListType == UserListType.Chats ?
-						<><span className='chat-selectedUserListType'> Chats</span></>
-						: <span className='chat-userListType' onClick={() => setUserListType(UserListType.Chats)}> Chats</span>}
+						<><span className='chat-selectedUserListType'> Chats </span></>
+						: <span className='chat-userListType' onClick={() => setUserListType(UserListType.Chats)}> Chats </span>}
 					|
 					{userListType == UserListType.AllUsers ?
 						<span className='chat-selectedUserListType'> All Users {allUsersUnreadCounter ? "(" + allUsersUnreadCounter + ")" : ""}</span>
