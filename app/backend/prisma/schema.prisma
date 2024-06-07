@@ -32,8 +32,8 @@ model User {
     loginName String @unique
     hash      String
 
-    userName  String? //if no userName is provided loginName is used
-    email     String?
+    userName  String? @unique //if no userName is provided loginName is used
+    email     String? @unique
     firstName String?
     lastName  String?
     token     Tokens[]
