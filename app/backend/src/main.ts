@@ -23,7 +23,7 @@ async function bootstrap() {
   // whitelist: true strips out addition information that is send but not part of the DTO)
   // It’s important to note that this option will filter all properties without validation decorators,
   // even if they are defined in the DTO.
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true })); //forbidNonWhitelisted: true
 
   app.enableCors()
   await app.listen(3000);

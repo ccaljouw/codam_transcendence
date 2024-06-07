@@ -15,7 +15,7 @@ export class StatsController {
     private readonly statsService: StatsService,
 	) { }
 
-  @Get('stats/:userId')
+  @Get(':userId')
 	@ApiOperation({ summary: 'Returns stats for the user with the specified id' })
 	@ApiOkResponse({ type: [StatsDto] })
 	@ApiNotFoundResponse({ description: "No stats for this user in the database" })

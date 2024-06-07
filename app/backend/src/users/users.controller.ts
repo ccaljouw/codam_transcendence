@@ -42,6 +42,15 @@ export class UsersController {
 		return this.usersService.findAll();
 	}
 
+  @Get(':userName')
+  @ApiOperation({ summary: 'Returns user with specified userName' })
+  @ApiOkResponse({ type: UserProfileDto })
+  @ApiNotFoundResponse({ description: 'User with this userName does not exist' })
+
+  findUserName(@Param('userName') userName: string): Promise<UserProfileDto> {
+    return this.usersService.findUserName(userName);
+  }
+
 	@Get('allButMe/:id')
 	@ApiOperation({ summary: 'Returns all users currently in the database except the one with the specified id' })
 	@ApiOkResponse({ type: [UserProfileDto] })
@@ -70,6 +79,7 @@ export class UsersController {
 		return this.usersService.findOne(id);
 	}
 
+  
 	@Patch(':id')
 	@ApiOperation({ summary: 'Updates user with specified id' })
 	@ApiOkResponse({ type: UserProfileDto })

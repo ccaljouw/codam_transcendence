@@ -143,4 +143,34 @@ export class UsersService {
 		}
 	}
 
+  async findUserName(userName: string): Promise<UserProfileDto> {
+		try {
+			const user = await this.db.user.findUnique({ 
+				where: { userName: userName },
+				include: {
+					friends: true,
+					blocked: true,
+				}
+				
+			});
+			delete user.hash;
+			for (const friend of user.friends as UserProfileDto[])
+				{
+					delete friend.friends;
+					delete friend.blocked;
+					delete friend.hash;
+				}
+			for (const blocked of user.blocked as UserProfileDto[])
+			{
+				delete blocked.friends;
+				delete blocked.blocked;
+				delete blocked.hash;
+			}
+			return user;
+		}
+		catch (error) {
+			throw new NotFoundException(`User with name ${userName} does not exist.`);
+		}
+	}
+
 }
