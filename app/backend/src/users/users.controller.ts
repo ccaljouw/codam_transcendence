@@ -42,7 +42,7 @@ export class UsersController {
 		return this.usersService.findAll();
 	}
 
-  @Get(':userName')
+  @Get('username/:userName')
   @ApiOperation({ summary: 'Returns user with specified userName' })
   @ApiOkResponse({ type: UserProfileDto })
   @ApiNotFoundResponse({ description: 'User with this userName does not exist' })

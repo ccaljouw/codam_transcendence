@@ -46,6 +46,7 @@ model User {
 
     chats ChatUsers[]
     games GameUser[]
+    // stats Stats?
 
 	friends User[] @relation("Friends")
 	friendOf User[] @relation("Friends")
@@ -109,16 +110,17 @@ model ChatMessages {
 }
 
 model Game {
-    id    Int       @id @default(autoincrement())
-    state GameState
+    id        Int       @id @default(autoincrement())
+    state     GameState
     GameUsers GameUser[]
+    winnerId  Int?
 }
 
 model GameUser {
     id        Int      @id @default(autoincrement())
     clientId  String
     score     Int       @default(0)
-    win       Boolean?
+    win       Boolean?  //needed?
 
     gameId Int
     game   Game @relation(fields: [gameId], references: [id])
@@ -143,6 +145,25 @@ model Invite {
 //   chatMessageId Int?
 
 }
+
+// model Stats {
+//   id              Int @id @default(autoincrement())
+//   userId          Int @unique
+//   lastGameWon     Boolean @default(false)
+//   wins            Int @default(0)
+//   losses          Int @default(0)
+//   winLossRatio    Float @default(1)
+//   currentWins     Int @default(0)
+//   consecutiveWins Int @default(0)
+//   rank            Int?
+//   friends         Int @default(0)
+//   achievements    Int[]
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   user      User     @relation(fields: [userId], references: [id])
+
+// }
 
 // ***************************************************************** //
 //			ENUMS
