@@ -1,3 +1,4 @@
+import { GameResultDto } from '@ft_dto/game';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsInt,
@@ -22,9 +23,9 @@ export class StatsDto {
   @ApiProperty({ required: false, type: Number })
   friends: number;
   
-  //achievementDto
-  // achievements: achievementDto[];
-  
-  //gameResultDto
-  // last10Games: gameResultDto[];
+  @ApiProperty({ required: false, type: [Number] })
+  achievements: number[];
+
+  @ApiProperty({ required: false, type: [GameResultDto] })
+  last10Games: GameResultDto[];
 }
