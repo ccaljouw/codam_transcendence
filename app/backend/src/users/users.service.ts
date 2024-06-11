@@ -1,8 +1,7 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto, UserProfileDto, CreateUserDto } from '@ft_dto/users';
 import { PrismaService } from '../database/prisma.service';
-import { StatsDto } from '@ft_dto/stats/stats.dto';
-import { PrismaClientKnownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
+import { PrismaClientKnownRequestError, PrismaClientUnknownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class UsersService {
@@ -13,11 +12,17 @@ export class UsersService {
 
 	// USER CRUD OPERATIONS
 	async create(createUserDto: CreateUserDto): Promise<UserProfileDto> {
-		if (!createUserDto.userName)
-			createUserDto.userName = createUserDto.loginName;
-		const user = await this.db.user.create({ data: createUserDto });
-		return user;
-		// trhow exception? what kind of exception? or is this caught by the prisma filter?
+		try {
+      if (!createUserDto.userName)
+        createUserDto.userName = createUserDto.loginName;
+      const user = await this.db.user.create({ data: createUserDto });
+      return user;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+      throw new Error(`Error creating user: ${error.message}`);
+    }
 	}
 
 	async update(id: number, updateUserDto: UpdateUserDto): Promise<UserProfileDto> {
@@ -54,14 +59,9 @@ export class UsersService {
 		}
 
 		catch (error) {
-			// throw new NotFoundException(`Error updating user with id ${id}: ${error}`);
-      console.log("***** CAUGHT UPDATE ERROR *****");
-      console.log(error);
-      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError) {
-        // Let other PrismaClientKnownRequestError be handled by the filter
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
         throw error;
       }
-      // Handle other unexpected errors
       throw new Error(`Error updating user with id ${id}: ${error.message}`);
     }
 	}
@@ -73,6 +73,9 @@ export class UsersService {
 			return user;
 		}
 		catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
 			throw new NotFoundException(`User with id ${id} does not exist.`);
 		}
 	}
@@ -93,8 +96,11 @@ export class UsersService {
 				delete element.hash;
 			return users;
 		}
-		catch {
-			throw new NotFoundException(`No users in the database.`);
+		catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+			throw new NotFoundException(`No other users in the database.`);
 		}
 	}
 
@@ -117,7 +123,10 @@ export class UsersService {
 				delete element.hash;
 			return users;
 		}
-		catch {
+		catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
 			throw new NotFoundException(`No users in the database.`);
 		}
 	}
@@ -148,6 +157,9 @@ export class UsersService {
 			return user;
 		}
 		catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
 			throw new NotFoundException(`User with id ${id} does not exist.`);
 		}
 	}
@@ -178,6 +190,9 @@ export class UsersService {
 			return user;
 		}
 		catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
 			throw new NotFoundException(`User with name ${userName} does not exist.`);
 		}
 	}

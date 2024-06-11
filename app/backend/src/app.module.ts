@@ -10,8 +10,9 @@ import { LoggerMiddleware } from './logging.middleware';
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true }), ChatSocketModule, TestingModule, UsersModule, GameModule, AuthenticationModule],
 })
-export class AppModule implements NestModule{
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*');
-  }
-}
+export class AppModule {}
+// export class AppModule implements NestModule{
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer.apply(LoggerMiddleware).forRoutes('*');
+//   }
+// }
