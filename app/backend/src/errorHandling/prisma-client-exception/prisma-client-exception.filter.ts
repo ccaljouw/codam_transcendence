@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpServer,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import {
   PrismaClientInitializationError,
@@ -26,6 +27,7 @@ export type ErrorCodesStatusMapping = {
 )
 export class PrismaClientExceptionFilter extends BaseExceptionFilter {
   // TODO: check for other relevant codes
+  private readonly logger = new Logger(PrismaClientExceptionFilter.name);
   private errorCodesStatusMapping: ErrorCodesStatusMapping = {
     P2000: HttpStatus.BAD_REQUEST,
     P2002: HttpStatus.CONFLICT,
@@ -91,16 +93,30 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
     exception: PrismaClientKnownRequestError,
     host: ArgumentsHost,
   ) {
-    const statusCode = this.errorCodesStatusMapping[exception.code];
-    const message = `[${exception.code}]: ${this.exceptionShortMessage(exception.message)}`;
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse();
+    const request = ctx.getRequest();
 
-    console.error(message);
+    let status = HttpStatus.INTERNAL_SERVER_ERROR;
+    let message = exception.message;
 
-    if (!Object.keys(this.errorCodesStatusMapping).includes(exception.code)) {
-      return super.catch(exception, host);
+    if (exception.code === 'P2002') {
+      status = HttpStatus.CONFLICT;
+      message = `Unique constraint failed on the fields: ${exception.meta.target}`;
+    } else if (exception.code === 'P2025') {
+      status = HttpStatus.NOT_FOUND;
+      message = `Record not found`;
     }
 
-    super.catch(new HttpException({ statusCode, message }, statusCode), host);
+    this.logger.error(`Known Request Error - Code: ${exception.code}, Status: ${status}, Message: ${message}`);
+
+    response.status(status).json({
+      statusCode: status,
+      timestamp: new Date().toISOString(),
+      path: request.url,
+      message,
+    });
+
   }
 
   private catchClientUnknownRequestError(
@@ -115,14 +131,27 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
   }
 
   private catchClientValidationError(
-    { message }: PrismaClientValidationError,
+    exception: PrismaClientValidationError,
     host: ArgumentsHost,
   ) {
-    const statusCode = HttpStatus.BAD_REQUEST;
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse();
+    const request = ctx.getRequest();
 
-    console.error(message);
+    let status = HttpStatus.INTERNAL_SERVER_ERROR;
+    let message = this.extractValidationErrorMessage(exception);
+  
+    status = HttpStatus.BAD_REQUEST;
+    message = `Validation error: ${message}`;
+   
+    this.logger.error(`Validation Error - Exception: ${exception}, Status: ${status}, Message: ${message}`);
 
-    super.catch(new HttpException({ statusCode, message }, statusCode), host);
+    response.status(status).json({
+      statusCode: status,
+      timestamp: new Date().toISOString(),
+      path: request.url,
+      message,
+    });
   }
 
   private exceptionShortMessage(message: string): string {
@@ -132,5 +161,17 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
       .substring(shortMessage.indexOf('\n'))
       .replace(/\n/g, '')
       .trim();
+  }
+
+  private extractValidationErrorMessage(exception: PrismaClientValidationError): string {
+    let errorMessage: string;
+
+    // Extract the part of the error message containing the field and expected type
+    const match = exception.message.match(/Invalid value for argument `([^`]+)`.+?Expected (.+?)\./);
+    if (match && match[1] && match[2]) {
+        errorMessage = `'${match[1]}'. Expected ${match[2]}.`;
+    }
+
+    return errorMessage;
   }
 }

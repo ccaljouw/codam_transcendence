@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto, UserProfileDto, CreateUserDto } from '@ft_dto/users';
 import { PrismaService } from '../database/prisma.service';
 import { StatsDto } from '@ft_dto/stats/stats.dto';
+import { PrismaClientKnownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class UsersService {
@@ -53,8 +54,16 @@ export class UsersService {
 		}
 
 		catch (error) {
-			throw new NotFoundException(`Error updating user with id ${id}: ${error}`);
-		}
+			// throw new NotFoundException(`Error updating user with id ${id}: ${error}`);
+      console.log("***** CAUGHT UPDATE ERROR *****");
+      console.log(error);
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError) {
+        // Let other PrismaClientKnownRequestError be handled by the filter
+        throw error;
+      }
+      // Handle other unexpected errors
+      throw new Error(`Error updating user with id ${id}: ${error.message}`);
+    }
 	}
 
 	async remove(id: number): Promise<UserProfileDto> {
