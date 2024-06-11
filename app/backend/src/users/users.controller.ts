@@ -1,5 +1,5 @@
 import { Controller, ParseIntPipe, Body, Param, Get, Post, Patch, Delete } from '@nestjs/common';
-import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto, UserProfileDto} from '@ft_dto/users';
 import { CreateTokenDto } from '@ft_dto/users/create-token.dto';
@@ -83,6 +83,8 @@ export class UsersController {
 	@Patch(':id')
 	@ApiOperation({ summary: 'Updates user with specified id' })
 	@ApiOkResponse({ type: UserProfileDto })
+  @ApiConflictResponse( {description: `Conflict: Unique constraint failed on the field: []`} )
+  @ApiBadRequestResponse( {description: 'Bad request: description of validation error'})
 
 	update(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto): Promise<UserProfileDto> {
 		return this.usersService.update(id, updateUserDto);
