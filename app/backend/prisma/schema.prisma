@@ -42,17 +42,17 @@ model User {
     avatarId Int          @default(1)
     theme    Int          @default(0)
     online   OnlineStatus @default(OFFLINE)
-    rank     Int?         @default(-1)
+    rank     Int?         @default(-1)  //remove
 
     chats ChatUsers[]
     games GameUser[]
-    // stats Stats?
+    stats Stats?
 
-	friends User[] @relation("Friends")
-	friendOf User[] @relation("Friends")
+	  friends User[] @relation("Friends")
+	  friendOf User[] @relation("Friends")
 
-	blocked User[] @relation("Blocked")
-	blockedBy User[] @relation("Blocked")
+	  blocked User[] @relation("Blocked")
+	  blockedBy User[] @relation("Blocked")
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -77,7 +77,7 @@ model Chat {
     createdAt DateTime       @default(now())
     updatedAt DateTime       @updatedAt
     users     ChatUsers[]
-    messages ChatMessages[]
+    messages  ChatMessages[]
 }
 
 model ChatUsers {
@@ -93,7 +93,7 @@ model ChatUsers {
     updatedAt DateTime @updatedAt
     user      User     @relation(fields: [userId], references: [id])
     chat      Chat     @relation(fields: [chatId], references: [id])
-	@@unique([chatId, userId])
+	  @@unique([chatId, userId])
 }
 
 model ChatMessages {
@@ -102,22 +102,22 @@ model ChatMessages {
     chatId  Int
     userId  Int
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    chat      Chat     @relation(fields: [chatId], references: [id])
-	invite       Invite?  @relation(fields: [inviteId], references: [id])
-  	inviteId     Int? @unique
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    chat        Chat     @relation(fields: [chatId], references: [id])
+	  invite      Invite?  @relation(fields: [inviteId], references: [id])
+  	inviteId    Int? @unique
 }
 
 model Game {
-    id        Int       @id @default(autoincrement())
-    state     GameState
-    GameUsers GameUser[]
-    winnerId  Int?
+    id          Int       @id @default(autoincrement())
+    state       GameState
+    GameUsers   GameUser[]
+    winnerId    Int?
 }
 
 model GameUser {
-    id        Int      @id @default(autoincrement())
+    id        Int       @id @default(autoincrement())
     clientId  String
     score     Int       @default(0)
     win       Boolean?  //needed?
@@ -146,24 +146,24 @@ model Invite {
 
 }
 
-// model Stats {
-//   id              Int @id @default(autoincrement())
-//   userId          Int @unique
-//   lastGameWon     Boolean @default(false)
-//   wins            Int @default(0)
-//   losses          Int @default(0)
-//   winLossRatio    Float @default(1)
-//   currentWins     Int @default(0)
-//   consecutiveWins Int @default(0)
-//   rank            Int?
-//   friends         Int @default(0)
-//   achievements    Int[]
+// stats tracked to monitor achievements and rank
+model Stats {
+  id                 Int @id @default(autoincrement())
+  userId             Int @unique
+  wonLastGame        Boolean @default(false)
+  wins               Int @default(0)
+  losses             Int @default(0)
+  winLossRatio       Float @default(1)
+  consecutiveWins    Int @default(0)
+  maxConsecutiveWins Int @default(0)
+  rank               Int?                               // based on nr of wins
+  friends            Int @default(0)
+  achievements       Int[]
 
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   user      User     @relation(fields: [userId], references: [id])
-
-// }
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+}
 
 // ***************************************************************** //
 //			ENUMS

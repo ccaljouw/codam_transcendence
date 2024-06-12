@@ -17,7 +17,7 @@ export class UsersController {
 	// TODO: update endpoints to include access token
 	@Post('register')
 	@ApiOperation({ summary: 'Adds user to database and returns id for this user' })
-	@ApiCreatedResponse({ description: 'User successfully created', type: Number })
+	@ApiCreatedResponse({ description: 'User successfully created', type: UserProfileDto })
 
 	register(@Body() createUser: CreateUserDto): Promise<UserProfileDto> {
 		return this.usersService.create(createUser);
@@ -25,7 +25,7 @@ export class UsersController {
 
 	@Post('token')
 	@ApiOperation({ summary: 'Adds token with user id to database' })
-	@ApiCreatedResponse({ description: 'Token successfully created', type: Number })
+	@ApiCreatedResponse({ description: 'Token successfully created', type: Boolean })
 
 	addToken(@Body() createToken: CreateTokenDto): Promise<boolean> {
 		console.log(`Adding token ${createToken.token} for user ${createToken.userId}`);
