@@ -17,15 +17,11 @@ async function addDummyUsers() {
 			lastName: 'Caljouw',
 		},
 	});
-
   const stats1 = await prisma.stats.upsert({
 		where: { userId: 1 },
     update: {},
 		create: {
 			userId: 1,
-      wins: 6,
-      winLossRatio: 0.5,
-      achievements: [0,2,4,6]
 		},
 	});
 
@@ -47,9 +43,6 @@ async function addDummyUsers() {
     update: {},
 		create: {
 			userId: 2,
-      wins: 6,
-      winLossRatio: 0.4,
-      achievements: [0,1,2,3,4,6]
 		},
 	});
 
@@ -71,8 +64,6 @@ async function addDummyUsers() {
     update: {},
 		create: {
 			userId: 3,
-      wins: 4,
-      achievements: [0,1,2,3,4,5,6,7,8]
 		},
 	});
 
@@ -88,14 +79,11 @@ async function addDummyUsers() {
 			lastName: 'Wesseling',
 		},
 	});
-
   const stats4 = await prisma.stats.upsert({
 		where: { userId: 4 },
     update: {},
 		create: {
 			userId: 4,
-      wins: 3,
-      achievements: [0,1,2,3,4,5,6,7,8,9,10]
 		},
 	});
 
@@ -111,14 +99,11 @@ async function addDummyUsers() {
 			lastName: 'Friendowitz',
 		},
 	});
-
   const stats5 = await prisma.stats.upsert({
 		where: { userId: 5 },
     update: {},
 		create: {
 			userId: 5,
-      wins: 2,
-      achievements: [0,1,2,3,4,5,6,7,8,9,10,11,12,13]
 		},
 	});
 

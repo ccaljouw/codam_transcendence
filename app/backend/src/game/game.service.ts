@@ -4,10 +4,15 @@ import { CreateGameDto } from 'dto/game/create-game.dto';
 import { PrismaService } from 'src/database/prisma.service';
 import { Socket } from 'socket.io';
 import { GameState } from '@prisma/client';
+import { StatsService } from 'src/stats/stats.service';
+import { PrismaClientKnownRequestError, PrismaClientUnknownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class GameService {
-  constructor(private db: PrismaService) {}
+  constructor(
+    private db: PrismaService,
+    private statsService: StatsService,
+  ) {}
 
   async getGame(userId: number, clientId: string) {
     let game: UpdateGameDto;
@@ -140,39 +145,37 @@ export class GameService {
     try {
       const game = await this.db.game.update({
         where: { id: updateGameStateDto.roomId },
-      data: {
-        state: updateGameStateDto.state,
-        winnerId: updateGameStateDto.winner,
-        GameUsers: {
-          updateMany: [
-            {
-              where: { gameId: updateGameStateDto.roomId, player: 1 },
-              data: {
-                score: updateGameStateDto.score1,
+        data: {
+          state: updateGameStateDto.state,
+          winnerId: updateGameStateDto.winner,
+          GameUsers: {
+            updateMany: [
+              {
+                where: { gameId: updateGameStateDto.roomId, player: 1 },
+                data: {
+                  score: updateGameStateDto.score1,
+                },
               },
-            },
-            {
-              where: { gameId: updateGameStateDto.roomId, player: 2 },
-              data: {
-                score: updateGameStateDto.score2,
+              {
+                where: { gameId: updateGameStateDto.roomId, player: 2 },
+                data: {
+                  score: updateGameStateDto.score2,
+                },
               },
-            },
-          ],
+            ],
+          },
         },
-      },
+        include: { GameUsers: {select: { userId: true }} }
       });
-      if (game) {
-        console.log(`backend - game: Game: game state updated`);
-        return true;
-      } else {
-        console.log(`backend - game: Game: game state not updated`);
-        return false;
-      }
+      this.statsService.update(game.GameUsers[0].userId, updateGameStateDto);
+      this.statsService.update(game.GameUsers[1].userId, updateGameStateDto);
+      return true;
     } catch (error) {
-      throw new NotFoundException(
-        `User with id ${updateGameStateDto.roomId} does not exist.`,
-      );
-    }
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+			throw new NotFoundException(`Error updating gamestate for game ${updateGameStateDto.roomId}.`);
+		}
   }
 
   async findGameForClientId(clientId: string): Promise<number | null> {

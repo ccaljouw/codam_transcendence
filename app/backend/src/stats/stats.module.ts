@@ -7,5 +7,6 @@ import { UsersService } from 'src/users/users.service';
 @Module({
   controllers: [StatsController],
   providers: [StatsService, PrismaService],
+  exports: [StatsService],
 })
 export class StatsModule {}

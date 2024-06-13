@@ -32,7 +32,7 @@ export class UsersService {
 	async update(id: number, updateUserDto: UpdateUserDto): Promise<UserProfileDto> {
 		try {
 			const user = await this.db.user.update({
-				where: { id },
+			where: { id },	
 				data: updateUserDto,
 				include: {
 					friends: true,

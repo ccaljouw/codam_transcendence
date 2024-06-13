@@ -1,3 +1,4 @@
+import { UpdateGameStateDto } from '@ft_dto/game';
 import { GameResultDto, StatsDto } from '@ft_dto/stats';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaClientKnownRequestError, PrismaClientUnknownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
@@ -41,6 +42,8 @@ export class StatsService {
       let stats: StatsDto;
 
       stats = await this.db.stats.findUnique({ where: { userId }});
+      if (!stats)
+        throw new NotFoundException(`User with id ${userId} does not have stats.`);
       stats.rank = await this.getRank(userId);
       stats.friends = await this.getFriendCount(userId);
       stats.last10Games = await this.getLast10Games(userId);
@@ -54,8 +57,39 @@ export class StatsService {
 		}
   }
 
-  update(userId: number, updateStatDto: StatsDto) {
-    return `This action updates a #${userId} stat`;
+  // todo: Carien: create update for stats and achievements
+  async update(userId: number, updateGameStateDto: UpdateGameStateDto) {
+    try {
+      let userStats: StatsDto;
+      userStats = await this.db.stats.findUnique({ where: { userId }});
+      if (!userStats) {
+        // userStats = await this.create(userId);
+        throw new NotFoundException(`User with id ${userId} does not have stats.`);
+      }
+      const victory: boolean = userId === updateGameStateDto.winner ? true : false;
+      return await this.db.stats.update({
+        where: { userId },
+        data: {
+          wonLastGame: victory,
+          wins: victory ? (userStats.wins + 1) : userStats.wins,
+          losses: victory ? userStats.losses : (userStats.losses + 1),
+          winLossRatio: victory 
+            ? (userStats.wins + 1) / (userStats.wins + (userStats.losses + 1))
+            : userStats.wins / (userStats.wins + userStats.losses + 1),
+          consecutiveWins: victory ? (userStats.consecutiveWins + 1) : 0,
+          maxConsecutiveWins: victory 
+            ? ((userStats.consecutiveWins + 1) > userStats.maxConsecutiveWins 
+                ? (userStats.consecutiveWins + 1) 
+                : userStats.maxConsecutiveWins)
+            : userStats.maxConsecutiveWins,
+        },
+      });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+      throw new Error(`Error updating stats: ${error.message}`);
+    }
   }
 
   async remove(userId: number) : Promise<StatsDto> {
@@ -91,9 +125,7 @@ export class StatsService {
         take: 10,
         select: {
           user: {
-            select: {
-              userName: true,
-            },
+            select: { userName: true },
           },
         },
       });
