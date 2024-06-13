@@ -1,5 +1,5 @@
 import { StatsDto } from '@ft_dto/stats';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaClientKnownRequestError, PrismaClientUnknownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/database/prisma.service';
 
@@ -16,30 +16,57 @@ export class StatsService {
       if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
         throw error;
       }
-      throw new Error(`Error creating user: ${error.message}`);
+      throw new Error(`Error creating stats: ${error.message}`);
     }
   }
 
-  findAll() {
-    return `This action returns all stats`;
-  }
-
-  findOne(id: number) {
-    return this.hardcodedStats(id);
-  }
-
-  update(id: number, updateStatDto: StatsDto) {
-    return `This action updates a #${id} stat`;
-  }
-
-  async remove(id: number) : Promise<StatsDto> {
+  async findAll() {
     try {
-      return await this.db.stats.delete({ where: { userId: id } });
+      return  await this.db.stats.findMany({
+        orderBy: [
+          { wins: 'desc' },
+          { winLossRatio: 'desc' },
+        ],
+      });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
         throw error;
       }
-      throw new Error(`Error creating user: ${error.message}`);
+      throw new Error(`Error getting all stats: ${error.message}`);
+    }
+  }
+
+  async findOne(userId: number) {
+    return await this.hardcodedStats(userId);
+    try {
+      let stats: StatsDto;
+
+      stats = await this.db.stats.findUnique({ where: { userId }});
+      stats.rank = await this.getRank(userId);
+      stats.friends = await this.getFriendCount(userId);
+      // add last 10 games
+			return stats;
+		}
+		catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+			throw new NotFoundException(`User with id ${userId} does not have stats.`);
+		}
+  }
+
+  update(userId: number, updateStatDto: StatsDto) {
+    return `This action updates a #${userId} stat`;
+  }
+
+  async remove(userId: number) : Promise<StatsDto> {
+    try {
+      return await this.db.stats.delete({ where: { userId } });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+      throw new Error(`Error deleting stats: ${error.message}`);
     }
   }
 
@@ -59,4 +86,54 @@ export class StatsService {
      }
     return stats;
 	}
+
+  async getRank(userId: number): Promise<number> {
+    try {
+      const allStats = await this.findAll();
+      return allStats.findIndex(stats => stats.userId === userId) + 1;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+      throw new Error(`Error getting rank: ${error.message}`);
+    }
+  }
+
+  async getFriendCount(userId: number): Promise<number> {
+    try {
+      const friendCount = await this.db.user.findUnique({
+        where: { id: userId },
+        select: { friends: true },
+      });
+
+      if (!friendCount) {
+        return 0;
+      }
+
+      return friendCount.friends.length;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+      throw new Error(`Error getting friends: ${error.message}`);
+    }
+  }
+
+  async findRankTop10() : Promise<StatsDto[]> {
+    try {
+      const top10: StatsDto[] = await this.db.stats.findMany({
+        orderBy: [
+          { wins: 'desc' },
+          { winLossRatio: 'desc' },
+        ],
+        take: 10,
+      });
+      return top10;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+      throw new Error(`Error getting top 10 ranked players: ${error.message}`);
+    }
+  }
 }

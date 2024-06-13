@@ -154,8 +154,6 @@ model Stats {
   winLossRatio       Float @default(1)
   consecutiveWins    Int @default(0)
   maxConsecutiveWins Int @default(0)
-  rank               Int?                               // based on nr of wins
-  friends            Int @default(0)
   achievements       Int[]
 
   createdAt DateTime @default(now())

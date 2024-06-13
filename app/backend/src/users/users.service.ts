@@ -201,4 +201,19 @@ export class UsersService {
 		}
 	}
 
+  async getFriendCount(userId: number): Promise<number> {
+    const friendCount = await this.db.user.findUnique({
+      where: { id: userId },
+      select: {
+        friends: true,
+      },
+    });
+
+    if (!friendCount) {
+      return 0;
+    }
+
+    return friendCount.friends.length;
+  }
+
 }

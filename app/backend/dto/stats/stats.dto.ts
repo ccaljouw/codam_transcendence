@@ -16,28 +16,31 @@ export class StatsDto {
   
   @IsBoolean()
   @ApiProperty({ required: false, type: Boolean })
-  wonLastGame?: boolean;
+  wonLastGame: boolean;
 
   @IsInt()
   @ApiProperty({ required: false, type: Number })
-  wins?: number;
+  wins: number;
 
   @IsInt()
   @ApiProperty({ required: false, type: Number })
-  losses?: number;
+  losses: number;
   
   @IsNumber()
   @ApiProperty({ required: false, type: Number })
-  winLossRatio?: number;
+  winLossRatio: number;
 
   @IsInt()
   @ApiProperty({ required: false, type: Number })
-  consecutiveWins?: number;
+  consecutiveWins: number;
 
   @IsInt()
   @ApiProperty({ required: false, type: Number })
-  maxConsecutiveWins?: number;
+  maxConsecutiveWins: number;
 
+  @ApiProperty({ required: false, type: [Number] })
+  achievements?: number[];
+  
   @IsInt()
   @ApiProperty({ required: false, type: Number })
   rank?: number;
@@ -46,8 +49,6 @@ export class StatsDto {
   @ApiProperty({ required: false, type: Number })
   friends?: number;
   
-  @ApiProperty({ required: false, type: [Number] })
-  achievements?: number[];
 
   @ApiProperty({ required: false, type: [GameResultDto] })
   last10Games?: GameResultDto[];
