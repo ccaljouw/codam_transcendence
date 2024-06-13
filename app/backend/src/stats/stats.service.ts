@@ -43,7 +43,7 @@ export class StatsService {
       stats = await this.db.stats.findUnique({ where: { userId }});
       stats.rank = await this.getRank(userId);
       stats.friends = await this.getFriendCount(userId);
-      // add last 10 games
+      stats.last10Games = await this.getLast10Games(userId);
 			return stats;
 		}
 		catch (error) {
