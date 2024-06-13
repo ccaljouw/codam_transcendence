@@ -37,7 +37,6 @@ model User {
     firstName String?
     lastName  String?
     token     Tokens[]
-	// token	 String?
 
     avatarId Int          @default(1)
     theme    Int          @default(0)
