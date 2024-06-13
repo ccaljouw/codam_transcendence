@@ -10,7 +10,8 @@ import MenuBar from "./layoutComponents/MenuBar";
 import LoginScreen from "./layoutComponents/Login/LoginScreen";
 import useFetch from "./functionComponents/useFetch";
 import useAuthentication from "./functionComponents/useAuthentication";
-import { IsBlocked } from "./functionComponents/FriendOrBlocked";
+import { IsBlocked, IsFriend } from "./functionComponents/FriendOrBlocked";
+
 
 // Context for the entire app
 interface TranscendenceContextVars {
@@ -20,8 +21,8 @@ interface TranscendenceContextVars {
 	setSomeUserUpdatedTheirStatus: (val: WebsocketStatusChangeDto) => void;
 	currentChatRoom: UpdateChatDto;
 	setCurrentChatRoom: (val: UpdateChatDto) => void;
-	newChatRoom: {room: number, count: number};
-	setNewChatRoom: (val: {room: number, count: number}) => void;
+	newChatRoom: { room: number, count: number };
+	setNewChatRoom: (val: { room: number, count: number }) => void;
 	messageToUserNotInRoom: ChatMessageToRoomDto;
 	setMessageToUserNotInRoom: (val: ChatMessageToRoomDto) => void;
 	allUsersUnreadCounter: number;
@@ -36,9 +37,9 @@ export const TranscendenceContext = createContext<TranscendenceContextVars>({
 	setCurrentUser: () => { },
 	someUserUpdatedTheirStatus: {} as WebsocketStatusChangeDto,
 	setSomeUserUpdatedTheirStatus: () => { },
-	currentChatRoom: {id: -1} as UpdateChatDto,
+	currentChatRoom: { id: -1 } as UpdateChatDto,
 	setCurrentChatRoom: () => { },
-	newChatRoom: {room: -1, count: 0},
+	newChatRoom: { room: -1, count: 0 },
 	setNewChatRoom: () => { },
 	messageToUserNotInRoom: {} as ChatMessageToRoomDto,
 	setMessageToUserNotInRoom: () => { },
@@ -51,17 +52,18 @@ export const TranscendenceContext = createContext<TranscendenceContextVars>({
 export function ContextProvider({ children }: { children: React.ReactNode }) {
 	const [someUserUpdatedTheirStatus, setSomeUserUpdatedTheirStatus] = useState<WebsocketStatusChangeDto>({} as WebsocketStatusChangeDto);
 	const [messageToUserNotInRoom, setMessageToUserNotInRoom] = useState<ChatMessageToRoomDto>({} as ChatMessageToRoomDto);
-	const [currentChatRoom, setCurrentChatRoom] = useState<UpdateChatDto>({id: -1} as UpdateChatDto);
-	const [newChatRoom, setNewChatRoom] = useState<{room: number, count: number}>({room: -1, count: 0});
+	const [currentChatRoom, setCurrentChatRoom] = useState<UpdateChatDto>({ id: -1 } as UpdateChatDto);
+	const [newChatRoom, setNewChatRoom] = useState<{ room: number, count: number }>({ room: -1, count: 0 });
 	const [currentUser, setCurrentUser] = useState<UserProfileDto>({} as UserProfileDto);
 	const currentUserRef = useRef<UserProfileDto>(currentUser);
-	const {user} = useAuthentication();
+	const { user } = useAuthentication();
 	const [allUsersUnreadCounter, setAllUsersUnreadCounter] = useState<number>(0);
 	const [friendsUnreadCounter, setFriendsUnreadCounter] = useState(0);
-	const {data: userPatch, isLoading: userPatchLoading, error: userPatchError, fetcher: patchUserFetcher} = useFetch<UpdateUserDto, UserProfileDto>();
-	const {data: addToken, isLoading: addTokenLoading, error: addTokenError, fetcher: addTokenFetcher} = useFetch<CreateTokenDto, boolean>();
-	// const {data: unreadMessageCount, isLoading: unreadMessageCountLoading, error: unreadMessageCountError, fetcher: unreadMessageCountFetcher} = useFetch<null, number>();
-	// const {data: unreadsFromFriends, isLoading: unreadsFromFriendsLoading, error: unreadsFromFriendsError, fetcher: unreadsFromFriendsFetcher} = useFetch<number, number>();
+	const { data: userPatch, isLoading: userPatchLoading, error: userPatchError, fetcher: patchUserFetcher } = useFetch<UpdateUserDto, UserProfileDto>();
+	const { data: addToken, isLoading: addTokenLoading, error: addTokenError, fetcher: addTokenFetcher } = useFetch<CreateTokenDto, boolean>();
+	const { data: unreadMessageCount, isLoading: unreadMessageCountLoading, error: unreadMessageCountError, fetcher: unreadMessageCountFetcher } = useFetch<null, number>();
+	const { data: unreadsFromFriends, isLoading: unreadsFromFriendsLoading, error: unreadsFromFriendsError, fetcher: unreadsFromFriendsFetcher } = useFetch<number, number>();
+
 
 	useEffect(() => {
 
@@ -98,14 +100,37 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	useEffect(() => {
 		if (transcendenceSocket.id && transcendenceSocket.id != '0' && currentUser && currentUser.id !== undefined && currentUser.id != 0) {
 			setUserStatusToOnline();
-			// unreadMessageCountFetcher({url: constants.CHAT_MESSAGES_UNREAD_FOR_USER + currentUser.id});
-			// unreadsFromFriendsFetcher({ url: constants.CHAT_UNREAD_MESSAGES_FROM_FRIENDS + currentUser.id });
+
+			unreadMessageCountFetcher({ url: constants.CHAT_MESSAGES_UNREAD_FOR_USER + currentUser.id });
+			unreadsFromFriendsFetcher({ url: constants.CHAT_UNREAD_MESSAGES_FROM_FRIENDS + currentUser.id });
+
 		}
 	}, [currentUser.id])
 
 	useEffect(() => {
 		currentUserRef.current = currentUser;
 	}, [currentUser]);
+
+	useEffect(() => {
+		if (unreadMessageCount) {
+			setAllUsersUnreadCounter(unreadMessageCount);
+		}
+	}, [unreadMessageCount]);
+
+	useEffect(() => {
+		if (unreadsFromFriends) {
+			setFriendsUnreadCounter(unreadsFromFriends);
+		}
+	}, [unreadsFromFriends]);
+
+
+	useEffect(() => {
+		if (!messageToUserNotInRoom.userId) return;
+		setAllUsersUnreadCounter(allUsersUnreadCounter + 1);
+		if (IsFriend(messageToUserNotInRoom.userId, currentUser)) {
+			setFriendsUnreadCounter(friendsUnreadCounter + 1);
+		}
+	}, [messageToUserNotInRoom]);
 
 	// Context values to be passed to the children components
 	const contextValues: TranscendenceContextVars = {
@@ -155,21 +180,20 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	// Function to update the user's online status
 	const setUserStatusToOnline = async () => {
 		if (!currentUser.id) return;
-			const patchUserData: UpdateUserDto = {
-				online: OnlineStatus.ONLINE,
-			}
-			const addTokenData: CreateTokenDto = {
-				token: transcendenceSocket.id? transcendenceSocket.id : '',
-				userId: currentUser.id
-			}
-			patchUserFetcher({url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: patchUserData});
-			addTokenFetcher({url: constants.API_ADD_TOKEN, fetchMethod: 'POST', payload: addTokenData });
+		const patchUserData: UpdateUserDto = {
+			online: OnlineStatus.ONLINE,
+		}
+		const addTokenData: CreateTokenDto = {
+			token: transcendenceSocket.id ? transcendenceSocket.id : '',
+			userId: currentUser.id
+		}
+		patchUserFetcher({ url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: patchUserData });
+		addTokenFetcher({ url: constants.API_ADD_TOKEN, fetchMethod: 'POST', payload: addTokenData });
 	};
 
 	//todo: JMA: find out why this is needed, because it is also placed in useAuthentication
 	useEffect(() => {
-		if (user != null)
-		{
+		if (user != null) {
 			setCurrentUser(user);
 		}
 	}, [user]);
@@ -177,8 +201,8 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	return (
 		<>
 			<TranscendenceContext.Provider value={contextValues}>
-				<MenuBar/>
-				{currentUser.id? <>{children}</> : <LoginScreen />}
+				<MenuBar />
+				{currentUser.id ? <>{children}</> : <LoginScreen />}
 			</TranscendenceContext.Provider>
 		</>
 	)

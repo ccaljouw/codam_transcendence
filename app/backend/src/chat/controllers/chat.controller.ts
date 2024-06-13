@@ -4,6 +4,7 @@ import { UpdateChatMessageDto, CreateDMDto, CreateChatMessageDto, FetchChatMessa
 import { ChatMessageService } from '../services/chat-messages.service';
 import { ChatService } from '../services/chat.service';
 import { ChatSocketService } from '../services/chatsocket.service';
+import { UserProfileDto } from '@ft_dto/users';
 
 
 @Controller('chat')
@@ -15,23 +16,6 @@ export class ChatMessagesController {
 		private readonly chatService: ChatService,
 	) { }
 
-	@Get(':id')
-	@ApiOperation({ summary: 'Returns chat with specified id' })
-	@ApiOkResponse({ type: UpdateInviteDto })
-	@ApiNotFoundResponse({ description: 'Chat with #${id} does not exist' })
-	async findOne(@Param('id', ParseIntPipe) id: number): Promise<UpdateChatDto> {
-		const chat = await this.chatService.findOne(id);
-		return chat;
-	}
-
-	@Get('messages/:chatId')
-	@ApiOperation({ summary: 'Returns chat messages with specified chatId' })
-	@ApiOkResponse({ type: [UpdateChatMessageDto] })
-	@ApiNotFoundResponse({ description: 'No messages with #${chatId}' })
-	findMessagesInChat(@Param('chatId', ParseIntPipe) chatId: number): Promise<FetchChatMessageDto[]> {
-		return this.chatMessageService.findMessagesInChat(chatId);
-	}
-
 	@Get('messages/unreadsforuser/:userId')
 	@ApiOperation({ summary: 'Returns chat unread messages for specific user' })
 	@ApiOkResponse({ type: [UpdateChatMessageDto] })
@@ -40,20 +24,56 @@ export class ChatMessagesController {
 		return this.chatMessageService.unreadMessagesForUser(userId);
 	}
 
+	@Get('usersInChat/:chatId')
+	@ApiOperation({ summary: 'Returns users in chat' })
+	@ApiOkResponse({ type: [UserProfileDto] })
+	@ApiNotFoundResponse({ description: 'No chat with #${chatId}' })
+	async getUsersInChat(@Param('chatId', ParseIntPipe) chatId: number) {
+		const users = await this.chatService.getUsersInChat(chatId);
+		return users;
+	}
+
+	@Get('newChannel/:userId')
+	@ApiOperation({ summary: 'Returns new channel' })
+	@ApiOkResponse({ type: UpdateChatDto })
+	@ApiNotFoundResponse({ description: 'No new channel for user #${userId}' })
+	async newChannel(@Param('userId', ParseIntPipe) userId: number) {
+		const channel = await this.chatService.createChannel(userId);
+		return channel;
+	}
+
+	@Get('channelsForUser/:userId')
+	@ApiOperation({ summary: 'Returns channels for user' })
+	@ApiOkResponse({ type: [UpdateChatDto] })
+	@ApiNotFoundResponse({ description: 'No channels for user #${userId}' })
+	async getChannelsForUser(@Param('userId', ParseIntPipe) userId: number) {
+		const channels = await this.chatService.getChannelsForUser(userId);
+		return channels;
+	}
+
+	@Get('channelWithUser/:channelId/:userId')
+	@ApiOperation({ summary: 'Returns channel with user' })
+	@ApiOkResponse({ type: UpdateChatDto })
+	@ApiNotFoundResponse({ description: 'No channel with #${channelId} and #${userId}' })
+	async getChannelWithUser(@Param('channelId', ParseIntPipe) channelId: number, @Param('userId', ParseIntPipe) userId: number) {
+		const channel = await this.chatService.getSingleChannelForUser(userId, channelId);
+		return channel;
+	}
+
+	@Get('messages/:chatId/:userID')
+	@ApiOperation({ summary: 'Returns chat messages with specified chatId and userId' })
+	@ApiOkResponse({ type: [UpdateChatMessageDto] })
+	@ApiNotFoundResponse({ description: 'No messages with #${chatId}' })
+	findMessagesInChat(@Param('chatId', ParseIntPipe) chatId: number, @Param('userID', ParseIntPipe) userId: number) {
+		return this.chatMessageService.findMessagesInChat(chatId, userId);
+	}
+
 	@Get('unreadMessagesFromFriends/:userId')
 	@ApiOperation({ summary: 'Returns chat unread messages from friends' })
 	@ApiOkResponse({ type: [UpdateChatMessageDto] })
 	@ApiNotFoundResponse({ description: 'No unread messages from friends for user #${userId}' })
 	findUnreadMessagesFromFriends(@Param('userId', ParseIntPipe) userId: number) {
 		return this.chatMessageService.unreadMessagesFromFriends(userId);
-	}
-
-	@Get(':chatId/:start')
-	@ApiOperation({ summary: 'Returns chat messages with specified chatId that are created after specified start time' })
-	@ApiOkResponse({ type: [UpdateChatMessageDto] })
-	@ApiNotFoundResponse({ description: 'No messages with #${chatId} after #${start}' })
-	findMessagesInChatAfter(@Param('chatId', ParseIntPipe) chatId: number, @Param('start') start: Date) {
-		return this.chatMessageService.findMessagesInChatAfter(chatId, start);
 	}
 
 	@Get('checkIfDMExists/:user1_id/:user2_id')
@@ -102,5 +122,14 @@ export class ChatMessagesController {
 	@ApiOkResponse({ type: Number })
 	messageToDB(@Body() createChatMessageDto: CreateChatMessageDto) {
 		return this.chatMessageService.messageToDB(createChatMessageDto);
+	}
+
+	@Get(':id')
+	@ApiOperation({ summary: 'Returns chat with specified id' })
+	@ApiOkResponse({ type: UpdateInviteDto })
+	@ApiNotFoundResponse({ description: 'Chat with #${id} does not exist' })
+	async findOne(@Param('id', ParseIntPipe) id: number): Promise<UpdateChatDto> {
+		const chat = await this.chatService.findOne(id);
+		return chat;
 	}
 }

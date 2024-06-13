@@ -42,6 +42,7 @@ export default function UserList(props: UserListProps): JSX.Element {
 	}, [usersFromDb]);
 
 	const fetchUsers = async () => {
+		console.log("fetching users: ", props.fetchUrl);
 		await usersFromDbFetcher({url: props.fetchUrl});
 	}
 

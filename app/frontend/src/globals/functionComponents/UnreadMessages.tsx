@@ -55,9 +55,10 @@ export default function UnreadMessages(props: { secondUserId: number, indexInUse
 		if (parseInt(messageToUserNotInRoom.room) === chatId) // If the message is for the current chat, adjust the unread messages
 		{
 			setUnreadMessages(unreadMessages + 1);
-			setAllUsersUnreadCounter(allUsersUnreadCounter + 1);
-			if (secondUserIsFriend)
-				setFriendsUnreadCounter(friendsUnreadCounter + 1);
+			// setAllUsersUnreadCounter(allUsersUnreadCounter + 1);
+			// if (secondUserIsFriend)
+				// setFriendsUnreadCounter(friendsUnreadCounter + 1);
+
 			props.statusChangeCallBack(props.indexInUserList);
 			return;
 		}
@@ -78,9 +79,9 @@ export default function UnreadMessages(props: { secondUserId: number, indexInUse
 		if (unreadsFromDb && unreadMessages !== unreadsFromDb && !IsBlocked(props.secondUserId, currentUser)) // if unreadsFromDb have arrived and are different from the current state, update the state
 		{
 			setUnreadMessages(unreadsFromDb);
-			setAllUsersUnreadCounter(allUsersUnreadCounter + unreadsFromDb);
-			if (secondUserIsFriend)
-				setFriendsUnreadCounter(friendsUnreadCounter + unreadsFromDb);
+			// setAllUsersUnreadCounter(allUsersUnreadCounter + unreadsFromDb);
+			// if (secondUserIsFriend)
+				// setFriendsUnreadCounter(friendsUnreadCounter + unreadsFromDb);
 		}
 	}, [unreadsFromDb]);
 

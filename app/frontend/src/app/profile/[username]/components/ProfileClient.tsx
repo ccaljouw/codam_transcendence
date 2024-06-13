@@ -28,16 +28,9 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 	}, []);
 
 	useEffect(() => {
-		if(userName == currentUser.userName)
-			setUser(currentUser);
-		else
-			fetchUser();
+		fetchUser();
 	}, [currentUser]);
 
-	useEffect(() => {
-		if(data != null)
-			setUser(data);
-	}, [data]);
 
 	const fetchUser = async () => {
 		await fetcher({url: constants.API_USERS + userName});
