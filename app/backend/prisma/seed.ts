@@ -24,7 +24,8 @@ async function addDummyUsers() {
 		create: {
 			userId: 1,
       wins: 6,
-      winLossRatio: 0.5
+      winLossRatio: 0.5,
+      achievements: [0,2,4,6]
 		},
 	});
 
@@ -47,7 +48,8 @@ async function addDummyUsers() {
 		create: {
 			userId: 2,
       wins: 6,
-      winLossRatio: 0.4
+      winLossRatio: 0.4,
+      achievements: [0,1,2,3,4,6]
 		},
 	});
 
@@ -70,6 +72,7 @@ async function addDummyUsers() {
 		create: {
 			userId: 3,
       wins: 4,
+      achievements: [0,1,2,3,4,5,6,7,8]
 		},
 	});
 
@@ -92,6 +95,7 @@ async function addDummyUsers() {
 		create: {
 			userId: 4,
       wins: 3,
+      achievements: [0,1,2,3,4,5,6,7,8,9,10]
 		},
 	});
 
@@ -114,6 +118,7 @@ async function addDummyUsers() {
 		create: {
 			userId: 5,
       wins: 2,
+      achievements: [0,1,2,3,4,5,6,7,8,9,10,11,12,13]
 		},
 	});
 
@@ -136,6 +141,7 @@ async function addDummyUsers() {
 		create: {
 			userId: 6,
       wins: 1,
+      achievements: [0,1,2,3,4,5,6,7,8,9,10,11]
 		},
 	});
 
