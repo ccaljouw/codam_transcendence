@@ -41,7 +41,6 @@ model User {
     avatarId Int          @default(1)
     theme    Int          @default(0)
     online   OnlineStatus @default(OFFLINE)
-    rank     Int?         @default(-1)  //remove
 
     chats ChatUsers[]
     games GameUser[]

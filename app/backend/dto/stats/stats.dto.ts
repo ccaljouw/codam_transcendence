@@ -32,11 +32,11 @@ export class StatsDto {
 
   @IsInt()
   @ApiProperty({ required: false, type: Number })
-  consecutiveWins: number;
+  consecutiveWins?: number;
 
   @IsInt()
   @ApiProperty({ required: false, type: Number })
-  maxConsecutiveWins: number;
+  maxConsecutiveWins?: number;
 
   @IsInt()
   @ApiProperty({ required: false, type: Number })
@@ -44,11 +44,11 @@ export class StatsDto {
 
   @IsInt()
   @ApiProperty({ required: false, type: Number })
-  friends: number;
+  friends?: number;
   
   @ApiProperty({ required: false, type: [Number] })
-  achievements: number[];
+  achievements?: number[];
 
   @ApiProperty({ required: false, type: [GameResultDto] })
-  last10Games: GameResultDto[];
+  last10Games?: GameResultDto[];
 }

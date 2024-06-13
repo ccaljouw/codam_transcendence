@@ -2,12 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto, UserProfileDto, CreateUserDto } from '@ft_dto/users';
 import { PrismaService } from '../database/prisma.service';
 import { PrismaClientKnownRequestError, PrismaClientUnknownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
+import { StatsService } from 'src/stats/stats.service';
 
 @Injectable()
 export class UsersService {
 
 	constructor(
 		private db: PrismaService,
+    private stats: StatsService,
 	) { }
 
 	// USER CRUD OPERATIONS
@@ -16,6 +18,8 @@ export class UsersService {
       if (!createUserDto.userName)
         createUserDto.userName = createUserDto.loginName;
       const user = await this.db.user.create({ data: createUserDto });
+      console.log(`create stats for ${user.id}`)
+      await this.stats.create(user.id);
       return user;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {

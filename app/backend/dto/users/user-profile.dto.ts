@@ -36,9 +36,6 @@ export class UserProfileDto implements User {
 	online: OnlineStatus;
 
 	@ApiProperty({ required: false })
-	rank: number;
-
-	@ApiProperty({ required: false })
 	createdAt: Date;
 
 	@ApiProperty({ required: false })

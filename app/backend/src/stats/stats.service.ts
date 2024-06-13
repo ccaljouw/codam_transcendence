@@ -1,5 +1,6 @@
 import { StatsDto } from '@ft_dto/stats';
 import { Injectable } from '@nestjs/common';
+import { PrismaClientKnownRequestError, PrismaClientUnknownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
@@ -8,8 +9,15 @@ export class StatsService {
 		private db: PrismaService,
 	) { }
 
-  create(createStatDto: StatsDto) {
-    return 'This action adds a new stat';
+  async create(userId: number) : Promise<StatsDto> {
+    try {
+      return await this.db.stats.create({ data:  {userId}} );
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+      throw new Error(`Error creating user: ${error.message}`);
+    }
   }
 
   findAll() {
@@ -24,8 +32,15 @@ export class StatsService {
     return `This action updates a #${id} stat`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} stat`;
+  async remove(id: number) : Promise<StatsDto> {
+    try {
+      return await this.db.stats.delete({ where: { userId: id } });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+      throw new Error(`Error creating user: ${error.message}`);
+    }
   }
 
   async hardcodedStats(id: number): Promise<StatsDto> {
