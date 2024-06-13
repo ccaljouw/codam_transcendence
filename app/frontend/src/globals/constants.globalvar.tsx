@@ -22,11 +22,10 @@ export class constants {
 	static API_USERS = this.BACKEND_BASEURL + 'users/';
 	static API_REGISTER = this.API_USERS + 'register/';
 	static API_ALL_USERS = this.API_USERS + 'all/';
-	static API_TOP_10 = this.API_USERS + 'all/'; // todo: Carien: change to correct api path
 	static API_ALL_USERS_BUT_ME = this.API_USERS + 'allButMe/';
 	static API_ADD_TOKEN = this.API_USERS + 'token/';
 	static API_FRIENDS_FROM = this.API_USERS + 'friendsFrom/';
-
+  
 	static API_CHAT = this.BACKEND_BASEURL + 'chat/';
 	static CHAT_CHECK_IF_DM_EXISTS = this.API_CHAT + 'checkIfDMExists/';
 	static CHAT_GET_UNREADS = this.API_CHAT + 'getUnreads/';
@@ -35,11 +34,11 @@ export class constants {
 	static CHAT_MESSAGES_UNREAD_FOR_USER = this.API_CHAT + 'messages/unreadsforuser/';
 	static CHAT_UNREAD_MESSAGES_FROM_FRIENDS = this.API_CHAT + 'unreadMessagesFromFriends/';
 	static CHAT_JOIN_ROOM_IN_DB = this.API_CHAT + 'joinRoomInDb/';
-
+  
 	static API_INVITE = this.BACKEND_BASEURL + 'invite/';
 	static INVITE_RESPOND_TO_FRIEND_REQUEST = this.API_INVITE + 'respondToFriendRequest/';
 	static INVITE_RESPOND_TO_GAME_REQUEST = this.API_INVITE + 'respondToGameRequest/';
-
+  
 	static API_GAME = this.BACKEND_BASEURL + 'game/'
 	
 	static API_TEST = this.BACKEND_BASEURL + 'test/';
@@ -51,4 +50,9 @@ export class constants {
 	
 	static API_SWAGGER = this.BACKEND_BASEURL + 'api';
 	static API_AUTH42 = this.BACKEND_BASEURL + 'auth42/';
+  
+  static API_STATS = this.BACKEND_BASEURL + 'stats'
+  // static API_TOP_10 = this.API_STATS + 'top10/'; 
+  static API_TOP_10 = this.API_USERS + 'all/'; // todo: Jorien: change code stats.tsx? so this can be set to correct endpoint
+  static API_RANK = this.API_STATS + 'rank';
 }

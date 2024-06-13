@@ -8,7 +8,6 @@ import {
   IsNumber,
 } from 'class-validator';
 
-// todo: Carien: create database table, API endpoint
 export class StatsDto {
   @IsNotEmpty()
   @IsInt()
@@ -40,7 +39,7 @@ export class StatsDto {
   maxConsecutiveWins: number;
 
   @ApiProperty({ required: false, type: [Number] })
-  achievements?: number[];
+  achievements: number[];
   
   @IsInt()
   @ApiProperty({ required: false, type: Number })
