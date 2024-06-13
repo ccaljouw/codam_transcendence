@@ -20,7 +20,7 @@ export class StatsService {
     }
   }
 
-  async findAll() {
+  async findAll() : Promise<StatsDto[]> {
     try {
       return  await this.db.stats.findMany({
         orderBy: [
@@ -36,8 +36,7 @@ export class StatsService {
     }
   }
 
-  async findOne(userId: number) {
-    // return await this.hardcodedStats(userId);
+  async findOne(userId: number) : Promise<StatsDto>{
     try {
       let stats: StatsDto;
 
@@ -72,7 +71,7 @@ export class StatsService {
 
   async getRank(userId: number): Promise<number> {
     try {
-      const allStats = await this.findAll();
+      const allStats: StatsDto[] = await this.findAll();
       return allStats.findIndex(stats => stats.userId === userId) + 1;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
@@ -82,23 +81,31 @@ export class StatsService {
     }
   }
   
-    async findRankTop10() : Promise<StatsDto[]> {
-      try {
-        const top10: StatsDto[] = await this.db.stats.findMany({
-          orderBy: [
-            { wins: 'desc' },
-            { winLossRatio: 'desc' },
-          ],
-          take: 10,
-        });
-        return top10;
-      } catch (error) {
-        if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
-          throw error;
-        }
-        throw new Error(`Error getting top 10 ranked players: ${error.message}`);
+  async findRankTop10(): Promise<string[]> {
+    try {
+      const top10 = await this.db.stats.findMany({
+        orderBy: [
+          { wins: 'desc' },
+          { winLossRatio: 'desc' },
+        ],
+        take: 10,
+        select: {
+          user: {
+            select: {
+              userName: true,
+            },
+          },
+        },
+      });
+      const usernames: string[] = top10.map(stat => stat.user.userName);
+      return usernames;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
       }
+      throw new Error(`Error getting top 10 ranked players: ${error.message}`);
     }
+  }
 
   async getFriendCount(userId: number): Promise<number> {
     try {
@@ -119,21 +126,4 @@ export class StatsService {
       throw new Error(`Error getting friends: ${error.message}`);
     }
   }
-
-  async hardcodedStats(id: number): Promise<StatsDto> {
-		const stats: StatsDto = { 
-      userId: 1, 
-      rank: 3, 
-      wonLastGame: false, 
-      wins: 1, 
-      losses: 2, 
-      winLossRatio: 0.3, 
-      consecutiveWins: 2, 
-      maxConsecutiveWins: 2, 
-      friends: 100, 
-      achievements: [0,1,2,3,4,5], 
-      last10Games: []
-     }
-    return stats;
-	}
 }
