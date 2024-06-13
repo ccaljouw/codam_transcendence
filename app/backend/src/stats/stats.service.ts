@@ -37,7 +37,7 @@ export class StatsService {
   }
 
   async findOne(userId: number) {
-    return await this.hardcodedStats(userId);
+    // return await this.hardcodedStats(userId);
     try {
       let stats: StatsDto;
 
@@ -70,23 +70,6 @@ export class StatsService {
     }
   }
 
-  async hardcodedStats(id: number): Promise<StatsDto> {
-		const stats: StatsDto = { 
-      userId: 1, 
-      rank: 3, 
-      wonLastGame: false, 
-      wins: 1, 
-      losses: 2, 
-      winLossRatio: 0.3, 
-      consecutiveWins: 2, 
-      maxConsecutiveWins: 2, 
-      friends: 100, 
-      achievements: [0,1,2,3,4,5], 
-      last10Games: []
-     }
-    return stats;
-	}
-
   async getRank(userId: number): Promise<number> {
     try {
       const allStats = await this.findAll();
@@ -98,6 +81,24 @@ export class StatsService {
       throw new Error(`Error getting rank: ${error.message}`);
     }
   }
+  
+    async findRankTop10() : Promise<StatsDto[]> {
+      try {
+        const top10: StatsDto[] = await this.db.stats.findMany({
+          orderBy: [
+            { wins: 'desc' },
+            { winLossRatio: 'desc' },
+          ],
+          take: 10,
+        });
+        return top10;
+      } catch (error) {
+        if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+          throw error;
+        }
+        throw new Error(`Error getting top 10 ranked players: ${error.message}`);
+      }
+    }
 
   async getFriendCount(userId: number): Promise<number> {
     try {
@@ -119,21 +120,20 @@ export class StatsService {
     }
   }
 
-  async findRankTop10() : Promise<StatsDto[]> {
-    try {
-      const top10: StatsDto[] = await this.db.stats.findMany({
-        orderBy: [
-          { wins: 'desc' },
-          { winLossRatio: 'desc' },
-        ],
-        take: 10,
-      });
-      return top10;
-    } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
-        throw error;
-      }
-      throw new Error(`Error getting top 10 ranked players: ${error.message}`);
-    }
-  }
+  async hardcodedStats(id: number): Promise<StatsDto> {
+		const stats: StatsDto = { 
+      userId: 1, 
+      rank: 3, 
+      wonLastGame: false, 
+      wins: 1, 
+      losses: 2, 
+      winLossRatio: 0.3, 
+      consecutiveWins: 2, 
+      maxConsecutiveWins: 2, 
+      friends: 100, 
+      achievements: [0,1,2,3,4,5], 
+      last10Games: []
+     }
+    return stats;
+	}
 }
