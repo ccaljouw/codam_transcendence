@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { StatsService } from './stats.service';
-import { StatsDto } from '@ft_dto/stats';
+import { GameResultDto, StatsDto } from '@ft_dto/stats';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('stats')
@@ -36,6 +36,13 @@ export class StatsController {
   getFriendCount(@Param('userId', ParseIntPipe) userId: number): Promise<number> {
     console.log("Finding stats for user: " + userId);
     return this.statsService.getFriendCount(userId);
+  }
+
+  @Get('last10Games/:userId')
+  @ApiOperation({ summary: 'Returns last 10 games played by user' })
+  @ApiOkResponse({ type: [GameResultDto] })
+  getLast10Games(@Param('userId', ParseIntPipe) userId: number) {
+    return this.statsService.getLast10Games(userId);
   }
 
   @Get(':userId')

@@ -1,13 +1,13 @@
 export class GameResultDto {
 	id: number;
 
-  user1Name: string;
+  user1Name?: string;
 
-  user2Name: string;
+  user2Name?: string;
 
-  scoreUser1: number;
+  scoreUser1?: number;
 
-  scoreUser2: number;
+  scoreUser2?: number;
 
   winnerId: number;
 }

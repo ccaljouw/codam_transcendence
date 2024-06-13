@@ -19,7 +19,7 @@ export class GameService {
       });
       if (!game) {
         game = await this.create({ state: `WAITING` });
-        await this.addUser(game.id, userId, clientId);
+        await this.addUser(game.id, userId, clientId, 1);
         game = await this.db.game.findFirst({
           where: { id: game.id },
           include: { GameUsers: { include: { user: true } } },
@@ -31,7 +31,7 @@ export class GameService {
         );
         if (!isUserInGame) {
           console.log(`!!!user is not in game`);
-          await this.addUser(game.id, userId, clientId);
+          await this.addUser(game.id, userId, clientId, 2);
           game = await this.db.game.update({
             where: { id: game.id },
             data: { state: `READY_TO_START` },
@@ -60,8 +60,8 @@ export class GameService {
     // emit to room (gameid) gameStateUpdate => finished
   }
 
-  addUser(gameId: number, userId: number, clientId) {
-    return this.db.gameUser.create({ data: { gameId, userId, clientId } });
+  addUser(gameId: number, userId: number, clientId: string, player: number) {
+    return this.db.gameUser.create({ data: { gameId, userId, clientId, player } });
   }
 
   async findAll() {
@@ -134,17 +134,32 @@ export class GameService {
   }
 
   async update(updateGameStateDto: UpdateGameStateDto) {
-    if (updateGameStateDto.state === undefined) {
-      console.log(`backend - game: can't update because state not defined`);
-      return;
-    }
     console.log(
       `backend - game: updating game state to : ${updateGameStateDto.state} for game: ${updateGameStateDto.roomId}`,
     );
     try {
       const game = await this.db.game.update({
         where: { id: updateGameStateDto.roomId },
-        data: { state: updateGameStateDto.state },
+      data: {
+        state: updateGameStateDto.state,
+        winnerId: updateGameStateDto.winner,
+        GameUsers: {
+          updateMany: [
+            {
+              where: { gameId: updateGameStateDto.roomId, player: 1 },
+              data: {
+                score: updateGameStateDto.score1,
+              },
+            },
+            {
+              where: { gameId: updateGameStateDto.roomId, player: 2 },
+              data: {
+                score: updateGameStateDto.score2,
+              },
+            },
+          ],
+        },
+      },
       });
       if (game) {
         console.log(`backend - game: Game: game state updated`);

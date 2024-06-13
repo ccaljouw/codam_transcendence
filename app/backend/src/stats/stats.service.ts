@@ -1,4 +1,4 @@
-import { StatsDto } from '@ft_dto/stats';
+import { GameResultDto, StatsDto } from '@ft_dto/stats';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaClientKnownRequestError, PrismaClientUnknownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/database/prisma.service';
@@ -124,6 +124,48 @@ export class StatsService {
         throw error;
       }
       throw new Error(`Error getting friends: ${error.message}`);
+    }
+  }
+
+  async getLast10Games(userId: number) : Promise<GameResultDto[]> {
+    try {
+      const games = await this.db.game.findMany({
+        where: {
+          GameUsers: {
+            some: {
+              userId: userId,
+            },
+          },
+          state: 'FINISHED'
+        },
+        orderBy: { id: 'desc' },
+        take: 10,
+        include: {
+          GameUsers: {
+            select: { 
+              score: true, 
+              user: { select: { userName: true } },
+            },
+          },
+        },
+      });
+
+      const gameResults  = games.map(game => ({
+        id: game.id,
+        state: game.state,
+        user1Name: game.GameUsers[0]?.user.userName ?? null,
+        user2Name: game.GameUsers[1]?.user.userName ?? null,
+        score1: game.GameUsers[0]?.score ?? null,
+        score2: game.GameUsers[1]?.score ?? null,
+        winnerId: game.winnerId
+      }));
+
+      return gameResults;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+      throw new Error(`Error getting games: ${error.message}`);
     }
   }
 }

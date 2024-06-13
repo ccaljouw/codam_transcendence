@@ -111,14 +111,14 @@ model Game {
     id          Int       @id @default(autoincrement())
     state       GameState
     GameUsers   GameUser[]
-    winnerId    Int?
+    winnerId    Int? //needed?
 }
 
 model GameUser {
     id        Int       @id @default(autoincrement())
     clientId  String
+    player    Int
     score     Int       @default(0)
-    win       Boolean?  //needed?
 
     gameId Int
     game   Game @relation(fields: [gameId], references: [id])
