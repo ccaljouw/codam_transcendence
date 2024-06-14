@@ -82,7 +82,7 @@ export class StatsService {
         where: { userId },
         data: {
           winLossRatio: userStats.wins / (userStats.wins + userStats.losses),
-          achievements: await this.updateAchievements(userStats),
+          achievements: await this.updateAchievements(userId, updateGameStateDto.roomId),
           maxConsecutiveWins: userStats.consecutiveWins > userStats.maxConsecutiveWins 
           ? userStats.consecutiveWins : userStats.maxConsecutiveWins, 
         },
@@ -204,42 +204,69 @@ export class StatsService {
     }
   }
 
-  private async updateAchievements(stats: StatsDto) : Promise<number[]> {
+  private async updateAchievements(userId: number, lastGameId: number) : Promise<number[]> {
     try {
+      const lastGame  = await this.db.game.findUnique({ 
+        where: { id: lastGameId },
+        select: {
+          winnerId: true,
+          GameUsers: { 
+            select: { 
+              userId: true, 
+              score: true, 
+              }
+            },
+          }, 
+        });
+
+      const opponentId: number = lastGame.GameUsers[0].userId ?  lastGame.GameUsers[1].userId : lastGame.GameUsers[0].userId;
+      const opponent: StatsDto = await this.db.stats.findUnique({ where: { userId: opponentId }});
+      let currentUser: StatsDto = await this.db.stats.findUnique({ where: { userId }});
+
       for (let i = 0; i <= 14; i++) {
-        if (stats.achievements.includes(i)) {
+        if (currentUser.achievements .includes(i)) {
           console.log(`${i} achievement alreadu present.`);
         } else {
           switch (i) {
             case 0:
               //Awarded when the player wins their first game.
-              if (stats.wins)
-                stats.achievements.push(i);
+              if (currentUser.wins)
+                currentUser.achievements.push(i);
               break;
             case 1:
               //Given when a player wins three games in a row
-              if (stats.maxConsecutiveWins > 2)
-                stats.achievements.push(i);
+              if (currentUser.maxConsecutiveWins > 2)
+                currentUser.achievements.push(i);
               break;
             case 2:
               //Earned when a player wins 100 games
-              if (stats.wins === 100 )
-                stats.achievements.push(i);
+              if (currentUser.wins === 100 )
+                currentUser.achievements.push(i);
               break;
             case 3:
               // check for rank 1
+              if ( await this.getRank(userId) === 1)
+                currentUser.achievements.push(i);
               break;
             case 4:
-              // margin of only one point
+              // won last game with margin of one point
+              if ( currentUser.wonLastGame && 
+                    Math.abs(lastGame.GameUsers[0].score - lastGame.GameUsers[1].score) === 1)
+                currentUser.achievements.push(i);
               break;
             case 5:
               // winning match without losing a point
+              if ( currentUser.wonLastGame && 
+                    Math.min(lastGame.GameUsers[0].score, lastGame.GameUsers[1].score) === 0)
+                currentUser.achievements.push(i);
               break;
             case 6:
               // long rally (no data available)
               break;
             case 7:
               //Awarded when a player beats an opponent who has won more than twice as many games as they have.
+              if (opponent.wins > (currentUser.wins * 2))
+                currentUser.achievements.push(i);
               break;
             case 8:
               //Awarded for playing a game before 7 AM
@@ -261,15 +288,15 @@ export class StatsService {
               break;
             case 14:
               // Awarded for being a StrongPong developer.
-              if (stats.userId < 5)
-                stats.achievements.push(i);
+              if (currentUser.userId < 5)
+                currentUser.achievements.push(i);
               break;
             default:
               console.log('No achievement for this index.');
           }
         }
       }
-      return stats.achievements;
+      return currentUser.achievements;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
         throw error;
@@ -277,5 +304,4 @@ export class StatsService {
       throw new Error(`Error deleting stats: ${error.message}`);
     }
   }
-
 }

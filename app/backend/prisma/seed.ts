@@ -120,16 +120,6 @@ async function addDummyUsers() {
 		},
 	});
 
-  const stats6 = await prisma.stats.upsert({
-		where: { userId: 6 },
-    update: {},
-		create: {
-			userId: 6,
-      wins: 1,
-      achievements: [0,1,2,3,4,5,6,7,8,9,10,11]
-		},
-	});
-
 	// Establish friendship between users
 	await prisma.user.update({
 		where: { loginName: 'friendcarlo' },
