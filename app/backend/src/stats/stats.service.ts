@@ -57,31 +57,34 @@ export class StatsService {
 		}
   }
 
-  // todo: Carien: create update for stats and achievements
+  // todo: Carien: create update for achievements
   async update(userId: number, player: number, updateGameStateDto: UpdateGameStateDto) {
     try {
       let userStats: StatsDto;
+      const victory: boolean = (player - 1) === updateGameStateDto.winner ? true : false;
+      
       userStats = await this.db.stats.findUnique({ where: { userId }});
       if (!userStats) {
         userStats = await this.create(userId);
         throw new NotFoundException(`User with id ${userId} does not have stats.`);
       }
-      const victory: boolean = (player - 1) === updateGameStateDto.winner ? true : false;
-      return await this.db.stats.update({
+
+      userStats =  await this.db.stats.update({
         where: { userId },
         data: {
           wonLastGame: victory,
           wins: victory ? (userStats.wins + 1) : userStats.wins,
           losses: victory ? userStats.losses : (userStats.losses + 1),
-          winLossRatio: victory 
-            ? (userStats.wins + 1) / (userStats.wins + (userStats.losses + 1))
-            : userStats.wins / (userStats.wins + userStats.losses + 1),
           consecutiveWins: victory ? (userStats.consecutiveWins + 1) : 0,
-          maxConsecutiveWins: victory 
-            ? ((userStats.consecutiveWins + 1) > userStats.maxConsecutiveWins 
-                ? (userStats.consecutiveWins + 1) 
-                : userStats.maxConsecutiveWins)
-            : userStats.maxConsecutiveWins,
+        },
+      });
+      return await this.db.stats.update({
+        where: { userId },
+        data: {
+          winLossRatio: userStats.wins / (userStats.wins + userStats.losses),
+          achievements: await this.updateAchievements(userStats),
+          maxConsecutiveWins: userStats.consecutiveWins > userStats.maxConsecutiveWins 
+          ? userStats.consecutiveWins : userStats.maxConsecutiveWins, 
         },
       });
     } catch (error) {
@@ -200,4 +203,79 @@ export class StatsService {
       throw new Error(`Error getting games: ${error.message}`);
     }
   }
+
+  private async updateAchievements(stats: StatsDto) : Promise<number[]> {
+    try {
+      for (let i = 0; i <= 14; i++) {
+        if (stats.achievements.includes(i)) {
+          console.log(`${i} achievement alreadu present.`);
+        } else {
+          switch (i) {
+            case 0:
+              //Awarded when the player wins their first game.
+              if (stats.wins)
+                stats.achievements.push(i);
+              break;
+            case 1:
+              //Given when a player wins three games in a row
+              if (stats.maxConsecutiveWins > 2)
+                stats.achievements.push(i);
+              break;
+            case 2:
+              //Earned when a player wins 100 games
+              if (stats.wins === 100 )
+                stats.achievements.push(i);
+              break;
+            case 3:
+              // check for rank 1
+              break;
+            case 4:
+              // margin of only one point
+              break;
+            case 5:
+              // winning match without losing a point
+              break;
+            case 6:
+              // long rally (no data available)
+              break;
+            case 7:
+              //Awarded when a player beats an opponent who has won more than twice as many games as they have.
+              break;
+            case 8:
+              //Awarded for playing a game before 7 AM
+              break;
+            case 9:
+              //Awarded for playing a game after midnight
+              break;
+            case 10:
+              //Earned when a single game lasts more than 10 minutes.
+              break;
+            case 11:
+              // Awarded for playing match against the computer. (not possible yet)
+              break;
+            case 12:
+              //Awarded for using the strongpong controller. (no data yet)
+              break;
+            case 13:
+              //Awarded for sending more then 100 messages to someone. (??)
+              break;
+            case 14:
+              // Awarded for being a StrongPong developer.
+              if (stats.userId < 5)
+                stats.achievements.push(i);
+              break;
+            default:
+              console.log('No achievement for this index.');
+          }
+        }
+      }
+      return stats.achievements;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+      throw new Error(`Error deleting stats: ${error.message}`);
+    }
+  }
+
 }
