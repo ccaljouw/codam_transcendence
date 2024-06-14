@@ -145,30 +145,31 @@ export class GameService {
     try {
       const game = await this.db.game.update({
         where: { id: updateGameStateDto.roomId },
-        data: {
-          state: updateGameStateDto.state,
-          winnerId: updateGameStateDto.winner,
-          GameUsers: {
-            updateMany: [
-              {
-                where: { gameId: updateGameStateDto.roomId, player: 1 },
-                data: {
-                  score: updateGameStateDto.score1,
-                },
-              },
-              {
-                where: { gameId: updateGameStateDto.roomId, player: 2 },
-                data: {
-                  score: updateGameStateDto.score2,
-                },
-              },
-            ],
-          },
-        },
-        include: { GameUsers: {select: { userId: true }} }
+        data: { state: updateGameStateDto.state },
+        include: { GameUsers: {select: { userId: true, player: true }} }
       });
-      this.statsService.update(game.GameUsers[0].userId, updateGameStateDto);
-      this.statsService.update(game.GameUsers[1].userId, updateGameStateDto);
+      if (updateGameStateDto.state === 'FINISHED' ) {
+        await this.db.game.update({
+          where: { id: updateGameStateDto.roomId },
+          data: { 
+            winnerId: game.GameUsers[updateGameStateDto.winner].userId,
+            GameUsers: {
+              updateMany: [
+                {
+                  where: { gameId: updateGameStateDto.roomId, player: 1 },
+                  data: { score: updateGameStateDto.score1 },
+                },
+                {
+                  where: { gameId: updateGameStateDto.roomId, player: 2 },
+                  data: { score: updateGameStateDto.score2 },
+                },
+              ],
+            },
+          }
+        });
+        await this.statsService.update(game.GameUsers[0].userId, game.GameUsers[0].player, updateGameStateDto);
+        await this.statsService.update(game.GameUsers[1].userId, game.GameUsers[1].player, updateGameStateDto);
+      }
       return true;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {

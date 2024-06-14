@@ -58,15 +58,15 @@ export class StatsService {
   }
 
   // todo: Carien: create update for stats and achievements
-  async update(userId: number, updateGameStateDto: UpdateGameStateDto) {
+  async update(userId: number, player: number, updateGameStateDto: UpdateGameStateDto) {
     try {
       let userStats: StatsDto;
       userStats = await this.db.stats.findUnique({ where: { userId }});
       if (!userStats) {
-        // userStats = await this.create(userId);
+        userStats = await this.create(userId);
         throw new NotFoundException(`User with id ${userId} does not have stats.`);
       }
-      const victory: boolean = userId === updateGameStateDto.winner ? true : false;
+      const victory: boolean = (player - 1) === updateGameStateDto.winner ? true : false;
       return await this.db.stats.update({
         where: { userId },
         data: {
