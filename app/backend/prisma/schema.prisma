@@ -111,11 +111,12 @@ model Game {
     id              Int       @id @default(autoincrement())
     state           GameState
     GameUsers       GameUser[]
+    longestRally    Int      @default(0)
     winnerId        Int?
+    
 
     gameStartedAt   DateTime?
     gameFinishedAt  DateTime?
-
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
 }

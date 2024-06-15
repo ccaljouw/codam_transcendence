@@ -28,5 +28,8 @@ export class UpdateGameStateDto {
   gameFinishedAt?: Date;
 
   @ApiProperty({ required: false })
+  longestRally?: number;
+
+  @ApiProperty({ required: false })
   gameUsers?: GameUser[];
 }

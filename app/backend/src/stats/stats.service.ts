@@ -212,6 +212,7 @@ export class StatsService {
           winnerId: true,
           gameStartedAt: true,
           gameFinishedAt: true,
+          longestRally: true,
           GameUsers: { 
             select: { 
               userId: true, 
@@ -264,6 +265,8 @@ export class StatsService {
               break;
             case 6:
               // long rally (no data available)
+              if (lastGame.longestRally && lastGame.longestRally > 20 )
+                currentUser.achievements.push(i);
               break;
             case 7:
               //Awarded when a player beats an opponent who has won more than twice as many games as they have.
