@@ -210,6 +210,8 @@ export class StatsService {
         where: { id: lastGameId },
         select: {
           winnerId: true,
+          gameStartedAt: true,
+          gameFinishedAt: true,
           GameUsers: { 
             select: { 
               userId: true, 
@@ -269,13 +271,16 @@ export class StatsService {
                 currentUser.achievements.push(i);
               break;
             case 8:
-              //Awarded for playing a game before 7 AM
+              if (this.isStartTimeBetween(lastGame.gameStartedAt, 4, 7))
+                currentUser.achievements.push(i);
               break;
             case 9:
-              //Awarded for playing a game after midnight
+              if (this.isStartTimeBetween(lastGame.gameStartedAt, 0, 4))
+                currentUser.achievements.push(i);
               break;
             case 10:
-              //Earned when a single game lasts more than 10 minutes.
+              if(this.durationLongerThen(lastGame.gameStartedAt, lastGame.gameFinishedAt, 10))
+                currentUser.achievements.push(i);
               break;
             case 11:
               // Awarded for playing match against the computer. (not possible yet)
@@ -304,5 +309,18 @@ export class StatsService {
       }
       throw new Error(`Error deleting stats: ${error.message}`);
     }
+  }
+
+  private isStartTimeBetween(startTime: Date, startHour: number, endHour: number): boolean {
+    const hours = startTime.getHours();  
+    
+    return (hours >= startHour && hours < endHour);
+  }
+
+  private durationLongerThen(start: Date, end: Date, durationInMinutes: number) {
+    const differenceMs = end.getTime() - start.getTime();
+    const differenceMinutes = differenceMs / (1000 * 60);
+    
+    return differenceMinutes > 10;
   }
 }
