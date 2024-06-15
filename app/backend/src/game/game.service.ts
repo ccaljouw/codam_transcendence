@@ -140,42 +140,54 @@ export class GameService {
 
   async update(updateGameStateDto: UpdateGameStateDto) {
     console.log(
-      `backend - game: updating game state to : ${updateGameStateDto.state} for game: ${updateGameStateDto.roomId}`,
+      `backend - game: updating game state to : ${updateGameStateDto.state} for game: ${updateGameStateDto.id}`,
     );
     try {
+      let newGameData: UpdateGameStateDto = {
+        id: updateGameStateDto.id,
+        state: updateGameStateDto.state,
+      };
+
+      if (updateGameStateDto.state === 'STARTED') {
+        newGameData.gameStartedAt = new Date;
+      } else if (updateGameStateDto.state === 'FINISHED') {
+        newGameData.winnerId = updateGameStateDto.winnerId;
+        newGameData.gameFinishedAt = new Date;
+        const player1 = await this.db.gameUser.update({
+          where: {
+            gameId_player: {
+              gameId: updateGameStateDto.id,
+              player: 1,
+            },
+          },
+          data: { score: updateGameStateDto.score1 },
+          select: { userId: true },
+        });
+        const player2 = await this.db.gameUser.update({
+          where: {
+            gameId_player: {
+              gameId: updateGameStateDto.id,
+              player: 2,
+            },
+          },
+          data: { score: updateGameStateDto.score2 },
+          select: { userId: true },
+        });
+        await this.statsService.update(player1.userId, 1, updateGameStateDto);
+        await this.statsService.update(player2.userId, 2, updateGameStateDto);
+      }
+      
       const game = await this.db.game.update({
-        where: { id: updateGameStateDto.roomId },
-        data: { state: updateGameStateDto.state },
+        where: { id: newGameData.id },
+        data: newGameData,
         include: { GameUsers: {select: { userId: true, player: true }} }
       });
-      if (updateGameStateDto.state === 'FINISHED' ) {
-        await this.db.game.update({
-          where: { id: updateGameStateDto.roomId },
-          data: { 
-            winnerId: game.GameUsers[updateGameStateDto.winner].userId,
-            GameUsers: {
-              updateMany: [
-                {
-                  where: { gameId: updateGameStateDto.roomId, player: 1 },
-                  data: { score: updateGameStateDto.score1 },
-                },
-                {
-                  where: { gameId: updateGameStateDto.roomId, player: 2 },
-                  data: { score: updateGameStateDto.score2 },
-                },
-              ],
-            },
-          }
-        });
-        await this.statsService.update(game.GameUsers[0].userId, game.GameUsers[0].player, updateGameStateDto);
-        await this.statsService.update(game.GameUsers[1].userId, game.GameUsers[1].player, updateGameStateDto);
-      }
       return true;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
         throw error;
       }
-			throw new NotFoundException(`Error updating gamestate for game ${updateGameStateDto.roomId}.`);
+			throw new NotFoundException(`Error updating gamestate for game ${updateGameStateDto.id}.`);
 		}
   }
 

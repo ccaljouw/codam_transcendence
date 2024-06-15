@@ -61,7 +61,7 @@ export class StatsService {
   async update(userId: number, player: number, updateGameStateDto: UpdateGameStateDto) {
     try {
       let userStats: StatsDto;
-      const victory: boolean = (player - 1) === updateGameStateDto.winner ? true : false;
+      const victory: boolean = (player - 1) === updateGameStateDto.winnerId ? true : false;
       
       userStats = await this.db.stats.findUnique({ where: { userId }});
       if (!userStats) {
@@ -82,7 +82,7 @@ export class StatsService {
         where: { userId },
         data: {
           winLossRatio: userStats.wins / (userStats.wins + userStats.losses),
-          achievements: await this.updateAchievements(userId, updateGameStateDto.roomId),
+          achievements: await this.updateAchievements(userId, updateGameStateDto.id),
           maxConsecutiveWins: userStats.consecutiveWins > userStats.maxConsecutiveWins 
           ? userStats.consecutiveWins : userStats.maxConsecutiveWins, 
         },
@@ -294,6 +294,7 @@ export class StatsService {
             default:
               console.log('No achievement for this index.');
           }
+          currentUser.achievements.sort((a, b) => a - b);
         }
       }
       return currentUser.achievements;

@@ -99,7 +99,7 @@ export function checkForGoals(game: Game) {
   
   let winningSide: number = checkWinCondition(game) ?? -1;
   if (winningSide !== -1) {
-    const payload : UpdateGameStateDto  = {roomId: game.roomId, state: GameState.FINISHED, winner: winningSide, score1: game.players[0].getScore(), score2: game.players[1].getScore()};
+    const payload : UpdateGameStateDto  = {id: game.roomId, state: GameState.FINISHED, winnerId: winningSide, score1: game.players[0].getScore(), score2: game.players[1].getScore()};
     gameSocket.emit("game/updateGameState", payload);
     game.finishGame(winningSide);
   
