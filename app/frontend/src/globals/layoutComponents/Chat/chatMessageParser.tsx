@@ -15,13 +15,14 @@ export interface parserProps {
 	chatSocket: Socket,
 	friendInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>,
 	gameInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>,
-	chatInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>
+	chatInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>,
+	changeRoomStatusCallback: (userId: number, status: boolean) => void
 }
 
 export const messageParser = (
 	message: ChatMessageToRoomDto, context: parserProps
 ): JSX.Element => {
-	const { inviteCallback, currentChatRoom, currentUser, chatSocket, friendInviteFetcher, gameInviteFetcher, chatInviteFetcher } = context;
+	const { inviteCallback, currentChatRoom, currentUser, chatSocket, friendInviteFetcher, gameInviteFetcher, chatInviteFetcher, changeRoomStatusCallback } = context;
 	if (IsBlocked(message.userId, currentUser))
 		return <></>
 	if (message.action) {
@@ -29,8 +30,10 @@ export const messageParser = (
 			return <></>
 		switch (message.message) {
 			case "JOIN":
+				changeRoomStatusCallback(message.userId, true);
 				return <>{'<<'} {message.userName} has joined the chat {'>>'}</>
 			case "LEAVE":
+				changeRoomStatusCallback(message.userId, false);
 				return <>{'<<'} {message.userName} has left the chat {'>>'}</>
 		}
 	}

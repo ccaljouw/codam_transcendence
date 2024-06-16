@@ -29,6 +29,7 @@ export const fetchChat = async (
 	chatId: number,
 	userId: number
 ) => {
+	console.log('Fetching chat:', chatId, userId);
 	if (chatId == -1)
 		return;
 	await chatFechter({ url: constants.CHAT_GET_CHANNEL_WITH_USER + chatId + '/' + userId });

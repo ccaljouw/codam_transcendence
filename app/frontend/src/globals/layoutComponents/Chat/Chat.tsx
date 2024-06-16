@@ -1,11 +1,11 @@
 "use client"
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { FetchChatMessageDto, ChatMessageToRoomDto, UpdateChatDto, CreateDMDto, UpdateInviteDto } from '@ft_dto/chat';
+import { FetchChatMessageDto, ChatMessageToRoomDto, UpdateChatDto, CreateDMDto, UpdateInviteDto, UpdateChatUserDto } from '@ft_dto/chat';
 import { UserProfileDto } from '@ft_dto/users';
 import { constants } from '@ft_global/constants.globalvar';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import { transcendenceSocket } from '@ft_global/socket.globalvar';
-import { ChatType, InviteStatus, InviteType, OnlineStatus } from '@prisma/client';
+import { ChatType, ChatUsers, InviteStatus, InviteType, OnlineStatus } from '@prisma/client';
 import useFetch from '@ft_global/functionComponents/useFetch';
 import DataFetcher from '@ft_global/functionComponents/DataFetcher';
 import { FontBangers } from '../Font';
@@ -64,6 +64,27 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 
 	// ****************************************** END OF STUFF YOU MIGHT WANT TO ALTER, BEGINNING OF STUFF YOU MIGHT WANNA LEAVE BE ****************************************** //
 
+
+	const changeRoomStatusCallBack = (userId: number, onlineStatus: boolean) => {
+		console.log("User status changed: ", userId, onlineStatus);
+
+		let updatedUserArray : ChatUsers[] = [];
+		if (currentChatRoom.users?.find(user => user.userId == userId) != undefined)
+		{
+		updatedUserArray = currentChatRoom.users?.map((user: ChatUsers) => {
+			if (user.userId == userId) {
+				console.log("User found for leave/join room: ", {...user, isInChatRoom: onlineStatus});
+				return { ...user, isInChatRoom: onlineStatus }
+			}
+			return user;
+			});
+			setCurrentChatRoom({ ...currentChatRoom, users: updatedUserArray });
+		}else{
+			console.log("User not found in room: ", userId);
+			fetchChat(chatFetcher, currentChatRoom.id, currentUser.id);
+		}
+	};
+
 	const messageParserProps: parserProps = useMemo(() => ({ // UseMemo is used to prevent the parserProps from being recreated on every render.
 		inviteCallback: inviteCallback,
 		currentChatRoom: currentChatRoom,
@@ -71,7 +92,8 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		chatSocket: chatSocket,
 		friendInviteFetcher: friendInviteFetcher,
 		gameInviteFetcher: gameInviteFetcher,
-		chatInviteFetcher: chatInviteFetcher
+		chatInviteFetcher: chatInviteFetcher,
+		changeRoomStatusCallback: changeRoomStatusCallBack
 	}), [currentChatRoom, currentUser]);
 
 	const handleMessageFromRoom = (payload: ChatMessageToRoomDto) => {
@@ -82,6 +104,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 	}
 
 	useEffect(() => {
+		console.log("Current chat room: ", currentChatRoom);
 		if (currentChatRoom.id != -1) {
 			chatSocket.off('chat/messageFromRoom');
 			chatSocket.off('invite/inviteResponse');
