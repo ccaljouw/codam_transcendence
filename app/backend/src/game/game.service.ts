@@ -51,10 +51,10 @@ export class GameService {
     return await this.db.game.create({ data: createGameDto });
   }
 
-  async Disconnect(client: Socket) {
-    console.log('Backend Game: disconnect service called');
+  async disconnect(client: Socket) {
+    console.log('Backend Game!!!: disconnect service called');
     console.log('My token is:', client.id);
-    //todo: 
+    //todo:
     // set all games with token that are in sate waiting or in state started to abandoned in db
     // get the game id from the db with the token
     // emit to room (gameid) gameStateUpdate => finished
