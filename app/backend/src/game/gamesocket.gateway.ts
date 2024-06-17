@@ -65,11 +65,13 @@ export class GamesocketGateway {
         roomId: gameId,
         state: GameState.ABORTED,
       };
-      this.gamesocketService.update(payload);
 
+      this.gamesocketService.update(payload);
       this.game_io
         .to(payload.roomId.toString())
         .emit('game/updateGameState', payload);
+
+      this.gamesocketService.disconnect(client);
     }
   }
 }
