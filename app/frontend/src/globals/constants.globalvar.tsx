@@ -57,8 +57,7 @@ export class constants {
 	static API_SWAGGER = this.BACKEND_BASEURL + 'api';
 	static API_AUTH42 = this.BACKEND_BASEURL + 'auth42/';
   
-  static API_STATS = this.BACKEND_BASEURL + 'stats/'
-  // static API_TOP_10 = this.API_STATS + 'top10/'; 
-  static API_TOP_10 = this.API_USERS + 'all/'; // todo: Jorien: change code stats.tsx? so this can be set to correct endpoint
+  static API_STATS = this.BACKEND_BASEURL + 'stats/';
+  static API_TOP_10 = this.API_STATS + 'top10/';
   static API_RANK = this.API_STATS + 'rank';
 }

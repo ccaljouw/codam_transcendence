@@ -1,12 +1,23 @@
 import { UserProfileDto } from '@ft_dto/users';
-import { FontBangers } from 'src/globals/layoutComponents/Font';
+import { useEffect } from 'react';
+import { constants } from 'src/globals/constants.globalvar';
+import useFetch from 'src/globals/functionComponents/useFetch';
+import { H3 } from 'src/globals/layoutComponents/Font';
 
 export default function MatchHistory({user} : {user: UserProfileDto}) : JSX.Element {
+    // const {data: stats, isLoading, error, fetcher} = useFetch<null, StatsDto>();
+
+    // useEffect(() => {
+    //     fetchStats();
+    // }, []);
+
+    // const fetchStats = async () => {
+	// 	await fetcher({url: constants.API_STATS + user.id});
+	// };
+
     return (
         <>
-            <FontBangers>
-                <h3>Match History</h3>
-            </FontBangers>
+            <H3 text="Match History" />
             <p>Not from database yet:</p>
             <p>Last (x amount of?) played matches</p>
         </>
