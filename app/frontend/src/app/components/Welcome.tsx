@@ -8,13 +8,16 @@ export default function Welcome() : JSX.Element {
 	
 	return (
 		<>
-            <H3 text="Welcome {currentUser.userName},"/>
+            <H3 text={`Welcome ${currentUser.userName},`}/>
             <p>Challenge your friends to play pong and make new ones on the way!</p>
 
-            <H3 text="NEWS 07/06"/>
+            <H3 text="NEWS 18/06"/>
 			<p>Newly implemented on the frontend side:</p>
 			<li>Chat has white boxes around it</li>
 			<li>Possible to change user settings on your profile page when you fill in a correct value</li>
+			<li>Stats implemented, fetched from database</li>
+
+			<li>AGAIN forgot how the game used to be schalable, I broke it...</li>
         </>
 	);
 }

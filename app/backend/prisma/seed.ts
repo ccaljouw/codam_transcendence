@@ -22,6 +22,7 @@ async function addDummyUsers() {
     update: {},
 		create: {
 			userId: 1,
+			achievements: [14],
 		},
 	});
 
@@ -43,6 +44,7 @@ async function addDummyUsers() {
     update: {},
 		create: {
 			userId: 2,
+			achievements: [14],
 		},
 	});
 
@@ -64,6 +66,7 @@ async function addDummyUsers() {
     update: {},
 		create: {
 			userId: 3,
+			achievements: [14],
 		},
 	});
 
@@ -84,6 +87,7 @@ async function addDummyUsers() {
     update: {},
 		create: {
 			userId: 4,
+			achievements: [14],
 		},
 	});
 
