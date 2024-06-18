@@ -160,10 +160,8 @@ export default function GameComponent() {
 	return (
 		<>
 			{waitingForPlayers ? (
-				<div className="white-box">
-					<p>Waiting for second player to join...</p>
-				</div>
-			) : (
+				<p>Waiting for second player to join...</p>
+				) : (
 				<div className={`${styles.game} white-box`}>
 					<div className={`${styles.gameMenu} text-center row`}>
 						<button className="btn btn-dark" onClick={handleClick}>Leave Game</button>
