@@ -40,8 +40,8 @@ function ChooseAchievementElement({index} : {index:number}) : JSX.Element {
 	return (<Achievement icon={achievements[index].id} title={achievements[index].title} description={achievements[index].description}/>);
 }
 
-export default function Achievements({achievements} : {achievements:number[]}) : JSX.Element {
-	const achievementList = achievements.map(achievement => 
+export default function Achievements({achievements} : {achievements:number[] | undefined}) : JSX.Element {
+	const achievementList = achievements?.map(achievement => 
 		<div key={achievement} className="col col-6 col-md-2">
 			<ChooseAchievementElement index={achievement}/>
 		</div>
@@ -50,9 +50,13 @@ export default function Achievements({achievements} : {achievements:number[]}) :
 	return (
 		<>
 			<H3 text="Achievements" />
-			<div className="row justify-content-start">
-				{achievementList}
-			</div>
+			{achievements?
+				<div className="row justify-content-start">
+					{achievementList}
+				</div>
+				:
+				<p>You don't have any achievements yet</p>
+			}
 		</>
 	);
 }
