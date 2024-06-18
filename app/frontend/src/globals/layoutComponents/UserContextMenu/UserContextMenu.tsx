@@ -7,7 +7,7 @@ import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
 import { ChatMessageToRoomDto, CreateDMDto, CreateInviteDto, UpdateChatDto, UpdateInviteDto } from '@ft_dto/chat';
 import useFetch from 'src/globals/functionComponents/useFetch'
 import { constants } from 'src/globals/constants.globalvar';
-import { IsFriend } from 'src/globals/functionComponents/FriendOrBlocked';
+import { IsBlocked, IsFriend } from 'src/globals/functionComponents/FriendOrBlocked';
 import { ChatType, InviteType } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 
@@ -18,9 +18,10 @@ export default function UserContextMenu({ user }:
 	const [isDropdownVisible, setDropdownVisible] = useState(false);
 	const [socketPayload, setSocketPayload] = useState<ChatMessageToRoomDto | null>();
 	const { contextMenuClickSent, triggerContextMenuClick } = useContext(UserListContext);
-	const { currentUser, newChatRoom, setNewChatRoom, currentChatRoom } = useContext(TranscendenceContext);
+	const { currentUser, setCurrentUser, newChatRoom, setNewChatRoom, currentChatRoom } = useContext(TranscendenceContext);
 	const { data: invite, isLoading: inviteLoading, error: inviteError, fetcher: inviteFetcher } = useFetch<CreateInviteDto, UpdateInviteDto>();
 	const { data: chat, isLoading: chatLoading, error: chatError, fetcher: chatFetcher } = useFetch<CreateDMDto, UpdateChatDto>();
+	const { data: blockData, isLoading: blockLoading, error: blockError, fetcher: blockFetcher } = useFetch<null, UserProfileDto>();
 	const userIsFriend = IsFriend(user.id, currentUser);
 	const router = useRouter();
 
@@ -60,9 +61,18 @@ export default function UserContextMenu({ user }:
 			}
 	}
 
-	const handleBlockClick = () => {
+
+
+	const handleBlockClick = (block: boolean) => {
 		setDropdownVisible(false);
 		console.log(`Block this user: ${user.userName}`);
+		if (block)
+			{
+			blockFetcher({ url: constants.API_BLOCK + currentUser.id + '/' + user.id});
+			setNewChatRoom({ room: -1, count: newChatRoom.count++ });
+			}
+		else
+			blockFetcher({ url: constants.API_UNBLOCK + currentUser.id + '/' + user.id});
 		//todo: after blocking a user, the userList should be updated
 	}
 
@@ -81,7 +91,11 @@ export default function UserContextMenu({ user }:
 		}
 	}, [invite]);
 
-
+	useEffect(() => {
+		if (blockData) {
+			setCurrentUser(blockData);
+		}
+	}, [blockData])
 
 	useEffect(() => {
 		if (chat) {
@@ -107,17 +121,31 @@ export default function UserContextMenu({ user }:
 
 	return (
 		<>
-			<a onClick={toggleMenu} className={style.userLink}> {!isDropdownVisible ? "☰" : "〣"}</a>
-			{isDropdownVisible &&
-				<>
-					<br />
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<span className={style.userlink_item} onClick={() => createInvite(InviteType.GAME, 0)} title='Invite to game'> 🏓</span> |
-					{!(currentChatRoom.visibility == ChatType.DM) && <><span className={style.userlink_item} onClick={() => createInvite(InviteType.CHAT, currentChatRoom.id)} title='Invite to chat'>💬</span> |</>}
-					{!userIsFriend && <><span className={style.userlink_item} onClick={() => createInvite(InviteType.FRIEND, 0)} title='Invite as friend'>🤝</span> |</>}
-					<span className={style.userlink_item} onClick={handleBlockClick} title='Block user'>⛔</span>
-				</>}
-		</>
+		<a onClick={toggleMenu} className={style.userLink}> {!isDropdownVisible ? "☰" : "〣"}</a>
+		{isDropdownVisible && (
+		  <>
+		  <br />
+				&nbsp;&nbsp;&nbsp;&nbsp;
+			{IsBlocked(user.id, currentUser) ? (
+			<>
+			  <span className={style.userlink_item} onClick={() => {handleBlockClick(false)}} title='Unblock user'>🟢</span>
+			  </>
+			) : (
+			  <>
+				
+				<span className={style.userlink_item} onClick={() => createInvite(InviteType.GAME, 0)} title='Invite to game'> 🏓</span> |
+				{currentChatRoom.visibility !== ChatType.DM && (
+				  <span className={style.userlink_item} onClick={() => createInvite(InviteType.CHAT, currentChatRoom.id)} title='Invite to chat'>💬</span>
+				)}
+				{!userIsFriend && (
+				  <span className={style.userlink_item} onClick={() => createInvite(InviteType.FRIEND, 0)} title='Invite as friend'>🤝</span>
+				)}
+				<span className={style.userlink_item} onClick={() => handleBlockClick(true)} title='Block user'>⛔</span>
+			  </>
+			)}
+		  </>
+		)}
+	  </>
 	);
 }
 

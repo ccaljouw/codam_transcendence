@@ -30,10 +30,10 @@ export class UserProfileDto implements User {
 	avatarId: number;
 
 	@ApiProperty({ required: false })
-	online: OnlineStatus;
+	theme: number;
 
 	@ApiProperty({ required: false })
-	rank: number;
+	online: OnlineStatus;
 
 	@ApiProperty({ required: false })
 	createdAt: Date;

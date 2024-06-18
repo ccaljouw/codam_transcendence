@@ -1,4 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { Chat, ChatType, Invite } from "@prisma/client";
+import { Type } from "class-transformer";
 import { IsInt, IsNotEmpty, IsOptional, IsString, Validate, ValidateNested } from "class-validator";
 
 export class CreateChatMessageDto {

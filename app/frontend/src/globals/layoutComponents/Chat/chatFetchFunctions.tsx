@@ -4,11 +4,12 @@ import { constants } from "src/globals/constants.globalvar";
 // This function is used to fetch the messages for the current chat.
 export const fetchMessages = async (
 	currentChat: UpdateChatDto,
-	chatMessagesFetcher: Function
+	chatMessagesFetcher: Function,
+	userId: number
 ) => {
 	if (!currentChat)
 		return;
-	await chatMessagesFetcher({ url: constants.CHAT_GET_MESSAGES_FROM_CHAT + currentChat.id });
+	await chatMessagesFetcher({ url: constants.CHAT_GET_MESSAGES_FROM_CHAT + currentChat.id + '/' + userId });
 }
 
 // This function is used to create a chat between two users.
@@ -25,9 +26,10 @@ export const fetchDM = async (
 
 export const fetchChat = async (
 	chatFechter: Function,
-	chatId: number
+	chatId: number,
+	userId: number
 ) => {
 	if (chatId == -1)
 		return;
-	await chatFechter({ url: constants.API_CHAT + chatId });
+	await chatFechter({ url: constants.CHAT_GET_CHANNEL_WITH_USER + chatId + '/' + userId });
 }

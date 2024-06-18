@@ -4,7 +4,7 @@ import { constants } from "@ft_global/constants.globalvar";
 // import DataFetcherJson from "./DataFetcherJson";
 import useFetch from "./useFetch";
 import { OnlineStatus } from "@prisma/client";
-import { IsFriend } from "./FriendOrBlocked";
+import { IsBlocked, IsFriend } from "./FriendOrBlocked";
 
 /**
  * Function to display unread messages next to a user (hopefully later on also next to a chat, but that needs work)
@@ -18,23 +18,33 @@ export default function UnreadMessages(props: { secondUserId: number, indexInUse
 	const { data: chatIdFromDb, isLoading: chatIdLoading, error: chatIdError, fetcher: chatIdFetcher } = useFetch<null, number>();
 	const { data: unreadsFromDb, isLoading: unreadsLoading, error: unreadsError, fetcher: unreadsFetcher } = useFetch<null, number>();
 	const secondUserIsFriend = IsFriend(props.secondUserId, currentUser);
+	const secondUserIsBlocked = IsBlocked(props.secondUserId, currentUser);
 
+	const resetCounters = () => {
+		if (unreadMessages !== 0) {
+			setAllUsersUnreadCounter(allUsersUnreadCounter - unreadMessages);
+			if (secondUserIsFriend)
+				setFriendsUnreadCounter(friendsUnreadCounter - unreadMessages);
+		}
+		setUnreadMessages(0);
+	}
 	// Fetch chatId when component is mounted
 	useEffect(() => {
+		if (secondUserIsBlocked)
+			return;
 		fetchChatId();
 	}, []);
 
 	// Fetch unreads when chatId is set
 	useEffect(() => {
+		if (secondUserIsBlocked)
+			return;
 		fetchUnreads();
 	}, [chatId]);
 
 	useEffect(() => {
 		if (currentChatRoom.id === chatId) {
-			setAllUsersUnreadCounter(allUsersUnreadCounter - unreadMessages);
-			if (secondUserIsFriend)
-				setFriendsUnreadCounter(friendsUnreadCounter - unreadMessages);
-			setUnreadMessages(0);
+			resetCounters();
 		}
 	}, [currentChatRoom]);
 
@@ -45,6 +55,10 @@ export default function UnreadMessages(props: { secondUserId: number, indexInUse
 		if (parseInt(messageToUserNotInRoom.room) === chatId) // If the message is for the current chat, adjust the unread messages
 		{
 			setUnreadMessages(unreadMessages + 1);
+			// setAllUsersUnreadCounter(allUsersUnreadCounter + 1);
+			// if (secondUserIsFriend)
+				// setFriendsUnreadCounter(friendsUnreadCounter + 1);
+
 			props.statusChangeCallBack(props.indexInUserList);
 			return;
 		}
@@ -62,9 +76,20 @@ export default function UnreadMessages(props: { secondUserId: number, indexInUse
 		, [chatIdFromDb]);
 
 	useEffect(() => {
-		if (unreadsFromDb && unreadMessages !== unreadsFromDb) // if unreadsFromDb have arrived and are different from the current state, update the state
+		if (unreadsFromDb && unreadMessages !== unreadsFromDb && !IsBlocked(props.secondUserId, currentUser)) // if unreadsFromDb have arrived and are different from the current state, update the state
+		{
 			setUnreadMessages(unreadsFromDb);
+			// setAllUsersUnreadCounter(allUsersUnreadCounter + unreadsFromDb);
+			// if (secondUserIsFriend)
+				// setFriendsUnreadCounter(friendsUnreadCounter + unreadsFromDb);
+		}
 	}, [unreadsFromDb]);
+
+	useEffect(() => {
+		console.log("currentUser changed UnreadMessages.tsx", IsBlocked(props.secondUserId, currentUser));
+		if (IsBlocked(props.secondUserId, currentUser)) // If the user is blocked, set unreadMessages to 0
+			resetCounters();
+	}, [currentUser]);
 
 	const fetchChatId = async () => {
 		if (!currentUser.id || !props.secondUserId || chatId !== -1)

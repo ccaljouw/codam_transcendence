@@ -52,7 +52,7 @@ export const inviteResponseHandler = async ( // This function triggers the actio
 	if (payload.senderId != currentUser.id)
 		return;
 	if (currentChatRoom.id == payload.directMessageId) // If the chat is open, we need to fetch the messages to update the invite.
-		fetchMessages(currentChatRoom, chatMessagesFetcher);
+		fetchMessages(currentChatRoom, chatMessagesFetcher, currentUser.id);
 	switch (payload.type) {
 		case InviteType.FRIEND:
 			if (payload.accept) // If the invite was accepted, we need to fetch the user's friends list.

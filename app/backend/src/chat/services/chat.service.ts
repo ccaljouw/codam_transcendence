@@ -1,6 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/database/prisma.service";
-import { CreateDMDto, CreateInviteDto, UpdateChatDto, UpdateInviteDto } from "@ft_dto/chat";
+import { CreateDMDto, UpdateChatDto } from "@ft_dto/chat";
+import { UserProfileDto } from "@ft_dto/users";
+import { ChatType } from "@prisma/client";
 
 @Injectable()
 export class ChatService {
@@ -38,11 +40,11 @@ export class ChatService {
 	// This function is used to create a chat between two users.
 	async createDM(payload: CreateDMDto): Promise<UpdateChatDto> {
 
-		const exists = await this.findDMChat(payload.user1Id, payload.user2Id);
-		if (exists) // Return chat id if it exists
-		{
-			return exists;
-		}
+    const exists = await this.findDMChat(payload.user1Id, payload.user2Id);
+    if (exists) {
+      // Return chat id if it exists
+      return exists;
+    }
 
 		// Create chat
 		const newChat = await this.db.chat.create({
@@ -61,5 +63,79 @@ export class ChatService {
 		});
 
 		return ({ id: newChat.id, ownerId: newChat.ownerId, visibility: newChat.visibility })
+	}
+
+	async getUsersInChat(chatId: number): Promise<UserProfileDto[]> {
+		const users = await this.db.chatUsers.findMany({
+			where: { chatId },
+			include: { user: true }
+		});
+		for (const user of users) {
+			delete user.user.hash;
+		}
+		return users.map(u => u.user);
+	}
+
+	async createChannel(userId: number): Promise<UpdateChatDto> {
+		console.log("Creating new channel for user ", userId);
+		const newChat = await this.db.chat.create({
+			data: {
+				visibility: ChatType.PUBLIC,
+				ownerId: userId,
+				name: "New Channel " + Math.floor(Math.random() * 1000)
+			}
+		});
+		const newChatUser = await this.db.chatUsers.create({
+			data: {
+				chatId: newChat.id,
+				userId: userId,
+				lastRead: new Date()
+			}
+		});
+		return (newChat)
+	}
+
+	async getChannelsForUser(userId: number): Promise<UpdateChatDto[]> {
+		const userChannels = await this.db.chatUsers.findMany({
+			where: {
+				userId,
+				chat: {
+					NOT: { visibility: ChatType.DM }
+				}
+			},
+			include: { chat: true }
+		});
+		const openChannels = await this.db.chat.findMany({
+			where: {
+				visibility: ChatType.PUBLIC,
+				NOT: {
+					users: { some: { userId } }
+				}
+			},
+		});
+
+		return userChannels.map(c => c.chat).concat(openChannels);
+	}
+
+	async getSingleChannelForUser(userId: number, channelId: number): Promise<UpdateChatDto> {
+		console.log("Getting channel ", channelId, " for user ", userId);
+		const chatUser = await this.db.chatUsers.findFirst({
+			where: { userId, chatId: channelId }
+		});
+		console.log("ChatUser: ", chatUser);
+		if (!chatUser) {
+			await this.db.chatUsers.create({
+				data: {
+					chatId: channelId,
+					userId,
+					lastRead: new Date()
+				}
+			});
+		}
+		console.log("Getting channel ", channelId);
+		const chat = await this.db.chat.findUnique({
+			where: { id: channelId }
+		});
+		return chat;
 	}
 }

@@ -25,7 +25,8 @@
     "paths": {
       "@ft_dto/*": ["../backend/dto/*"],
       "@ft_global/*": ["../frontend/src/globals/*"],
-      "@ft_global/functionComponents/*": ["../frontend/src/globals/functionComponents/*"]
+      "@ft_global/functionComponents/*": ["../frontend/src/globals/functionComponents/*"],
+      "@ft_game/*": ["../game/*"]
     },
   },
   "include": [
