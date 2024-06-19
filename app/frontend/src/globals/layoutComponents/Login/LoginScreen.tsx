@@ -34,6 +34,10 @@ function LoginOptions() : JSX.Element {
 		setLoginOption("signUp")
 	}
 
+  const handleSignIn42Click = () => {
+		setLoginOption("login42")
+	}
+
 	return (
 		<>
 			{usersLoading && <p>Loading...</p>}
@@ -50,6 +54,7 @@ function LoginOptions() : JSX.Element {
 						<div className="row">
 							<div className="btn-group p-0" role="group">
 								<button type="button" className={`btn btn-dark ${loginOption == "choose" ? "active" : ""}`} onClick={handleChooseClick}>Choose user from list</button>
+                <button type="button" className={`btn btn-dark ${loginOption == "Singin$2" ? "active" : ""}`} onClick={handleSignIn42Click}>Signin with auth42</button>
 								<button type="button" className={`btn btn-dark ${loginOption == "login" ? "active" : ""}`} onClick={handleLoginClick}>Login</button>
 								<button type="button" className={`btn btn-dark ${loginOption == "signUp" ? "active" : ""}`} onClick={handleSignUpClick}>Create new account</button>
 							</div>
@@ -57,11 +62,7 @@ function LoginOptions() : JSX.Element {
 							{loginOption == "choose" && <ChooseUser />}
 							{loginOption == "login" && <p>Here will be the login form</p>}
 							{loginOption == "signUp" && <SignUp />}
-					</div>
-					<div className="col col-4 mt-0 index-right">
-						<div className="row">
-							<Auth42Button />
-						</div>
+              {loginOption == "login42" && <Auth42Button />}
 					</div>
 				</>
 			}

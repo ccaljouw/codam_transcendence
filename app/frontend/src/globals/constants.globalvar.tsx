@@ -45,5 +45,5 @@ export class constants {
 	static API_TEST_REPORT = this.API_TEST + 'report';
 	
 	static API_SWAGGER = this.BACKEND_BASEURL + 'api';
-	static API_AUTH42 = this.BACKEND_BASEURL + 'auth42/';
+	static API_AUTH42 = this.BACKEND_BASEURL + 'auth/42';
 }

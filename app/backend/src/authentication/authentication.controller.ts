@@ -1,35 +1,29 @@
-import { Controller, Get, Req, Param } from '@nestjs/common';
+import { Controller, Get, InternalServerErrorException, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './authentication.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserProfileDto } from '@ft_dto/users';
+import { AuthGuard } from '@nestjs/passport';
 
-@Controller('auth42')
-@ApiTags('auth42')
+@Controller('auth')
+@ApiTags('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('login/:api42_code')
-  callback(@Param('api42_code') code: string): Promise<UserProfileDto> {
-    console.log('in controller callback: ', code);
-    return this.authService.callback(code)
+  @Get('42')
+  @UseGuards(AuthGuard('42'))
+  async fortyTwoAuth(@Req() req) {}
+  
+  @Get('42/callback')
+  @UseGuards(AuthGuard('42'))
+  async fortyTwoAuthRedirect(@Req() req, @Res() res) {
+    console.log(req.user.username);
+    try {
+      const jwt = await this.authService.generateJwt(req.user);
+      console.log(`JWT: ${jwt}`);
+      res.redirect(`http://localhost:3000/`);
+    } catch (error) {
+      console.error('Error generating JWT:', error);
+      throw new InternalServerErrorException('Failed to handle 42 callback');
+    }
   }
-
-  @Get('login') //moved to frontend
-  @ApiOperation({ summary: 'Redirects the user to the 42 authorization URL'})
-  login(@Req() req):  { url: string }  {
-    const authUrl = this.authService.getAuthorizationUrl();
-    return { url: authUrl };
-  }
-
-  @Get(':api42_code')
-  checkCode(@Param('code') code: string): Promise<UserProfileDto> {
-    return this.authService.get42User(code);
-  }
-
-  // @Get('callback') moved to frontend
-  // callback(@Req() req): Promise<UserProfileDto> {
-  //   console.log("Callback controller called");
-  //   return this.authService.handleCallback(req.query.code);
-  // }
-
 }
