@@ -72,6 +72,8 @@ export class GamesocketGateway {
         .emit('game/updateGameState', payload);
 
       this.gamesocketService.disconnect(client);
+    } else {
+      console.log('Game Socket Server: client not in any game');
     }
   }
 }

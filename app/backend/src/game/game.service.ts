@@ -58,15 +58,6 @@ export class GameService {
     //todo:
     // set all games with token that are in sate waiting or in state started to abandoned in db
     // get the game id from the db with the token
-    
-    
-    // // todo:emit to room (gameid) gameStateUpdate => finished
-    // const roomId = 1; //todo: get game id from db with token,;
-    // const payload: UpdateGameStateDto = {
-    //   roomId: roomId,
-    //   state: GameState.FINISHED,
-    // };
-    // this.update(payload);
   }
 
   addUser(gameId: number, userId: number, clientId) {
@@ -179,16 +170,13 @@ export class GameService {
         },
       });
       if (gameUser) {
+        console.log('GameUser found:', gameUser);
         // If a GameUser is found, access its associated Game
         const game = await this.db.game.findUnique({
           where: {
             id: gameUser.gameId,
             state: {
-              in: [
-                GameState.WAITING,
-                GameState.READY_TO_START,
-                GameState.STARTED,
-              ],
+              not: GameState.FINISHED,
             },
           },
         });
