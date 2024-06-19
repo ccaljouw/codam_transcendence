@@ -32,7 +32,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 	const { data: chatInvite, isLoading: chatInviteLoading, error: chatInviteError, fetcher: chatInviteFetcher } = useFetch<null, UpdateChatDto>();
 	const router = useRouter();
 
-// ****************************************** THIS IS STUFF YOU MIGHT WANT TO ALTER, CARLOS ****************************************** //
+	// ****************************************** THIS IS STUFF YOU MIGHT WANT TO ALTER, CARLOS ****************************************** //
 
 	// THIS IS THE DATABASE FETCHER FOR GAME INVITES, IT MIGHT NEED A DIFFERENT RETURN TYPE
 	const { data: gameInvite, isLoading: gameInviteLoading, error: gameInviteError, fetcher: gameInviteFetcher } = useFetch<null, UpdateInviteDto>();
@@ -59,12 +59,12 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		else {
 			console.log("Game invite was denied");
 		}
-		fetchMessages(currentChatRoom, chatMessagesFetcher);
+		fetchMessages(currentChatRoom, chatMessagesFetcher, currentUser.id);
 	}, [gameInvite]);
 
-// ****************************************** END OF STUFF YOU MIGHT WANT TO ALTER, BEGINNING OF STUFF YOU MIGHT WANNA LEAVE BE ****************************************** //
+	// ****************************************** END OF STUFF YOU MIGHT WANT TO ALTER, BEGINNING OF STUFF YOU MIGHT WANNA LEAVE BE ****************************************** //
 
-	const messageParserProps: parserProps = useMemo(() => ({
+	const messageParserProps: parserProps = useMemo(() => ({ // UseMemo is used to prevent the parserProps from being recreated on every render.
 		inviteCallback: inviteCallback,
 		currentChatRoom: currentChatRoom,
 		currentUser: currentUser,
@@ -107,12 +107,12 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 			}
 		}
 		// Reload the chat messages to update the invite.
-		fetchMessages(currentChatRoom, chatMessagesFetcher);
+		fetchMessages(currentChatRoom, chatMessagesFetcher, currentUser.id);
 	}, [friendInvite]);
 
 	useEffect(() => {
 		if (updatedChat && updatedChat != -1 && updatedChat == chatFromDb?.id) {
-			fetchMessages(chatFromDb, chatMessagesFetcher);
+			fetchMessages(chatFromDb, chatMessagesFetcher, currentUser.id);
 		}
 	}, [updatedChat]);
 
@@ -130,7 +130,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 			}
 			else if (chatId && chatId !== -1) // If we have a chatid, we need to fetch the chat messages for it
 			{
-				fetchChat(chatFetcher, chatId);
+				fetchChat(chatFetcher, chatId, currentUser.id);
 
 			}
 			chatSocket.on('chat/messageFromRoom', handleMessageFromRoom);
@@ -221,15 +221,19 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 						{
 							chatFromDb?.visibility == ChatType.DM ?
 								<FontBangers>
-									<h3>Chat between {currentUser.userName} and&nbsp;
+									<h4>DM: {currentUser.userName} and&nbsp;
 										{otherUserForDm != -1 && <DataFetcher<UserProfileDto, UserProfileDto>
 											url={constants.API_USERS + otherUserForDm}
 											showData={(data: UserProfileDto) => <>{data.userName}</>}
 											showLoading={<></>}
 										/>}
-									</h3>
+									</h4>
 								</FontBangers>
-								: <></>
+								: <>
+									<FontBangers>
+										<h4>Channel: {chatFromDb?.name}</h4>
+									</FontBangers>
+								</>
 						}
 					</div>
 					<div className="chat-messages" ref={messageBox}>

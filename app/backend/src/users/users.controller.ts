@@ -85,4 +85,18 @@ export class UsersController {
 	remove(@Param('id', ParseIntPipe) id: number): Promise<UserProfileDto> {
 		return this.usersService.remove(id);
 	}
+
+	@Get('block/:id/:blockId')
+	@ApiOperation({ summary: 'Blocks user with specified id' })
+	@ApiOkResponse({ description: 'User successfully blocked' })
+	blockUser(@Param('id', ParseIntPipe) id: number, @Param('blockId', ParseIntPipe) blockId: number): Promise<UserProfileDto> {
+		return this.usersService.blockUser(id, blockId);
+	}
+
+	@Get('unblock/:id/:blockId')
+	@ApiOperation({ summary: 'Unblocks user with specified id' })
+	@ApiOkResponse({ description: 'User successfully unblocked' })
+	unblockUser(@Param('id', ParseIntPipe) id: number, @Param('blockId', ParseIntPipe) blockId: number): Promise<UserProfileDto> {
+		return this.usersService.unBlockUser(id, blockId);
+	}
 }

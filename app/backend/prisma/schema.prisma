@@ -86,6 +86,7 @@ model Chat {
     id         Int      @id @default(autoincrement())
     ownerId    Int      @default(-1)
     visibility ChatType @default(PUBLIC)
+	name	   String  @default("")
 
     createdAt DateTime       @default(now())
     updatedAt DateTime       @updatedAt

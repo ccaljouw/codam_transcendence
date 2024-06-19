@@ -18,6 +18,8 @@ export const friendInviteParser = (
 					return <>You are now friends with {message.userName}</>
 				case InviteStatus.REJECTED:
 					return <>{message.message} rejected your friend request</>
+				case InviteStatus.EXPIRED:
+					return <>Your friend request to {message.message} expired</>
 			}
 		}
 		else {
@@ -33,6 +35,8 @@ export const friendInviteParser = (
 					return <>You accepted {message.userName}'s friend request</>
 				case InviteStatus.REJECTED:
 					return <>You rejected {message.userName}'s friend request</>
+				case InviteStatus.EXPIRED:
+					return <>{message.userName}'s friend request expired</>
 			}
 		}
 	}

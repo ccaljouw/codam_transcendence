@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/database/prisma.service";
 import { CreateChatMessageDto, FetchChatMessageDto, UpdateChatMessageDto, UpdateChatUserDto } from "@ft_dto/chat";
 import { ChatService } from "./chat.service";
+import { ChatType } from "@prisma/client";
 
 @Injectable()
 export class ChatMessageService {
@@ -11,32 +12,54 @@ export class ChatMessageService {
 	) { }
 
 	// Called by socket when a user sends a message, adds the message to the database, sets unread messages for all offline users in the chat
-	async messageToDB(createChatMessageDto: CreateChatMessageDto): Promise<{ messageId: number, usersNotInRoom: number[] }> {
-		const newMessage = await this.db.chatMessages.create({ data: createChatMessageDto });
+	async messageToDB(theMessage: CreateChatMessageDto): Promise<{ messageId: number, usersNotInRoom: number[] }> {
+		const newMessage = await this.db.chatMessages.create({ data: theMessage });
 		const chatUsersNotInRoom = await this.db.chatUsers.findMany({
 			where: {
-				chatId: createChatMessageDto.chatId,
+				chatId: theMessage.chatId,
 				isInChatRoom: false
 			}
 		});
 		let idsOfUsersNotInRoom: number[] = [];
-		for (const user of chatUsersNotInRoom) {
+		for (const chatUser of chatUsersNotInRoom) {
+			const user = await this.db.user.findUnique({ where: { id: chatUser.userId }, include: { blocked: true } });
+			if (user.blocked.some(block => block.id === theMessage.userId)) // If the user is blocked, continue
+				continue;
 			await this.db.chatUsers.update({
-				where: { id: user.id },
+				where: { id: chatUser.id },
 				data: {
-					unreadMessages: user.unreadMessages + 1
+					unreadMessages: chatUser.unreadMessages + 1
 				}
 			});
-			idsOfUsersNotInRoom.push(user.userId);
+			idsOfUsersNotInRoom.push(chatUser.userId);
 		}
 		return { messageId: newMessage.id, usersNotInRoom: idsOfUsersNotInRoom };
 	}
 
 	// Called by the chat controller to get all messages in a chat
-	async findMessagesInChat(chatId: number): Promise<FetchChatMessageDto[]> {
+	async findMessagesInChat(chatId: number, userId: number): Promise<FetchChatMessageDto[]> {
 		try {
+			const chat = await this.db.chat.findUnique({
+				where: { id: chatId },
+				select: { visibility: true },
+			});
+			const chatUser = await this.db.chatUsers.findFirst({
+				where: {
+					chatId,
+					userId
+				}
+			});
+			if (!chatUser)
+				return [];
 			const messages = await this.db.chatMessages.findMany({
-				where: { chatId },
+				where: {
+					chatId,
+					...(chat.visibility !== ChatType.DM ? {
+						createdAt: {
+							gte: chatUser.createdAt
+						}
+					} : {})
+				},
 				include: {
 					chat: {
 						select: {
@@ -71,22 +94,6 @@ export class ChatMessageService {
 		}
 	}
 
-	async findMessagesInChatAfter(chatId: number, start: Date): Promise<UpdateChatMessageDto[]> {
-		try {
-			return await this.db.chatMessages.findMany({
-				where: {
-					chatId,
-					createdAt: {
-						gte: start, // gte = "greater than or equal to"
-					},
-				}
-			});
-		}
-		catch {
-			throw new NotFoundException(`No messages found for this chat.`);
-		}
-	}
-
 	async unreadMessagesForUser(userId: number): Promise<number> {
 		const unreadMessages = await this.db.chatUsers.findMany({
 			where: {
@@ -105,9 +112,9 @@ export class ChatMessageService {
 
 	async unreadMessagesFromFriends(userId: number): Promise<number> {
 		const friends = await this.db.user.findUnique({ where: { id: userId } }).friends();
-		let friendChats : number[] = [];
+		let friendChats: number[] = [];
 		for (const friend of friends) {
-			const chat  =  await this.chatService.findDMChat(userId, friend.id);
+			const chat = await this.chatService.findDMChat(userId, friend.id);
 			if (chat) {
 				friendChats.push(chat.id);
 			}
