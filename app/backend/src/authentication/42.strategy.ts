@@ -4,10 +4,14 @@ import Strategy from 'passport-42';
 import axios from 'axios';
 import { ConfigService } from '@nestjs/config';
 import { UserProfileDto } from '@ft_dto/users';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
-  constructor( private configService: ConfigService ) {
+  constructor( 
+    private configService: ConfigService,
+    private userService: UsersService,
+  ) {
     super({
       authorizationURL: `https://api.intra.42.fr/oauth/authorize`,
       tokenURL: 'https://api.intra.42.fr/oauth/token',
@@ -18,12 +22,12 @@ export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
   }
   
   async validate(accessToken: string, refreshToken: string, profile: any) {
-    // let user : UserProfileDto;
+    let user : UserProfileDto;
 
+    console.log(`User: ${user}`);
     console.log(accessToken);
     console.log(profile);
 
-    // user.userName = profile.username;
 
   }
 }
