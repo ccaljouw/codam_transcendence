@@ -85,6 +85,11 @@
     background: var(--strongpong-white);
 }
 
+.custom-select {
+    background: url("http://cdn1.iconfinder.com/data/icons/cc_mono_icon_set/blacks/16x16/br_down.png") var(--strongpong-white) no-repeat 98%;
+    /* background: var(--strongpong-white); */
+}
+
 .dropdown-menu {
     background: var(--strongpong-white);
 }

@@ -14,6 +14,7 @@ function Achievement({icon, title, description} : {icon:string, title: string, d
 	);
 }
 
+//todo: consider storing these achievements in a file or in the database
 function ChooseAchievementElement({index} : {index:number}) : JSX.Element {
 	const achievements = [	{id: "🏅", title: "First Victory", description: "Awarded when the player wins their first game."}, //amount of wins related
 							{id: "🔥", title: "Win Streak", description: "Given when a player wins three games in a row."},
@@ -42,7 +43,7 @@ function ChooseAchievementElement({index} : {index:number}) : JSX.Element {
 
 export default function Achievements({achievements} : {achievements:number[]}) : JSX.Element {
 	const achievementList = achievements.map(achievement => 
-		<div key={achievement} className="col col-sm-6 col-md-2">
+		<div key={achievement} className="col col-6 col-md-2">
 			<ChooseAchievementElement index={achievement}/>
 		</div>
 	);

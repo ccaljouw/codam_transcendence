@@ -31,7 +31,8 @@ export default function Leaderboard() : JSX.Element {
 					<p>#8 {leaderboard[7]?.userName}</p>
 					<p>#9 {leaderboard[8]?.userName}</p>
 					<p>#10 {leaderboard[9]?.userName}</p>
-				</>}
+				</>
+			}
 			{isLoading && <p>Loading Peaderboard...</p>}
 			{error != null && <p>Error: can't load leaderboard: {error.message}</p>}
 		</>

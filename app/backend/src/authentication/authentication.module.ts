@@ -9,6 +9,7 @@ import { StrategyFortyTwo } from './42.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { StatsService } from 'src/stats/stats.service';
 
 @Module({
   imports: [PassportModule, DatabaseModule, HttpModule, JwtModule.registerAsync({
@@ -20,7 +21,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     })
   })],
   controllers: [AuthController],
-  providers: [AuthService, UsersService, StrategyFortyTwo, JwtStrategy],
+  providers: [AuthService, UsersService, StrategyFortyTwo, JwtStrategy, StatsService],
   exports: [AuthService]
 })
 export class AuthenticationModule {}

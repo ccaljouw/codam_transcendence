@@ -1,7 +1,7 @@
 import { Controller, ParseIntPipe, Body, Param, Get, Post, Patch, Delete } from '@nestjs/common';
-import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { CreateUserDto, UpdateUserDto, UserProfileDto } from '@ft_dto/users';
+import { CreateUserDto, UpdateUserDto, UserProfileDto} from '@ft_dto/users';
 import { CreateTokenDto } from '@ft_dto/users/create-token.dto';
 import { TokenService } from './token.service';
 
@@ -17,7 +17,7 @@ export class UsersController {
 	// TODO: update endpoints to include access token
 	@Post('register')
 	@ApiOperation({ summary: 'Adds user to database and returns id for this user' })
-	@ApiCreatedResponse({ description: 'User successfully created', type: Number })
+	@ApiCreatedResponse({ description: 'User successfully created', type: UserProfileDto })
 
 	register(@Body() createUser: CreateUserDto): Promise<UserProfileDto> {
 		return this.usersService.create(createUser);
@@ -25,7 +25,7 @@ export class UsersController {
 
 	@Post('token')
 	@ApiOperation({ summary: 'Adds token with user id to database' })
-	@ApiCreatedResponse({ description: 'Token successfully created', type: Number })
+	@ApiCreatedResponse({ description: 'Token successfully created', type: Boolean })
 
 	addToken(@Body() createToken: CreateTokenDto): Promise<boolean> {
 		console.log(`Adding token ${createToken.token} for user ${createToken.userId}`);
@@ -41,6 +41,15 @@ export class UsersController {
 	findAll(): Promise<UserProfileDto[]> {
 		return this.usersService.findAll();
 	}
+
+  @Get('username/:userName')
+  @ApiOperation({ summary: 'Returns user with specified userName' })
+  @ApiOkResponse({ type: UserProfileDto })
+  @ApiNotFoundResponse({ description: 'User with this userName does not exist' })
+
+  findUserName(@Param('userName') userName: string): Promise<UserProfileDto> {
+    return this.usersService.findUserName(userName);
+  }
 
 	@Get('allButMe/:id')
 	@ApiOperation({ summary: 'Returns all users currently in the database except the one with the specified id' })
@@ -70,9 +79,12 @@ export class UsersController {
 		return this.usersService.findOne(id);
 	}
 
+  
 	@Patch(':id')
 	@ApiOperation({ summary: 'Updates user with specified id' })
 	@ApiOkResponse({ type: UserProfileDto })
+  @ApiConflictResponse( {description: `Conflict: Unique constraint failed on the field: []`} )
+  @ApiBadRequestResponse( {description: 'Bad request: description of validation error'})
 
 	update(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto): Promise<UserProfileDto> {
 		return this.usersService.update(id, updateUserDto);

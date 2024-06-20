@@ -17,6 +17,14 @@ async function addDummyUsers() {
 			lastName: 'Caljouw',
 		},
 	});
+  const stats1 = await prisma.stats.upsert({
+		where: { userId: 1 },
+    update: {},
+		create: {
+			userId: 1,
+		},
+	});
+
 	const user2 = await prisma.user.upsert({
 		where: { loginName: 'Albert' },
 		update: {},
@@ -29,6 +37,15 @@ async function addDummyUsers() {
 			lastName: 'van Andel',
 		},
 	});
+
+  const stats2 = await prisma.stats.upsert({
+		where: { userId: 2 },
+    update: {},
+		create: {
+			userId: 2,
+		},
+	});
+
 	const user3 = await prisma.user.upsert({
 		where: { loginName: 'Jorien' },
 		update: {},
@@ -41,6 +58,15 @@ async function addDummyUsers() {
 			lastName: 'Aberkrom',
 		},
 	});
+
+  const stats3 = await prisma.stats.upsert({
+		where: { userId: 3 },
+    update: {},
+		create: {
+			userId: 3,
+		},
+	});
+
 	const user4 = await prisma.user.upsert({
 		where: { loginName: 'Carlo' },
 		update: {},
@@ -53,6 +79,14 @@ async function addDummyUsers() {
 			lastName: 'Wesseling',
 		},
 	});
+  const stats4 = await prisma.stats.upsert({
+		where: { userId: 4 },
+    update: {},
+		create: {
+			userId: 4,
+		},
+	});
+
 	const user5 = await prisma.user.upsert({
 		where: { loginName: 'Friend' },
 		update: {},
@@ -65,6 +99,14 @@ async function addDummyUsers() {
 			lastName: 'Friendowitz',
 		},
 	});
+  const stats5 = await prisma.stats.upsert({
+		where: { userId: 5 },
+    update: {},
+		create: {
+			userId: 5,
+		},
+	});
+
 	const user6 = await prisma.user.upsert({
 		where: { loginName: 'BlockedByCarien' },
 		update: {},
@@ -77,6 +119,7 @@ async function addDummyUsers() {
 			lastName: 'ByCarien',
 		},
 	});
+
 	// Establish friendship between users
 	await prisma.user.update({
 		where: { loginName: 'friendcarlo' },

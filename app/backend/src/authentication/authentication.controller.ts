@@ -1,4 +1,4 @@
-import { Controller, Get, InternalServerErrorException, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, InternalServerErrorException, Param, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './authentication.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserProfileDto } from '@ft_dto/users';
@@ -16,14 +16,13 @@ export class AuthController {
   @Get('42/callback')
   @UseGuards(AuthGuard('42'))
   async fortyTwoAuthRedirect(@Req() req, @Res() res) {
-    console.log(req.user.username);
+    console.log(req.user);
     try {
       const jwt = await this.authService.generateJwt(req.user);
       console.log(`JWT: ${jwt}`);
-      res.redirect(`http://localhost:3000/`);
+      res.redirect(`http://localhost:3000/profile?user=${req.user}`);
     } catch (error) {
       console.error('Error generating JWT:', error);
-      throw new InternalServerErrorException('Failed to handle 42 callback');
     }
   }
 }

@@ -1,13 +1,13 @@
 import {
   WebSocketGateway,
   SubscribeMessage,
-  MessageBody,
   WebSocketServer,
 } from '@nestjs/websockets';
 import { GameService } from './game.service';
 import { SocketServerProvider } from '../socket/socketserver.gateway';
 import { Server, Socket } from 'socket.io';
-import { UpdateGameObjectsDto, updateGameStateDto } from 'dto/game';
+import { UpdateGameObjectsDto, UpdateGameStateDto } from 'dto/game';
+import { GameState } from '@prisma/client';
 
 @WebSocketGateway({
   cors: true,
@@ -23,52 +23,54 @@ export class GamesocketGateway {
 
   @SubscribeMessage('game/joinRoom')
   joinRoom(client: Socket, roomId: number) {
-    console.log(`Server: someone is joining the room: ${roomId}`);
-    client.join(roomId.toString());
-    const player = this.game_io.sockets.sockets.get(client.id);
-    this.game_io
-      .to(roomId.toString())
-      .emit('game/message', `Player ${player?.id} joined the room`);
-  }
-
-  @SubscribeMessage('game/message')
-  handleMessage(client: Socket, payload: string) {
-    console.log(`Got message: ${payload}`);
-    this.game_io.emit('game/message', payload);
+    try {
+      console.log(`Game Socket Server: someone is joining the room: ${roomId}`);
+      client.join(roomId.toString());
+      const player = this.game_io.sockets.sockets.get(client.id);
+      this.game_io
+        .to(roomId.toString())
+        .emit('game/message', `Player ${player?.id} joined the room`);
+    } catch (error) {
+      console.log(`Game Socket Server: error joining room: ${roomId}`);
+    }
   }
 
   @SubscribeMessage('game/updateGameState')
-  updateGameState(client: Socket, payload: updateGameStateDto) {
+  updateGameState(client: Socket, payload: UpdateGameStateDto) {
     console.log(
-      'Server: received game state update from client: ',
+      'Game Socket Server: received game state update from client: ',
       payload.state,
     );
-    const updatedGameState = { roomId: payload.roomId, state: payload.state };
     this.game_io
-      .to(payload.roomId.toString())
-      .emit('game/updateGameState', updatedGameState);
-    // console.log(`Updating game state: ${payload.roomId} to ${payload.state}`);
-    // if (payload.state === `READY_TO_START`) {
-    //   this.game_io.to(payload.roomId.toString()).emit('game/message', "test from emit");
-    //   console.log(`Game: game ready to start braidcast sent`);
-    // }
+      .to(payload.id.toString())
+      .emit('game/updateGameState', payload);
+
+    this.gamesocketService.update(payload);
   }
 
-  //update game objects
   @SubscribeMessage('game/updateGameObjects')
   updateGameObjects(client: Socket, payload: UpdateGameObjectsDto) {
-    //console.log('Server: received game object update from client: ', payload);
     this.game_io
       .to(payload.roomId.toString())
       .emit('game/updateGameObjects', payload);
   }
 
-  // @SubscribeMessage('game/discconect')
-  // handleDisconnect(client: Socket) {
-  //   console.log(`Client disconnected: ${client.id}`);
+  // todo add code based on tracked game id's. here or in game service
+  @SubscribeMessage('disconnect')
+  async handleDisconnect(client: Socket) {
+    const gameId = await this.gamesocketService.findGameForClientId(client.id);
+    console.log('Game Socket Server: gameId: ', gameId, ' disconnected');
 
-  @SubscribeMessage('game/remove')
-  remove(@MessageBody() id: number) {
-    return this.gamesocketService.remove(id);
+    if (gameId) {
+      const payload: UpdateGameStateDto = {
+        id: gameId,
+        state: GameState.ABORTED,
+      };
+      this.gamesocketService.update(payload);
+
+      this.game_io
+        .to(payload.id.toString())
+        .emit('game/updateGameState', payload);
+    }
   }
 }

@@ -1,5 +1,4 @@
-import { GameObject } from "../gameObjects/GameObject"
-// import * as CON from "../utils/constants"
+import { GameObject } from '../gameObjects/GameObject'
 
 export class TextComponent extends GameObject {
 	private text: string = "";
@@ -53,6 +52,10 @@ export class TextComponent extends GameObject {
 
 	public setSize(size: number) {
 		this.size = size;
+	}
+
+	public getText() {
+		return this.text;
 	}
 
 	public getAlign() {

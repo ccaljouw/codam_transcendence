@@ -2,27 +2,38 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto, UserProfileDto, CreateUserDto } from '@ft_dto/users';
 import { PrismaService } from '../database/prisma.service';
 import { InviteStatus } from '@prisma/client';
+import { PrismaClientKnownRequestError, PrismaClientUnknownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
+import { StatsService } from 'src/stats/stats.service';
 
 @Injectable()
 export class UsersService {
 
 	constructor(
 		private db: PrismaService,
+    private stats: StatsService,
 	) { }
 
 	// USER CRUD OPERATIONS
 	async create(createUserDto: CreateUserDto): Promise<UserProfileDto> {
-		if (!createUserDto.userName)
-			createUserDto.userName = createUserDto.loginName;
-		const user = await this.db.user.create({ data: createUserDto });
-		return user;
-		// trhow exception? what kind of exception? or is this caught by the prisma filter?
+		try {
+      if (!createUserDto.userName)
+        createUserDto.userName = createUserDto.loginName;
+      const user = await this.db.user.create({ data: createUserDto });
+      console.log(`create stats for ${user.id}`)
+      await this.stats.create(user.id);
+      return user;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+      throw new Error(`Error creating user: ${error.message}`);
+    }
 	}
 
 	async update(id: number, updateUserDto: UpdateUserDto): Promise<UserProfileDto> {
 		try {
 			const user = await this.db.user.update({
-				where: { id },
+			where: { id },	
 				data: updateUserDto,
 				include: {
 					friends: true,
@@ -52,8 +63,11 @@ export class UsersService {
 
 
 		catch (error) {
-			throw new NotFoundException(`Error updating user with id ${id}: ${error}`);
-		}
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+      throw new Error(`Error updating user with id ${id}: ${error.message}`);
+    }
 	}
 
 	async remove(id: number): Promise<UserProfileDto> {
@@ -63,6 +77,9 @@ export class UsersService {
 			return user;
 		}
 		catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
 			throw new NotFoundException(`User with id ${id} does not exist.`);
 		}
 	}
@@ -83,8 +100,11 @@ export class UsersService {
 				delete element.hash;
 			return users;
 		}
-		catch {
-			throw new NotFoundException(`No users in the database.`);
+		catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+			throw new NotFoundException(`No other users in the database.`);
 		}
 	}
 
@@ -107,7 +127,10 @@ export class UsersService {
 				delete element.hash;
 			return users;
 		}
-		catch {
+		catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
 			throw new NotFoundException(`No users in the database.`);
 		}
 	}
@@ -136,11 +159,101 @@ export class UsersService {
 			return user;
 		}
 		catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
 			throw new NotFoundException(`User with id ${id} does not exist.`);
 		}
 	}
 
-	async blockUser(id: number, blockId: number): Promise<UserProfileDto> {
+  async findUserName(userName: string): Promise<UserProfileDto> {
+		try {
+      console.log(`In findUserName, looking for: ${userName}`);
+			const user = await this.db.user.findUnique({ 
+				where: { userName: userName },
+				include: {
+					friends: true,
+					blocked: true,
+				}
+				
+			});
+      if (!user)
+        throw new NotFoundException(`User with name ${userName} does not exist.`);
+			delete user.hash;
+			for (const friend of user.friends as UserProfileDto[])
+				{
+					delete friend.friends;
+					delete friend.blocked;
+					delete friend.hash;
+				}
+			for (const blocked of user.blocked as UserProfileDto[])
+			{
+				delete blocked.friends;
+				delete blocked.blocked;
+				delete blocked.hash;
+			}
+			return user;
+		}
+		catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+			throw new NotFoundException(`User with name ${userName} does not exist.`);
+		}
+	}
+
+  async findUserLogin(loginName: string): Promise<UserProfileDto> {
+		try {
+      console.log(`In findUserLogin, looking for: ${loginName}`);
+			const user = await this.db.user.findUnique({ 
+				where: { loginName: loginName },
+				include: {
+					friends: true,
+					blocked: true,
+				}
+				
+			});
+      if (!user)
+        throw new NotFoundException(`User with name ${loginName} does not exist.`);
+			delete user.hash;
+			for (const friend of user.friends as UserProfileDto[])
+				{
+					delete friend.friends;
+					delete friend.blocked;
+					delete friend.hash;
+				}
+			for (const blocked of user.blocked as UserProfileDto[])
+			{
+				delete blocked.friends;
+				delete blocked.blocked;
+				delete blocked.hash;
+			}
+			return user;
+		}
+		catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+			throw new NotFoundException(`User with name ${loginName} does not exist.`);
+		}
+	}
+
+  async getFriendCount(userId: number): Promise<number> {
+    const friendCount = await this.db.user.findUnique({
+      where: { id: userId },
+      select: {
+        friends: true,
+      },
+    });
+
+    if (!friendCount) {
+      return 0;
+    }
+
+    return friendCount.friends.length;
+  }
+
+  async blockUser(id: number, blockId: number): Promise<UserProfileDto> {
 
 		try {
 			const user = await this.db.user.update({
