@@ -1,6 +1,6 @@
 import { GameObject } from '../gameObjects/GameObject'
 import { Ball } from '../gameObjects/Ball'
-import { PlayerComponent } from '../components/PlayerComponent'
+// import { PlayerComponent } from '../components/PlayerComponent'
 import { Game } from '../components/Game'
 import * as CON from './constants'
 import { TextComponent } from '../components/TextComponent'

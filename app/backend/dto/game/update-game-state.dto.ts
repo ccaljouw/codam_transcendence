@@ -6,7 +6,7 @@ export class UpdateGameStateDto {
   @ApiProperty({ required: true })
   @IsNotEmpty()
   @IsInt()
-  id: number;
+  roomId: number;
 
   @ApiProperty({ required: true })
   @IsEnum(GameState)

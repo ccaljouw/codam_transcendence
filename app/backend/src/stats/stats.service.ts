@@ -82,7 +82,7 @@ export class StatsService {
         where: { userId },
         data: {
           winLossRatio: userStats.wins / (userStats.wins + userStats.losses),
-          achievements: await this.updateAchievements(userId, updateGameStateDto.id),
+          achievements: await this.updateAchievements(userId, updateGameStateDto.roomId),
           maxConsecutiveWins: userStats.consecutiveWins > userStats.maxConsecutiveWins 
           ? userStats.consecutiveWins : userStats.maxConsecutiveWins, 
         },

@@ -24,7 +24,7 @@ export class GameService {
       });
       if (!game) {
         game = await this.create({ state: `WAITING` });
-        await this.addUser(game.id, userId, clientId, 1);
+        await this.addUser(game.id, userId, clientId, 1 );
         game = await this.db.game.findFirst({
           where: { id: game.id },
           include: { GameUsers: { include: { user: true } } },
@@ -56,17 +56,17 @@ export class GameService {
     return await this.db.game.create({ data: createGameDto });
   }
 
-  async Disconnect(client: Socket) {
-    console.log('Backend Game: disconnect service called');
+  async disconnect(client: Socket) {
+    console.log('Backend Game!!!: disconnect service called');
     console.log('My token is:', client.id);
 
+    //todo:
     // set all games with token that are in sate waiting or in state started to abandoned in db
     // get the game id from the db with the token
-    // emit to room (gameid) gameStateUpdate => finished
   }
 
-  addUser(gameId: number, userId: number, clientId: string, player: number) {
-    return this.db.gameUser.create({ data: { gameId, userId, clientId, player } });
+  async addUser(gameId: number, userId: number, clientId: string, player: number) {
+    return this.db.gameUser.create({ data: { gameId, userId, clientId, player }});
   }
 
   async findAll() {
@@ -139,12 +139,16 @@ export class GameService {
   }
 
   async update(updateGameStateDto: UpdateGameStateDto) {
+    if (updateGameStateDto.state === undefined) {
+      console.log(`backend - game: can't update because state not defined`);
+      return;
+    }    
     console.log(
-      `backend - game: updating game state to : ${updateGameStateDto.state} for game: ${updateGameStateDto.id}`,
+      `backend - game: updating game state to : ${updateGameStateDto.state} for game: ${updateGameStateDto.roomId}`,
     );
     try {
       let newGameData: UpdateGameStateDto = {
-        id: updateGameStateDto.id,
+        roomId: updateGameStateDto.roomId,
         state: updateGameStateDto.state,
       };
 
@@ -156,7 +160,7 @@ export class GameService {
         const player1 = await this.db.gameUser.update({
           where: {
             gameId_player: {
-              gameId: updateGameStateDto.id,
+              gameId: updateGameStateDto.roomId,
               player: 1,
             },
           },
@@ -166,7 +170,7 @@ export class GameService {
         const player2 = await this.db.gameUser.update({
           where: {
             gameId_player: {
-              gameId: updateGameStateDto.id,
+              gameId: updateGameStateDto.roomId,
               player: 2,
             },
           },
@@ -178,17 +182,30 @@ export class GameService {
       }
       
       const game = await this.db.game.update({
-        where: { id: newGameData.id },
+        where: { id: newGameData.roomId },
         data: newGameData,
         include: { GameUsers: {select: { userId: true, player: true }} }
       });
-      return true;
+      if (game) {
+        console.log(`backend - game: Game: game state updated`);
+        return true;
+      } else {
+        console.log(`backend - game: Game: game state not updated`);
+        return false;
+      }
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
         throw error;
       }
-			throw new NotFoundException(`Error updating gamestate for game ${updateGameStateDto.id}.`);
+			throw new NotFoundException(`Error updating gamestate for game ${updateGameStateDto.roomId}.`);
 		}
+    //todo: Carlo & Carien: I (Jorien) am not sure if the 5 lines of code above this or 
+    //the 5 outcommented lines below this statement should stay, or a combination of them. Please check!
+    // } catch (error) {
+    //   throw new NotFoundException(
+    //     `User with id ${updateGameStateDto.roomId} does not exist.`,
+    //   );
+    // }
   }
 
   async findGameForClientId(clientId: string): Promise<number | null> {
@@ -201,16 +218,13 @@ export class GameService {
         },
       });
       if (gameUser) {
+        console.log('GameUser found:', gameUser);
         // If a GameUser is found, access its associated Game
         const game = await this.db.game.findUnique({
           where: {
             id: gameUser.gameId,
             state: {
-              in: [
-                GameState.WAITING,
-                GameState.READY_TO_START,
-                GameState.STARTED,
-              ],
+              not: GameState.FINISHED,
             },
           },
         });

@@ -42,7 +42,7 @@ export class GamesocketGateway {
       payload.state,
     );
     this.game_io
-      .to(payload.id.toString())
+      .to(payload.roomId.toString())
       .emit('game/updateGameState', payload);
 
     this.gamesocketService.update(payload);
@@ -63,14 +63,18 @@ export class GamesocketGateway {
 
     if (gameId) {
       const payload: UpdateGameStateDto = {
-        id: gameId,
+        roomId: gameId,
         state: GameState.ABORTED,
       };
       this.gamesocketService.update(payload);
 
       this.game_io
-        .to(payload.id.toString())
+        .to(payload.roomId.toString())
         .emit('game/updateGameState', payload);
+      
+        this.gamesocketService.disconnect(client);
+      } else {
+        console.log('Game Socket Server: client not in any game');
     }
   }
 }
