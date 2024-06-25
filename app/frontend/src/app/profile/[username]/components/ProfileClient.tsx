@@ -64,7 +64,7 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 							<Stats user={user}/>
 						</div>
 						<div className="col col-lg-6 col-md-12 white-box">
-							<MatchHistory user={user}/>
+							{/* <MatchHistory user={user}/> */}
 						</div>
 					</div>
 					{user.userName == currentUser.userName &&
