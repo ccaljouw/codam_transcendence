@@ -144,11 +144,11 @@ export class GameService {
       return;
     }    
     console.log(
-      `backend - game: updating game state to : ${updateGameStateDto.state} for game: ${updateGameStateDto.roomId}`,
+      `backend - game: updating game state to : ${updateGameStateDto.state} for game: ${updateGameStateDto.id}`,
     );
     try {
       let newGameData: UpdateGameStateDto = {
-        roomId: updateGameStateDto.roomId,
+        id: updateGameStateDto.id,
         state: updateGameStateDto.state,
       };
 
@@ -160,7 +160,7 @@ export class GameService {
         const player1 = await this.db.gameUser.update({
           where: {
             gameId_player: {
-              gameId: updateGameStateDto.roomId,
+              gameId: updateGameStateDto.id,
               player: 1,
             },
           },
@@ -170,7 +170,7 @@ export class GameService {
         const player2 = await this.db.gameUser.update({
           where: {
             gameId_player: {
-              gameId: updateGameStateDto.roomId,
+              gameId: updateGameStateDto.id,
               player: 2,
             },
           },
@@ -182,7 +182,7 @@ export class GameService {
       }
       
       const game = await this.db.game.update({
-        where: { id: newGameData.roomId },
+        where: { id: newGameData.id },
         data: newGameData,
         include: { GameUsers: {select: { userId: true, player: true }} }
       });
@@ -197,13 +197,13 @@ export class GameService {
       if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
         throw error;
       }
-			throw new NotFoundException(`Error updating gamestate for game ${updateGameStateDto.roomId}.`);
+			throw new NotFoundException(`Error updating gamestate for game ${updateGameStateDto.id}.`);
 		}
     //todo: Carlo & Carien: I (Jorien) am not sure if the 5 lines of code above this or 
     //the 5 outcommented lines below this statement should stay, or a combination of them. Please check!
     // } catch (error) {
     //   throw new NotFoundException(
-    //     `User with id ${updateGameStateDto.roomId} does not exist.`,
+    //     `User with id ${updateGameStateDto.id} does not exist.`,
     //   );
     // }
   }

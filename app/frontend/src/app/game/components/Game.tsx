@@ -50,7 +50,7 @@ export default function GameComponent() {
 			}; 
 		
 			const handleGameStateUpdate = (payload: UpdateGameStateDto) => {
-				console.log(`Game: received game state update`, payload.roomId, payload.state);
+				console.log(`Game: received game state update`, payload.id, payload.state);
 				if (gameState !== payload.state) {
 						setGameState(payload.state);
 				}
@@ -104,7 +104,7 @@ export default function GameComponent() {
 	// send ready to start message to server when game is ready
 	useEffect(() => {
 		if (game !== null && gameState === GameState.WAITING) {
-			const payload: UpdateGameStateDto = {roomId: roomId, state: GameState.READY_TO_START};
+			const payload: UpdateGameStateDto = {id: roomId, state: GameState.READY_TO_START};
 			gameSocket.emit("game/updateGameState", payload);
 		}
 	}, [game]);
@@ -125,7 +125,7 @@ export default function GameComponent() {
 		if (gameState === GameState.READY_TO_START && game && canvasRef.current) {
 			console.log("Game: starting game");
 			canvasRef.current.focus();
-			const payload: UpdateGameStateDto = {roomId: roomId, state: GameState.STARTED};
+			const payload: UpdateGameStateDto = {id: roomId, state: GameState.STARTED};
 			gameSocket.emit("game/updateGameState", payload);
 		}
 	}, [gameState, canvasRef.current, game]);
@@ -145,14 +145,12 @@ export default function GameComponent() {
 
 
 	function handleClick() {
-
-		if (gameState !== GameState.FINISHED) {
+		if (gameState !== GameState.ABORTED) {
 			const payload: UpdateGameStateDto = {id: roomId, state: GameState.ABORTED};
 			gameSocket.emit("game/updateGameState", payload);
 		}
 		console.log("Game: leaving game");
 		router.push('/play');
-
 	}
 
 	
@@ -162,8 +160,8 @@ export default function GameComponent() {
 			{waitingForPlayers ? (
 				<p>Waiting for second player to join...</p>
 			) : (<>
-			<div className={styles.game}>
-				<div className={"text-center white-box " + styles.gameMenu}>
+			<div className={`white-box ${styles.game}`}>
+				<div className={"text-center row " + styles.gameMenu}>
 					<button className="btn btn-dark" onClick={handleClick}>Leave Game</button>
 				</div>
 				<canvas ref={canvasRef} tabIndex={0} />

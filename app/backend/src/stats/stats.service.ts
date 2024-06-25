@@ -12,7 +12,7 @@ export class StatsService {
 
   async create(userId: number) : Promise<StatsDto> {
     try {
-      return await this.db.stats.create({ data:  {userId}} );
+      return await this.db.stats.create({ data: {userId} });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
         throw error;
@@ -82,7 +82,7 @@ export class StatsService {
         where: { userId },
         data: {
           winLossRatio: userStats.wins / (userStats.wins + userStats.losses),
-          achievements: await this.updateAchievements(userId, updateGameStateDto.roomId),
+          achievements: await this.updateAchievements(userId, updateGameStateDto.id),
           maxConsecutiveWins: userStats.consecutiveWins > userStats.maxConsecutiveWins 
           ? userStats.consecutiveWins : userStats.maxConsecutiveWins, 
         },
@@ -228,7 +228,7 @@ export class StatsService {
 
       for (let i = 0; i <= 14; i++) {
         if (currentUser.achievements .includes(i)) {
-          console.log(`${i} achievement alreadu present.`);
+          console.log(`${i} achievement already present.`);
         } else {
           switch (i) {
             case 0:
@@ -282,8 +282,9 @@ export class StatsService {
                 currentUser.achievements.push(i);
               break;
             case 10:
-              if(this.durationLongerThen(lastGame.gameStartedAt, lastGame.gameFinishedAt, 10))
-                currentUser.achievements.push(i);
+              //todo: Jorien & Carien: figure out why this is not working
+              // if(this.durationLongerThen(lastGame.gameStartedAt, lastGame.gameFinishedAt, 10))
+              //   currentUser.achievements.push(i);
               break;
             case 11:
               // Awarded for playing match against the computer. (not possible yet)
@@ -320,10 +321,11 @@ export class StatsService {
     return (hours >= startHour && hours < endHour);
   }
 
-  private durationLongerThen(start: Date, end: Date, durationInMinutes: number) {
-    const differenceMs = end.getTime() - start.getTime();
-    const differenceMinutes = differenceMs / (1000 * 60);
+  //todo: Jorien & Carien: figure out why this is not working 
+  // private durationLongerThen(start: Date, end: Date, durationInMinutes: number) {
+  //   const differenceMs = end.getTime() - start.getTime();
+  //   const differenceMinutes = differenceMs / (1000 * 60);
     
-    return differenceMinutes > 10;
-  }
+  //   return differenceMinutes > 10;
+  // }
 }
