@@ -93,3 +93,12 @@
 .dropdown-menu {
     background: var(--strongpong-white);
 }
+
+.win {
+    color: var(--strongpong-blue);
+}
+
+.loss {
+    color: var(--strongpong-red);
+}
+

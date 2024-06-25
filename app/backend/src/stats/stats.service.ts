@@ -190,8 +190,8 @@ export class StatsService {
         state: game.state,
         user1Name: game.GameUsers[0]?.user.userName ?? null,
         user2Name: game.GameUsers[1]?.user.userName ?? null,
-        score1: game.GameUsers[0]?.score ?? null,
-        score2: game.GameUsers[1]?.score ?? null,
+        scoreUser1: game.GameUsers[0]?.score ?? null,
+        scoreUser2: game.GameUsers[1]?.score ?? null,
         winnerId: game.winnerId
       }));
 

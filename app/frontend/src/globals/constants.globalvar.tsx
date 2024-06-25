@@ -59,5 +59,6 @@ export class constants {
   
   static API_STATS = this.BACKEND_BASEURL + 'stats/';
   static API_TOP_10 = this.API_STATS + 'top10/';
+  static API_LAST_10 = this.API_STATS + 'last10Games/';
   static API_RANK = this.API_STATS + 'rank';
 }
