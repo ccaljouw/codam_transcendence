@@ -155,7 +155,6 @@ export class GameService {
       if (updateGameStateDto.state === 'STARTED') {
         newGameData.gameStartedAt = new Date;
       } else if (updateGameStateDto.state === 'FINISHED') {
-        newGameData.winnerId = updateGameStateDto.winnerId;
         newGameData.gameFinishedAt = new Date;
         const player1 = await this.db.gameUser.update({
           where: {
@@ -179,6 +178,10 @@ export class GameService {
         });
         await this.statsService.update(player1.userId, 1, updateGameStateDto);
         await this.statsService.update(player2.userId, 2, updateGameStateDto);
+        if (updateGameStateDto.winnerId === 0) 
+          newGameData.winnerId = player1.userId;
+        else
+          newGameData.winnerId = player2.userId;
       }
       
       const game = await this.db.game.update({
@@ -199,13 +202,6 @@ export class GameService {
       }
 			throw new NotFoundException(`Error updating gamestate for game ${updateGameStateDto.id}.`);
 		}
-    //todo: Carlo & Carien: I (Jorien) am not sure if the 5 lines of code above this or 
-    //the 5 outcommented lines below this statement should stay, or a combination of them. Please check!
-    // } catch (error) {
-    //   throw new NotFoundException(
-    //     `User with id ${updateGameStateDto.id} does not exist.`,
-    //   );
-    // }
   }
 
   async findGameForClientId(clientId: string): Promise<number | null> {

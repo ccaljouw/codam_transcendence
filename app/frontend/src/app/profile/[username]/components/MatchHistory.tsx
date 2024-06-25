@@ -5,28 +5,6 @@ import { constants } from 'src/globals/constants.globalvar';
 import useFetch from 'src/globals/functionComponents/useFetch';
 import { H3 } from 'src/globals/layoutComponents/Font';
 
-function MatchResult({userId, resultId, last10Games} : {userId: number, resultId: number, last10Games: GameResultDto[] | null}) {
-	return (
-	<>
-			<div className="text-center">
-				{last10Games != null && last10Games[resultId] != null? 
-				<>
-					{last10Games[resultId].winnerId && 
-					<>
-					{/* // <div className={last10Games[resultId].winnerId == userId? "win" : "loss"}> */}
-					<hr></hr>
-						{`${last10Games[resultId].user1Name} vs ${last10Games[resultId].user2Name}:`}
-						<br />
-						{`${last10Games[resultId].scoreUser1} - ${last10Games[resultId].scoreUser2}`}
-					{/* // </div>} */}
-					</>}
-				</> : <p>No games played yet</p>
-				}
-			</div>
-	</>);
-}
-
-//todo: Carien: I (Jorien) don't get any match results. are they being sent already? I think this should be able to display them
 export default function MatchHistory({user} : {user: UserProfileDto}) : JSX.Element {
 	const {data: last10Games, isLoading, error, fetcher} = useFetch<null, GameResultDto[]>();
 
