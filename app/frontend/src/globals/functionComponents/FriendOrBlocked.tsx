@@ -18,6 +18,8 @@ export const IsFriend = (idToTest: number, user : UserProfileDto) : boolean => {
 }
 
 export const IsBlocked = (idToTest: number, user : UserProfileDto) : boolean => {
+	if (!user.blocked)
+		return false;
 	for (const blocked of user.blocked as UserProfileDto[]) {
 		if (blocked.id === idToTest) {
 			return true;

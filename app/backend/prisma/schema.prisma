@@ -15,37 +15,36 @@
 //
 
 generator client {
-    provider      = "prisma-client-js"
-    binaryTargets = ["native", "linux-arm64-openssl-3.0.x", "darwin-arm64"]
+	provider      = "prisma-client-js"
+	binaryTargets = ["native", "linux-arm64-openssl-3.0.x", "darwin-arm64"]
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+	provider = "postgresql"
+	url      = env("DATABASE_URL")
 }
 
 // ***************************************************************** //
 //			MODELS
 
 model User {
-    id        Int    @id @default(autoincrement())
-    loginName String @unique
-    hash      String
+	id        Int    @id @default(autoincrement())
+	loginName String @unique
+	hash      String
 
     userName  String? @unique //if no userName is provided loginName is used
     email     String? @unique
     firstName String?
     lastName  String?
     token     Tokens[]
-	// token	 String?
 
     avatarId Int          @default(1)
     theme    Int          @default(0)
     online   OnlineStatus @default(OFFLINE)
-    rank     Int?         @default(-1)
 
     chats ChatUsers[]
     games GameUser[]
+	stats Stats?
 
 	friends User[] @relation("Friends")
 	friendOf User[] @relation("Friends")
@@ -53,136 +52,162 @@ model User {
 	blocked User[] @relation("Blocked")
 	blockedBy User[] @relation("Blocked")
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
 }
 
 model Tokens {
-    id     Int    @id @default(autoincrement())
-    token  String @unique
-    userId Int
-	  chatId Int?
+	id     Int    @id @default(autoincrement())
+	token  String @unique
+	userId Int
+	chatId Int?
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    user      User     @relation(fields: [userId], references: [id])
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
+	user      User     @relation(fields: [userId], references: [id])
 }
 
 model Chat {
-    id         Int      @id @default(autoincrement())
-    ownerId    Int      @default(-1)
-    visibility ChatType @default(PUBLIC)
+	id         Int      @id @default(autoincrement())
+	ownerId    Int      @default(-1)
+	visibility ChatType @default(PUBLIC)
+	name	   String  @default("")
 
-    createdAt DateTime       @default(now())
-    updatedAt DateTime       @updatedAt
-    users     ChatUsers[]
-    messages ChatMessages[]
+	createdAt DateTime       @default(now())
+	updatedAt DateTime       @updatedAt
+	users     ChatUsers[]
+	messages  ChatMessages[]
 }
 
 model ChatUsers {
-    id             Int          @id @default(autoincrement())
-    chatId         Int
-    userId         Int
-    lastRead       DateTime
-    role           ChatUserRole @default(DEFAULT)
-    isInChatRoom   Boolean      @default(false)
-    unreadMessages Int          @default(0)
+	id             Int          @id @default(autoincrement())
+	chatId         Int
+	userId         Int
+	lastRead       DateTime
+	role           ChatUserRole @default(DEFAULT)
+	isInChatRoom   Boolean      @default(false)
+	unreadMessages Int          @default(0)
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    user      User     @relation(fields: [userId], references: [id])
-    chat      Chat     @relation(fields: [chatId], references: [id])
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
+	user      User     @relation(fields: [userId], references: [id])
+	chat      Chat     @relation(fields: [chatId], references: [id])
 	@@unique([chatId, userId])
 }
 
 model ChatMessages {
-    id      Int    @id @default(autoincrement())
-    content String
-    chatId  Int
-    userId  Int
+	id      Int    @id @default(autoincrement())
+	content String
+	chatId  Int
+	userId  Int
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    chat      Chat     @relation(fields: [chatId], references: [id])
-	invite       Invite?  @relation(fields: [inviteId], references: [id])
-  	inviteId     Int? @unique
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
+	chat        Chat     @relation(fields: [chatId], references: [id])
+	invite      Invite?  @relation(fields: [inviteId], references: [id])
+  	inviteId    Int? @unique
 }
 
 model Game {
-    id    Int       @id @default(autoincrement())
-    state GameState
-    GameUsers GameUser[]
+	id              Int       @id @default(autoincrement())
+	state           GameState
+	GameUsers       GameUser[]
+	longestRally    Int      @default(0)
+	winnerId        Int?
+
+	gameStartedAt   DateTime?
+	gameFinishedAt  DateTime?
+	createdAt       DateTime @default(now())
+	updatedAt       DateTime @updatedAt
 }
 
 model GameUser {
-    id        Int      @id @default(autoincrement())
-    clientId  String
-    score     Int       @default(0)
-    win       Boolean?
+	id			Int       @id @default(autoincrement())
+	clientId	String
+	player		Int
+	score		Int       @default(0)
 
-    gameId Int
-    game   Game @relation(fields: [gameId], references: [id])
+	gameId	Int
+	game	Game @relation(fields: [gameId], references: [id])
 
-    userId Int
-    user   User @relation(fields: [userId], references: [id])
+	userId	Int
+	user	User @relation(fields: [userId], references: [id])
+	@@unique([gameId, player])
 }
 
 model Invite {
-  id          Int  @id @default(autoincrement())
-  chatId      Int
-  senderId    Int
-  recipientId Int
+	id			Int  @id @default(autoincrement())
+	chatId		Int
+	senderId	Int
+	recipientId	Int
 
-  state       InviteStatus @default(SENT)
-  type        InviteType
+	state		InviteStatus @default(SENT)
+	type		InviteType
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  expiredAt DateTime @default(now()) //change\\
-  chatMessage   ChatMessages? @relation()
+	createdAt	DateTime @default(now())
+	updatedAt	DateTime @updatedAt
+	expiredAt	DateTime @default(now()) //change\\
+	chatMessage	ChatMessages? @relation()
 //   chatMessageId Int?
 
+}
+
+// stats tracked to monitor achievements and rank
+model Stats {
+	id					Int @id @default(autoincrement())
+	userId 				Int @unique
+	wonLastGame			Boolean @default(false)
+	wins				Int @default(0)
+	losses				Int @default(0)
+	winLossRatio		Float @default(1)
+	consecutiveWins		Int @default(0)
+	maxConsecutiveWins	Int @default(0)
+	achievements		Int[]
+
+	createdAt	DateTime @default(now())
+	updatedAt	DateTime @updatedAt
+	user		User @relation(fields: [userId], references: [id])
 }
 
 // ***************************************************************** //
 //			ENUMS
 
 enum OnlineStatus {
-    OFFLINE
-    IN_GAME
-    ONLINE
+	OFFLINE
+	IN_GAME
+	ONLINE
 }
 
 enum ChatType {
-    DM
-    PRIVATE
-    PROTECTED
-    PUBLIC
+	DM
+	PRIVATE
+	PROTECTED
+	PUBLIC
 }
 
 enum ChatUserRole {
-    DEFAULT
-    ADMIN
-    OWNER
+	DEFAULT
+	ADMIN
+	OWNER
 }
 
 enum GameState {
-    WAITING
-    READY_TO_START
-    STARTED
-    FINISHED
-    ABORTED
+	WAITING
+	READY_TO_START
+	STARTED
+	FINISHED
+	ABORTED
 }
 
 enum InviteType {
-  FRIEND
-  CHAT
-  GAME
+	FRIEND
+	CHAT
+	GAME
 }
 
 enum InviteStatus {
-  SENT
-  ACCEPTED
-  REJECTED
-  EXPIRED
+	SENT
+	ACCEPTED
+	REJECTED
+	EXPIRED
 }

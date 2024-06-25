@@ -1,6 +1,6 @@
 import { GameObject } from '../gameObjects/GameObject'
 import { Ball } from '../gameObjects/Ball'
-import { PlayerComponent } from '../components/PlayerComponent'
+// import { PlayerComponent } from '../components/PlayerComponent'
 import { Game } from '../components/Game'
 import * as CON from './constants'
 import { TextComponent } from '../components/TextComponent'
@@ -47,7 +47,7 @@ function clearMessageFields(messageFields: TextComponent[]) {
 
 export function escapeKeyPressed(game: Game) {
 	const gameSocket = transcendenceSocket;
-	const payload : UpdateGameStateDto  = {roomId: game.roomId, state: GameState.ABORTED};
+	const payload : UpdateGameStateDto  = {id: game.roomId, state: GameState.ABORTED};
   gameSocket.emit("game/updateGameState", payload);
 	//todo: close canvas or link to other page
 	game.abortGame(0);

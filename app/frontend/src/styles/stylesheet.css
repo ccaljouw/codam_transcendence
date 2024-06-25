@@ -63,6 +63,10 @@
 	flex-direction: column;
 }
 
+.chat-area .blocked {
+	text-decoration: line-through;
+	color: gray;
+}
 /* place to chat */
 .chat-box{
     height: 70%;
@@ -99,6 +103,7 @@
 /* place to find users */
 .chat-users {
 	height: 30%;
+	width: 100%;
 	position: relative;
 	align-self: flex-start;
 	margin-top: auto;
@@ -153,4 +158,12 @@
 
 .chat-userListType {
 	cursor: pointer;
+}
+
+.channelListLink {
+	cursor: pointer;
+}
+
+.channelListLink:hover {
+	font-weight: bold;
 }

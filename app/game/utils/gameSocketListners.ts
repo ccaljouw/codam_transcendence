@@ -43,7 +43,7 @@ export function setSocketListeners(game: Game) {
 
   gameSocket.on(`game/updateGameState`, (payload: UpdateGameStateDto) => {
 
-    console.log(`Script: received game state update from server`, payload.roomId, payload.state, payload.winner);
+    console.log(`Script: received game state update from server`, payload.id, payload.state, payload.winnerId);
 
     if (game.gameState === GameState.FINISHED) {
       return;
@@ -55,7 +55,7 @@ export function setSocketListeners(game: Game) {
     }
     
     if (payload.state === GameState.FINISHED) {
-      game.finishGame(payload.winner!);
+      game.finishGame(payload.winnerId!);
       return;
     } 
 

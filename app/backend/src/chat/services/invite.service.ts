@@ -107,6 +107,8 @@ export class InviteService {
 			throw new NotFoundException(`Invite with id ${inviteId} does not exist.`);
 		if (invite.type != InviteType.FRIEND)
 			throw new NotFoundException(`Invite with id ${inviteId} is not a friend request.`);
+		if (invite.state == InviteStatus.EXPIRED)
+			return {} as UserProfileDto;
 		if (accept === true) {
 			const connectedRecipient = await this.db.user.update({ where: { id: invite.recipientId }, data: { friends: { connect: { id: invite.senderId } } }, include: { friends: true } });
 			const connectedSender = await this.db.user.update({ where: { id: invite.senderId }, data: { friends: { connect: { id: invite.recipientId } } } });

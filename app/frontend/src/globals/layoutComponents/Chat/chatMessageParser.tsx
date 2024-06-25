@@ -5,6 +5,7 @@ import { UserProfileDto } from "@ft_dto/users";
 import { Socket } from "socket.io-client";
 import { friendInviteParser } from "./friendInvite";
 import { gameInviteParser } from "./gameInvite";
+import { IsBlocked } from "src/globals/functionComponents/FriendOrBlocked";
 
 
 export interface parserProps {
@@ -21,6 +22,8 @@ export const messageParser = (
 	message: ChatMessageToRoomDto, context: parserProps
 ): JSX.Element => {
 	const { inviteCallback, currentChatRoom, currentUser, chatSocket, friendInviteFetcher, gameInviteFetcher, chatInviteFetcher } = context;
+	if (IsBlocked(message.userId, currentUser))
+		return <></>
 	if (message.action) {
 		if (message.userId == currentUser.id) // If the user is the current user, we don't want to show the message.	
 			return <></>

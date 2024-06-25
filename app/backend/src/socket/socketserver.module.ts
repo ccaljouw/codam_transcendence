@@ -6,6 +6,7 @@ import { PrismaService } from 'src/database/prisma.service';
 import { ChatSocketService } from 'src/chat/services/chatsocket.service';
 import { TokenService } from 'src/users/token.service';
 import { GameService } from 'src/game/game.service';
+import { StatsService } from 'src/stats/stats.service';
 
 @Module({
   providers: [
@@ -15,6 +16,7 @@ import { GameService } from 'src/game/game.service';
     ChatSocketService,
     TokenService,
     GameService,
+    StatsService,
   ],
   exports: [SocketServerProvider],
 })
