@@ -145,14 +145,12 @@ export default function GameComponent() {
 
 
 	function handleClick() {
-
-		if (gameState !== GameState.FINISHED) {
+		if (gameState !== GameState.ABORTED) {
 			const payload: UpdateGameStateDto = {roomId: roomId, state: GameState.ABORTED};
 			gameSocket.emit("game/updateGameState", payload);
 		}
 		console.log("Game: leaving game");
 		router.push('/play');
-
 	}
 
 	
