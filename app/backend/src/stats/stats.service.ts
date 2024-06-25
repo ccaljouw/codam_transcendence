@@ -270,7 +270,7 @@ export class StatsService {
               break;
             case 7:
               //Awarded when a player beats an opponent who has won more than twice as many games as they have.
-              if (opponent.wins > (currentUser.wins * 2))
+              if (opponent.wins != null && opponent.wins > (currentUser.wins * 2))
                 currentUser.achievements.push(i);
               break;
             case 8:
