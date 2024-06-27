@@ -38,7 +38,7 @@ export default function GameSettings({user} : {user: UserProfileDto}) : JSX.Elem
 				</div>
 				<div className="col col-6">
 					{/* todo: handle submit. Consider to change to dropdown-menu */}
-					<select className="form-select custom-select form-select-sm" defaultValue={constants.themes[currentUser.theme]} name="theme">
+					<select className="form-select custom-select form-select-sm" defaultValue={currentUser.theme} name="theme">
 						<ThemeOptions theme={user.theme}/>
 					</select>
 				</div>
