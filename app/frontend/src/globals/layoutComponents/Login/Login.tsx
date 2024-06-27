@@ -19,10 +19,13 @@ export default function Login() : JSX.Element {
     const {data: loggedUser, isLoading, error, fetcher} = useFetch<LoginCredentials, UserProfileDto>();
 
     useEffect(() => {
-        console.log(`Logging in from: ${pathname}`)
-        if (loggedUser != null)
-            setLoggedUser(loggedUser);
+      if (loggedUser != null)
+        setLoggedUser(loggedUser);
     }, [loggedUser]);
+
+    useEffect(() => {
+      console.log(`Logging in from: ${pathname}`);
+    }, []);
 
 	const setLoggedUser = (user: UserProfileDto) => {
 		console.log("Setting new user with id " + user.id + " in ChooseUser");
