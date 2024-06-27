@@ -12,3 +12,5 @@ export default function Blocked({user} : {user: UserProfileDto}) : JSX.Element {
         </>
 	);
 }
+
+//todo: Jorien: Remove if not use in the end
