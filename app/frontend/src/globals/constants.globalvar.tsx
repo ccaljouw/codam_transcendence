@@ -22,7 +22,6 @@ export class constants {
 	static API_USERS = this.BACKEND_BASEURL + 'users/';
 	static API_REGISTER = this.API_USERS + 'register/';
 	static API_ALL_USERS = this.API_USERS + 'all/';
-	static API_TOP_10 = this.API_USERS + 'all/'; // todo: Carien: change to correct api path
 	static API_ALL_USERS_BUT_ME = this.API_USERS + 'allButMe/';
 	static API_ADD_TOKEN = this.API_USERS + 'token/';
 	static API_FRIENDS_FROM = this.API_USERS + 'friendsFrom/';

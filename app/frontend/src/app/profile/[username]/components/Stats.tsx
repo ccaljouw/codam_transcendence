@@ -4,7 +4,7 @@ import StaticDataField from "src/app/profile/[username]/components/utils/StaticD
 import Achievements from "./utils/Achievements";
 import { useEffect } from "react";
 import useFetch from "@ft_global/functionComponents/useFetch";
-import { constants } from "src/globals/constants.globalvar";
+import { constants } from "@ft_global/constants.globalvar";
 import { StatsDto } from "@ft_dto/stats";
 
 export default function Stats({user} : {user: UserProfileDto}) : JSX.Element {
@@ -18,8 +18,6 @@ export default function Stats({user} : {user: UserProfileDto}) : JSX.Element {
 		await fetcher({url: constants.API_STATS + user.id});
 	};
 
-    const testAchievements= [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-
     return (
         <>
             <H3 text="statistics"/>
@@ -29,7 +27,7 @@ export default function Stats({user} : {user: UserProfileDto}) : JSX.Element {
                 <StaticDataField name="Friends" data={stats?.friends} />
             }
             <hr></hr>
-            <Achievements achievements={stats? stats.achievements: testAchievements}/>
+            <Achievements achievements={stats?.achievements}/>
         </>
     );
 }
