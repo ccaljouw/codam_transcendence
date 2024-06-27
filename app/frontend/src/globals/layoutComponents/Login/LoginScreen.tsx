@@ -7,6 +7,7 @@ import ChooseUser from 'src/globals/layoutComponents/Login/ChooseUser';
 import Seed from 'src/app/dev/test/components/Seed'; //todo: this is tmp, remove later
 import Auth42Button from './Auth42Button';
 import { FontBangers, H3 } from '../Font';
+import Login from './Login';
 
 function LoginOptions() : JSX.Element {
 	const { data: users, isLoading: usersLoading, error: usersError, fetcher: usersFetcher } = useFetch<null, UserProfileDto[]>(); //todo: remove later
@@ -34,10 +35,6 @@ function LoginOptions() : JSX.Element {
 		setLoginOption("signUp")
 	}
 
-  const handleSignIn42Click = () => {
-		setLoginOption("login42")
-	}
-
 	return (
 		<>
 			{usersLoading && <p>Loading...</p>}
@@ -54,15 +51,13 @@ function LoginOptions() : JSX.Element {
 						<div className="row">
 							<div className="btn-group p-0" role="group">
 								<button type="button" className={`btn btn-dark ${loginOption == "choose" ? "active" : ""}`} onClick={handleChooseClick}>Choose user from list</button>
-                <button type="button" className={`btn btn-dark ${loginOption == "Singin$2" ? "active" : ""}`} onClick={handleSignIn42Click}>Signin with auth42</button>
 								<button type="button" className={`btn btn-dark ${loginOption == "login" ? "active" : ""}`} onClick={handleLoginClick}>Login</button>
 								<button type="button" className={`btn btn-dark ${loginOption == "signUp" ? "active" : ""}`} onClick={handleSignUpClick}>Create new account</button>
 							</div>
 						</div>
 							{loginOption == "choose" && <ChooseUser />}
-							{loginOption == "login" && <p>Here will be the login form</p>}
+							{loginOption == "login" && <Login />}
 							{loginOption == "signUp" && <SignUp />}
-              {loginOption == "login42" && <Auth42Button />}
 					</div>
 				</>
 			}

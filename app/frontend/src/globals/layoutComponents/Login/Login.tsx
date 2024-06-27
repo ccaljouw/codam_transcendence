@@ -5,6 +5,8 @@ import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import { constants } from '@ft_global/constants.globalvar'
 import { H3 } from 'src/globals/layoutComponents/Font';
 import useFetch from 'src/globals/functionComponents/useFetch';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 type LoginCredentials = {
     email: string,
@@ -12,10 +14,12 @@ type LoginCredentials = {
 }
 
 export default function Login() : JSX.Element {
+  const pathname = usePathname();
 	const {setCurrentUser} = useContext(TranscendenceContext);
     const {data: loggedUser, isLoading, error, fetcher} = useFetch<LoginCredentials, UserProfileDto>();
 
     useEffect(() => {
+        console.log(`Logging in from: ${pathname}`)
         if (loggedUser != null)
             setLoggedUser(loggedUser);
     }, [loggedUser]);
@@ -42,6 +46,11 @@ export default function Login() : JSX.Element {
                     <button className="btn btn-dark btn-sm" type="submit">Login</button>
                 </form>
 			</div>
+      <div className="white-box">
+        <Link className="btn btn-dark btn-block" href={`${constants.API_AUTH42}`}>
+          Or continue with Auth42
+        </Link>
+      </div>
 		</>
 	);
 }

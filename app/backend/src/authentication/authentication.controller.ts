@@ -20,7 +20,7 @@ export class AuthController {
     try {
       const jwt = await this.authService.generateJwt(req.user);
       console.log(`JWT: ${jwt}`);
-      res.redirect(`http://localhost:3000/profile?user=${req.user}`);
+      res.redirect(`http://localhost:3000?user=${req.user}`);
     } catch (error) {
       console.error('Error generating JWT:', error);
     }

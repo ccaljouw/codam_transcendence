@@ -1,10 +1,9 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import Strategy from 'passport-42';
 import { UsersService } from 'src/users/users.service';
 import { UserProfileDto } from '@ft_dto/users';
-import { PrismaClientKnownRequestError, PrismaClientUnknownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
@@ -32,8 +31,11 @@ export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
     } catch (error) {
       if (error instanceof NotFoundException ) {
         // todo: Carien: remove hash
-        await this.userService.create({ loginName: profile.username, userName: profile.username, hash: "sdkghks" })
-      } else if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        await this.userService.create({ 
+          loginName: profile.username, 
+          userName: profile.username, 
+          hash: "sdkghks" })
+      } else {
         throw error;
       }
     }

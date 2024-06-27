@@ -14,7 +14,7 @@ type authenticationOutput = {
 export default function useAuthentication() : authenticationOutput {
 	const { currentUser, setCurrentUser } = useContext(TranscendenceContext);
 	const params = useSearchParams();
-	const codeFromUrl = params.get('code');
+	const userFromUrl = params.get('user');
 	const {data: user, fetcher: userFetcher} = useFetch<null, UserProfileDto>();
 	const [idFromStorage, setIdFromStorage] = useState<string | null>(null);
 	const router = useRouter();
@@ -28,9 +28,9 @@ export default function useAuthentication() : authenticationOutput {
 			console.log("user already logged in, fetching user " + id);
 			loginUser(constants.API_USERS + id);
 		}
-		if (codeFromUrl != null)
+		if (userFromUrl != null)
 		{
-			loginUser(constants.API_AUTH42 + codeFromUrl);
+			loginUser(constants.API_USERS + userFromUrl);
 			router.push(pathname);
 		}
 	}, []);

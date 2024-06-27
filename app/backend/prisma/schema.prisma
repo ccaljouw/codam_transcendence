@@ -61,7 +61,7 @@ model Tokens {
     id     Int    @id @default(autoincrement())
     userId Int
     token  String @unique
-	    chatId Int?
+	  chatId Int?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -87,7 +87,7 @@ model Chat {
     id         Int      @id @default(autoincrement())
     ownerId    Int      @default(-1)
     visibility ChatType @default(PUBLIC)
-	name	   String  @default("")
+	  name	   String  @default("")
 
     createdAt DateTime       @default(now())
     updatedAt DateTime       @updatedAt
