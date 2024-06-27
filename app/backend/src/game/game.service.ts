@@ -1,4 +1,4 @@
-import { UpdateGameDto, UpdateGameStateDto } from '@ft_dto/game';
+import { UpdateGameDto, UpdateGameStateDto, UpdateGameUserDto } from '@ft_dto/game';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateGameDto } from 'dto/game/create-game.dto';
 import { PrismaService } from 'src/database/prisma.service';
@@ -151,12 +151,14 @@ export class GameService {
         id: updateGameStateDto.id,
         state: updateGameStateDto.state,
       };
+      let player1: UpdateGameUserDto;
+      let player2: UpdateGameUserDto;
 
       if (updateGameStateDto.state === 'STARTED') {
         newGameData.gameStartedAt = new Date;
       } else if (updateGameStateDto.state === 'FINISHED') {
         newGameData.gameFinishedAt = new Date;
-        const player1 = await this.db.gameUser.update({
+        player1 = await this.db.gameUser.update({
           where: {
             gameId_player: {
               gameId: updateGameStateDto.id,
@@ -164,9 +166,9 @@ export class GameService {
             },
           },
           data: { score: updateGameStateDto.score1 },
-          select: { userId: true },
+          select: { userId: true, id: true },
         });
-        const player2 = await this.db.gameUser.update({
+        player2 = await this.db.gameUser.update({
           where: {
             gameId_player: {
               gameId: updateGameStateDto.id,
@@ -174,10 +176,10 @@ export class GameService {
             },
           },
           data: { score: updateGameStateDto.score2 },
-          select: { userId: true },
+          select: { userId: true, id: true },
         });
-        await this.statsService.update(player1.userId, 1, updateGameStateDto);
-        await this.statsService.update(player2.userId, 2, updateGameStateDto);
+        console.log(player1);
+        console.log(player2);
         if (updateGameStateDto.winnerId === 0) 
           newGameData.winnerId = player1.userId;
         else
@@ -190,6 +192,10 @@ export class GameService {
         include: { GameUsers: {select: { userId: true, player: true }} }
       });
       if (game) {
+        if (updateGameStateDto.state === 'FINISHED') {
+          await this.statsService.update(player1.userId , 1, updateGameStateDto);
+          await this.statsService.update(player2.userId, 2, updateGameStateDto);
+        }
         console.log(`backend - game: Game: game state updated`);
         return true;
       } else {

@@ -31,6 +31,7 @@ export class UsersService {
 	}
 
 	async update(id: number, updateUserDto: UpdateUserDto): Promise<UserProfileDto> {
+    console.log(updateUserDto);
 		try {
 			const user = await this.db.user.update({
 			where: { id },	

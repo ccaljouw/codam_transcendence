@@ -270,7 +270,7 @@ export class StatsService {
               break;
             case 7:
               //Awarded when a player beats an opponent who has won more than twice as many games as they have.
-              if (opponent.wins != null && currentUser.wins != null && opponent.wins > (currentUser.wins * 2))
+              if (opponent.wins && opponent.wins > (currentUser.wins * 2))
                 currentUser.achievements.push(i);
               break;
             case 8:
@@ -283,8 +283,8 @@ export class StatsService {
               break;
             case 10:
               //todo: Jorien & Carien: figure out why this is not working
-              // if(this.durationLongerThen(lastGame.gameStartedAt, lastGame.gameFinishedAt, 10))
-              //   currentUser.achievements.push(i);
+              if(this.durationLongerThen(lastGame.gameStartedAt, lastGame.gameFinishedAt, 10))
+                currentUser.achievements.push(i);
               break;
             case 11:
               // Awarded for playing match against the computer. (not possible yet)
@@ -321,11 +321,14 @@ export class StatsService {
     return (hours >= startHour && hours < endHour);
   }
 
-  //todo: Jorien & Carien: figure out why this is not working 
-  // private durationLongerThen(start: Date, end: Date, durationInMinutes: number) {
-  //   const differenceMs = end.getTime() - start.getTime();
-  //   const differenceMinutes = differenceMs / (1000 * 60);
+  private durationLongerThen(start: Date, end: Date, durationInMinutes: number) {
+    if (!start || !end) {
+      console.log(`no start or end time. Start: ${start}, end: ${end}`)
+      return false;
+    }
+    const differenceMs = end.getTime() - start.getTime();
+    const differenceMinutes = differenceMs / (1000 * 60);
     
-  //   return differenceMinutes > 10;
-  // }
+    return differenceMinutes > durationInMinutes;
+  }
 }
