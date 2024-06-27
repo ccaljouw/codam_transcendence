@@ -21,7 +21,7 @@ export default function StatusIndicator(props: { userId: number, status: OnlineS
 	const { someUserUpdatedTheirStatus, currentUser } = useContext(TranscendenceContext);
 
 	useEffect(() => {
-		console.log("StatusIndicator: useEffect", props.userId, currentUser);
+		// console.log("StatusIndicator: useEffect", props.userId, currentUser);
 		if (someUserUpdatedTheirStatus === undefined) // if the context is not yet initialized, return
 			return;
 

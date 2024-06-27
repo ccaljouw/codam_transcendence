@@ -9,10 +9,7 @@ import FormToUpdateUserDto from 'src/globals/functionComponents/form/FormToUpdat
 function ThemeOptions({theme}:{theme: number}) : JSX.Element[] {
 	const options = [];
 	for (let i = 0; i < constants.themes.length; i++){
-		if (i == theme)
-			options.push(<option selected value={i} id="theme">{constants.themes[i]}</option>);
-		else
-			options.push(<option value={i} id="theme">{constants.themes[i]}</option>);
+		options.push(<option value={i} id="theme">{constants.themes[i]}</option>);
 	}
 	return (options);
 }
@@ -41,7 +38,7 @@ export default function GameSettings({user} : {user: UserProfileDto}) : JSX.Elem
 				</div>
 				<div className="col col-6">
 					{/* todo: handle submit. Consider to change to dropdown-menu */}
-					<select className="form-select custom-select form-select-sm">
+					<select className="form-select custom-select form-select-sm" defaultValue={constants.themes[currentUser.theme]}>
 						<ThemeOptions theme={user.theme}/>
 					</select>
 				</div>
