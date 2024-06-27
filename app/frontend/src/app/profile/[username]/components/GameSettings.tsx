@@ -14,7 +14,7 @@ function ThemeOptions({theme}:{theme: number}) : JSX.Element[] {
 		else
 			options.push(<option value={i} id="theme">{constants.themes[i]}</option>);
 	}
-	return (options);	
+	return (options);
 }
 
 export default function GameSettings({user} : {user: UserProfileDto}) : JSX.Element {
@@ -27,7 +27,6 @@ export default function GameSettings({user} : {user: UserProfileDto}) : JSX.Elem
 	}, [updatedUser]);
 	
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-		console.log("submitting form field entry");
 		event.preventDefault();
 		await fetcher({url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: FormToUpdateUserDto(event)})
 	}
@@ -50,6 +49,8 @@ export default function GameSettings({user} : {user: UserProfileDto}) : JSX.Elem
 					<button className="btn btn-outline-dark btn-sm" type="submit">Save</button>
 				</div>
 			</form>
+			{isLoading !== null && <p>Changing color preferences</p>}
+			{error !== null && <p>error: {error.message}</p>}
 		</>
 	);
 }
