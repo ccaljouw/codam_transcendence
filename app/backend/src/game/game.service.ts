@@ -1,4 +1,4 @@
-import { UpdateGameDto, UpdateGameStateDto } from '@ft_dto/game';
+import { UpdateGameDto, UpdateGameStateDto, UpdateGameUserDto } from '@ft_dto/game';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateGameDto } from 'dto/game/create-game.dto';
 import { PrismaService } from 'src/database/prisma.service';
@@ -24,7 +24,7 @@ export class GameService {
       });
       if (!game) {
         game = await this.create({ state: `WAITING` });
-        await this.addUser(game.id, userId, clientId, 1);
+        await this.addUser(game.id, userId, clientId, 1 );
         game = await this.db.game.findFirst({
           where: { id: game.id },
           include: { GameUsers: { include: { user: true } } },
@@ -56,17 +56,17 @@ export class GameService {
     return await this.db.game.create({ data: createGameDto });
   }
 
-  async Disconnect(client: Socket) {
-    console.log('Backend Game: disconnect service called');
+  async disconnect(client: Socket) {
+    console.log('Backend Game!!!: disconnect service called');
     console.log('My token is:', client.id);
 
+    //todo:
     // set all games with token that are in sate waiting or in state started to abandoned in db
     // get the game id from the db with the token
-    // emit to room (gameid) gameStateUpdate => finished
   }
 
-  addUser(gameId: number, userId: number, clientId: string, player: number) {
-    return this.db.gameUser.create({ data: { gameId, userId, clientId, player } });
+  async addUser(gameId: number, userId: number, clientId: string, player: number) {
+    return this.db.gameUser.create({ data: { gameId, userId, clientId, player }});
   }
 
   async findAll() {
@@ -139,6 +139,10 @@ export class GameService {
   }
 
   async update(updateGameStateDto: UpdateGameStateDto) {
+    if (updateGameStateDto.state === undefined) {
+      console.log(`backend - game: can't update because state not defined`);
+      return;
+    }    
     console.log(
       `backend - game: updating game state to : ${updateGameStateDto.state} for game: ${updateGameStateDto.id}`,
     );
@@ -147,13 +151,14 @@ export class GameService {
         id: updateGameStateDto.id,
         state: updateGameStateDto.state,
       };
+      let player1: UpdateGameUserDto;
+      let player2: UpdateGameUserDto;
 
       if (updateGameStateDto.state === 'STARTED') {
         newGameData.gameStartedAt = new Date;
       } else if (updateGameStateDto.state === 'FINISHED') {
-        newGameData.winnerId = updateGameStateDto.winnerId;
         newGameData.gameFinishedAt = new Date;
-        const player1 = await this.db.gameUser.update({
+        player1 = await this.db.gameUser.update({
           where: {
             gameId_player: {
               gameId: updateGameStateDto.id,
@@ -161,9 +166,9 @@ export class GameService {
             },
           },
           data: { score: updateGameStateDto.score1 },
-          select: { userId: true },
+          select: { userId: true, id: true },
         });
-        const player2 = await this.db.gameUser.update({
+        player2 = await this.db.gameUser.update({
           where: {
             gameId_player: {
               gameId: updateGameStateDto.id,
@@ -171,10 +176,14 @@ export class GameService {
             },
           },
           data: { score: updateGameStateDto.score2 },
-          select: { userId: true },
+          select: { userId: true, id: true },
         });
-        await this.statsService.update(player1.userId, 1, updateGameStateDto);
-        await this.statsService.update(player2.userId, 2, updateGameStateDto);
+        console.log(player1);
+        console.log(player2);
+        if (updateGameStateDto.winnerId === 0) 
+          newGameData.winnerId = player1.userId;
+        else
+          newGameData.winnerId = player2.userId;
       }
       
       const game = await this.db.game.update({
@@ -182,7 +191,17 @@ export class GameService {
         data: newGameData,
         include: { GameUsers: {select: { userId: true, player: true }} }
       });
-      return true;
+      if (game) {
+        if (updateGameStateDto.state === 'FINISHED') {
+          await this.statsService.update(player1.userId , 1, updateGameStateDto);
+          await this.statsService.update(player2.userId, 2, updateGameStateDto);
+        }
+        console.log(`backend - game: Game: game state updated`);
+        return true;
+      } else {
+        console.log(`backend - game: Game: game state not updated`);
+        return false;
+      }
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
         throw error;
@@ -201,16 +220,13 @@ export class GameService {
         },
       });
       if (gameUser) {
+        console.log('GameUser found:', gameUser);
         // If a GameUser is found, access its associated Game
         const game = await this.db.game.findUnique({
           where: {
             id: gameUser.gameId,
             state: {
-              in: [
-                GameState.WAITING,
-                GameState.READY_TO_START,
-                GameState.STARTED,
-              ],
+              not: GameState.FINISHED,
             },
           },
         });

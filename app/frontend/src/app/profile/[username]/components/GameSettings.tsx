@@ -9,12 +9,9 @@ import FormToUpdateUserDto from 'src/globals/functionComponents/form/FormToUpdat
 function ThemeOptions({theme}:{theme: number}) : JSX.Element[] {
 	const options = [];
 	for (let i = 0; i < constants.themes.length; i++){
-		if (i == theme)
-			options.push(<option selected value={i} id="theme">{constants.themes[i]}</option>);
-		else
-			options.push(<option value={i} id="theme">{constants.themes[i]}</option>);
+		options.push(<option key={i} value={i} id="theme">{constants.themes[i]}</option>);
 	}
-	return (options);	
+	return (options);
 }
 
 export default function GameSettings({user} : {user: UserProfileDto}) : JSX.Element {
@@ -26,8 +23,7 @@ export default function GameSettings({user} : {user: UserProfileDto}) : JSX.Elem
 		}
 	}, [updatedUser]);
 	
-	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-		console.log("submitting form field entry");
+	const handleChange = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		await fetcher({url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: FormToUpdateUserDto(event)})
 	}
@@ -36,20 +32,22 @@ export default function GameSettings({user} : {user: UserProfileDto}) : JSX.Elem
 	return (
 		<>
 			<H3 text="Game settings"/>
-			<form onSubmit={handleSubmit} acceptCharset='utf-8' className="row">
+			<form onChange={handleChange} acceptCharset='utf-8' className="row">
 				<div className="col col-3">
 					<p>Theme</p>
 				</div>
 				<div className="col col-6">
 					{/* todo: handle submit. Consider to change to dropdown-menu */}
-					<select className="form-select custom-select form-select-sm">
+					<select className="form-select custom-select form-select-sm" defaultValue={currentUser.theme} name="theme">
 						<ThemeOptions theme={user.theme}/>
 					</select>
 				</div>
-				<div className="col col-3">
+				{/* <div className="col col-3">
 					<button className="btn btn-outline-dark btn-sm" type="submit">Save</button>
-				</div>
+				</div> */}
 			</form>
+			{isLoading !== null && <p>Changing color preferences</p>}
+			{error !== null && <p>error: {error.message}</p>}
 		</>
 	);
 }

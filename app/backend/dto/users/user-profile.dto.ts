@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { OnlineStatus, Token42, Tokens, User } from "@prisma/client";
+import { OnlineStatus, Token42, User } from "@prisma/client";
 import { Exclude } from "class-transformer";
 
 export class UserProfileDto implements User {

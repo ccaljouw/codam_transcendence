@@ -22,16 +22,16 @@ export class GamesocketGateway {
   game_io: Server = this.commonServer.socketIO;
 
   @SubscribeMessage('game/joinRoom')
-  joinRoom(client: Socket, roomId: number) {
+  joinRoom(client: Socket, id: number) {
     try {
-      console.log(`Game Socket Server: someone is joining the room: ${roomId}`);
-      client.join(roomId.toString());
+      console.log(`Game Socket Server: someone is joining the room: ${id}`);
+      client.join(id.toString());
       const player = this.game_io.sockets.sockets.get(client.id);
       this.game_io
-        .to(roomId.toString())
+        .to(id.toString())
         .emit('game/message', `Player ${player?.id} joined the room`);
     } catch (error) {
-      console.log(`Game Socket Server: error joining room: ${roomId}`);
+      console.log(`Game Socket Server: error joining room: ${id}`);
     }
   }
 
@@ -71,6 +71,10 @@ export class GamesocketGateway {
       this.game_io
         .to(payload.id.toString())
         .emit('game/updateGameState', payload);
+      
+        this.gamesocketService.disconnect(client);
+      } else {
+        console.log('Game Socket Server: client not in any game');
     }
   }
 }

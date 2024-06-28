@@ -12,7 +12,7 @@ export class StatsService {
 
   async create(userId: number) : Promise<StatsDto> {
     try {
-      return await this.db.stats.create({ data:  {userId}} );
+      return await this.db.stats.create({ data: {userId} });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
         throw error;
@@ -190,8 +190,8 @@ export class StatsService {
         state: game.state,
         user1Name: game.GameUsers[0]?.user.userName ?? null,
         user2Name: game.GameUsers[1]?.user.userName ?? null,
-        score1: game.GameUsers[0]?.score ?? null,
-        score2: game.GameUsers[1]?.score ?? null,
+        scoreUser1: game.GameUsers[0]?.score ?? null,
+        scoreUser2: game.GameUsers[1]?.score ?? null,
         winnerId: game.winnerId
       }));
 
@@ -228,7 +228,7 @@ export class StatsService {
 
       for (let i = 0; i <= 14; i++) {
         if (currentUser.achievements .includes(i)) {
-          console.log(`${i} achievement alreadu present.`);
+          console.log(`${i} achievement already present.`);
         } else {
           switch (i) {
             case 0:
@@ -270,7 +270,7 @@ export class StatsService {
               break;
             case 7:
               //Awarded when a player beats an opponent who has won more than twice as many games as they have.
-              if (opponent.wins > (currentUser.wins * 2))
+              if (opponent.wins && opponent.wins > (currentUser.wins * 2))
                 currentUser.achievements.push(i);
               break;
             case 8:
@@ -282,6 +282,7 @@ export class StatsService {
                 currentUser.achievements.push(i);
               break;
             case 10:
+              //todo: Jorien & Carien: figure out why this is not working
               if(this.durationLongerThen(lastGame.gameStartedAt, lastGame.gameFinishedAt, 10))
                 currentUser.achievements.push(i);
               break;
@@ -321,9 +322,13 @@ export class StatsService {
   }
 
   private durationLongerThen(start: Date, end: Date, durationInMinutes: number) {
+    if (!start || !end) {
+      console.log(`no start or end time. Start: ${start}, end: ${end}`)
+      return false;
+    }
     const differenceMs = end.getTime() - start.getTime();
     const differenceMinutes = differenceMs / (1000 * 60);
     
-    return differenceMinutes > 10;
+    return differenceMinutes > durationInMinutes;
   }
 }

@@ -63,8 +63,8 @@ export default function UserInfo({user, editable} : {user: UserProfileDto, edita
 				<button className="btn btn-outline-dark">Enable 2FA</button>
 				<button className="btn btn-outline-dark">Change password</button>
 			</>}
-			{isLoading == true && <p>Updating userName...</p>}
-			{error != null && <p>Not possible to update userName: {error.message}</p>}
+			{isLoading == true && <p>Updating user...</p>}
+			{error != null && <p>Not possible to update user: {error.message}</p>}
 		</>
 	);
 }

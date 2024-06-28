@@ -72,9 +72,6 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 							<div className="col col-lg-6 col-md-12 white-box">
 								<GameSettings user={user}/>
 							</div>
-							<div className="col col-lg-6 col-md-12 white-box">
-								<Blocked user={user}/>
-							</div>
 						</div>
 					}
 				</> : <><p> User not found...</p></>

@@ -86,7 +86,7 @@ export default function UnreadMessages(props: { secondUserId: number, indexInUse
 	}, [unreadsFromDb]);
 
 	useEffect(() => {
-		console.log("currentUser changed UnreadMessages.tsx", IsBlocked(props.secondUserId, currentUser));
+		// console.log("currentUser changed UnreadMessages.tsx", IsBlocked(props.secondUserId, currentUser));
 		if (IsBlocked(props.secondUserId, currentUser)) // If the user is blocked, set unreadMessages to 0
 			resetCounters();
 	}, [currentUser]);

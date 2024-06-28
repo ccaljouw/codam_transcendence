@@ -34,9 +34,9 @@ export default function useFetch<T, U>(): fetchOutput<T, U> {
                 throw new Error("Response not ok: " + response.status + ": " + response.statusText);
             }
             setData(await response.json() as U);
-        } catch (e: any) {
+        } catch (e: any) { //todo: add type
             console.log("useFetch error: ", e);
-            setError(error);
+            setError(e);
         } finally {
             setIsLoading(false);
         }
@@ -44,4 +44,4 @@ export default function useFetch<T, U>(): fetchOutput<T, U> {
     return ({data, isLoading, error, fetcher});
 };
 
-//todo: check if fetchProps and fetchOutput should by types or interfaces
+//todo: check if fetchProps and fetchOutput should be types or interfaces

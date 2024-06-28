@@ -17,7 +17,6 @@ export class constants {
 	static BACKEND_BASEURL = 'http://localhost:3001/';
 	static FRONTEND_BASEURL = 'http://localhost:3000'; //todo: JMA: consider adding '/' at end of url
 
-	// static API_LOGIN_42 = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-66c50cf4e54a51062bc5f0c110035ff12e1b0427cc1066c11d6e5c220a2ed1dc';
 
 	static API_USERS = this.BACKEND_BASEURL + 'users/';
 	static API_REGISTER = this.API_USERS + 'register/';
@@ -55,10 +54,10 @@ export class constants {
 	static API_TEST_REPORT = this.API_TEST + 'report';
 
 	static API_SWAGGER = this.BACKEND_BASEURL + 'api';
-	static API_AUTH42 = this.BACKEND_BASEURL + 'auth/42';
+	static API_AUTH42 = this.BACKEND_BASEURL + 'auth/42/';
   
-  static API_STATS = this.BACKEND_BASEURL + 'stats'
-  // static API_TOP_10 = this.API_STATS + 'top10/'; 
-  static API_TOP_10 = this.API_USERS + 'all/'; // todo: Jorien: change code stats.tsx? so this can be set to correct endpoint
+  static API_STATS = this.BACKEND_BASEURL + 'stats/';
+  static API_TOP_10 = this.API_STATS + 'top10/';
+  static API_LAST_10 = this.API_STATS + 'last10Games/';
   static API_RANK = this.API_STATS + 'rank';
 }
