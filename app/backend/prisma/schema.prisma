@@ -32,26 +32,26 @@ model User {
 	loginName String @unique
 	hash      String
 
-    userName  String? @unique //if no userName is provided loginName is used
-    email     String? @unique
-    firstName String?
-    lastName  String?
-    token42   Token42?
-    token     Tokens[]
+  userName  String? @unique //if no userName is provided loginName is used
+  email     String? @unique
+  firstName String?
+  lastName  String?
+  token42   Token42?
+  token     Tokens[]
 
-    avatarId Int          @default(1)
-    theme    Int          @default(0)
-    online   OnlineStatus @default(OFFLINE)
+  avatarId Int          @default(1)
+  theme    Int          @default(0)
+  online   OnlineStatus @default(OFFLINE)
 
-    chats ChatUsers[]
-    games GameUser[]
-    stats Stats?
+  chats ChatUsers[]
+  games GameUser[]
+  stats Stats?
 
-	  friends User[] @relation("Friends")
-	  friendOf User[] @relation("Friends")
+	friends User[] @relation("Friends")
+	friendOf User[] @relation("Friends")
 
-	  blocked User[] @relation("Blocked")
-	  blockedBy User[] @relation("Blocked")
+	blocked User[] @relation("Blocked")
+	blockedBy User[] @relation("Blocked")
 
 	createdAt DateTime @default(now())
 	updatedAt DateTime @updatedAt

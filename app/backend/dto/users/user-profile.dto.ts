@@ -44,6 +44,6 @@ export class UserProfileDto implements User {
 	@ApiProperty({ required: false })
 	blocked?: UserProfileDto[];
   
-  @Exclude()
+  // @Exclude()
 	hash: string;
 }

@@ -47,8 +47,6 @@ export class UsersService {
 					return b.online > a.online ? 1 : -1;
 				return a.userName.localeCompare(b.userName)
 			});
-
-			delete user.hash;
 			for (const friend of user.friends as UserProfileDto[]) {
 				delete friend.friends;
 				delete friend.blocked;
@@ -146,7 +144,6 @@ export class UsersService {
 				}
 
 			});
-			delete user.hash;
 			for (const friend of user.friends as UserProfileDto[]) {
 				delete friend.friends;
 				delete friend.blocked;
@@ -177,7 +174,6 @@ export class UsersService {
 				}
 				
 			});
-			delete user.hash;
 			for (const friend of user.friends as UserProfileDto[]) {
 				delete friend.friends;
 				delete friend.blocked;
@@ -211,7 +207,6 @@ export class UsersService {
 			});
       if (!user)
         throw new NotFoundException(`User with name ${loginName} does not exist.`);
-			delete user.hash;
 			for (const friend of user.friends as UserProfileDto[])
 				{
 					delete friend.friends;

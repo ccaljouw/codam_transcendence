@@ -14,7 +14,7 @@ export class constants {
 	static configuration = 'test';
 	static themes = ['classic', 'blackAndWhite', 'neon'];
 
-	static BACKEND_BASEURL = 'http://localhost:3001/';
+	static BACKEND_BASEURL = `http://localhost:3001/`;
 	static FRONTEND_BASEURL = 'http://localhost:3000'; //todo: JMA: consider adding '/' at end of url
 
 
