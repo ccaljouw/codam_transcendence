@@ -17,7 +17,10 @@ export default function Welcome() : JSX.Element {
 			<li>Possible to change user settings on your profile page when you fill in a correct value. Error not properly shown yet</li>
 			<li>Stats implemented, fetched from database</li>
 
-			<li>AGAIN forgot how the game used to be schalable, I broke it...</li>
+			<p>Extra new: 30/6</p>
+			<li>Game is schalable</li>
+			<li>Profile visit button added to userContextMenu</li>
+			<li>Changed look of game theme settings button</li>
         </>
 	);
 }
