@@ -18,12 +18,14 @@ export default function MenuBar(): JSX.Element {
 
 	return (
 		<>
-			<nav className="navbar navbar-expand-md white-box pb-2 index-fill pt-0">
+			<nav className="navbar navbar-expand-md white-box index-fill">
 				<FontBangers>
+					{/* <h3> */}
 					<a className="navbar-brand" href="/">STRONGPONG</a>
 					<button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 						<span className="navbar-toggler-icon"></span>
 					</button>
+					{/* </h3> */}
 				</FontBangers>
 				{currentUser.id && 
 					<>
@@ -31,13 +33,13 @@ export default function MenuBar(): JSX.Element {
 							<div className="collapse navbar-collapse" id="navbarNav">
 								<div className="navbar-nav">
 									<MenuLink href="/" title="Home" />
-									<MenuLink href={"/profile/" + currentUser.id} title="Profile" />
+									<MenuLink href={`/profile/${currentUser.userName}`} title="Profile" />
 									<MenuLink href="/play" title="Play" />
 									<MenuLink href="/logout" title="Logout" />
 								</div>
 								<div className={"navbar-nav"}>
 									{ /* todo: JMA: limit access on the pages itself as well */ }
-									{ (currentUser.loginName == 'ccaljouw' || currentUser.loginName == 'jaberkro' || currentUser.loginName == 'avan-and' || currentUser.loginName == 'cwesseli') && 
+									{currentUser.id  < 4 && 
 										<>
 											<li className="nav-item dropdown">
 												<a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
