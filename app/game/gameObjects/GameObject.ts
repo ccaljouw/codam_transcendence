@@ -63,6 +63,4 @@ export class GameObject {
 	draw(ctx: CanvasRenderingContext2D) {
 		drawGameObject(ctx, this.x, this.y, this.width, this.height, this.color);
 	}
-
-
 }

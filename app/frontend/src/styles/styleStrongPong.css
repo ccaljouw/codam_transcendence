@@ -8,6 +8,7 @@
     --strongpong-dark-blue: #1948cb;
     --strongpong-white: #F8DED7;
     --strongpong-white-transparent: #F8DED7A8;
+    --strongpong-padding: 20px;
 }
 
 .root-layout {
@@ -27,35 +28,42 @@
 }
 
 .index-fill {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: var(--strongpong-padding);
+    padding-right: var(--strongpong-padding);
 }
 
 .index-left {
-    padding-left: 20px;
-    padding-right: 10px;
+    padding-left: var(--strongpong-padding);
+    padding-right: calc(var(--strongpong-padding) / 2);
 }
 
 .index-middle {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: calc(var(--strongpong-padding) / 2);
+    padding-right: calc(var(--strongpong-padding) / 2);
 }
 
 .index-right {
-    padding-left: 10px;
-    padding-right: 20px;
+    padding-left: calc(var(--strongpong-padding) / 2);
+    padding-right: var(--strongpong-padding);
 }
 
 .padding-top-10 {
-    padding-top: 10px;
+    padding-top: calc(var(--strongpong-padding) / 2);
 }
 
 .navbar {
-    margin: 20px;
+    margin: var(--strongpong-padding);
+    padding: var(--strongpong-padding);
+}
+
+.navbar-nav, .navbar-brand, .nav-link {
+    margin: 0px;
+    padding: 0px;
+    padding-right: var(--strongpong-padding);
 }
 
 .content-area {
-    margin-bottom: 20px;
+    margin-bottom: var(--strongpong-padding);
 }
 
 .white-box {
@@ -63,13 +71,11 @@
     background-color: var(--strongpong-white-transparent);
     border: 4px double var(--strongpong-black);
     text-overflow: clip;
-    padding: 20px;
-    padding-top: 10px;
-    padding-bottom: 0px;
+    padding: var(--strongpong-padding);
 }
 
 .btn {
-    margin-bottom: 10px;
+    margin-bottom: calc(var(--strongpong-padding) / 2);
 }
 
 .chat-messages {
@@ -85,6 +91,23 @@
     background: var(--strongpong-white);
 }
 
+.custom-select {
+    background: transparent;
+    border-color: var(--strongpong-black);
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.8em' font-size='100'>⌄</text></svg>");
+    background-repeat: no-repeat;
+    background-position-x: 98%;
+    background-position-y: -5px;
+}
+
 .dropdown-menu {
     background: var(--strongpong-white);
+}
+
+.win {
+    color: var(--strongpong-blue);
+}
+
+.loss {
+    color: var(--strongpong-red);
 }
