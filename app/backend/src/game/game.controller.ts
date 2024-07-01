@@ -6,7 +6,6 @@ import {
   Delete,
   Patch,
   Body,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiNotFoundResponse,

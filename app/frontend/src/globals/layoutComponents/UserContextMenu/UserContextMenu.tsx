@@ -76,6 +76,13 @@ export default function UserContextMenu({ user }:
 		//todo: after blocking a user, the userList should be updated
 	}
 
+	const handleProfileClick = () => {
+		setDropdownVisible(false);
+		console.log(`Visiting this user: ${user.userName}`);
+		// router.push(`${constants.FRONTEND_BASEURL}/profile/${user.id}`);
+		router.push(`${constants.FRONTEND_BASEURL}/profile/${user.userName}`);
+	}
+
 	useEffect(() => {
 		if (invite) {
 			if (!chat) {
@@ -134,6 +141,7 @@ export default function UserContextMenu({ user }:
 			  <>
 				
 				<span className={style.userlink_item} onClick={() => createInvite(InviteType.GAME, 0)} title='Invite to game'> 🏓</span> |
+				<span className={style.userlink_item} onClick={() => handleProfileClick()} title='Visit Profile'>👤</span>
 				{currentChatRoom.visibility !== ChatType.DM && (
 				  <span className={style.userlink_item} onClick={() => createInvite(InviteType.CHAT, currentChatRoom.id)} title='Invite to chat'>💬</span>
 				)}

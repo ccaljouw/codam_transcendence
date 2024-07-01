@@ -21,10 +21,10 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 	
 	useEffect(() => {
 		console.log(pathname);
-		if (pathname != `/profile/${userName}`)
-		{
-			router.push(pathname);
-		}
+		// if (pathname != `/profile/${userName}`)
+		// {
+		// 	router.push(`/profile/${userName}`);
+		// }
 	}, []);
 
 	useEffect(() => {
@@ -40,7 +40,7 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 	}, [data]);
 
 	const fetchUser = async () => {
-		await fetcher({url: constants.API_USERS + userName});
+		await fetcher({url: `${constants.API_USERS}username/${userName}`});
 	};
 
 	return (
@@ -49,7 +49,7 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 				<H3 text={`Loading profile page of ${userName}...`}/>
 			}
 			{error != null &&
-				<H3 text={`Oops, it seems that the user ${userName} does not exist...`}/>
+				<H3 text={`Oops, it seems that the user ${userName} does not exist: ${error.message}`}/>
 			}
 			{(user != null && user.userName != null) ? 
 				<>

@@ -174,6 +174,7 @@ export class UsersService {
 				}
 				
 			});
+      delete user.hash;
 			for (const friend of user.friends as UserProfileDto[]) {
 				delete friend.friends;
 				delete friend.blocked;
