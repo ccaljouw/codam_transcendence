@@ -1,5 +1,5 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { NotFoundException, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { PrismaClientExceptionFilter } from './errorHandling/prisma-client-exception/prisma-client-exception.filter';
@@ -17,13 +17,13 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   const { httpAdapter } = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
+  app.useGlobalFilters(new PrismaClientExceptionFilter());
 
   // use pipes to validate requests (as defined in DTOs,
   // whitelist: true strips out addition information that is send but not part of the DTO)
   // It’s important to note that this option will filter all properties without validation decorators,
   // even if they are defined in the DTO.
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true })); //forbidNonWhitelisted: true
 
   app.enableCors()
   await app.listen(3000);

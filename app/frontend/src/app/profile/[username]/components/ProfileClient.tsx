@@ -21,19 +21,26 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 	
 	useEffect(() => {
 		console.log(pathname);
-		if (pathname != `/profile/${userName}`)
-		{
-			router.push(pathname);
-		}
+		// if (pathname != `/profile/${userName}`)
+		// {
+		// 	router.push(`/profile/${userName}`);
+		// }
 	}, []);
 
 	useEffect(() => {
-		fetchUser();
+		if(userName == currentUser.userName)
+			setUser(currentUser);
+		else
+			fetchUser();
 	}, [currentUser]);
 
+	useEffect(() => {
+		if(data != null)
+			setUser(data);
+	}, [data]);
 
 	const fetchUser = async () => {
-		await fetcher({url: constants.API_USERS + userName});
+		await fetcher({url: `${constants.API_USERS}username/${userName}`});
 	};
 
 	return (
@@ -42,7 +49,7 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 				<H3 text={`Loading profile page of ${userName}...`}/>
 			}
 			{error != null &&
-				<H3 text={`Oops, it seems that the user ${userName} does not exist...`}/>
+				<H3 text={`Oops, it seems that the user ${userName} does not exist: ${error.message}`}/>
 			}
 			{(user != null && user.userName != null) ? 
 				<>
@@ -64,9 +71,6 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 						<div className="row">
 							<div className="col col-lg-6 col-md-12 white-box">
 								<GameSettings user={user}/>
-							</div>
-							<div className="col col-lg-6 col-md-12 white-box">
-								<Blocked user={user}/>
 							</div>
 						</div>
 					}

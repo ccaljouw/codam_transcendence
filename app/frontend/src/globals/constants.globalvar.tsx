@@ -10,6 +10,10 @@
 */
 
 export class constants {
+
+	static configuration = 'test';
+	static themes = ['classic', 'blackAndWhite', 'neon'];
+
 	static BACKEND_BASEURL = 'http://localhost:3001/';
 	static FRONTEND_BASEURL = 'http://localhost:3000'; //todo: JMA: consider adding '/' at end of url
 
@@ -41,7 +45,7 @@ export class constants {
 	static API_INVITE = this.BACKEND_BASEURL + 'invite/';
 	static INVITE_RESPOND_TO_FRIEND_REQUEST = this.API_INVITE + 'respondToFriendRequest/';
 	static INVITE_RESPOND_TO_GAME_REQUEST = this.API_INVITE + 'respondToGameRequest/';
-
+  
 	static API_GAME = this.BACKEND_BASEURL + 'game/'
 
 	static API_TEST = this.BACKEND_BASEURL + 'test/';
@@ -53,4 +57,9 @@ export class constants {
 
 	static API_SWAGGER = this.BACKEND_BASEURL + 'api';
 	static API_AUTH42 = this.BACKEND_BASEURL + 'auth42/';
+  
+  static API_STATS = this.BACKEND_BASEURL + 'stats/';
+  static API_TOP_10 = this.API_STATS + 'top10/';
+  static API_LAST_10 = this.API_STATS + 'last10Games/';
+  static API_RANK = this.API_STATS + 'rank';
 }

@@ -58,4 +58,10 @@ export class CreateUserDto {
   @ApiProperty({ required: false })
   @IsOptional()
   online?: OnlineStatus;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  theme?: number;
 }

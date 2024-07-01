@@ -29,6 +29,13 @@ export default function FormToUpdateUserDto (event: FormEvent<HTMLFormElement>) 
         patchUser.hash = formData.get('hash')?.toString();
     }
 
+    //todo: add game settings
+    if (formData.get('theme')) {
+        const themeValue = formData.get('theme');
+        patchUser.theme = themeValue !== null ? Number(themeValue) : undefined;
+        console.log(`theme value is: ${Number(themeValue)}`);
+    }
+
     //todo: consider adding avatarId and online status
 
     return (patchUser);

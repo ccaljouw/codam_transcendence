@@ -25,4 +25,7 @@ export class CreateGameUserDto {
   @Type(() => Number)
   @IsInt()
   userId: number;
+
+  @ApiProperty({ required: true })
+  clientId: string;
 }
