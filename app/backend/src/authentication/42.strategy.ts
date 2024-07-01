@@ -24,10 +24,9 @@ export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
   
   async validate(accessToken: string, refreshToken: string, profile: any): Promise<UserProfileDto> {
     let user : UserProfileDto;
-    let jwt: any;
+    let jwt: { access_token: string };
 
     console.log( `Logged in: ${profile.username}`);
-
     try {
       user = await this.userService.findUserLogin(profile.username);
       jwt = await this.authService.generateJwt(accessToken);
