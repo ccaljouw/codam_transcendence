@@ -25,7 +25,12 @@ async function bootstrap() {
   // even if they are defined in the DTO.
   app.useGlobalPipes(new ValidationPipe({ whitelist: true })); //forbidNonWhitelisted: true
 
-  app.enableCors()
+  app.enableCors({
+    origin: 'http://localhost:3000', //TODO: change host?
+    methods: 'GET,PATCH,POST,DELETE, ',
+    allowedHeaders: 'Content-Type, Authorization', // TODO: use authorization headers
+    credentials: true, // Enable credentials (cookies, authorization headers)
+  });
   await app.listen(3000);
 };
 bootstrap();

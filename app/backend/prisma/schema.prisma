@@ -30,7 +30,7 @@ datasource db {
 model User {
 	id        Int    @id @default(autoincrement())
 	loginName String @unique
-	hash      String
+	hash      String?
 
   userName  String? @unique //if no userName is provided loginName is used
   email     String? @unique

@@ -19,14 +19,13 @@ export class constants {
 
 
 	static API_USERS = this.BACKEND_BASEURL + 'users/';
-	static API_REGISTER = this.API_USERS + 'register/';
 	static API_ALL_USERS = this.API_USERS + 'all/';
 	static API_ALL_USERS_BUT_ME = this.API_USERS + 'allButMe/';
 	static API_ADD_TOKEN = this.API_USERS + 'token/';
 	static API_FRIENDS_FROM = this.API_USERS + 'friendsFrom/';
 	static API_BLOCK = this.API_USERS + 'block/';
 	static API_UNBLOCK = this.API_USERS + 'unblock/';
-
+  
 	static API_CHAT = this.BACKEND_BASEURL + 'chat/';
 	static CHAT_CHECK_IF_DM_EXISTS = this.API_CHAT + 'checkIfDMExists/';
 	static CHAT_GET_UNREADS = this.API_CHAT + 'getUnreads/';
@@ -39,22 +38,24 @@ export class constants {
 	static CHAT_CHANNELS_FOR_USER = this.API_CHAT + 'channelsForUser/';
 	static CHAT_NEW_CHANNEL = this.API_CHAT + 'newChannel/';
 	static CHAT_GET_CHANNEL_WITH_USER = this.API_CHAT + 'channelWithUser/';
-
+  
 	static API_INVITE = this.BACKEND_BASEURL + 'invite/';
 	static INVITE_RESPOND_TO_FRIEND_REQUEST = this.API_INVITE + 'respondToFriendRequest/';
 	static INVITE_RESPOND_TO_GAME_REQUEST = this.API_INVITE + 'respondToGameRequest/';
   
 	static API_GAME = this.BACKEND_BASEURL + 'game/'
-
+  
 	static API_TEST = this.BACKEND_BASEURL + 'test/';
 	static API_TEST_BACKEND = this.API_TEST + 'backend';
 	static API_TEST_FRONTEND = this.API_TEST + 'frontend';
 	static API_TEST_ALL = this.API_TEST + 'all';
 	static API_TEST_OUTPUT = this.API_TEST + 'output';
 	static API_TEST_REPORT = this.API_TEST + 'report';
-
+  
 	static API_SWAGGER = this.BACKEND_BASEURL + 'api';
 	static API_AUTH42 = this.BACKEND_BASEURL + 'auth/42/';
+	static API_REGISTER = this.BACKEND_BASEURL + 'auth/register/';
+  static API_LOGIN = this.BACKEND_BASEURL + 'auth/login/';
   
   static API_STATS = this.BACKEND_BASEURL + 'stats/';
   static API_TOP_10 = this.API_STATS + 'top10/';

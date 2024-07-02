@@ -10,24 +10,24 @@ export class UsersService {
 
 	constructor(
 		private db: PrismaService,
-	private stats: StatsService,
+	  private stats: StatsService,
 	) { }
 
 	// USER CRUD OPERATIONS
 	async create(createUserDto: CreateUserDto): Promise<UserProfileDto> {
 		try {
-	  if (!createUserDto.userName)
-		createUserDto.userName = createUserDto.loginName;
-	  const user = await this.db.user.create({ data: createUserDto });
-	  console.log(`create stats for ${user.id}`)
-	  await this.stats.create(user.id);
-	  return user;
-	} catch (error) {
-	  if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
-		throw error;
-	  }
-	  throw new Error(`Error creating user: ${error.message}`);
-	}
+      if (!createUserDto.userName)
+        createUserDto.userName = createUserDto.loginName;
+      const user = await this.db.user.create({ data: createUserDto });
+      console.log(`create stats for ${user.id}`)
+      await this.stats.create(user.id);
+      return user;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+      throw new Error(`Error creating user: ${error.message}`);
+    }
 	}
 
 	async update(id: number, updateUserDto: UpdateUserDto): Promise<UserProfileDto> {

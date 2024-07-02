@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import Strategy from 'passport-42';
 import { UsersService } from 'src/users/users.service';
 import { UserProfileDto } from '@ft_dto/users';
-import { AuthService } from './authentication.service';
+import { AuthService } from '../authentication.service';
 
 @Injectable()
 export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
@@ -22,25 +22,22 @@ export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
     });
   }
   
-  async validate(accessToken: string, refreshToken: string, profile: any): Promise<UserProfileDto> {
+  async validate(accessToken: string, refreshToken: string, profile: any): Promise<{user: UserProfileDto; jwt: string}> {
     let user : UserProfileDto;
-    let jwt: { access_token: string };
 
     console.log( `Logged in: ${profile.username}`);
     try {
       user = await this.userService.findUserLogin(profile.username);
-      jwt = await this.authService.generateJwt(accessToken);
-      user = await this.userService.update(user.id, { hash: jwt.access_token })
-    } catch (error) {
-      if (error instanceof NotFoundException ) {
+      if (!user) {
         user = await this.userService.create({ 
           loginName: profile.username, 
-          userName: profile.username, 
-          hash: jwt.access_token })
-      } else {
-        throw error;
+          userName: profile.username,
+        })
       }
+    } catch (error) {
+      throw error;
     }
-    return user;
+    const jwt: string = await this.authService.generateJwt(user);
+    return { user, jwt } ;
   }
 }

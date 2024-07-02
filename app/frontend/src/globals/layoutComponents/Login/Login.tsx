@@ -9,34 +9,39 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 type LoginCredentials = {
-    email: string,
+    loginName: string,
     password: string
 }
 
 export default function Login() : JSX.Element {
   const pathname = usePathname();
 	const {setCurrentUser} = useContext(TranscendenceContext);
-    const {data: loggedUser, isLoading, error, fetcher} = useFetch<LoginCredentials, UserProfileDto>();
+  const {data: loggedUser, isLoading, error, fetcher} = useFetch<LoginCredentials, { user: UserProfileDto; jwt: string }>();
 
-    useEffect(() => {
-      if (loggedUser != null)
-        setLoggedUser(loggedUser);
-    }, [loggedUser]);
+  useEffect(() => {
+    if (loggedUser != null)
+      setLoggedUser(loggedUser.user, loggedUser.jwt);
+  }, [loggedUser]);
 
-    useEffect(() => {
-      console.log(`Logging in from: ${pathname}`);
-    }, []);
-
-	const setLoggedUser = (user: UserProfileDto) => {
+	const setLoggedUser = (user: UserProfileDto, jwt: string) => {
 		console.log("Setting new user with id " + user.id + " in ChooseUser");
 		setCurrentUser(user);
 		sessionStorage.setItem('userId', JSON.stringify(user.id));
+    sessionStorage.setItem('jwt', jwt);
 	}
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        console.log("Logging in user 1 in Login");
-        await fetcher({url:`${constants.API_USERS}1`});
+
+        const payload = e.target as typeof e.target & {
+          loginName: { value: string };
+          password: { value: string };
+        };
+        await fetcher({
+          url:`${constants.API_LOGIN}`, 
+          fetchMethod: 'POST', 
+          payload: { loginName: payload.loginName.value, password: payload.password.value }
+        });
     }
 
 	return (
@@ -44,7 +49,7 @@ export default function Login() : JSX.Element {
 			<div className="white-box">
 				<H3 text="Login to play some pong"></H3>
                 <form onSubmit={handleSubmit} acceptCharset='utf-8' className="row">
-                    <input id="email" type="email" required={true} className="form-control form-control-sm" placeholder={"email"}></input>
+                    <input id="loginName" type="loginName" required={true} className="form-control form-control-sm" placeholder={"loginName"}></input>
                     <input id="password" type="password" required={true} className="form-control form-control-sm" placeholder={"password"}></input>
                     <button className="btn btn-dark btn-sm" type="submit">Login</button>
                 </form>

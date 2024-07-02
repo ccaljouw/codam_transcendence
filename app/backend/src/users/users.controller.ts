@@ -4,7 +4,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto, UserProfileDto} from '@ft_dto/users';
 import { CreateTokenDto } from '@ft_dto/users/create-token.dto';
 import { TokenService } from './token.service';
-import { JwtAuthGuard } from 'src/authentication/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 
 
 @Controller('users')
@@ -14,14 +14,6 @@ export class UsersController {
 		private readonly usersService: UsersService,
 		private readonly tokenService: TokenService,
 	) { }
-
-	@Post('register')
-	@ApiOperation({ summary: 'Adds user to database and returns id for this user' })
-	@ApiCreatedResponse({ description: 'User successfully created', type: UserProfileDto })
-
-	register(@Body() createUser: CreateUserDto): Promise<UserProfileDto> {
-		return this.usersService.create(createUser);
-	}
 
 	@Post('token')
 	@ApiOperation({ summary: 'Adds token with user id to database' })
@@ -42,7 +34,7 @@ export class UsersController {
 	}
 
   @Get('username/:userName')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
 
   @ApiOperation({ summary: 'Returns user with specified userName' })
   @ApiOkResponse({ type: UserProfileDto })

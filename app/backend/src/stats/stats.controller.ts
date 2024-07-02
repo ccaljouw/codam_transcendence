@@ -2,7 +2,7 @@ import { Controller, Get, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs
 import { StatsService } from './stats.service';
 import { GameResultDto, StatsDto } from '@ft_dto/stats';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/authentication/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 
 @Controller('stats')
 @ApiTags('stats')

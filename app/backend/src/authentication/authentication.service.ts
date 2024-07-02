@@ -1,11 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserProfileDto, CreateUserDto } from '@ft_dto/users';
 import { UsersService } from 'src/users/users.service';
-import { HttpService } from '@nestjs/axios'
-import { AxiosResponse } from 'axios'
-import { Observable, lastValueFrom, map } from 'rxjs';
 import { PrismaService } from 'src/database/prisma.service';
-import { Create42TokenDto } from '@ft_dto/authentication/create-token.dto';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -17,10 +13,38 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {};
 
-  async generateJwt(user: any) {
-    const payload = { username: user.login, sub: user.id };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+  async generateJwt(user: UserProfileDto) : Promise<string> {
+    const payload = { loginName: user.loginName, id: user.id };
+    return this.jwtService.sign(payload);
+  }
+
+  async validateUser(username: string, password: string): Promise<UserProfileDto> {
+    let user: UserProfileDto;
+    try {
+      user = await this.userService.findUserLogin(username)
+      // TODO: should be hashed password comparison
+      if (user && user.hash === password) { 
+        return user;
+      }
+    } catch (error) {
+      if (user)
+        throw new UnauthorizedException;
+      else
+        throw error;
+    }
+  }
+
+  async registerUser(createUser: CreateUserDto): Promise<{ user: UserProfileDto; jwt: string }> {
+    let user: UserProfileDto;
+    try {
+      //TODO: hash password
+      user = await this.userService.create(createUser);
+      const payload = { loginName: user.loginName, id: user.id };
+      const jwt = this.jwtService.sign(payload);
+      return { user, jwt };
+    }
+   catch (error) {
+    throw error;
+   }
   }
 }

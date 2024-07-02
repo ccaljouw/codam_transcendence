@@ -26,7 +26,7 @@ export class CreateUserDto {
   @MinLength(3)                       //todo: define min length
   @MaxLength(30)                      //todo: define max legth  
   @ApiProperty({ nullable: false, minLength: 3, maxLength:30  })
-  hash: string;
+  hash?: string;
   
   @IsOptional()
   @ApiProperty({ required: true })
