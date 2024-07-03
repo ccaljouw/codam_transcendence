@@ -141,4 +141,8 @@ export class ChatMessagesController {
 		const chat = await this.chatService.findOne(id);
 		return chat;
 	}
+
+	//todo: Albert: Create patch and delete method for UpdateChatDto. Return boolean if it worked or not
+	// @Patch(':id')
+	// @Delete(':id')
 }

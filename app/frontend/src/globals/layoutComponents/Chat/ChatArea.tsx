@@ -14,6 +14,7 @@ import ChannelList from './channelList';
 import { UpdateChatUserDto } from '@ft_dto/chat';
 import useFetch from 'src/globals/functionComponents/useFetch';
 import ChannelStatusIndicator from 'src/globals/functionComponents/channelStatus';
+import ChannelSettings from './components/ChannelSettings';
 
 
 
@@ -167,14 +168,7 @@ export default function ChatArea() {
 					{userListType == UserListType.Chats && <ChannelList />}
 					{userListType == UserListType.AllUsers && <UserList userDisplayFunction={ChatAreaUserList} fetchUrl={constants.API_ALL_USERS_BUT_ME + currentUser.id} />}
 					{userListType == UserListType.Channel && <><UserList userDisplayFunction={ChatAreaChannelUserList} fetchUrl={constants.CHAT_GET_USERS_IN_CHAT + currentChatRoom.id} /></>}
-					{userListType == UserListType.Settings && <>
-					<b>Channel settings here.</b><br />
-					Channel visibility: {currentChatRoom.visibility} 
-					<br />&emsp;&emsp;--&gt; Public, Private, Password [with set/change password option]<br />
-					Channel name: {currentChatRoom.name} 
-					<br />&emsp;&emsp;--&gt; Change name<br />
-					Delete channel<br />
-					</>}
+					{userListType == UserListType.Settings && <><ChannelSettings room={currentChatRoom}/></>}
 				</div>
 			</div>
 		</>
