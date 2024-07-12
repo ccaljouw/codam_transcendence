@@ -19,7 +19,7 @@ export class AuthController {
   @Get('42/callback')
   @UseGuards(AuthGuard('42'))
   async fortyTwoAuthRedirect(@Req() req, @Res() res) {
-    const { jwt, user }: { jwt: string; user: UserProfileDto } = req.user;
+    const { user, jwt }: { user: UserProfileDto; jwt: string } = req.user;
     console.log(`Auth callback for ${user.id} with jwt ${jwt}`);
     res.redirect(`http://localhost:3000?user=${user.id}&jwt=${jwt}`);
   }
