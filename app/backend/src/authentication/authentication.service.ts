@@ -9,7 +9,6 @@ export class AuthService {
 
   constructor (
     private readonly userService: UsersService, 
-    private readonly db: PrismaService,
     private readonly jwtService: JwtService,
   ) {};
 
@@ -23,13 +22,11 @@ export class AuthService {
     try {
       user = await this.userService.findUserLogin(username)
       // TODO: should be hashed password comparison
-      if (user && user.hash === password) { 
+      if (user.hash === password) { 
         return user;
-      }
-    } catch (error) {
-      if (user)
+      } else
         throw new UnauthorizedException;
-      else
+    } catch (error) {
         throw error;
     }
   }
@@ -40,7 +37,8 @@ export class AuthService {
       //TODO: hash password
       user = await this.userService.create(createUser);
       const payload = { loginName: user.loginName, id: user.id };
-      const jwt = this.jwtService.sign(payload);
+      const jwt: string = this.jwtService.sign(payload);
+      console.log(`Registered ${user.userName} with jwt ${jwt}`);
       return { user, jwt };
     }
    catch (error) {

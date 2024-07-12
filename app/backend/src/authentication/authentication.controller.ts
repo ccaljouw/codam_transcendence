@@ -24,19 +24,19 @@ export class AuthController {
     res.redirect(`http://localhost:3000?user=${user.id}&jwt=${jwt}`);
   }
 
+  @Post('register')
+  @ApiOperation({ summary: 'Adds user to database and returns id for this user' })
+  @ApiCreatedResponse({ description: 'User successfully created', type: UserProfileDto })
+
+  async register(@Body() createUser: CreateUserDto) : Promise<{ user: UserProfileDto; jwt: string }> {
+    return this.authService.registerUser(createUser);
+  }
+  
   @Post('login')
   @UseGuards(LocalAuthGuard)
   async login(@Req() req) : Promise<{ user: UserProfileDto, jwt: string}> {
     const { jwt, user }: { jwt: string; user: UserProfileDto } = req.user;
-    console.log(`Logged in ${user.id} with jwt ${jwt}`);
+    console.log(`Logged in ${user.userName} with jwt ${jwt}`);
     return { user, jwt };
   }
-
-  @Post('register')
-	@ApiOperation({ summary: 'Adds user to database and returns id for this user' })
-	@ApiCreatedResponse({ description: 'User successfully created', type: UserProfileDto })
-
-	async register(@Body() createUser: CreateUserDto) : Promise<{ user: UserProfileDto; jwt: string }> {
-		return this.authService.registerUser(createUser);
-	}
 }

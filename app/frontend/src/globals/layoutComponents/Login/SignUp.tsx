@@ -69,7 +69,7 @@
 
 "use client";
 import { FormEvent, useContext, useEffect } from 'react';
-import { CreateUserDto, UpdateUserDto, UserProfileDto } from '@ft_dto/users';
+import { UpdateUserDto, UserProfileDto } from '@ft_dto/users';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import { constants } from '@ft_global/constants.globalvar'
 import { H3 } from 'src/globals/layoutComponents/Font';
