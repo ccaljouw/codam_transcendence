@@ -32,7 +32,7 @@ export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
         user = await this.userService.create({ 
           loginName: profile.username, 
           userName: profile.username,
-        })
+        }, null)
       }
     } catch (error) {
       throw error;

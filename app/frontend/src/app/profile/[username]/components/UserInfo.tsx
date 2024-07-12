@@ -17,7 +17,7 @@ export default function UserInfo({user, editable} : {user: UserProfileDto, edita
 	const firstnameAttributes: optionalAttributes={type:"text", name:"firstName", required:true, autoComplete:"off", minLength:1, maxLength:30};
 	const lastnameAttributes: optionalAttributes={type:"text", name:"lastName", required:true, autoComplete:"off", minLength:1, maxLength:30};
 	const emailAttributes: optionalAttributes={type:"email", name:"email", required:true, autoComplete:"on"};
-	const hashAttributes: optionalAttributes={type:"password", name:"hash", required:true, autoComplete:"off", minLength:3, maxLength:30};
+	const hashAttributes: optionalAttributes={type:"password", name:"pwd", required:true, autoComplete:"off", minLength:3, maxLength:30};
 	
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		console.log("submitting form field entry");

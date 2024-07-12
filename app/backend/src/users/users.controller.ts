@@ -1,7 +1,7 @@
 import { Controller, ParseIntPipe, Body, Param, Get, Post, Patch, Delete, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { CreateUserDto, UpdateUserDto, UserProfileDto} from '@ft_dto/users';
+import { UpdateUserDto, UserProfileDto} from '@ft_dto/users';
 import { CreateTokenDto } from '@ft_dto/users/create-token.dto';
 import { TokenService } from './token.service';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';

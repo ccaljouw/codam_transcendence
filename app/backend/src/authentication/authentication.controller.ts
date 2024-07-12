@@ -1,9 +1,10 @@
 import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { CreateUserDto, UserProfileDto } from '@ft_dto/users';
+import { UserProfileDto } from '@ft_dto/users';
 import { AuthService } from './authentication.service';
 import { LocalAuthGuard } from './guard/login-auth.guard';
+import { Request, Response } from 'express';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -14,11 +15,11 @@ export class AuthController {
 
   @Get('42')
   @UseGuards(AuthGuard('42'))
-  async fortyTwoAuth(@Req() req) {}
+  async fortyTwoAuth(@Req() req: Request) {}
   
   @Get('42/callback')
   @UseGuards(AuthGuard('42'))
-  async fortyTwoAuthRedirect(@Req() req, @Res() res) {
+  async fortyTwoAuthRedirect(@Req() req: Request | any, @Res() res: Response) {
     const { user, jwt }: { user: UserProfileDto; jwt: string } = req.user;
     console.log(`Auth callback for ${user.id} with jwt ${jwt}`);
     res.redirect(`http://localhost:3000?user=${user.id}&jwt=${jwt}`);
@@ -28,14 +29,15 @@ export class AuthController {
   @ApiOperation({ summary: 'Adds user to database and returns id for this user' })
   @ApiCreatedResponse({ description: 'User successfully created', type: UserProfileDto })
 
-  async register(@Body() createUser: CreateUserDto) : Promise<{ user: UserProfileDto; jwt: string }> {
-    return this.authService.registerUser(createUser);
+  async register(@Req() req: Request ) : Promise<{ user: UserProfileDto, jwt: string}>  {
+    console.log(req.body);
+    return this.authService.registerUser(req.body.createUser, req.body.pwd);
   }
   
   @Post('login')
   @UseGuards(LocalAuthGuard)
-  async login(@Req() req) : Promise<{ user: UserProfileDto, jwt: string}> {
-    const { jwt, user }: { jwt: string; user: UserProfileDto } = req.user;
+  async login(@Req() req: Request | any) : Promise<{ user: UserProfileDto, jwt: string}> {
+    const { user, jwt }: { user: UserProfileDto; jwt: string } = req.user;
     console.log(`Logged in ${user.userName} with jwt ${jwt}`);
     return { user, jwt };
   }

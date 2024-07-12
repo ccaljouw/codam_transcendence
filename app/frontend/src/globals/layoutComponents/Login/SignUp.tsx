@@ -69,7 +69,7 @@
 
 "use client";
 import { FormEvent, useContext, useEffect } from 'react';
-import { UpdateUserDto, UserProfileDto } from '@ft_dto/users';
+import { RegisterUserDto, UpdateUserDto, UserProfileDto } from '@ft_dto/users';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import { constants } from '@ft_global/constants.globalvar'
 import { H3 } from 'src/globals/layoutComponents/Font';
@@ -79,7 +79,7 @@ import FormToCreateUserDto from 'src/globals/functionComponents/form/FormToCreat
 
 export default function Register() : JSX.Element {
 	const {setCurrentUser} = useContext(TranscendenceContext);
-  const {data: loggedUser, isLoading, error, fetcher} = useFetch<UpdateUserDto, { user: UserProfileDto; jwt: string }>();
+  const {data: loggedUser, isLoading, error, fetcher} = useFetch<RegisterUserDto, { user: UserProfileDto; jwt: string }>();
 
   useEffect(() => {
     if (loggedUser != null)
@@ -95,7 +95,7 @@ export default function Register() : JSX.Element {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const newUser = FormToCreateUserDto(event);
+    const newUser: RegisterUserDto = FormToCreateUserDto(event);
     console.log('Registering new user with data:');
     console.log(newUser);
     
@@ -121,7 +121,7 @@ export default function Register() : JSX.Element {
             <input id="userName" type="userName" required={true} className="form-control form-control-sm" placeholder={"userName"}></input>
             <input id="loginName" type="loginName" required={true} className="form-control form-control-sm" placeholder={"loginName"}></input>
             <input id="email" type="email" required={true} className="form-control form-control-sm" placeholder={"email"}></input>
-            <input id="password" type="password" required={true} className="form-control form-control-sm" placeholder={"password"}></input>
+            <input id="password" type="pwd" required={true} className="form-control form-control-sm" placeholder={"password"}></input>
             <button className="btn btn-dark btn-sm" type="submit">Login</button>
           </form>
 			</div>

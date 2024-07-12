@@ -1,7 +1,8 @@
 import { FormEvent } from 'react';
-import { CreateUserDto } from '@ft_dto/users';
+import { RegisterUserDto } from '@ft_dto/users';
 
-export default function FormToCreateUserDto (event: FormEvent<HTMLFormElement>) : Partial<CreateUserDto> {
+export default function FormToCreateUserDto (event: FormEvent<HTMLFormElement>): RegisterUserDto {
+  console.log("in form to createUser");
   const target = event.target as typeof event.target & {
     firstName: { value: string };
     lastName: { value: string };
@@ -11,23 +12,16 @@ export default function FormToCreateUserDto (event: FormEvent<HTMLFormElement>) 
     password: { value: string };
   };
 
-  // Extract values from the form fields
-  const firstName = target.firstName.value;
-  const lastName = target.lastName.value;
-  const userName = target.userName.value;
-  const loginName = target.loginName.value;
-  const email = target.email.value;
-  const hash = target.password.value;
-
-  // Construct the DTO object
-  const newUser: CreateUserDto = {
-    firstName,
-    lastName,
-    userName,
-    loginName,
-    email,
-    hash,
-  };
+  const newUser: RegisterUserDto = {
+  createUser: {
+    firstName: target.firstName.value,
+    lastName: target.lastName.value,
+    userName: target.userName.value,
+    loginName: target.loginName.value,
+    email: target.email.value,
+  }, 
+  pwd: target.password.value,
+};
 
   console.log("new user: ");
   console.log(newUser);

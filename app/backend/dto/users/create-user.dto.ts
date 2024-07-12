@@ -21,15 +21,9 @@ export class CreateUserDto {
   @MaxLength(30)                      //todo: define max legth  
   @ApiProperty({ uniqueItems: true, nullable: false, minLength: 3, maxLength:30 })
   loginName: string;
-
-  @IsNotEmpty()
-  @MinLength(3)                       //todo: define min length
-  @MaxLength(30)                      //todo: define max legth  
-  @ApiProperty({ nullable: false, minLength: 3, maxLength:30  })
-  hash?: string;
   
   @IsOptional()
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: false })
   userName?: string;
 
   @IsEmail()

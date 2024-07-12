@@ -70,9 +70,6 @@ export class ChatService {
 			where: { chatId },
 			include: { user: true }
 		});
-		for (const user of users) {
-			delete user.user.hash;
-		}
 		return users.map(u => u.user);
 	}
 

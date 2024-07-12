@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthService {
 
   constructor (
+    private readonly db: PrismaService,
     private readonly userService: UsersService, 
     private readonly jwtService: JwtService,
   ) {};
@@ -18,11 +19,14 @@ export class AuthService {
   }
 
   async validateUser(username: string, password: string): Promise<UserProfileDto> {
-    let user: UserProfileDto;
+    let user: UserProfileDto | any;
     try {
-      user = await this.userService.findUserLogin(username)
+      user = await this.db.user.findUnique({
+        where: { loginName: username },
+        include: { auth: true }
+      })
       // TODO: should be hashed password comparison
-      if (user.hash === password) { 
+      if (user.auth?.pwd === password) { 
         return user;
       } else
         throw new UnauthorizedException;
@@ -31,11 +35,14 @@ export class AuthService {
     }
   }
 
-  async registerUser(createUser: CreateUserDto): Promise<{ user: UserProfileDto; jwt: string }> {
+  async registerUser(createUser: CreateUserDto, pwd: string): Promise<{ user: UserProfileDto; jwt: string }> {
     let user: UserProfileDto;
     try {
       //TODO: hash password
-      user = await this.userService.create(createUser);
+      console.log("trying to register user: ");
+      console.log(createUser);
+      console.log(pwd);
+      user = await this.userService.create(createUser, pwd);
       const payload = { loginName: user.loginName, id: user.id };
       const jwt: string = this.jwtService.sign(payload);
       console.log(`Registered ${user.userName} with jwt ${jwt}`);

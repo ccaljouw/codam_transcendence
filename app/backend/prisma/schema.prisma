@@ -30,13 +30,12 @@ datasource db {
 model User {
 	id        Int    @id @default(autoincrement())
 	loginName String @unique
-	hash      String?
 
   userName  String? @unique //if no userName is provided loginName is used
   email     String? @unique
   firstName String?
   lastName  String?
-  token42   Token42?
+  auth      Auth?
   token     Tokens[]
 
   avatarId Int          @default(1)
@@ -68,19 +67,18 @@ model Tokens {
 	user      User     @relation(fields: [userId], references: [id])
 }
 
-model Token42 {
-  id            Int     @id @default(autoincrement())
-  userId        Int     @unique
-  access_token  String  @unique
-  token_type    String?
-  refresh_token String?
-  scope         String?
+model Auth {
+  id     Int    @id @default(autoincrement())
+  userId Int    @unique
 
-  createdAt           DateTime?
-  expiresAt           DateTime?
-  secret_valid_until  DateTime?
+  twoFact Boolean @default(false)
+  pwd     String?
+  secret  String?
 
-  user          User     @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Chat {

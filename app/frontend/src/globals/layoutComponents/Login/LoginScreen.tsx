@@ -49,12 +49,12 @@ function LoginOptions() : JSX.Element {
 					<div className="col col-8 mt-0 index-middle">
 						<div className="row">
 							<div className="btn-group p-0" role="group">
-								<button type="button" className={`btn btn-dark ${loginOption == "choose" ? "active" : ""}`} onClick={handleChooseClick}>Choose user from list</button>
+								{/* <button type="button" className={`btn btn-dark ${loginOption == "choose" ? "active" : ""}`} onClick={handleChooseClick}>Choose user from list</button> */}
 								<button type="button" className={`btn btn-dark ${loginOption == "login" ? "active" : ""}`} onClick={handleLoginClick}>Login</button>
 								<button type="button" className={`btn btn-dark ${loginOption == "signUp" ? "active" : ""}`} onClick={handleSignUpClick}>Create new account</button>
 							</div>
 						</div>
-							{loginOption == "choose" && <ChooseUser />}
+							{/* {loginOption == "choose" && <ChooseUser />} */}
 							{loginOption == "login" && <Login />}
 							{loginOption == "signUp" && <SignUp />}
 					</div>

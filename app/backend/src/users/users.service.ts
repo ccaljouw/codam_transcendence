@@ -14,12 +14,18 @@ export class UsersService {
 	) { }
 
 	// USER CRUD OPERATIONS
-	async create(createUserDto: CreateUserDto): Promise<UserProfileDto> {
+	async create(createUserDto: CreateUserDto, pwd: string): Promise<UserProfileDto> {
 		try {
+      //check if user already exists
       if (!createUserDto.userName)
         createUserDto.userName = createUserDto.loginName;
       const user = await this.db.user.create({ data: createUserDto });
       console.log(`create stats for ${user.id}`)
+      if (pwd) {
+        await this.db.auth.create({ data: { userId: user.id, pwd: pwd } })
+      } else {
+        await this.db.auth.create({ data: { userId: user.id} })
+      }
       await this.stats.create(user.id);
       return user;
     } catch (error) {
@@ -50,12 +56,10 @@ export class UsersService {
 			for (const friend of user.friends as UserProfileDto[]) {
 				delete friend.friends;
 				delete friend.blocked;
-				delete friend.hash;
 			}
 			for (const blocked of user.blocked as UserProfileDto[]) {
 				delete blocked.friends;
 				delete blocked.blocked;
-				delete blocked.hash;
 			}
 			return user;
 		}
@@ -72,7 +76,6 @@ export class UsersService {
 	async remove(id: number): Promise<UserProfileDto> {
 		try {
 			const user = await this.db.user.delete({ where: { id } });
-			delete user.hash;
 			return user;
 		}
 		catch (error) {
@@ -96,7 +99,6 @@ export class UsersService {
 				}
 			);
 			for (const element of users)
-				delete element.hash;
 			return users;
 		}
 		catch (error) {
@@ -113,7 +115,6 @@ export class UsersService {
 		if (!friends)
 			throw new NotFoundException(`No friends in the database.`);
 		for (const element of friends)
-			delete element.hash;
 		return friends;
 	}
 
@@ -122,8 +123,6 @@ export class UsersService {
 			const users = await this.db.user.findMany({
 				orderBy: { userName: 'asc' },
 			});
-			for (const element of users)
-				delete element.hash;
 			return users;
 		}
 		catch (error) {
@@ -147,12 +146,10 @@ export class UsersService {
 			for (const friend of user.friends as UserProfileDto[]) {
 				delete friend.friends;
 				delete friend.blocked;
-				delete friend.hash;
 			}
 			for (const blocked of user.blocked as UserProfileDto[]) {
 				delete blocked.friends;
 				delete blocked.blocked;
-				delete blocked.hash;
 			}
 			return user;
 		}
@@ -174,16 +171,13 @@ export class UsersService {
 				}
 				
 			});
-      delete user.hash;
 			for (const friend of user.friends as UserProfileDto[]) {
 				delete friend.friends;
 				delete friend.blocked;
-				delete friend.hash;
 			}
 			for (const blocked of user.blocked as UserProfileDto[]) {
 				delete blocked.friends;
 				delete blocked.blocked;
-				delete blocked.hash;
 			}
 			return user;
 		}
@@ -212,13 +206,11 @@ export class UsersService {
 				{
 					delete friend.friends;
 					delete friend.blocked;
-					delete friend.hash;
 				}
 			for (const blocked of user.blocked as UserProfileDto[])
 			{
 				delete blocked.friends;
 				delete blocked.blocked;
-				delete blocked.hash;
 			}
 			return user;
 		}
@@ -260,18 +252,15 @@ export class UsersService {
 					blocked: true,
 				}
 			});
-			delete user.hash;
 			for (const friend of user.friends as UserProfileDto[])
 			{
 				delete friend.friends;
 				delete friend.blocked;
-				delete friend.hash;
 			}
 			for (const blocked of user.blocked as UserProfileDto[])
 			{
 				delete blocked.friends;
 				delete blocked.blocked;
-				delete blocked.hash;
 			}
 
 			// Expire any open invites sent to the blocked user

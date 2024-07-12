@@ -26,8 +26,8 @@ export default function FormToUpdateUserDto (event: FormEvent<HTMLFormElement>) 
         patchUser.loginName = formData.get('loginName')?.toString();
     }
 
-    if (formData.get('hash')) {
-        patchUser.hash = formData.get('hash')?.toString();
+    if (formData.get('pwd')) {
+        patchUser.pwd = formData.get('pwd')?.toString();
     }
 
     //todo: add game settings

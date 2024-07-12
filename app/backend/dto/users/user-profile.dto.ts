@@ -1,6 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { OnlineStatus, Token42, User } from "@prisma/client";
-import { Exclude } from "class-transformer";
+import { Auth, OnlineStatus, User } from "@prisma/client";
 
 export class UserProfileDto implements User {
 
@@ -43,7 +42,4 @@ export class UserProfileDto implements User {
 
 	@ApiProperty({ required: false })
 	blocked?: UserProfileDto[];
-  
-  // @Exclude()
-	hash: string;
 }

@@ -50,7 +50,7 @@ export default function useAuthentication() : authenticationOutput {
 	}, [user]);
 
 	const storeUser = (user: UserProfileDto) : void  => {
-		console.log(`Setting user with id ${user.id} and jwt ${user.hash} in useAuthentication`);
+		console.log(`Setting user with id ${user.id} and in useAuthentication`);
 		if (currentUser != user)
 		{
 			console.log("updating currentUser from useAuthentication")
