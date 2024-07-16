@@ -30,7 +30,7 @@ export class TwoFAService {
       await this.store2FASecret(secret.base32, userId);
       console.log('succesfully enabled 2FA and stored token');
 
-      const qr = await this.generateQRCode(secret.otpauth_url, user.loginName);
+      const qr = await this.generateQRCode(secret.otpauth_url, user.loginName, secret.base32);
       return {res: qr};
       
     }  catch (error) {
@@ -51,19 +51,8 @@ export class TwoFAService {
     }
   }
 
-  async generateQRCode( otpauthUrl: string, userLogin: string) : Promise<string> {
+  async generateQRCode( otpauthUrl: string, userLogin: string, secret: string) : Promise<string> {
     try {
-      // const otpauthUrl = speakeasy.otpauthURL({
-      //   secret: secret,
-      //   label: `${userLogin}`,
-      //   issuer: `Strongpong`
-      // });
-      console.log(`otpauthUrl: ${otpauthUrl}`)
-
-      QRCode.toDataURL(otpauthUrl, function (err, data_url) {
-        console.log('---QRCODE IS ---/n'+ data_url);
-      });
-
       const qr = await QRCode.toDataURL(otpauthUrl);
       return qr;
     } catch (error) {
@@ -76,6 +65,7 @@ export class TwoFAService {
       await this.db.user.update({ where: {id: userId}, data: { twoFactEnabled: true }});
       await this.db.auth.update({
         where: { id: userId },	
+        // TODO: should be hashed 
         data: {twoFactSecret: secret },
       })
     } catch (error) {
@@ -84,38 +74,24 @@ export class TwoFAService {
   }
   
   async generate2FASecret (loginName: string) : Promise<speakeasy.GeneratedSecret> {
-    const secret: speakeasy.GeneratedSecret = speakeasy.generateSecret({ name: `${loginName}` });
+    const secret: speakeasy.GeneratedSecret = speakeasy.generateSecret({ name: `Strong Pong: ${loginName}` });
     console.log(secret);
     return secret;
   }
 
-  async generate2FAToken(secret: string) : Promise<string> {
-    const token: string = speakeasy.totp({
-      secret: secret,
-      encoding: "base32",
-      // step: 30,
-    });
-    return token;
-  }
-
   async verify2FASecret( secret: string, token: string ) : Promise<boolean> {
     try {
+      // TODO: unhash secret
       console.log(`in verify2FASecret: secret: ***${secret}***, token: ***${token}***`)
       const verified = speakeasy.totp.verify({ 
         secret: secret,
         encoding: "base32",
         token: token,
-        // step: 30,
       });
       
       console.log('Verification Result:', verified);
-
-      if (verified) {
-        console.log('2FA token verification successful!');
-      } else {
-        console.log('Invalid 2FA token provided.');
-      }
       return verified;
+      
     } catch (error) {
       console.error('Error during 2FA verification:', error);
       throw error;

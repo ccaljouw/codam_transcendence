@@ -21,10 +21,7 @@ export default function Login() : JSX.Element {
 
   useEffect(() => {
     if (loggedUser != null) {
-      if (loggedUser?.user.twoFactEnabled == true) {
-        loggedUser = null;
-      } else 
-        setLoggedUser(loggedUser.user, loggedUser.jwt);
+      setLoggedUser(loggedUser.user, loggedUser.jwt);
     }
   }, [loggedUser]);
 
@@ -55,12 +52,12 @@ export default function Login() : JSX.Element {
 		<>
 			<div className="white-box">
 				<H3 text="Login to play some pong"></H3>
-                <form onSubmit={handleSubmit} acceptCharset='utf-8' className="row">
-                    <input id="loginName" type="loginName" required={true} className="form-control form-control-sm" placeholder={"loginName"}></input>
-                    <input id="password" type="password" required={true} className="form-control form-control-sm" placeholder={"password"}></input>
-                    <input id="token" type="token" required={true} className="form-control form-control-sm" placeholder={"token"}></input>
-                    <button className="btn btn-dark btn-sm" type="submit">Login</button>
-                </form>
+        <form onSubmit={handleSubmit} acceptCharset='utf-8' className="row">
+            <input id="loginName" type="loginName" required={true} className="form-control form-control-sm" placeholder={"loginName"}></input>
+            <input id="password" type="password" required={true} className="form-control form-control-sm" placeholder={"password"}></input>
+            <input id="token" type="token" required={true} className="form-control form-control-sm" placeholder={"token"}></input>
+            <button className="btn btn-dark btn-sm" type="submit">Login</button>
+        </form>
 			</div>
       <div className="white-box">
         <Link className="btn btn-dark btn-block" href={`${constants.API_AUTH42}`}>

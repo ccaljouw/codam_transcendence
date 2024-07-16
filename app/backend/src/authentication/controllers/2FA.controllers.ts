@@ -21,7 +21,7 @@ export class TwoFAController {
     console.log(user);
     const secret = await this.twoFA.generate2FASecret(user.loginName);
     await this.twoFA.store2FASecret(secret.base32, user.id);
-    return this.twoFA.generateQRCode(secret.otpauth_url, user.loginName);
+    return this.twoFA.generateQRCode(secret.otpauth_url, user.loginName, secret.base32);
   }
 
   @Patch('enable/:id')

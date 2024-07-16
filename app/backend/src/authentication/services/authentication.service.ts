@@ -28,27 +28,23 @@ export class AuthService {
         where: { loginName: username },
         include: { auth: true }
       })
-      console.log("found user to login");
       // TODO: should be hashed password comparison
       if (user.auth?.pwd === password) {
         
         console.log("password correct");
-        if (user.twoFactEnabled && !token) {
-          console.log('2FA token is required')
-          throw new UnauthorizedException('2FA token is required');
-        }
         
-        // regenerating token
-        // token =  await this.twoFA.generate2FAToken(user.auth.twoFactSecret);
-
         if (user.twoFactEnabled) {
+          if (!token) {
+            console.log('2FA token is required')
+            throw new UnauthorizedException('2FA token is required');
+          }
+          
           const isValidTwoFactorToken = await this.twoFA.verify2FASecret(user.auth.twoFactSecret, token);
-  
           if (!isValidTwoFactorToken) {
-            console.log("incorrect token provided");
             throw new UnauthorizedException('Invalid 2FA token');
           }
         }
+        delete user.auth;
         return user;
       } else
         console.log("incorrect password");
