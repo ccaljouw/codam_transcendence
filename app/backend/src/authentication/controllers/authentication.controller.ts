@@ -1,9 +1,9 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { UserProfileDto } from '@ft_dto/users';
-import { AuthService } from './authentication.service';
-import { LocalAuthGuard } from './guard/login-auth.guard';
+import { AuthService } from '../services/authentication.service';
+import { LocalAuthGuard } from '../guard/login-auth.guard';
 import { Request, Response } from 'express';
 
 @Controller('auth')
@@ -30,7 +30,6 @@ export class AuthController {
   @ApiCreatedResponse({ description: 'User successfully created', type: UserProfileDto })
 
   async register(@Req() req: Request ) : Promise<{ user: UserProfileDto, jwt: string}>  {
-    console.log(req.body);
     return this.authService.registerUser(req.body.createUser, req.body.pwd);
   }
   

@@ -22,7 +22,6 @@ async function addDummyUsers() {
     create: {
       userId: 1,
       pwd: "pwd",
-      twoFact: false,
     },
   });
 
@@ -52,7 +51,6 @@ async function addDummyUsers() {
     create: {
       userId: 2,
       pwd: "pwd",
-      twoFact: false,
     },
   });
 
@@ -82,7 +80,6 @@ async function addDummyUsers() {
     create: {
       userId: 3,
       pwd: "pwd",
-      twoFact: false,
     },
   });
 
@@ -112,7 +109,6 @@ async function addDummyUsers() {
     create: {
       userId: 4,
       pwd: "pwd",
-      twoFact: false,
     },
   });
 
@@ -142,7 +138,6 @@ async function addDummyUsers() {
     create: {
       userId: 5,
       pwd: "pwd",
-      twoFact: false,
     },
   });
 
@@ -172,7 +167,6 @@ async function addDummyUsers() {
     create: {
       userId: 6,
       pwd: "pwd",
-      twoFact: false,
     },
   });
 

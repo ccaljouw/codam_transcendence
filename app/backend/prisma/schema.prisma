@@ -31,16 +31,17 @@ model User {
 	id        Int    @id @default(autoincrement())
 	loginName String @unique
 
-  userName  String? @unique //if no userName is provided loginName is used
-  email     String? @unique
-  firstName String?
-  lastName  String?
-  auth      Auth?
-  token     Tokens[]
+  userName        String? @unique //if no userName is provided loginName is used
+  email           String? @unique
+  firstName       String?
+  lastName        String?
+  auth            Auth?
+  token           Tokens[]
 
-  avatarId Int          @default(1)
-  theme    Int          @default(0)
-  online   OnlineStatus @default(OFFLINE)
+  twoFactEnabled  Boolean      @default(false)
+  avatarId        Int          @default(1)
+  theme           Int          @default(0)
+  online          OnlineStatus @default(OFFLINE)
 
   chats ChatUsers[]
   games GameUser[]
@@ -71,9 +72,8 @@ model Auth {
   id     Int    @id @default(autoincrement())
   userId Int    @unique
 
-  twoFact Boolean @default(false)
-  pwd     String?
-  secret  String?
+  pwd            String?
+  twoFactSecret  String?
 
 
   createdAt DateTime @default(now())

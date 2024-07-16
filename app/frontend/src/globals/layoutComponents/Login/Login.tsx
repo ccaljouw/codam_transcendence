@@ -10,17 +10,22 @@ import { usePathname } from 'next/navigation';
 
 type LoginCredentials = {
     loginName: string,
-    password: string
+    password: string,
+    token: string,
 }
 
 export default function Login() : JSX.Element {
   const pathname = usePathname();
 	const {setCurrentUser} = useContext(TranscendenceContext);
-  const {data: loggedUser, isLoading, error, fetcher} = useFetch<LoginCredentials, { user: UserProfileDto; jwt: string }>();
+  let {data: loggedUser, isLoading, error, fetcher} = useFetch<LoginCredentials, { user: UserProfileDto; jwt: string }>();
 
   useEffect(() => {
-    if (loggedUser != null)
-      setLoggedUser(loggedUser.user, loggedUser.jwt);
+    if (loggedUser != null) {
+      if (loggedUser?.user.twoFactEnabled == true) {
+        loggedUser = null;
+      } else 
+        setLoggedUser(loggedUser.user, loggedUser.jwt);
+    }
   }, [loggedUser]);
 
 	const setLoggedUser = (user: UserProfileDto, jwt: string) => {
@@ -36,11 +41,13 @@ export default function Login() : JSX.Element {
         const payload = e.target as typeof e.target & {
           loginName: { value: string };
           password: { value: string };
+          token: { value: string };
         };
+        console.log(`interpreted form: ${payload.loginName.value}, ${payload.password.value}, ${payload.token.value}`)
         await fetcher({
           url:`${constants.API_LOGIN}`, 
           fetchMethod: 'POST', 
-          payload: { loginName: payload.loginName.value, password: payload.password.value }
+          payload: { loginName: payload.loginName.value, password: payload.password.value, token: payload.token.value }
         });
     }
 
@@ -51,6 +58,7 @@ export default function Login() : JSX.Element {
                 <form onSubmit={handleSubmit} acceptCharset='utf-8' className="row">
                     <input id="loginName" type="loginName" required={true} className="form-control form-control-sm" placeholder={"loginName"}></input>
                     <input id="password" type="password" required={true} className="form-control form-control-sm" placeholder={"password"}></input>
+                    <input id="token" type="token" required={true} className="form-control form-control-sm" placeholder={"token"}></input>
                     <button className="btn btn-dark btn-sm" type="submit">Login</button>
                 </form>
 			</div>

@@ -21,6 +21,9 @@ export class UserProfileDto implements User {
 	@ApiProperty({ required: false })
 	lastName: string;
 
+  @ApiProperty({ required: false })
+	twoFactEnabled: boolean;
+
 	@ApiProperty({ required: false })
 	avatarId: number;
 

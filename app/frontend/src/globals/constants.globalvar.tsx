@@ -56,6 +56,8 @@ export class constants {
 	static API_AUTH42 = this.BACKEND_BASEURL + 'auth/42/';
 	static API_REGISTER = this.BACKEND_BASEURL + 'auth/register/';
   static API_LOGIN = this.BACKEND_BASEURL + 'auth/login/';
+  static API_ENABLE2FA = this.BACKEND_BASEURL + 'auth/2FA/enable/';
+  static API_DISABLE2FA = this.BACKEND_BASEURL + 'auth/2FA/disable/';
   
   static API_STATS = this.BACKEND_BASEURL + 'stats/';
   static API_TOP_10 = this.API_STATS + 'top10/';

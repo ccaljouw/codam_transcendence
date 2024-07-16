@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import Strategy from 'passport-42';
 import { UsersService } from 'src/users/users.service';
 import { UserProfileDto } from '@ft_dto/users';
-import { AuthService } from '../authentication.service';
+import { AuthService } from '../services/authentication.service';
 
 @Injectable()
 export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
