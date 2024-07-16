@@ -34,7 +34,7 @@ export class UsersController {
 	}
 
   @Get('username/:userName')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
 
   @ApiOperation({ summary: 'Returns user with specified userName' })
   @ApiOkResponse({ type: UserProfileDto })

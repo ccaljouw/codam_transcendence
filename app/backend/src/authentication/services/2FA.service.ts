@@ -10,7 +10,6 @@ export class TwoFAService {
 
   constructor (
     private readonly db: PrismaService,
-    private readonly userService: UsersService,
   ) {};
   
   async enable2FA(userId: number)  : Promise<{res: string}> {
@@ -38,14 +37,14 @@ export class TwoFAService {
     }
   }
 
-  async disable2FA(userId: number) {
+  async disable2FA(userId: number) : Promise<boolean> {
     try {
       await this.db.user.update({ where: {id: userId}, data: { twoFactEnabled: false }});
       await this.db.auth.update({
         where: { id: userId },	
           data: {twoFactSecret: null },
         })
-
+      return true;
     }  catch (error) {
       throw error;
     }
@@ -96,5 +95,23 @@ export class TwoFAService {
       console.error('Error during 2FA verification:', error);
       throw error;
     }
-  } 
+  }
+
+  async checkFAToken(id: number, token: string) : Promise<boolean> {
+    try {
+      const user = await this.db.user.findUnique({
+        where: { id },
+        select: { auth: { select: {twoFactSecret: true }} }
+      })
+      if (!user || !user.auth.twoFactSecret) {
+        console.log('Error during 2FA token verification:');
+        throw new UnauthorizedException;
+      }
+      return await this.verify2FASecret(user.auth.twoFactSecret, token);
+    } catch (error) {
+      console.error('Error during 2FA initial token verification:', error);
+    }
+
+    return true;
+  }
 }
