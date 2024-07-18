@@ -38,7 +38,7 @@ export class AuthService {
             console.log('2FA token is required')
             throw new UnauthorizedException('2FA token is required');
           }
-          
+
           const isValidTwoFactorToken = await this.twoFA.verify2FASecret(user.auth.twoFactSecret, token);
           if (!isValidTwoFactorToken) {
             throw new UnauthorizedException('Invalid 2FA token');
@@ -70,6 +70,29 @@ export class AuthService {
    catch (error) {
     throw error;
    }
+  }
 
+  async changePwd(id: number, oldPwd: string, newPwd: string) {
+    console.log(`Trying to update pwd: ${id}, ${oldPwd}, ${newPwd}`);
+    try {
+      const user = await this.db.user.findUnique({
+        where: { id },
+        include: { auth: true }
+      })
+
+      if (user.auth?.pwd === oldPwd) {
+        await this.db.auth.update({
+          where: { id },	
+            data: {pwd: newPwd },
+          })
+        console.log("Pwd updated");
+      } else {
+        console.log('Old pwd incorrect');
+        throw new UnauthorizedException;
+      }
+
+    } catch (error) {
+      throw error;
+    }
   }
 }
