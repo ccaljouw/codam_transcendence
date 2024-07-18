@@ -24,8 +24,11 @@ export class UserProfileDto implements User {
   @ApiProperty({ required: false })
 	twoFactEnabled: boolean;
 
-	@ApiProperty({ required: false })
-	avatarId: number;
+	// @ApiProperty({ required: false })
+	// avatarId: number;
+
+  @ApiProperty({ required: false })
+  avatarUrl: string;
 
 	@ApiProperty({ required: false })
 	theme: number;

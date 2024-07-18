@@ -28,14 +28,20 @@ export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
     console.log( `Logged in: ${profile.username}`);
     try {
       user = await this.userService.findUserLogin(profile.username);
+      if (!user.avatarUrl) {
+        user = await this.userService.update(user.id, { avatarUrl: profile._json.image.link })
+      }
+    } catch (error) {
+      console.log(`error in validate: ${error.message}`)
       if (!user) {
         user = await this.userService.create({ 
           loginName: profile.username, 
           userName: profile.username,
+          avatarUrl: profile._json.image.link,
         }, null)
+      } else {
+        throw error;
       }
-    } catch (error) {
-      throw error;
     }
     const jwt: string = await this.authService.generateJwt(user);
     return { user, jwt } ;

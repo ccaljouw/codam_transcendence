@@ -39,7 +39,8 @@ model User {
   token           Tokens[]
 
   twoFactEnabled  Boolean      @default(false)
-  avatarId        Int          @default(1)
+  // avatarId        Int          @default(1)
+  avatarUrl       String?
   theme           Int          @default(0)
   online          OnlineStatus @default(OFFLINE)
 

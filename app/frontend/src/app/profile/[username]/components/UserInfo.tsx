@@ -100,7 +100,7 @@ export default function UserInfo({user, editable} : {user: UserProfileDto, edita
 	return (
 		<>
 			<H3 text="User information"/>
-			<StaticDataField name="Avatar" data={user.avatarId} />
+			{/* <StaticDataField name="Avatar" data={user.avatarId} /> */}
 			{editable == false && <StaticDataField name="Username" data={user.userName}/>}
 			{editable == true && 
 				<form onSubmit={handleSubmit} acceptCharset='utf-8' className="row">
