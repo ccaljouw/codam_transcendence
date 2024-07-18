@@ -43,11 +43,11 @@ export class CreateUserDto {
   @ApiProperty({ required: false, maxLength: 30 })
   lastName?: string;
 
-  // @ApiProperty({ required: false })
-  // @IsOptional()
-  // @Type(() => Number)
-  // @IsInt()
-  // avatarId?: number;
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  avatarId?: number;
 
   @IsOptional()
   @ApiProperty({ required: false })

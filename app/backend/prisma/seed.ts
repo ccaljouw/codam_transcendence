@@ -10,8 +10,8 @@ async function addDummyUsers() {
 		update: {},
 		create: {
 			userName: 'AwesomeBackendCreator',
-			loginName: 'ccaljouw',
-			email: 'ccaljouw@student.codam.nl',
+			loginName: 'caljouw',
+			email: 'caljouw@student.codam.nl',
 			firstName: 'Carien',
 			lastName: 'Caljouw',
 		},
@@ -188,7 +188,7 @@ async function addDummyUsers() {
 
 	// Block user6 by user1
 	await prisma.user.update({
-		where: { loginName: 'ccaljouw' },
+		where: { loginName: 'caljouw' },
 		data: {
 			blocked: { connect: { loginName: 'blockcarien' } }
 		}
