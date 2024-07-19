@@ -55,7 +55,7 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 				<>
 					<div className="white-box">
 						<H3 text={`Profile page of ${user.userName}`} />
-            <img src={user.avatarUrl} alt={user.avatarUrl} width="100" height="100"></img>
+            {/* <img src={user.avatarUrl} alt={user.avatarUrl} width="100" height="100"></img> */}
 					</div>
 					<div className="row">
 						<div className="col col-lg-6 col-md-12 white-box">
