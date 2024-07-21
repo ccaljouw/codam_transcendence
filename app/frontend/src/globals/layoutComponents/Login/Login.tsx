@@ -7,11 +7,14 @@ import { H3 } from 'src/globals/layoutComponents/Font';
 import useFetch from 'src/globals/functionComponents/useFetch';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { response } from 'express';
+import { Response } from '@nestjs/common';
+import ResponseCache from 'next/dist/server/response-cache';
 
 type LoginCredentials = {
     loginName: string,
     password: string,
-    token: string,
+    token?: string,
 }
 
 export default function Login() : JSX.Element {
@@ -55,9 +58,10 @@ export default function Login() : JSX.Element {
         <form onSubmit={handleSubmit} acceptCharset='utf-8' className="row">
             <input id="loginName" type="loginName" required={true} className="form-control form-control-sm" placeholder={"loginName"}></input>
             <input id="password" type="password" required={true} className="form-control form-control-sm" placeholder={"password"}></input>
-            <input id="token" type="token" required={true} className="form-control form-control-sm" placeholder={"token"}></input>
+            <input id="token" type="token" required={false} className="form-control form-control-sm" placeholder={"include token if 2FA enabled"}></input>
             <button className="btn btn-dark btn-sm" type="submit">Login</button>
         </form>
+        {error && <p>Login error: {error.message}</p>}
 			</div>
       <div className="white-box">
         <Link className="btn btn-dark btn-block" href={`${constants.API_AUTH42}`}>

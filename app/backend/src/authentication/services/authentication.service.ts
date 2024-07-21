@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { UserProfileDto, CreateUserDto } from '@ft_dto/users';
 import { UsersService } from 'src/users/users.service';
 import { PrismaService } from 'src/database/prisma.service';
@@ -48,9 +48,13 @@ export class AuthService {
         return user;
       } else
         console.log("incorrect password");
-        throw new UnauthorizedException;
+        throw new UnauthorizedException('Incorrect password');
     } catch (error) {
-        throw error;
+        if (error instanceof UnauthorizedException) {
+          throw error;
+        } else {
+          throw new InternalServerErrorException('Unexpected error logging in');
+        }
     }
   }
 
@@ -88,7 +92,7 @@ export class AuthService {
         console.log("Pwd updated");
       } else {
         console.log('Old pwd incorrect');
-        throw new UnauthorizedException;
+        throw new UnauthorizedException('Old password incorrect');
       }
 
     } catch (error) {

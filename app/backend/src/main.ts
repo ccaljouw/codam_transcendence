@@ -2,7 +2,8 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { PrismaClientExceptionFilter } from './errorHandling/prisma-client-exception/prisma-client-exception.filter';
+import { PrismaClientExceptionFilter } from './errorHandling/prisma-client-exception.filter';
+import { HttpErrorFilter } from './errorHandling/exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,7 +18,10 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   const { httpAdapter } = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new PrismaClientExceptionFilter());
+  app.useGlobalFilters(
+    new PrismaClientExceptionFilter(), 
+    new HttpErrorFilter()
+  );
 
   // use pipes to validate requests (as defined in DTOs,
   // whitelist: true strips out addition information that is send but not part of the DTO)

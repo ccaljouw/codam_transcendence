@@ -1,13 +1,16 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { constants } from '@ft_global/constants.globalvar';
 import EditButton from "src/app/profile/[username]/components/utils/EditButton";
 import useFetch from "src/globals/functionComponents/useFetch";
 import { TranscendenceContext } from "src/globals/contextprovider.globalvar";
+import { UpdateUserDto } from "@ft_dto/users";
 
 export default function Avatar() : JSX.Element {
   const {currentUser, setCurrentUser} = useContext(TranscendenceContext);
-  const {data: avatarUrl, isLoading, error, fetcher: postAvatar} = useFetch<string, string>();
-  // const [image, setImage] = useState<string>(currentUser.avatarUrl);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string>(currentUser.avatarUrl)
+  const {data: newAvatarUrl, isLoading: storingNewAvatarUrl, error: errorSroringNewAvatarUrl, fetcher: storeNewAvatarUrl} = useFetch<UpdateUserDto, boolean >();
 
   useEffect(() => {
     if (avatarUrl != null)
@@ -16,27 +19,40 @@ export default function Avatar() : JSX.Element {
       const user = currentUser;
       user.avatarUrl = avatarUrl;
       setCurrentUser(user);
-      // setImage(avatarUrl);
-      console.log("reload page from userInfo");
+      console.log(`reload page from userInfo, new avatarUrl: ${avatarUrl}, current user: ${currentUser.avatarUrl}`);
 		}
 	}, [avatarUrl]);
-
-  const postNewAvatar = async (file: string) => {
-		console.log("Posting new avatar");
-		await postAvatar({url: constants.API_NEW_AVATAR + currentUser.id, fetchMethod: 'POST', payload: file})
-	}
-   
-  const selectNewImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  
+  const selectNewImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-
-    if(file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        postNewAvatar(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  }
+      try {
+        if(file) {
+          setIsLoading(true);
+          const formData = new FormData();
+          console.log(`Form data: `);
+          formData.append('file', file);
+          console.log(formData);
+          const response = await fetch(constants.API_NEW_AVATAR, {
+            method: 'POST',
+            body: formData,
+            headers: undefined,
+          });
+          if (!response.ok) {
+              throw new Error(`Response not ok: ${response.status}: ${response.statusText}`);
+          }
+          const newUrl = await response.text();
+          setAvatarUrl(newUrl);
+          storeNewAvatarUrl({ url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: { avatarUrl: newUrl }});
+        } else {
+          console.log("no file selected");
+        }
+      } catch (e: any) { 
+          console.log("error uploading avatar: ", e.message);
+          setError(e);
+      } finally {
+          setIsLoading(false);
+      }
+    };
   
   return (
     // TODO: Jorien: fix styling
@@ -48,7 +64,7 @@ export default function Avatar() : JSX.Element {
           <p>Avatar</p>
         </div>
         <div style={{ gridColumn: '2 / 3' }}>
-          <img src={currentUser.avatarUrl} alt="/favicon.ico" width="100" height="100" style={{ borderRadius: '40%' }}/>
+          <img src={avatarUrl} alt={`${constants.BACKEND_BASEURL}/avatar/favicon.ico`} width="100" height="100" style={{ borderRadius: '40%' }}/>
         </div>
         <div style={{ gridColumn: '4 / 6' }}>
           <input
@@ -65,7 +81,7 @@ export default function Avatar() : JSX.Element {
     </div> 
     {isLoading == true && <p>Updating avatar...</p>}
 		{error != null && <p>Not possible to update avatar: {error.message}</p>}
-
+    {errorSroringNewAvatarUrl != null && <p>Error storing new avatarUrl in database...</p>}
     </>
   );
 };

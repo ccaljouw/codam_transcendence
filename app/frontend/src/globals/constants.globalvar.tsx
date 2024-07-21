@@ -26,7 +26,8 @@ export class constants {
 	static API_BLOCK = this.API_USERS + 'block/';
 	static API_UNBLOCK = this.API_USERS + 'unblock/';
   
-  static API_NEW_AVATAR = this.API_USERS;
+  static API_AVATAR = this.BACKEND_BASEURL + 'avatar/';
+  static API_NEW_AVATAR = this.API_AVATAR + 'new/';
   
 	static API_CHAT = this.BACKEND_BASEURL + 'chat/';
 	static CHAT_CHECK_IF_DM_EXISTS = this.API_CHAT + 'checkIfDMExists/';
