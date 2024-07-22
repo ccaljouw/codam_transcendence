@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as QRCode from 'qrcode';
 import * as speakeasy from 'speakeasy';
 import { PrismaService } from 'src/database/prisma.service';
@@ -14,19 +18,20 @@ export class TwoFAService {
       });
       if (!user) throw new UnauthorizedException();
 
-      if (user.twoFactEnabled === true) {
+      if (user.twoFactEnabled == true) {
         console.log('2FA already enabled');
-        return { res: '2FA already enabled' }; // what to return here?
+        throw new ConflictException({
+          message: 'Two factor authentication already enabled',
+        });
+      } else {
+        const secret: speakeasy.GeneratedSecret = await this.generate2FASecret(
+          user.loginName,
+        );
+        await this.store2FASecret(secret.base32, userId);
+        console.log('succesfully enabled 2FA and stored token');
+        const qr = await this.generateQRCode(secret.otpauth_url);
+        return { res: qr };
       }
-
-      const secret: speakeasy.GeneratedSecret = await this.generate2FASecret(
-        user.loginName,
-      );
-      await this.store2FASecret(secret.base32, userId);
-      console.log('succesfully enabled 2FA and stored token');
-
-      const qr = await this.generateQRCode(secret.otpauth_url);
-      return { res: qr };
     } catch (error) {
       throw error;
     }

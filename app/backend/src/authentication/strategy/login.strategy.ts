@@ -1,6 +1,6 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../services/authentication.service';
 import { UserProfileDto } from '@ft_dto/users';
 import { Request } from 'express';
@@ -25,6 +25,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     try {
       user = await this.authService.validateUser(loginName, password, token);
     } catch (error) {
+      if (!user)
+        throw new UnauthorizedException('Invallid user-password combination');
       throw error;
     }
     const jwt: string = await this.authService.generateJwt(user);

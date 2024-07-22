@@ -17,9 +17,7 @@ export default function TwoFactorAuthentication(): JSX.Element {
   useEffect(() => {
     if (FAValid == true )
 		{
-      // TODO: : make setTwoFactorEnabled in transcendence context?
-      let user = currentUser;
-      user.twoFactEnabled = true;
+      const user = { ...currentUser, twoFactEnabled: true };
       setTwoFactorEnabled("Disable2FA");
       setCurrentUser(user);
       console.log("reload page from userInfo");
@@ -32,14 +30,19 @@ export default function TwoFactorAuthentication(): JSX.Element {
   useEffect(() => {
     if (disable2FA == true )
 		{
-      // TODO: Albert: make setTwoFactorEnabled in transcendence context?
-      let user = currentUser;
-      user.twoFactEnabled = false;
+      const user = { ...currentUser, twoFactEnabled: false };
       setTwoFactorEnabled("Enable2FA");
       setCurrentUser(user);
       console.log("reload page from userInfo");
 		}
 	}, [disable2FA]);
+
+  useEffect(() => {
+    if (twoFA?.res == '2FA already enabled' )
+		{
+      setTwoFactorEnabled("Disable2FA");
+		}
+	}, [twoFA]);
 
   const enable2FA =  () => {
     if (!currentUser.twoFactEnabled) {

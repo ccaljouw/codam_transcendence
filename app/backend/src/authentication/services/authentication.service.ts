@@ -56,8 +56,10 @@ export class AuthService {
         }
         delete user.auth;
         return user;
-      } else console.log('incorrect password');
-      throw new UnauthorizedException('Incorrect password');
+      } else {
+        console.log('incorrect password');
+        throw new UnauthorizedException('Invallid user-password combination');
+      }
     } catch (error) {
       if (error instanceof UnauthorizedException) {
         throw error;

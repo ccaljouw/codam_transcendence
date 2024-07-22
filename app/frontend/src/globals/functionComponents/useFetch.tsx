@@ -39,8 +39,19 @@ export default function useFetch<T, U>(): fetchOutput<T, U> {
                 body: JSON.stringify(payload),
             });
             if (!response.ok) {
-                throw new Error("Response not ok: " + response.status + ": " + response.statusText);
+              // Try to parse the error response
+              let errorMessage = `Response not ok: ${response.status} - ${response.statusText}`;
+              try {
+                const errorResponse = await response.json();
+                if (errorResponse.message) {
+                  errorMessage = `${response.status} - ${errorResponse.message}`;
+                }
+              } catch (jsonError) {
+                console.log('Error parsing JSON response', jsonError);
+              }
+              throw new Error(errorMessage);
             }
+      
             setData(await response.json() as U);
         } catch (e: any) { //todo: add type
             console.log("useFetch error: ", e);
