@@ -28,7 +28,6 @@ export default function GameSettings({user} : {user: UserProfileDto}) : JSX.Elem
 		await fetcher({url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: FormToUpdateUserDto(event)})
 	}
 	
-	// todo: show loading state and error when relevant 
 	return (
 		<>
 			<H3 text="Game settings"/>
@@ -41,12 +40,9 @@ export default function GameSettings({user} : {user: UserProfileDto}) : JSX.Elem
 						<ThemeOptions theme={user.theme}/>
 					</select>
 				</div>
-				{/* <div className="col col-3">
-					<button className="btn btn-outline-dark btn-sm" type="submit">Save</button>
-				</div> */}
 			</form>
-			{isLoading !== null && <p>Changing color preferences</p>}
-			{error !== null && <p>error: {error.message}</p>}
+			{isLoading == true && <p>Changing color preferences</p>}
+			{error != null && <p>error: {error.message}</p>}
 		</>
 	);
 }

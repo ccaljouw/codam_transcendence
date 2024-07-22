@@ -22,6 +22,6 @@ export class UpdateChatDto extends PartialType(CreateChatDto) {
 
   @IsString()
   @ApiProperty({ required: false, type: String })
-  name?: String;
+  name?: String; //todo: Albert: remove capital letter S from String. - Jorien
 
 }
