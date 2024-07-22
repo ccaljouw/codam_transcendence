@@ -37,13 +37,6 @@ export default function TwoFactorAuthentication(): JSX.Element {
 		}
 	}, [disable2FA]);
 
-  useEffect(() => {
-    if (twoFA?.res == '2FA already enabled' )
-		{
-      setTwoFactorEnabled("Disable2FA");
-		}
-	}, [twoFA]);
-
   const enable2FA =  () => {
     if (!currentUser.twoFactEnabled) {
       console.log('enabeling 2FA');
@@ -94,7 +87,11 @@ export default function TwoFactorAuthentication(): JSX.Element {
         <p>Two factor authentication already enabled</p>
       }
       {error2FA != null && <p>Error enabeling 2FA: {error2FA.message}</p>}
+
+      {FAValid == true && <p>2FA enabled</p>}
       {errorFAValid != null && <p>Error checking token: {errorFAValid.message}</p>}
+
+      {disable2FA == true &&  <p>2FA disabled</p>}
       {errorDisable2FA != null && <p>Error disabeling 2FA</p>}
 		</>
 	);

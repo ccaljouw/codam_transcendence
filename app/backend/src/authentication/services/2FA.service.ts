@@ -64,10 +64,6 @@ export class TwoFAService {
 
   async store2FASecret(secret: string, userId: number) {
     try {
-      await this.db.user.update({
-        where: { id: userId },
-        data: { twoFactEnabled: true },
-      });
       await this.db.auth.update({
         where: { id: userId },
         data: { twoFactSecret: secret },
@@ -97,7 +93,6 @@ export class TwoFAService {
         encoding: 'base32',
         token: token,
       });
-
       console.log('Verification Result:', verified);
       return verified;
     } catch (error) {
@@ -116,7 +111,12 @@ export class TwoFAService {
         console.log('Error during 2FA token verification:');
         throw new UnauthorizedException();
       }
-      return await this.verify2FASecret(user.auth.twoFactSecret, token);
+      await this.verify2FASecret(user.auth.twoFactSecret, token);
+      await this.db.user.update({
+        where: { id },
+        data: { twoFactEnabled: true },
+      });
+      return true;
     } catch (error) {
       console.error('Error during 2FA initial token verification:', error);
     }

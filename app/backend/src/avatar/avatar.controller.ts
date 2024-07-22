@@ -11,6 +11,7 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
+  UseGuards,
 } from '@nestjs/common';
 import { AvatarService } from './avatar.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -18,6 +19,7 @@ import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import * as fs from 'fs';
 import { Response } from 'express';
 import * as path from 'path';
+import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 
 @Controller('avatar')
 @ApiTags('avatar')
