@@ -38,7 +38,7 @@ async function addDummyUsers() {
 		update: {},
 		create: {
 			userName: 'AwesomeSocketCreator',
-			loginName: 'avan-and',
+			loginName: 'avan-and-socket',
 			email: 'avan_and@student.codam.nl',
 			firstName: 'Albert',
 			lastName: 'van Andel',

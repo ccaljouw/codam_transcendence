@@ -77,6 +77,15 @@ export class ChatMessagesController {
 		return this.chatMessageService.findMessagesInChat(chatId, userId);
 	}
 
+	@Get('chatUser/:chatId/:userId')
+	@ApiOperation({ summary: 'Returns chat user' })
+	@ApiOkResponse({ type: UpdateChatDto })
+	@ApiNotFoundResponse({ description: 'No chat user with #${chatId}' })
+	async getChatUser(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number) {
+		const chatUser = await this.chatService.getChatUser(chatId, userId);
+		return chatUser;
+	}
+
 	@Get('unreadMessagesFromFriends/:userId')
   @UseGuards(JwtAuthGuard)
 

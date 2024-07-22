@@ -1,6 +1,5 @@
 import { UserProfileDto } from "@ft_dto/users";
 import { H3 } from '@ft_global/layoutComponents/Font';
-import { H3 } from '@ft_global/layoutComponents/Font';
 import StaticDataField from "src/app/profile/[username]/components/utils/StaticDataField";
 import Achievements from "./Achievements";
 import { useEffect } from "react";
@@ -18,15 +17,6 @@ export default function Stats({user} : {user: UserProfileDto}) : JSX.Element {
     const fetchStats = async () => {
 		await fetcher({url: constants.API_STATS + user.id});
 	};
-    const {data: stats, isLoading, error, fetcher} = useFetch<null, StatsDto>();
-
-    useEffect(() => {
-        fetchStats();
-    }, []);
-
-    const fetchStats = async () => {
-		await fetcher({url: constants.API_STATS + user.id});
-	};
 
     return (
         <>
@@ -35,10 +25,8 @@ export default function Stats({user} : {user: UserProfileDto}) : JSX.Element {
             <StaticDataField name="Win/Loss Ratio " data={stats?.winLossRatio} />
             {user.friends != null &&
                 <StaticDataField name="Friends" data={stats?.friends} />
-                <StaticDataField name="Friends" data={stats?.friends} />
             }
             <hr></hr>
-            <Achievements achievements={stats?.achievements}/>
             <Achievements achievements={stats?.achievements}/>
         </>
     );
