@@ -20,14 +20,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    let user: UserProfileDto;
     console.log('payload');
     console.log(payload);
     try {
-      user = await this.userService.findUserLogin(payload.loginName);
+      const user: UserProfileDto = await this.userService.findUserLogin(
+        payload.loginName,
+      );
       return user;
     } catch (error) {
-      throw new UnauthorizedException();
+      console.log(error.message);
+      throw new UnauthorizedException('Not passed jwt guard');
     }
   }
 }

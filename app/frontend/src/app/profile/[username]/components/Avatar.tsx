@@ -27,12 +27,11 @@ export default function Avatar() : JSX.Element {
         if(file) {
           setIsLoading(true);
 
-          const headers: HeadersInit = {};
           const jwtToken = sessionStorage.getItem('jwt');
-          if (jwtToken) {
-              headers['Authorization'] = `Bearer ${jwtToken}`;
-          } else {
-            console.log('No jwt token in session storage');
+          console.log('Jwt', jwtToken);
+          const headers: HeadersInit = jwtToken ? { 'Authorization': `Bearer ${jwtToken}` } : {};
+          if (!jwtToken) {
+              console.log('No jwt token in session storage');
           }
 
           const formData = new FormData();
@@ -43,7 +42,7 @@ export default function Avatar() : JSX.Element {
             
             method: 'POST',
             body: formData,
-            headers: undefined,
+            headers: headers,
           });
           if (!response.ok) {
               throw new Error(`Response not ok: ${response.status}: ${response.statusText}`);

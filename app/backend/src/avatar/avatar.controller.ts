@@ -27,8 +27,7 @@ export class AvatarController {
   constructor(private readonly avatarService: AvatarService) {}
 
   @Post('new')
-  //TODO: why is auth guard failing?
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary:
       'Adds avatar to the filesystem and returns the endpoint for this file',
