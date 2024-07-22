@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UpdateChatMessageDto, CreateDMDto, CreateChatMessageDto, FetchChatMessageDto, UpdateInviteDto, UpdateChatDto } from '@ft_dto/chat';
+import { UpdateChatMessageDto, CreateDMDto, CreateChatMessageDto, FetchChatMessageDto, UpdateInviteDto, UpdateChatDto, ChatMessageToRoomDto } from '@ft_dto/chat';
 import { ChatMessageService } from '../services/chat-messages.service';
 import { ChatService } from '../services/chat.service';
 import { ChatSocketService } from '../services/chatsocket.service';
@@ -144,8 +144,9 @@ export class ChatMessagesController {
 	@Post('messageToDB')
 	@ApiOperation({ summary: 'Returns id of message that is has added to the database' })
 	@ApiOkResponse({ type: Number })
-	messageToDB(@Body() createChatMessageDto: CreateChatMessageDto) {
-		return this.chatMessageService.messageToDB(createChatMessageDto);
+	messageToDB(@Body() payload: ChatMessageToRoomDto) {
+		console.log("Sending message to db");
+		return this.chatMessageService.messageToDB({ chatId: parseInt(payload.room), userId: payload.userId, content: payload.message, inviteId: payload.inviteId }); //replace with api call in frontend?
 	}
 
 	@Get(':id')

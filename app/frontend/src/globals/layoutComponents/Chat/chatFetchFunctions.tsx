@@ -1,4 +1,4 @@
-import { CreateDMDto, UpdateChatDto } from "@ft_dto/chat";
+import { ChatMessageToRoomDto, CreateDMDto, UpdateChatDto } from "@ft_dto/chat";
 import { constants } from "src/globals/constants.globalvar";
 
 // This function is used to fetch the messages for the current chat.

@@ -1,6 +1,6 @@
 "use client"
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { FetchChatMessageDto, ChatMessageToRoomDto, UpdateChatDto, CreateDMDto, UpdateInviteDto, UpdateChatUserDto } from '@ft_dto/chat';
+import { FetchChatMessageDto, ChatMessageToRoomDto, UpdateChatDto, CreateDMDto, UpdateInviteDto, UpdateChatUserDto, CreateChatMessageDto } from '@ft_dto/chat';
 import { UserProfileDto } from '@ft_dto/users';
 import { constants } from '@ft_global/constants.globalvar';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
@@ -30,6 +30,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 	const { data: chatMessages, isLoading: chatMessagesLoading, error: chatMessagesError, fetcher: chatMessagesFetcher } = useFetch<null, FetchChatMessageDto[]>();
 	const { data: friendInvite, isLoading: friendInviteLoading, error: friendInviteError, fetcher: friendInviteFetcher } = useFetch<null, UserProfileDto>();
 	const { data: chatInvite, isLoading: chatInviteLoading, error: chatInviteError, fetcher: chatInviteFetcher } = useFetch<null, UpdateChatDto>();
+	const { data: newMessage, isLoading: newMessageLoading, error: newMessageError, fetcher: newMessageFetcher } = useFetch<null, CreateChatMessageDto>();
 	const router = useRouter();
 
 	// ****************************************** THIS IS STUFF YOU MIGHT WANT TO ALTER, CARLOS ****************************************** //
@@ -269,7 +270,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 					<div className="chat-input">
 						<form onSubmit={(e) => {
 							e.preventDefault();
-							sendMessage(currentUser.id, otherUserForDm ? otherUserForDm : 0, chatFromDb, currentUser, message, chatSocket, setMessage);
+							sendMessage(currentUser.id, otherUserForDm ? otherUserForDm : 0, chatFromDb, currentUser, message, chatSocket, setMessage, newMessageFetcher);
 						}}>
 							<input className="form-control"
 								type='text'

@@ -13,7 +13,9 @@ export const sendMessage = (
 	currentUser: UserProfileDto,
 	message: string,
 	chatSocket: Socket,
-	setMessage: Function
+	setMessage: Function,
+	sendMessageToDb: Function,
+
 ) => {
 	if (!currentUserId || !otherUserForDm || !currentChat)
 		return;
@@ -23,8 +25,12 @@ export const sendMessage = (
 		room: currentChat.id.toString(),
 		message: message, action: false
 	};
+	// this function sends the message to the socket
 	chatSocket.emit("chat/msgToRoom", payload);
 	setMessage('');
+
+	// this function sends the message to the database
+	sendMessageToDb({ url: constants.CHAT_MESSAGE_TO_DB, fetchMethod: "POST", payload });
 };
 
 // This function is used to join the room.
