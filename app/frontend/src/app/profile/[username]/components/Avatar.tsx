@@ -16,8 +16,7 @@ export default function Avatar() : JSX.Element {
     if (avatarUrl != null)
 		{
       // TODO: Albert: make setAvatar in transcendence context?
-      const user = currentUser;
-      user.avatarUrl = avatarUrl;
+      const user = { ...currentUser, avatarUrl };
       setCurrentUser(user);
       console.log(`reload page from userInfo, new avatarUrl: ${avatarUrl}, current user: ${currentUser.avatarUrl}`);
 		}
@@ -28,11 +27,20 @@ export default function Avatar() : JSX.Element {
       try {
         if(file) {
           setIsLoading(true);
+          const headers: HeadersInit = {};
+
+          const jwtToken = sessionStorage.getItem('jwt');
+          if (jwtToken) {
+              headers['Authorization'] = `Bearer ${jwtToken}`;
+          } else {
+            console.log('No jwt token in session storage');
+          }
           const formData = new FormData();
           console.log(`Form data: `);
           formData.append('file', file);
           console.log(formData);
           const response = await fetch(constants.API_NEW_AVATAR, {
+            
             method: 'POST',
             body: formData,
             headers: undefined,

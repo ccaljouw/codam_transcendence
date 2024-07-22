@@ -17,7 +17,7 @@ export default function TwoFactorAuthentication(): JSX.Element {
   useEffect(() => {
     if (FAValid == true )
 		{
-      // TODO: Albert: make setTwoFactorEnabled in transcendence context?
+      // TODO: : make setTwoFactorEnabled in transcendence context?
       let user = currentUser;
       user.twoFactEnabled = true;
       setTwoFactorEnabled("Disable2FA");
