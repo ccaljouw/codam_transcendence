@@ -38,6 +38,7 @@ export class UsersService {
 
 	async update(id: number, updateUserDto: UpdateUserDto): Promise<UserProfileDto> {
     console.log(updateUserDto);
+    console.log(updateUserDto);
 		try {
 			const user = await this.db.user.update({
 			where: { id },	
@@ -62,15 +63,12 @@ export class UsersService {
 				delete blocked.blocked;
 			}
 			return user;
-		}
-
-
-		catch (error) {
-	  if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
-		throw error;
+		} catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+      throw error;
+      }
+      throw new Error(`Error updating user with id ${id}: ${error.message}`);
 	  }
-	  throw new Error(`Error updating user with id ${id}: ${error.message}`);
-	}
 	}
 
 	async remove(id: number): Promise<UserProfileDto> {
@@ -79,6 +77,9 @@ export class UsersService {
 			return user;
 		}
 		catch (error) {
+	  if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+		throw error;
+	  }
 	  if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
 		throw error;
 	  }
@@ -102,9 +103,9 @@ export class UsersService {
 			return users;
 		}
 		catch (error) {
-	  if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
-		throw error;
-	  }
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
 			throw new NotFoundException(`No other users in the database.`);
 		}
 	}
@@ -126,10 +127,10 @@ export class UsersService {
 			return users;
 		}
 		catch (error) {
-	  if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
-		throw error;
-	  }
-			throw new NotFoundException(`No users in the database.`);
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+  		throw error;
 		}
 	}
 
@@ -154,6 +155,9 @@ export class UsersService {
 			return user;
 		}
 		catch (error) {
+	  if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+		throw error;
+	  }
 	  if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
 		throw error;
 	  }
@@ -237,7 +241,7 @@ export class UsersService {
 		return friendCount.friends.length;
 	}
 
-	async blockUser(id: number, blockId: number): Promise<UserProfileDto> {
+  async blockUser(id: number, blockId: number): Promise<UserProfileDto> {
 
 		try {
 			const user = await this.db.user.update({
@@ -305,6 +309,7 @@ export class UsersService {
 			throw new NotFoundException(`Error blocking user with id ${id}: ${error}`);
 		}
 	}
+			
 			
 	async unFriend(id: number, friendId: number): Promise<UserProfileDto> {
 		try {

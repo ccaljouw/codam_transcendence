@@ -46,6 +46,7 @@ export class constants {
 	static INVITE_RESPOND_TO_FRIEND_REQUEST = this.API_INVITE + 'respondToFriendRequest/';
 	static INVITE_RESPOND_TO_GAME_REQUEST = this.API_INVITE + 'respondToGameRequest/';
   
+  
 	static API_GAME = this.BACKEND_BASEURL + 'game/'
   
 	static API_TEST = this.BACKEND_BASEURL + 'test/';

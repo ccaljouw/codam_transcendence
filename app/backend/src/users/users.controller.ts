@@ -18,6 +18,7 @@ export class UsersController {
 	@Post('token')
 	@ApiOperation({ summary: 'Adds token with user id to database' })
 	@ApiCreatedResponse({ description: 'Token successfully created', type: Boolean })
+	@ApiCreatedResponse({ description: 'Token successfully created', type: Boolean })
 
 	addToken(@Body() createToken: CreateTokenDto): Promise<boolean> {
 		console.log(`Adding token ${createToken.token} for user ${createToken.userId}`);
@@ -73,7 +74,6 @@ export class UsersController {
 	findOne(@Param('id', ParseIntPipe) id: number): Promise<UserProfileDto> {
 		return this.usersService.findOne(id);
 	}
-
   
 	@Patch(':id')
   @UseGuards(JwtAuthGuard)
