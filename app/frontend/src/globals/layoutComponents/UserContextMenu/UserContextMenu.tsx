@@ -22,6 +22,7 @@ export default function UserContextMenu({ user }:
 	const { data: invite, isLoading: inviteLoading, error: inviteError, fetcher: inviteFetcher } = useFetch<CreateInviteDto, UpdateInviteDto>();
 	const { data: chat, isLoading: chatLoading, error: chatError, fetcher: chatFetcher } = useFetch<CreateDMDto, UpdateChatDto>();
 	const { data: blockData, isLoading: blockLoading, error: blockError, fetcher: blockFetcher } = useFetch<null, UserProfileDto>();
+	const { data: newChatMessage, isLoading: newChatMessageLoading, error: newChatMessageError, fetcher: newChatMessageFetcher } = useFetch<ChatMessageToRoomDto, number>();
 	const userIsFriend = IsFriend(user.id, currentUser);
 	const router = useRouter();
 
@@ -34,6 +35,7 @@ export default function UserContextMenu({ user }:
 		if (socketPayload && currentChatRoom.id == parseInt(socketPayload.room)) {
 			transcendenceSocket.emit('chat/msgToRoom', socketPayload);
 			setSocketPayload(null); // reset payload so it doesn't send again
+			newChatMessageFetcher({ url: constants.CHAT_MESSAGE_TO_DB, fetchMethod: 'POST', payload: socketPayload });
 		}
 	}, [currentChatRoom]);
 
@@ -122,6 +124,7 @@ export default function UserContextMenu({ user }:
 			}
 			else { // if already in chat room, send message to room
 				transcendenceSocket.emit('chat/msgToRoom', payload);
+				newChatMessageFetcher({ url: constants.CHAT_MESSAGE_TO_DB, fetchMethod: 'POST', payload });
 			}
 		}
 	}, [chat, invite]);

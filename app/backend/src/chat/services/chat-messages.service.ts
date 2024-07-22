@@ -48,6 +48,8 @@ export class ChatMessageService {
 			const user = await this.db.user.findUnique({ where: { id: chatUser.userId }, include: { blocked: true } });
 			if (user.blocked.some(block => block.id === senderId)) // If the user is blocked, continue
 				continue;
+			if (chatUser.userId === senderId) // If the user is the sender, continue
+				continue;
 			await this.db.chatUsers.update({
 				where: { id: chatUser.id },
 				data: {
