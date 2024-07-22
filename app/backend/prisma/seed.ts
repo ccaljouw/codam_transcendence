@@ -10,19 +10,26 @@ async function addDummyUsers() {
 		update: {},
 		create: {
 			userName: 'AwesomeBackendCreator',
-			loginName: 'ccaljouw',
-			email: 'ccaljouw@student.codam.nl',
-			hash: 'pwd',
+			loginName: 'caljouw',
+			email: 'caljouw@student.codam.nl',
 			firstName: 'Carien',
 			lastName: 'Caljouw',
 		},
 	});
+  const auth1 = await prisma.auth.upsert({
+    where: { userId: 1 },
+    update: {},
+    create: {
+      userId: 1,
+      pwd: "pwd",
+    },
+  });
+
   const stats1 = await prisma.stats.upsert({
 		where: { userId: 1 },
     update: {},
 		create: {
 			userId: 1,
-			achievements: [14],
 		},
 	});
 
@@ -31,20 +38,27 @@ async function addDummyUsers() {
 		update: {},
 		create: {
 			userName: 'AwesomeSocketCreator',
-			loginName: 'avan-and',
+			loginName: 'avan-and-socket',
 			email: 'avan_and@student.codam.nl',
-			hash: 'pwd',
 			firstName: 'Albert',
 			lastName: 'van Andel',
 		},
 	});
+
+  const auth2 = await prisma.auth.upsert({
+    where: { userId: 2 },
+    update: {},
+    create: {
+      userId: 2,
+      pwd: "pwd",
+    },
+  });
 
   const stats2 = await prisma.stats.upsert({
 		where: { userId: 2 },
     update: {},
 		create: {
 			userId: 2,
-			achievements: [14],
 		},
 	});
 
@@ -55,18 +69,25 @@ async function addDummyUsers() {
 			userName: 'AwesomeFrontendCreator',
 			loginName: 'jaberkro',
 			email: 'jaberkro@student.codam.nl',
-			hash: 'pwd',
 			firstName: 'Jorien',
 			lastName: 'Aberkrom',
 		},
 	});
+
+  const auth3 = await prisma.auth.upsert({
+    where: { userId: 3 },
+    update: {},
+    create: {
+      userId: 3,
+      pwd: "pwd",
+    },
+  });
 
   const stats3 = await prisma.stats.upsert({
 		where: { userId: 3 },
     update: {},
 		create: {
 			userId: 3,
-			achievements: [14],
 		},
 	});
 
@@ -77,17 +98,25 @@ async function addDummyUsers() {
 			userName: 'AwesomeGameCreator',
 			loginName: 'cwesseli',
 			email: 'cwesseli@student.codam.nl',
-			hash: 'pwd',
 			firstName: 'Carlo',
 			lastName: 'Wesseling',
 		},
 	});
+
+  const auth4 = await prisma.auth.upsert({
+    where: { userId: 4 },
+    update: {},
+    create: {
+      userId: 4,
+      pwd: "pwd",
+    },
+  });
+
   const stats4 = await prisma.stats.upsert({
 		where: { userId: 4 },
     update: {},
 		create: {
 			userId: 4,
-			achievements: [14],
 		},
 	});
 
@@ -98,11 +127,20 @@ async function addDummyUsers() {
 			userName: 'FriendFromCarlo',
 			loginName: 'friendcarlo',
 			email: 'carlofriend@student.codam.nl',
-			hash: 'pwd',
 			firstName: 'Friend',
 			lastName: 'Friendowitz',
 		},
 	});
+
+  const auth5 = await prisma.auth.upsert({
+    where: { userId: 5 },
+    update: {},
+    create: {
+      userId: 5,
+      pwd: "pwd",
+    },
+  });
+
   const stats5 = await prisma.stats.upsert({
 		where: { userId: 5 },
     update: {},
@@ -118,11 +156,19 @@ async function addDummyUsers() {
 			userName: 'BlockByCarien',
 			loginName: 'blockcarien',
 			email: 'blockcarien@student.codam.nl',
-			hash: 'pwd',
 			firstName: 'Blocked',
 			lastName: 'ByCarien',
 		},
 	});
+
+  const auth6 = await prisma.auth.upsert({
+    where: { userId: 6 },
+    update: {},
+    create: {
+      userId: 6,
+      pwd: "pwd",
+    },
+  });
 
 	// Establish friendship between users
 	await prisma.user.update({
@@ -142,7 +188,7 @@ async function addDummyUsers() {
 
 	// Block user6 by user1
 	await prisma.user.update({
-		where: { loginName: 'ccaljouw' },
+		where: { loginName: 'caljouw' },
 		data: {
 			blocked: { connect: { loginName: 'blockcarien' } }
 		}

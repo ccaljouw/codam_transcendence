@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import EditButton from "./EditButton";
 
 export type optionalAttributes = {
-    type: string,
+  type: string,
 	name: string,
 	required?: boolean,
 	autoComplete?: string,

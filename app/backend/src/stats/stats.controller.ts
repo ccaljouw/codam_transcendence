@@ -1,7 +1,8 @@
-import { Controller, Get, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { StatsService } from './stats.service';
 import { GameResultDto, StatsDto } from '@ft_dto/stats';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 
 @Controller('stats')
 @ApiTags('stats')
@@ -54,6 +55,8 @@ export class StatsController {
 	}
 
   @Delete(':userId')
+  @UseGuards(JwtAuthGuard)
+
   @Get(':userId')
   @ApiOperation({ summary: 'Deletes the stats of player with provided userid' })
   @ApiOkResponse({ type: StatsDto })

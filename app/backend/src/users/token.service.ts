@@ -26,7 +26,6 @@ export class TokenService {
 				},
 			});
 			if (user) {
-				delete user.hash;
 				return user;
 			}
 			return null;

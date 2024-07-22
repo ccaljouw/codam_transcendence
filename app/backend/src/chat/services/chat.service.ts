@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/database/prisma.service";
-import { CreateDMDto, UpdateChatDto } from "@ft_dto/chat";
+import { CreateDMDto, UpdateChatDto, UpdateChatUserDto } from "@ft_dto/chat";
 import { UserProfileDto } from "@ft_dto/users";
-import { ChatType } from "@prisma/client";
+import { ChatType, ChatUserRole } from "@prisma/client";
 
 @Injectable()
 export class ChatService {
@@ -70,10 +70,14 @@ export class ChatService {
 			where: { chatId },
 			include: { user: true }
 		});
-		for (const user of users) {
-			delete user.user.hash;
-		}
 		return users.map(u => u.user);
+	}
+
+	async getChatUser(chatId: number, userId: number): Promise<UpdateChatUserDto> {
+		const chatUser = await this.db.chatUsers.findFirst({
+			where: { chatId, userId }
+		});
+		return chatUser;
 	}
 
 	async createChannel(userId: number): Promise<UpdateChatDto> {
@@ -89,6 +93,7 @@ export class ChatService {
 			data: {
 				chatId: newChat.id,
 				userId: userId,
+				role: ChatUserRole.OWNER,
 				lastRead: new Date()
 			}
 		});
@@ -134,7 +139,8 @@ export class ChatService {
 		}
 		console.log("Getting channel ", channelId);
 		const chat = await this.db.chat.findUnique({
-			where: { id: channelId }
+			where: { id: channelId },
+			include: { users: true }
 		});
 		return chat;
 	}

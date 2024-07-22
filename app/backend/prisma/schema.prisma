@@ -30,21 +30,23 @@ datasource db {
 model User {
 	id        Int    @id @default(autoincrement())
 	loginName String @unique
-	hash      String
 
-    userName  String? @unique //if no userName is provided loginName is used
-    email     String? @unique
-    firstName String?
-    lastName  String?
-    token     Tokens[]
+  userName        String? @unique //if no userName is provided loginName is used
+  email           String? @unique
+  firstName       String?
+  lastName        String?
+  auth            Auth?
+  token           Tokens[]
 
-    avatarId Int          @default(1)
-    theme    Int          @default(0)
-    online   OnlineStatus @default(OFFLINE)
+  twoFactEnabled  Boolean      @default(false)
+  // avatarId        Int          @default(1)
+  avatarUrl       String?      @default("/favicon.ico")
+  theme           Int          @default(0)
+  online          OnlineStatus @default(OFFLINE)
 
-    chats ChatUsers[]
-    games GameUser[]
-	stats Stats?
+  chats ChatUsers[]
+  games GameUser[]
+  stats Stats?
 
 	friends User[] @relation("Friends")
 	friendOf User[] @relation("Friends")
@@ -65,6 +67,19 @@ model Tokens {
 	createdAt DateTime @default(now())
 	updatedAt DateTime @updatedAt
 	user      User     @relation(fields: [userId], references: [id])
+}
+
+model Auth {
+  id     Int    @id @default(autoincrement())
+  userId Int    @unique
+
+  pwd            String?
+  twoFactSecret  String?
+
+
+  createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Chat {
@@ -88,6 +103,7 @@ model ChatUsers {
 	isInChatRoom   Boolean      @default(false)
 	unreadMessages Int          @default(0)
 
+
 	createdAt DateTime @default(now())
 	updatedAt DateTime @updatedAt
 	user      User     @relation(fields: [userId], references: [id])
@@ -101,38 +117,38 @@ model ChatMessages {
 	chatId  Int
 	userId  Int
 
-	createdAt   DateTime @default(now())
-	updatedAt   DateTime @updatedAt
-	chat        Chat     @relation(fields: [chatId], references: [id])
-	invite      Invite?  @relation(fields: [inviteId], references: [id])
-  	inviteId    Int? @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  chat        Chat     @relation(fields: [chatId], references: [id])
+  invite      Invite?  @relation(fields: [inviteId], references: [id])
+  inviteId    Int? @unique
 }
 
 model Game {
-	id              Int       @id @default(autoincrement())
-	state           GameState
-	GameUsers       GameUser[]
-	longestRally    Int      @default(0)
-	winnerId        Int?
-
-	gameStartedAt   DateTime?
-	gameFinishedAt  DateTime?
-	createdAt       DateTime @default(now())
-	updatedAt       DateTime @updatedAt
+  id              Int       @id @default(autoincrement())
+  state           GameState
+  GameUsers       GameUser[]
+  longestRally    Int      @default(0)
+  winnerId        Int?
+  
+  gameStartedAt   DateTime?
+  gameFinishedAt  DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model GameUser {
-	id			Int       @id @default(autoincrement())
-	clientId	String
-	player		Int
-	score		Int       @default(0)
+  id        Int       @id @default(autoincrement())
+  clientId  String
+  player    Int
+  score     Int       @default(0)
 
 	gameId	Int
 	game	Game @relation(fields: [gameId], references: [id])
 
-	userId	Int
-	user	User @relation(fields: [userId], references: [id])
-	@@unique([gameId, player])
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+  @@unique([gameId, player])
 }
 
 model Invite {
@@ -154,19 +170,19 @@ model Invite {
 
 // stats tracked to monitor achievements and rank
 model Stats {
-	id					Int @id @default(autoincrement())
-	userId 				Int @unique
-	wonLastGame			Boolean @default(false)
-	wins				Int @default(0)
-	losses				Int @default(0)
-	winLossRatio		Float @default(1)
-	consecutiveWins		Int @default(0)
-	maxConsecutiveWins	Int @default(0)
-	achievements		Int[]
+  id                 Int @id @default(autoincrement())
+  userId             Int @unique
+  wonLastGame        Boolean @default(false)
+  wins               Int @default(0)
+  losses             Int @default(0)
+  winLossRatio       Float @default(1)
+  consecutiveWins    Int @default(0)
+  maxConsecutiveWins Int @default(0)
+  achievements       Int[]
 
-	createdAt	DateTime @default(now())
-	updatedAt	DateTime @updatedAt
-	user		User @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 // ***************************************************************** //

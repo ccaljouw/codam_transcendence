@@ -1,9 +1,10 @@
-import { Controller, ParseIntPipe, Body, Param, Get, Post, Patch, Delete } from '@nestjs/common';
+import { Controller, ParseIntPipe, Body, Param, Get, Post, Patch, Delete, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { CreateUserDto, UpdateUserDto, UserProfileDto} from '@ft_dto/users';
+import { UpdateUserDto, UserProfileDto} from '@ft_dto/users';
 import { CreateTokenDto } from '@ft_dto/users/create-token.dto';
 import { TokenService } from './token.service';
+import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 
 
 @Controller('users')
@@ -14,22 +15,13 @@ export class UsersController {
 		private readonly tokenService: TokenService,
 	) { }
 
-	// TODO: update endpoints to include access token
-	@Post('register')
-	@ApiOperation({ summary: 'Adds user to database and returns id for this user' })
-	@ApiCreatedResponse({ description: 'User successfully created', type: UserProfileDto })
-
-	register(@Body() createUser: CreateUserDto): Promise<UserProfileDto> {
-		return this.usersService.create(createUser);
-	}
-
 	@Post('token')
 	@ApiOperation({ summary: 'Adds token with user id to database' })
+	@ApiCreatedResponse({ description: 'Token successfully created', type: Boolean })
 	@ApiCreatedResponse({ description: 'Token successfully created', type: Boolean })
 
 	addToken(@Body() createToken: CreateTokenDto): Promise<boolean> {
 		console.log(`Adding token ${createToken.token} for user ${createToken.userId}`);
-
 		return this.tokenService.addTokenWithStaleCheck(createToken);
 	}
 
@@ -43,6 +35,8 @@ export class UsersController {
 	}
 
   @Get('username/:userName')
+  @UseGuards(JwtAuthGuard)
+
   @ApiOperation({ summary: 'Returns user with specified userName' })
   @ApiOkResponse({ type: UserProfileDto })
   @ApiNotFoundResponse({ description: 'User with this userName does not exist' })
@@ -71,6 +65,8 @@ export class UsersController {
 	}
 
 	@Get(':id')
+  @UseGuards(JwtAuthGuard)
+
 	@ApiOperation({ summary: 'Returns user with specified id' })
 	@ApiOkResponse({ type: UserProfileDto })
 	@ApiNotFoundResponse({ description: 'User with #${id} does not exist' })
@@ -78,9 +74,10 @@ export class UsersController {
 	findOne(@Param('id', ParseIntPipe) id: number): Promise<UserProfileDto> {
 		return this.usersService.findOne(id);
 	}
-
   
 	@Patch(':id')
+  @UseGuards(JwtAuthGuard)
+
 	@ApiOperation({ summary: 'Updates user with specified id' })
 	@ApiOkResponse({ type: UserProfileDto })
   @ApiConflictResponse( {description: `Conflict: Unique constraint failed on the field: []`} )
@@ -91,6 +88,8 @@ export class UsersController {
 	}
 
 	@Delete(':id')
+  @UseGuards(JwtAuthGuard)
+
 	@ApiOperation({ summary: 'Deletes user with specified id' })
 	@ApiOkResponse({ description: 'User successfully deleted', type: UserProfileDto })
 

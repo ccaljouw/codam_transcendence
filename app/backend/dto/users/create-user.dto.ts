@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { OnlineStatus, Tokens } from '@prisma/client';
+import { OnlineStatus } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsEmail,
@@ -21,15 +21,9 @@ export class CreateUserDto {
   @MaxLength(30)                      //todo: define max legth  
   @ApiProperty({ uniqueItems: true, nullable: false, minLength: 3, maxLength:30 })
   loginName: string;
-
-  @IsNotEmpty()
-  @MinLength(3)                       //todo: define min length
-  @MaxLength(30)                      //todo: define max legth  
-  @ApiProperty({ nullable: false, minLength: 3, maxLength:30  })
-  hash: string;
   
   @IsOptional()
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: false })
   userName?: string;
 
   @IsEmail()
@@ -54,6 +48,10 @@ export class CreateUserDto {
   @Type(() => Number)
   @IsInt()
   avatarId?: number;
+
+  @IsOptional()
+  @ApiProperty({ required: false })
+  avatarUrl?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()

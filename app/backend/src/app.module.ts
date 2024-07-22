@@ -7,13 +7,13 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { GameModule } from './game/game.module';
 import { LoggerMiddleware } from './logging.middleware';
 import { StatsModule } from './stats/stats.module';
+import { AvatarModule } from './avatar/avatar.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), ChatSocketModule, TestingModule, UsersModule, GameModule, AuthenticationModule, StatsModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), ChatSocketModule, TestingModule, UsersModule, GameModule, AuthenticationModule, StatsModule, AvatarModule],
 })
-export class AppModule {}
-// export class AppModule implements NestModule{
-//   configure(consumer: MiddlewareConsumer) {
-//     consumer.apply(LoggerMiddleware).forRoutes('*');
-//   }
-// }
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

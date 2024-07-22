@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export type fetchProps<T> = {
     url: string,
@@ -25,9 +25,17 @@ export default function useFetch<T, U>(): fetchOutput<T, U> {
     } : fetchProps<T> ) : Promise<void> => {
         setIsLoading(true);
         try {
+            const headers: HeadersInit = { 'Content-Type': 'application/json' };
+
+            const jwtToken = sessionStorage.getItem('jwt');
+            if (jwtToken) {
+                headers['Authorization'] = `Bearer ${jwtToken}`;
+            } else {
+              console.log('No jwt token in session storage');
+            }
             const response = await fetch(url, {
                 method: fetchMethod,
-                headers: {'Content-Type': 'application/json'},
+                headers,
                 body: JSON.stringify(payload),
             });
             if (!response.ok) {

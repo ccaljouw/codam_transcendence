@@ -8,9 +8,12 @@ import StatusIndicator from '@ft_global/functionComponents/StatusIndicator';
 import UnreadMessages from '@ft_global/functionComponents/UnreadMessages';
 import Chat from './Chat';
 import UserContextMenu from '../UserContextMenu/UserContextMenu';
-import { ChatType, OnlineStatus } from '@prisma/client';
+import { ChatType, ChatUserRole, OnlineStatus } from '@prisma/client';
 import { HasFriends, IsBlocked } from 'src/globals/functionComponents/FriendOrBlocked';
 import ChannelList from './channelList';
+import { UpdateChatUserDto } from '@ft_dto/chat';
+import useFetch from 'src/globals/functionComponents/useFetch';
+import ChannelStatusIndicator from 'src/globals/functionComponents/channelStatus';
 
 
 
@@ -19,11 +22,13 @@ export default function ChatArea() {
 		Friends = 'Friends',
 		Chats = 'Chats',
 		AllUsers = 'All Users',
-		Channel = 'Channel'
+		Channel = 'Channel',
+		Settings = 'Settings'
 	}
 	const [secondUser, setSecondUser] = useState(0);
 	const { currentUser, newChatRoom, currentChatRoom, allUsersUnreadCounter, setAllUsersUnreadCounter, friendsUnreadCounter, setFriendsUnreadCounter, setNewChatRoom } = useContext(TranscendenceContext)
 	const [userListType, setUserListType] = useState<UserListType>(HasFriends(currentUser) ? UserListType.Friends : UserListType.AllUsers);
+	const { data: chatUser, error: chatUserError, isLoading: chatUserLoading, fetcher: chatUserFetcher } = useFetch<null, UpdateChatUserDto>();
 
 	useEffect(() => { // Reset secondUser when a new chat room is created to avoid the Chat component fetching the wrong room
 		setSecondUser(0);
@@ -35,6 +40,7 @@ export default function ChatArea() {
 		if (currentChatRoom.id != -1 && currentChatRoom.visibility !== ChatType.DM) {
 			setUserListType(UserListType.Channel);
 		}
+		chatUserFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + currentUser.id });
 	}, [currentChatRoom]);
 
 	useEffect(() => {
@@ -75,12 +81,12 @@ export default function ChatArea() {
 				:
 				<>
 					<li key={user.id}>
-						{/* TODO: Implement status StatusIndicator for channels */}
 						{/* <StatusIndicator
 							userId={user.id}
 							status={user.online}
 							statusChangeCallback={statusChangeCallback}
 							indexInUserList={indexInUserList} /> */}
+						<ChannelStatusIndicator userId={user.id} />
 						&nbsp;&nbsp;
 						<span className={IsBlocked(user.id, currentUser) ? 'blocked' : ''} onClick={() => { !IsBlocked(user.id, currentUser) ? setSecondUser(user.id) : setNewChatRoom({ room: -1, count: newChatRoom.count++ }) }}>{user.firstName} {user.lastName}</span>
 						&nbsp;
@@ -111,7 +117,7 @@ export default function ChatArea() {
 			</>
 		);
 
-	}	
+	}
 
 	return (
 		<>
@@ -139,7 +145,18 @@ export default function ChatArea() {
 									<span className='chat-selectedUserListType'>Channel</span>
 									: <span className='chat-userListType' onClick={() => setUserListType(UserListType.Channel)}>Channel</span>
 							}
+							{
+								chatUser && chatUser.role == ChatUserRole.OWNER &&
+								<>
+									&nbsp;|&nbsp;
+									{userListType == UserListType.Settings ?
+										<span className='chat-selectedUserListType'>Settings</span>
+										: <span className='chat-userListType' onClick={() => setUserListType(UserListType.Settings)}>Settings</span>
+									}
+								</>
+							}
 						</>}
+			
 				</div>
 				<div className='chat-userlist'>
 					{userListType == UserListType.Friends &&
@@ -150,6 +167,14 @@ export default function ChatArea() {
 					{userListType == UserListType.Chats && <ChannelList />}
 					{userListType == UserListType.AllUsers && <UserList userDisplayFunction={ChatAreaUserList} fetchUrl={constants.API_ALL_USERS_BUT_ME + currentUser.id} />}
 					{userListType == UserListType.Channel && <><UserList userDisplayFunction={ChatAreaChannelUserList} fetchUrl={constants.CHAT_GET_USERS_IN_CHAT + currentChatRoom.id} /></>}
+					{userListType == UserListType.Settings && <>
+					<b>Channel settings here.</b><br />
+					Channel visibility: {currentChatRoom.visibility} 
+					<br />&emsp;&emsp;--&gt; Public, Private, Password [with set/change password option]<br />
+					Channel name: {currentChatRoom.name} 
+					<br />&emsp;&emsp;--&gt; Change name<br />
+					Delete channel<br />
+					</>}
 				</div>
 			</div>
 		</>

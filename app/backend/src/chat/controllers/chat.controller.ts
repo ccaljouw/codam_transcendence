@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UpdateChatMessageDto, CreateDMDto, CreateChatMessageDto, FetchChatMessageDto, UpdateInviteDto, UpdateChatDto } from '@ft_dto/chat';
 import { ChatMessageService } from '../services/chat-messages.service';
 import { ChatService } from '../services/chat.service';
 import { ChatSocketService } from '../services/chatsocket.service';
 import { UserProfileDto } from '@ft_dto/users';
+import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 
 
 @Controller('chat')
@@ -17,6 +18,8 @@ export class ChatMessagesController {
 	) { }
 
 	@Get('messages/unreadsforuser/:userId')
+  @UseGuards(JwtAuthGuard)
+
 	@ApiOperation({ summary: 'Returns chat unread messages for specific user' })
 	@ApiOkResponse({ type: [UpdateChatMessageDto] })
 	@ApiNotFoundResponse({ description: 'No unread messages for user #${userId}' })
@@ -34,6 +37,8 @@ export class ChatMessagesController {
 	}
 
 	@Get('newChannel/:userId')
+  @UseGuards(JwtAuthGuard)
+
 	@ApiOperation({ summary: 'Returns new channel' })
 	@ApiOkResponse({ type: UpdateChatDto })
 	@ApiNotFoundResponse({ description: 'No new channel for user #${userId}' })
@@ -43,6 +48,8 @@ export class ChatMessagesController {
 	}
 
 	@Get('channelsForUser/:userId')
+  @UseGuards(JwtAuthGuard)
+
 	@ApiOperation({ summary: 'Returns channels for user' })
 	@ApiOkResponse({ type: [UpdateChatDto] })
 	@ApiNotFoundResponse({ description: 'No channels for user #${userId}' })
@@ -61,6 +68,8 @@ export class ChatMessagesController {
 	}
 
 	@Get('messages/:chatId/:userID')
+  @UseGuards(JwtAuthGuard)
+
 	@ApiOperation({ summary: 'Returns chat messages with specified chatId and userId' })
 	@ApiOkResponse({ type: [UpdateChatMessageDto] })
 	@ApiNotFoundResponse({ description: 'No messages with #${chatId}' })
@@ -68,7 +77,18 @@ export class ChatMessagesController {
 		return this.chatMessageService.findMessagesInChat(chatId, userId);
 	}
 
+	@Get('chatUser/:chatId/:userId')
+	@ApiOperation({ summary: 'Returns chat user' })
+	@ApiOkResponse({ type: UpdateChatDto })
+	@ApiNotFoundResponse({ description: 'No chat user with #${chatId}' })
+	async getChatUser(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number) {
+		const chatUser = await this.chatService.getChatUser(chatId, userId);
+		return chatUser;
+	}
+
 	@Get('unreadMessagesFromFriends/:userId')
+  @UseGuards(JwtAuthGuard)
+
 	@ApiOperation({ summary: 'Returns chat unread messages from friends' })
 	@ApiOkResponse({ type: [UpdateChatMessageDto] })
 	@ApiNotFoundResponse({ description: 'No unread messages from friends for user #${userId}' })
@@ -88,6 +108,8 @@ export class ChatMessagesController {
 	}
 
 	@Get('getUnreads/:chatId/:userId')
+  @UseGuards(JwtAuthGuard)
+
 	@ApiOperation({ summary: 'Returns number of unread messages in chat' })
 	@ApiOkResponse({ type: Number })
 	@ApiNotFoundResponse({ description: 'No chat with #${chatId}' })
@@ -97,6 +119,8 @@ export class ChatMessagesController {
 	}
 
 	@Get('joinRoomInDb/:chatId/:userId/:token')
+  @UseGuards(JwtAuthGuard)
+  
 	@ApiOperation({ summary: 'Returns room id if status was succesfully set' })
 	@ApiOkResponse({ type: Number })
 	@ApiNotFoundResponse({ description: 'No chat with #${chatId}' })

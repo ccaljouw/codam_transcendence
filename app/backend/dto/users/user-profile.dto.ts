@@ -1,11 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { OnlineStatus, User } from "@prisma/client";
+import { Auth, OnlineStatus, User } from "@prisma/client";
 
 export class UserProfileDto implements User {
-	hash: string;
-
-	// @ApiProperty({ required: false })
-	// token: Tokens[];
 
 	@ApiProperty({ required: false })
 	id: number;
@@ -25,8 +21,14 @@ export class UserProfileDto implements User {
 	@ApiProperty({ required: false })
 	lastName: string;
 
-	@ApiProperty({ required: false })
-	avatarId: number;
+  @ApiProperty({ required: false })
+	twoFactEnabled: boolean;
+
+	// @ApiProperty({ required: false })
+	// avatarId: number;
+
+  @ApiProperty({ required: false })
+  avatarUrl: string;
 
 	@ApiProperty({ required: false })
 	theme: number;
@@ -40,7 +42,7 @@ export class UserProfileDto implements User {
 	@ApiProperty({ required: false })
 	updatedAt: Date;
 
-	// dmId: number;
+  // dmId: number;
 	@ApiProperty({ required: false })
 	friends?: UserProfileDto[];
 

@@ -5,8 +5,8 @@ import useFetch from '@ft_global/functionComponents/useFetch';
 import SignUp from 'src/globals/layoutComponents/Login/SignUp';
 import ChooseUser from 'src/globals/layoutComponents/Login/ChooseUser';
 import Seed from 'src/app/dev/test/components/Seed'; //todo: this is tmp, remove later
-import Auth42Button from './Auth42Button';
 import { FontBangers, H3 } from '../Font';
+import Login from './Login';
 
 function LoginOptions() : JSX.Element {
 	const { data: users, isLoading: usersLoading, error: usersError, fetcher: usersFetcher } = useFetch<null, UserProfileDto[]>(); //todo: remove later
@@ -49,19 +49,14 @@ function LoginOptions() : JSX.Element {
 					<div className="col col-8 mt-0 index-middle">
 						<div className="row">
 							<div className="btn-group p-0" role="group">
-								<button type="button" className={`btn btn-dark ${loginOption == "choose" ? "active" : ""}`} onClick={handleChooseClick}>Choose user from list</button>
+								{/* <button type="button" className={`btn btn-dark ${loginOption == "choose" ? "active" : ""}`} onClick={handleChooseClick}>Choose user from list</button> */}
 								<button type="button" className={`btn btn-dark ${loginOption == "login" ? "active" : ""}`} onClick={handleLoginClick}>Login</button>
 								<button type="button" className={`btn btn-dark ${loginOption == "signUp" ? "active" : ""}`} onClick={handleSignUpClick}>Create new account</button>
 							</div>
 						</div>
-							{loginOption == "choose" && <ChooseUser />}
-							{loginOption == "login" && <p>Here will be the login form</p>}
+							{/* {loginOption == "choose" && <ChooseUser />} */}
+							{loginOption == "login" && <Login />}
 							{loginOption == "signUp" && <SignUp />}
-					</div>
-					<div className="col col-4 mt-0 index-right">
-						<div className="row">
-							<Auth42Button />
-						</div>
 					</div>
 				</>
 			}

@@ -10,27 +10,34 @@ export class UsersService {
 
 	constructor(
 		private db: PrismaService,
-	private stats: StatsService,
+	  private stats: StatsService,
 	) { }
 
 	// USER CRUD OPERATIONS
-	async create(createUserDto: CreateUserDto): Promise<UserProfileDto> {
+	async create(createUserDto: CreateUserDto, pwd: string): Promise<UserProfileDto> {
 		try {
-	  if (!createUserDto.userName)
-		createUserDto.userName = createUserDto.loginName;
-	  const user = await this.db.user.create({ data: createUserDto });
-	  console.log(`create stats for ${user.id}`)
-	  await this.stats.create(user.id);
-	  return user;
-	} catch (error) {
-	  if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
-		throw error;
-	  }
-	  throw new Error(`Error creating user: ${error.message}`);
-	}
+      //check if user already exists
+      if (!createUserDto.userName)
+        createUserDto.userName = createUserDto.loginName;
+      const user = await this.db.user.create({ data: createUserDto });
+      console.log(`create stats for ${user.id}`)
+      if (pwd) {
+        await this.db.auth.create({ data: { userId: user.id, pwd: pwd } })
+      } else {
+        await this.db.auth.create({ data: { userId: user.id} })
+      }
+      await this.stats.create(user.id);
+      return user;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+      throw new Error(`Error creating user: ${error.message}`);
+    }
 	}
 
 	async update(id: number, updateUserDto: UpdateUserDto): Promise<UserProfileDto> {
+    console.log(updateUserDto);
     console.log(updateUserDto);
 		try {
 			const user = await this.db.user.update({
@@ -47,37 +54,32 @@ export class UsersService {
 					return b.online > a.online ? 1 : -1;
 				return a.userName.localeCompare(b.userName)
 			});
-
-			delete user.hash;
 			for (const friend of user.friends as UserProfileDto[]) {
 				delete friend.friends;
 				delete friend.blocked;
-				delete friend.hash;
 			}
 			for (const blocked of user.blocked as UserProfileDto[]) {
 				delete blocked.friends;
 				delete blocked.blocked;
-				delete blocked.hash;
 			}
 			return user;
-		}
-
-
-		catch (error) {
-	  if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
-		throw error;
+		} catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+      throw error;
+      }
+      throw new Error(`Error updating user with id ${id}: ${error.message}`);
 	  }
-	  throw new Error(`Error updating user with id ${id}: ${error.message}`);
-	}
 	}
 
 	async remove(id: number): Promise<UserProfileDto> {
 		try {
 			const user = await this.db.user.delete({ where: { id } });
-			delete user.hash;
 			return user;
 		}
 		catch (error) {
+	  if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+		throw error;
+	  }
 	  if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
 		throw error;
 	  }
@@ -98,13 +100,12 @@ export class UsersService {
 				}
 			);
 			for (const element of users)
-				delete element.hash;
 			return users;
 		}
 		catch (error) {
-	  if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
-		throw error;
-	  }
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
 			throw new NotFoundException(`No other users in the database.`);
 		}
 	}
@@ -115,7 +116,6 @@ export class UsersService {
 		if (!friends)
 			throw new NotFoundException(`No friends in the database.`);
 		for (const element of friends)
-			delete element.hash;
 		return friends;
 	}
 
@@ -124,15 +124,13 @@ export class UsersService {
 			const users = await this.db.user.findMany({
 				orderBy: { userName: 'asc' },
 			});
-			for (const element of users)
-				delete element.hash;
 			return users;
 		}
 		catch (error) {
-	  if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
-		throw error;
-	  }
-			throw new NotFoundException(`No users in the database.`);
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+  		throw error;
 		}
 	}
 
@@ -146,20 +144,20 @@ export class UsersService {
 				}
 
 			});
-			delete user.hash;
 			for (const friend of user.friends as UserProfileDto[]) {
 				delete friend.friends;
 				delete friend.blocked;
-				delete friend.hash;
 			}
 			for (const blocked of user.blocked as UserProfileDto[]) {
 				delete blocked.friends;
 				delete blocked.blocked;
-				delete blocked.hash;
 			}
 			return user;
 		}
 		catch (error) {
+	  if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+		throw error;
+	  }
 	  if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
 		throw error;
 	  }
@@ -177,16 +175,13 @@ export class UsersService {
 				}
 				
 			});
-			delete user.hash;
 			for (const friend of user.friends as UserProfileDto[]) {
 				delete friend.friends;
 				delete friend.blocked;
-				delete friend.hash;
 			}
 			for (const blocked of user.blocked as UserProfileDto[]) {
 				delete blocked.friends;
 				delete blocked.blocked;
-				delete blocked.hash;
 			}
 			return user;
 		}
@@ -195,6 +190,39 @@ export class UsersService {
 				throw error;
 			}
 			throw new NotFoundException(`User with name ${userName} does not exist.`);
+		}
+	}
+
+  async findUserLogin(loginName: string): Promise<UserProfileDto> {
+		try {
+      console.log(`In findUserLogin, looking for: ${loginName}`);
+			const user = await this.db.user.findUnique({ 
+				where: { loginName: loginName },
+				include: {
+					friends: true,
+					blocked: true,
+				}
+				
+			});
+      if (!user)
+        throw new NotFoundException(`User with name ${loginName} does not exist.`);
+			for (const friend of user.friends as UserProfileDto[])
+				{
+					delete friend.friends;
+					delete friend.blocked;
+				}
+			for (const blocked of user.blocked as UserProfileDto[])
+			{
+				delete blocked.friends;
+				delete blocked.blocked;
+			}
+			return user;
+		}
+		catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+			throw new NotFoundException(`User with name ${loginName} does not exist.`);
 		}
 	}
 
@@ -213,7 +241,7 @@ export class UsersService {
 		return friendCount.friends.length;
 	}
 
-	async blockUser(id: number, blockId: number): Promise<UserProfileDto> {
+  async blockUser(id: number, blockId: number): Promise<UserProfileDto> {
 
 		try {
 			const user = await this.db.user.update({
@@ -228,18 +256,15 @@ export class UsersService {
 					blocked: true,
 				}
 			});
-			delete user.hash;
 			for (const friend of user.friends as UserProfileDto[])
 			{
 				delete friend.friends;
 				delete friend.blocked;
-				delete friend.hash;
 			}
 			for (const blocked of user.blocked as UserProfileDto[])
 			{
 				delete blocked.friends;
 				delete blocked.blocked;
-				delete blocked.hash;
 			}
 
 			// Expire any open invites sent to the blocked user
@@ -284,7 +309,7 @@ export class UsersService {
 			throw new NotFoundException(`Error blocking user with id ${id}: ${error}`);
 		}
 	}
-
+			
 			
 	async unFriend(id: number, friendId: number): Promise<UserProfileDto> {
 		try {

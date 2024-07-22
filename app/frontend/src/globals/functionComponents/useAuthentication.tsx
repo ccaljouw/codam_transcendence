@@ -14,7 +14,8 @@ type authenticationOutput = {
 export default function useAuthentication() : authenticationOutput {
 	const { currentUser, setCurrentUser } = useContext(TranscendenceContext);
 	const params = useSearchParams();
-	const codeFromUrl = params.get('code');
+	const userFromUrl = params.get('user');
+  const jwtToken = params.get('jwt');
 	const {data: user, fetcher: userFetcher} = useFetch<null, UserProfileDto>();
 	const [idFromStorage, setIdFromStorage] = useState<string | null>(null);
 	const router = useRouter();
@@ -28,9 +29,13 @@ export default function useAuthentication() : authenticationOutput {
 			console.log("user already logged in, fetching user " + id);
 			loginUser(constants.API_USERS + id);
 		}
-		if (codeFromUrl != null)
+		if (userFromUrl != null)
 		{
-			loginUser(constants.API_AUTH42 + codeFromUrl);
+      if (jwtToken) {
+        console.log("setting jwt token in session storage");
+        sessionStorage.setItem('jwt', jwtToken);
+      }
+			loginUser(constants.API_USERS + userFromUrl);
 			router.push(pathname);
 		}
 	}, []);
@@ -45,7 +50,7 @@ export default function useAuthentication() : authenticationOutput {
 	}, [user]);
 
 	const storeUser = (user: UserProfileDto) : void  => {
-		console.log("Setting user with id " + user.id + " in useAuthentication");
+		console.log(`Setting user with id ${user.id} and in useAuthentication`);
 		if (currentUser != user)
 		{
 			console.log("updating currentUser from useAuthentication")
@@ -55,6 +60,8 @@ export default function useAuthentication() : authenticationOutput {
 		{
 			console.log("updating sessionStorage from useAuthentication")
 			sessionStorage.setItem('userId', JSON.stringify(user.id));
+      if (jwtToken)
+        sessionStorage.setItem('jwt', jwtToken);
 		}
 	};
 
