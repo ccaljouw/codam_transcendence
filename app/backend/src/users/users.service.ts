@@ -46,6 +46,7 @@ export class UsersService {
           blocked: true,
         },
       });
+      if (!user) throw new NotFoundException(`User with id ${id} not found.`);
       user.friends = this.sortFriends(user.friends);
       return user;
     } catch (error) {
@@ -59,6 +60,7 @@ export class UsersService {
       await this.db.auth.deleteMany({ where: { userId: id } });
       await this.db.stats.deleteMany({ where: { userId: id } });
       const user = await this.db.user.delete({ where: { id } });
+      if (!user) throw new NotFoundException(`User with id ${id} not found.`);
       return user;
     } catch (error) {
       throw this.throwError(error, `Error removing user with id ${id}`);
@@ -112,6 +114,7 @@ export class UsersService {
           blocked: true,
         },
       });
+      if (!user) throw new NotFoundException(`User with id ${id} not found.`);
       user.friends = this.sortFriends(user.friends);
       console.log(user);
       return user;
@@ -129,6 +132,7 @@ export class UsersService {
           blocked: true,
         },
       });
+      if (!user) throw new NotFoundException(`User ${userName} not found.`);
       user.friends = this.sortFriends(user.friends);
       return user;
     } catch (error) {
@@ -146,6 +150,7 @@ export class UsersService {
           blocked: true,
         },
       });
+      if (!user) throw new NotFoundException(`User ${loginName} not found.`);
       user.friends = this.sortFriends(user.friends);
       return user;
     } catch (error) {
@@ -228,6 +233,7 @@ export class UsersService {
           blocked: true,
         },
       });
+      if (!user) throw new NotFoundException(`User ${id} not found.`);
       user.friends = this.sortFriends(user.friends);
 
       await this.expireInvites(id, blockId);
@@ -263,6 +269,7 @@ export class UsersService {
           blocked: true,
         },
       });
+      if (!user) throw new NotFoundException(`User ${id} not found.`);
       user.friends = this.sortFriends(user.friends);
       return user;
     } catch (error) {
@@ -284,6 +291,7 @@ export class UsersService {
           blocked: true,
         },
       });
+      if (!user) throw new NotFoundException(`User ${id} not found.`);
       user.friends = this.sortFriends(user.friends);
       return user;
     } catch (error) {
