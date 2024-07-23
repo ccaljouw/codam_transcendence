@@ -43,22 +43,23 @@ export class ChatSocketGateway {
 			userName: payload.userName,
 			message: payload.message,
 			room: payload.room,
-			action: payload.action	|| false,
+			action: payload.action || false,
 			inviteId: payload.inviteId,
 			invite: invite,
 			chatType: payload.chatType
 		};
 
 		// const messageResult = await this.chatMessageService.messageToDB({ chatId: parseInt(payload.room), userId: payload.userId, content: payload.message, inviteId: payload.inviteId }); //replace with api call in frontend?
-		if (payload.chatType === "DM")
-		{	const usersNotInRoom = await this.chatMessageService.getUsersNotInRoom(parseInt(payload.room), payload.userId);
-	const tokenArray = await this.chatSocketService.getUserTokenArray(usersNotInRoom);
-	tokenArray.forEach(element => {
-		if (element !== null) // if the user is online (ie has a token that is not null) but not in the room, send notification
-		{
-			this.chat_io.to(element).emit('chat/messageToUserNotInRoom', messageToChat);
+		if (payload.chatType === "DM") {
+			const usersNotInRoom = await this.chatMessageService.getUsersNotInRoom(parseInt(payload.room), payload.userId);
+			const tokenArray = await this.chatSocketService.getUserTokenArray(usersNotInRoom);
+			tokenArray.forEach(element => {
+				if (element !== null) // if the user is online (ie has a token that is not null) but not in the room, send notification
+				{
+					this.chat_io.to(element).emit('chat/messageToUserNotInRoom', messageToChat);
+				}
+			});
 		}
-	});}
 		this.chat_io.to(payload.room).emit('chat/messageFromRoom', messageToChat);
 		return;
 	}
@@ -121,6 +122,6 @@ export class ChatSocketGateway {
 				console.log("Emitting chat/patch to token", token, user.id);
 				this.chat_io.to(token).emit('chat/patch', payload);
 			}
-		}	
+		}
 	}
 }

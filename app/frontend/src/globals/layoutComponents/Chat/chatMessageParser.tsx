@@ -26,6 +26,7 @@ export const messageParser = (
 	const { inviteCallback, currentChatRoom, currentUser, chatSocket, friendInviteFetcher, gameInviteFetcher, chatInviteFetcher, changeRoomStatusCallback } = context;
 	if (IsBlocked(message.userId, currentUser))
 		return <></>
+	console.log(message);
 	if (message.action) {
 		if (message.userId == currentUser.id) // If the user is the current user, we don't want to show the message.	
 			return <></>
@@ -37,10 +38,12 @@ export const messageParser = (
 				changeRoomStatusCallback(message.userId, false);
 				return <>{'<<'} {message.userName} has left the chat {'>>'}</>
 			default:
-				return <>{message.message}</>
+				if (!message.inviteId)
+					return <>{message.message}</>
 		}
 	}
-	else if (message.inviteId) {
+	if (message.inviteId) {
+		console.log("Parsing invite");
 		return inviteParser(message, currentChatRoom, currentUser, chatSocket, inviteCallback, friendInviteFetcher, gameInviteFetcher, chatInviteFetcher);
 	}
 	else {

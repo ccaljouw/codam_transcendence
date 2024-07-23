@@ -103,6 +103,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 	}), [currentChatRoom, currentUser]);
 
 	const handleMessageFromRoom = (payload: ChatMessageToRoomDto) => {
+		console.log("Message from room: ", payload);
 		const message = messageParser(payload, messageParserProps)
 		if (message) {
 			setChat(prevChat => [...prevChat, message]);

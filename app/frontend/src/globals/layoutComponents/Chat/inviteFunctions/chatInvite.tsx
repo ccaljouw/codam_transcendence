@@ -23,17 +23,17 @@ export const chatInviteParser = ( // This function parses the game invite messag
 	if (message.invite.senderId == currentUser.id) {
 		switch (message.invite.state) {
 			case InviteStatus.SENT:
-				return <>You invited {message.message} to play a game</>
+				return <>You invited {message.message} to a channel</>
 			case InviteStatus.ACCEPTED:
-				return <>You are now playing a game with {message.message}</>
+				return <>{message.message} accepted your request to join a channel</>
 			case InviteStatus.REJECTED:
-				return <>{message.message} rejected your game request</>
+				return <>{message.message} rejected your request to join a channel</>
 		}
 	}
 	else {
 		switch (message.invite.state) {
 			case InviteStatus.SENT:
-				return (<>{message.userName} invited you to play a game&nbsp;
+				return (<>{message.userName} invited you join a channel&nbsp;
 					<span className={'invite-area'}>
 						<span className={'invite-button'} onClick={() => inviteCallback({ ...inviteCallbackProps, accept: true })}>Accept</span>&nbsp;|&nbsp;
 						<span className={'invite-button'} onClick={() => inviteCallback(inviteCallbackProps)}>Reject</span>

@@ -48,7 +48,7 @@ export default function UserContextMenu({ user }:
 	const createInvite = (type: InviteType, chat: number) => {
 		setDropdownVisible(false);
 		const inviteMessage: CreateInviteDto = {
-			chatId: chat,
+			chatId: currentChatRoom.id,
 			senderId: currentUser.id,
 			recipientId: user.id,
 			type: type,
@@ -146,7 +146,7 @@ export default function UserContextMenu({ user }:
 				
 				<span className={style.userlink_item} onClick={() => createInvite(InviteType.GAME, 0)} title='Invite to game'> 🏓</span>
 				<span className={style.userlink_item} onClick={() => handleProfileClick()} title='Visit Profile'>👤</span>
-				{currentChatRoom.visibility !== ChatType.DM && (
+				{currentChatRoom.visibility !== ChatType.DM && currentChatRoom.id != -1 && (
 				  <span className={style.userlink_item} onClick={() => createInvite(InviteType.CHAT, currentChatRoom.id)} title='Invite to chat'>💬</span>
 				)}
 				{!userIsFriend && (
