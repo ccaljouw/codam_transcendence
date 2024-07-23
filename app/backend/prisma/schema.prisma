@@ -189,9 +189,9 @@ model Stats {
 //			ENUMS
 
 enum OnlineStatus {
-	OFFLINE
-	IN_GAME
 	ONLINE
+	IN_GAME
+	OFFLINE
 }
 
 enum ChatType {

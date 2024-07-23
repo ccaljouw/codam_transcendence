@@ -7,7 +7,7 @@ import { TokenService } from './token.service';
 import { StatsService } from 'src/stats/stats.service';
 
 @Module({
-	imports:	[SocketServerModule],
+  imports: [SocketServerModule],
   controllers: [UsersController],
   providers: [UsersService, PrismaService, TokenService, StatsService],
   exports: [UsersService],

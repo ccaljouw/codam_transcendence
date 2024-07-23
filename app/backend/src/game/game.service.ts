@@ -1,11 +1,19 @@
-import { UpdateGameDto, UpdateGameStateDto, UpdateGameUserDto } from '@ft_dto/game';
+import {
+  UpdateGameDto,
+  UpdateGameStateDto,
+  UpdateGameUserDto,
+} from '@ft_dto/game';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateGameDto } from 'dto/game/create-game.dto';
 import { PrismaService } from 'src/database/prisma.service';
 import { Socket } from 'socket.io';
 import { GameState } from '@prisma/client';
 import { StatsService } from 'src/stats/stats.service';
-import { PrismaClientKnownRequestError, PrismaClientUnknownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
+import {
+  PrismaClientKnownRequestError,
+  PrismaClientUnknownRequestError,
+  PrismaClientValidationError,
+} from '@prisma/client/runtime/library';
 
 @Injectable()
 export class GameService {
@@ -24,7 +32,7 @@ export class GameService {
       });
       if (!game) {
         game = await this.create({ state: `WAITING` });
-        await this.addUser(game.id, userId, clientId, 1 );
+        await this.addUser(game.id, userId, clientId, 1);
         game = await this.db.game.findFirst({
           where: { id: game.id },
           include: { GameUsers: { include: { user: true } } },
@@ -65,8 +73,15 @@ export class GameService {
     // get the game id from the db with the token
   }
 
-  async addUser(gameId: number, userId: number, clientId: string, player: number) {
-    return this.db.gameUser.create({ data: { gameId, userId, clientId, player }});
+  async addUser(
+    gameId: number,
+    userId: number,
+    clientId: string,
+    player: number,
+  ) {
+    return this.db.gameUser.create({
+      data: { gameId, userId, clientId, player },
+    });
   }
 
   async findAll() {
@@ -142,12 +157,12 @@ export class GameService {
     if (updateGameStateDto.state === undefined) {
       console.log(`backend - game: can't update because state not defined`);
       return;
-    }    
+    }
     console.log(
       `backend - game: updating game state to : ${updateGameStateDto.state} for game: ${updateGameStateDto.id}`,
     );
     try {
-      let newGameData: UpdateGameStateDto = {
+      const newGameData: UpdateGameStateDto = {
         id: updateGameStateDto.id,
         state: updateGameStateDto.state,
       };
@@ -155,9 +170,9 @@ export class GameService {
       let player2: UpdateGameUserDto;
 
       if (updateGameStateDto.state === 'STARTED') {
-        newGameData.gameStartedAt = new Date;
+        newGameData.gameStartedAt = new Date();
       } else if (updateGameStateDto.state === 'FINISHED') {
-        newGameData.gameFinishedAt = new Date;
+        newGameData.gameFinishedAt = new Date();
         player1 = await this.db.gameUser.update({
           where: {
             gameId_player: {
@@ -180,20 +195,19 @@ export class GameService {
         });
         console.log(player1);
         console.log(player2);
-        if (updateGameStateDto.winnerId === 0) 
+        if (updateGameStateDto.winnerId === 0)
           newGameData.winnerId = player1.userId;
-        else
-          newGameData.winnerId = player2.userId;
+        else newGameData.winnerId = player2.userId;
       }
-      
+
       const game = await this.db.game.update({
         where: { id: newGameData.id },
         data: newGameData,
-        include: { GameUsers: {select: { userId: true, player: true }} }
+        include: { GameUsers: { select: { userId: true, player: true } } },
       });
       if (game) {
         if (updateGameStateDto.state === 'FINISHED') {
-          await this.statsService.update(player1.userId , 1, updateGameStateDto);
+          await this.statsService.update(player1.userId, 1, updateGameStateDto);
           await this.statsService.update(player2.userId, 2, updateGameStateDto);
         }
         console.log(`backend - game: Game: game state updated`);
@@ -203,11 +217,17 @@ export class GameService {
         return false;
       }
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+      if (
+        error instanceof PrismaClientKnownRequestError ||
+        PrismaClientValidationError ||
+        PrismaClientUnknownRequestError
+      ) {
         throw error;
       }
-			throw new NotFoundException(`Error updating gamestate for game ${updateGameStateDto.id}.`);
-		}
+      throw new NotFoundException(
+        `Error updating gamestate for game ${updateGameStateDto.id}.`,
+      );
+    }
   }
 
   async findGameForClientId(clientId: string): Promise<number | null> {
@@ -241,9 +261,10 @@ export class GameService {
         }
       } else {
         // No GameUser found with the provided clientId
-        throw new NotFoundException(
-          `'No game found for clientId:' ${clientId}`,
-        );
+        // throw new NotFoundException(
+        //   `'No game found for clientId:' ${clientId}`,
+        // );
+        console.log(`No game found for clientId: ${clientId}`);
       }
     } catch (error) {
       console.error('Error checking game:', error);

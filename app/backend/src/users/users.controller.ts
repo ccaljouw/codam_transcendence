@@ -33,6 +33,7 @@ export class UsersController {
   ) {}
 
   @Post('token')
+  // @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Adds token with user id to database' })
   @ApiCreatedResponse({
     description: 'Token successfully created',
@@ -46,6 +47,7 @@ export class UsersController {
   }
 
   @Get('all')
+  // @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Returns all users currently in the database' })
   @ApiOkResponse({ type: [UserProfileDto] })
   @ApiNotFoundResponse({ description: 'No users in the database' })
@@ -54,7 +56,7 @@ export class UsersController {
   }
 
   @Get('username/:userName')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Returns user with specified userName' })
   @ApiOkResponse({ type: UserProfileDto })
   @ApiNotFoundResponse({
@@ -65,6 +67,7 @@ export class UsersController {
   }
 
   @Get('allButMe/:id')
+  // @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary:
       'Returns all users currently in the database except the one with the specified id',
@@ -78,6 +81,7 @@ export class UsersController {
   }
 
   @Get('friendsFrom/:id')
+  // @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'Returns all friends of the user with the specified id',
   })
@@ -91,7 +95,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Returns user with specified id' })
   @ApiOkResponse({ type: UserProfileDto })
   @ApiNotFoundResponse({ description: 'User with #${id} does not exist' })
@@ -100,7 +104,7 @@ export class UsersController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Updates user with specified id' })
   @ApiOkResponse({ type: UserProfileDto })
   @ApiConflictResponse({
@@ -117,7 +121,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Deletes user with specified id' })
   @ApiOkResponse({
     description: 'User successfully deleted',
@@ -128,6 +132,7 @@ export class UsersController {
   }
 
   @Get('block/:id/:blockId')
+  // @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Blocks user with specified id' })
   @ApiOkResponse({ description: 'User successfully blocked' })
   blockUser(
@@ -138,6 +143,7 @@ export class UsersController {
   }
 
   @Get('unblock/:id/:blockId')
+  // @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Unblocks user with specified id' })
   @ApiOkResponse({ description: 'User successfully unblocked' })
   unblockUser(

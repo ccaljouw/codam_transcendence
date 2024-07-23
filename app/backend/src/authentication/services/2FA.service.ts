@@ -16,8 +16,9 @@ export class TwoFAService {
       const user = await this.db.user.findUnique({
         where: { id: userId },
       });
-      if (!user) throw new UnauthorizedException();
-
+      if (!user) {
+        throw new UnauthorizedException();
+      }
       if (user.twoFactEnabled == true) {
         console.log('2FA already enabled');
         throw new ConflictException({

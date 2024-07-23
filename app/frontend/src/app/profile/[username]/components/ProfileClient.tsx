@@ -28,7 +28,7 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 	}, []);
 
 	useEffect(() => {
-		if(userName == currentUser.userName)
+		if(userName == currentUser.userName) 
 			setUser(currentUser);
 		else
 			fetchUser();

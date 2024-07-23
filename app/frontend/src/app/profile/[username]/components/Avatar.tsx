@@ -3,9 +3,9 @@ import { constants } from '@ft_global/constants.globalvar';
 import EditButton from "src/app/profile/[username]/components/utils/EditButton";
 import useFetch from "src/globals/functionComponents/useFetch";
 import { TranscendenceContext } from "src/globals/contextprovider.globalvar";
-import { UpdateUserDto } from "@ft_dto/users";
+import { UpdateUserDto, UserProfileDto } from "@ft_dto/users";
 
-export default function Avatar() : JSX.Element {
+export default function Avatar({user, editable} : {user: UserProfileDto, editable: boolean}) : JSX.Element {
   const {currentUser, setCurrentUser} = useContext(TranscendenceContext);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
@@ -64,6 +64,7 @@ export default function Avatar() : JSX.Element {
   return (
     // TODO: Jorien: fix styling
     <>
+    {editable &&
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
       <hr />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', alignItems: 'center' }}>
@@ -85,10 +86,13 @@ export default function Avatar() : JSX.Element {
         </div>
       </div>
       <hr />
-    </div> 
-    {isLoading == true && <p>Updating avatar...</p>}
-		{error != null && <p>Not possible to update avatar: {error.message}</p>}
-    {errorSroringNewAvatarUrl != null && <p>Error storing new avatarUrl in database...</p>}
+    </div> }
+    {editable && isLoading == true && <p>Updating avatar...</p>}
+    {editable && error != null && <p>Not possible to update avatar: {error.message}</p>}
+    {editable && errorSroringNewAvatarUrl != null && <p>Error storing new avatarUrl in database...</p>}
+    {editable == false &&         
+      <img src={user.avatarUrl} alt={`${constants.BACKEND_BASEURL}/avatar/favicon.ico`} width="100" height="100" style={{ borderRadius: '40%' }}/>
+    }
     </>
   );
 };

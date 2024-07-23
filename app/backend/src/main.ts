@@ -1,4 +1,4 @@
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
@@ -17,10 +17,10 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const { httpAdapter } = app.get(HttpAdapterHost);
+  // const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(
-    new PrismaClientExceptionFilter(), 
-    new HttpErrorFilter()
+    new PrismaClientExceptionFilter(),
+    new HttpErrorFilter(),
   );
 
   // use pipes to validate requests (as defined in DTOs,
@@ -36,5 +36,5 @@ async function bootstrap() {
     credentials: true, // Enable credentials (cookies, authorization headers)
   });
   await app.listen(3000);
-};
+}
 bootstrap();

@@ -4,21 +4,58 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserProfileDto, CreateUserDto } from '@ft_dto/users';
-import { UsersService } from 'src/users/users.service';
 import { PrismaService } from 'src/database/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { TwoFAService } from './2FA.service';
 import * as bcrypt from 'bcrypt';
+import { StatsService } from 'src/stats/stats.service';
+import {
+  PrismaClientKnownRequestError,
+  PrismaClientUnknownRequestError,
+  PrismaClientValidationError,
+} from '@prisma/client/runtime/library';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly db: PrismaService,
-    private readonly userService: UsersService,
     private readonly jwtService: JwtService,
     private readonly twoFA: TwoFAService,
+    private readonly stats: StatsService,
   ) {}
 
+  private throwError(error: any, message: string): any {
+    if (
+      error instanceof PrismaClientKnownRequestError ||
+      PrismaClientValidationError ||
+      PrismaClientUnknownRequestError
+    )
+      return error;
+    return new Error(`${message}: ${error.message}`);
+  }
+
+  async createUser(
+    createUserDto: CreateUserDto,
+    pwd: string,
+  ): Promise<UserProfileDto> {
+    try {
+      if (!createUserDto.userName)
+        createUserDto.userName = createUserDto.loginName;
+      const user = await this.db.user.create({
+        data: createUserDto,
+      });
+      console.log(`create authentication info for ${user.id}`);
+      if (pwd) {
+        await this.db.auth.create({ data: { userId: user.id, pwd: pwd } });
+      } else {
+        await this.db.auth.create({ data: { userId: user.id } });
+      }
+      await this.stats.create(user.id);
+      return user;
+    } catch (error) {
+      throw this.throwError(error, 'Error creating user');
+    }
+  }
   async generateJwt(user: UserProfileDto): Promise<string> {
     const payload = { loginName: user.loginName, id: user.id };
     return this.jwtService.sign(payload);
@@ -75,17 +112,16 @@ export class AuthService {
   ): Promise<{ user: UserProfileDto; jwt: string }> {
     let user: UserProfileDto;
     try {
-      //TODO: hash password
       console.log('trying to register user: ');
-      console.log(createUser);
-      console.log(pwd);
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(pwd, salt);
-      console.log('Hashed password:', hash);
-      user = await this.userService.create(createUser, hash);
+
+      user = await this.createUser(createUser, hash);
+
       const payload = { loginName: user.loginName, id: user.id };
       const jwt: string = this.jwtService.sign(payload);
       console.log(`Registered ${user.userName} with jwt ${jwt}`);
+
       return { user, jwt };
     } catch (error) {
       throw error;

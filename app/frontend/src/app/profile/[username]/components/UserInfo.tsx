@@ -30,16 +30,17 @@ export default function UserInfo({user, editable} : {user: UserProfileDto, edita
   
 	useEffect(() => {
     if (updatedUser != null)
-		{
-      setCurrentUser(updatedUser);
-      console.log("reload page from userInfo");
-		}
+      {
+        setCurrentUser(updatedUser);
+        console.log("reload page from userInfo");
+      }
 	}, [updatedUser]);
 
 	return (
 		<>
 			<H3 text="User information"/>
-      <Avatar/>
+      {editable == false && <Avatar user={user} editable={false}/>}
+      {editable == true && <Avatar user={user} editable={true}/>}
 			{editable == false && <StaticDataField name="Username" data={user.userName}/>}
 			{editable == true && 
 				<form onSubmit={handleSubmit} acceptCharset='utf-8' className="row">
