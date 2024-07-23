@@ -125,6 +125,7 @@ export default function Register() : JSX.Element {
             <button className="btn btn-dark btn-sm" type="submit">Login</button>
           </form>
 			</div>
+      {error && <p>Error: {error.message}</p>}
 		</>
 	);
 }

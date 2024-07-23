@@ -54,20 +54,6 @@ export class UsersService {
     }
   }
 
-  async remove(id: number): Promise<UserProfileDto> {
-    try {
-      console.log(`In user service remove`);
-      await this.db.auth.deleteMany({ where: { userId: id } });
-      await this.db.stats.deleteMany({ where: { userId: id } });
-      const user = await this.db.user.delete({ where: { id } });
-      if (!user) throw new NotFoundException(`User with id ${id} not found.`);
-      return user;
-    } catch (error) {
-      throw this.throwError(error, `Error removing user with id ${id}`);
-    }
-  }
-
-  // USER QUERY OPERATIONS
   async findAllButMe(id: number): Promise<UserProfileDto[]> {
     try {
       const users = await this.db.user.findMany({

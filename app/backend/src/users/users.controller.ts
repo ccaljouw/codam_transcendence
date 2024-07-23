@@ -6,7 +6,6 @@ import {
   Get,
   Post,
   Patch,
-  Delete,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -118,17 +117,6 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserProfileDto> {
     return this.usersService.update(id, updateUserDto);
-  }
-
-  @Delete(':id')
-  // @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Deletes user with specified id' })
-  @ApiOkResponse({
-    description: 'User successfully deleted',
-    type: UserProfileDto,
-  })
-  remove(@Param('id', ParseIntPipe) id: number): Promise<UserProfileDto> {
-    return this.usersService.remove(id);
   }
 
   @Get('block/:id/:blockId')
