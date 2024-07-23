@@ -52,7 +52,6 @@ export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
         console.log('creating new user');
         user = await this.authService.createUser(
           {
-            //TODO: what to do if email or loginname already exist?
             loginName: profile._json.login,
             userName: profile._json.username,
             firstName: profile._json.first_name,

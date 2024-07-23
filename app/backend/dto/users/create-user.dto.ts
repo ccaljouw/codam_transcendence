@@ -12,16 +12,20 @@ import {
 } from 'class-validator';
 
 export class CreateUserDto {
-
   // using class-validator and validationPipe to validate input data
   // Everthing starting with @Api fills the api documetation. It does not enforce
-  // the format specified or update automatically when validation rules are changed 
+  // the format specified or update automatically when validation rules are changed
   @IsNotEmpty()
-  @MinLength(3)                       //todo: define min length
-  @MaxLength(30)                      //todo: define max legth  
-  @ApiProperty({ uniqueItems: true, nullable: false, minLength: 3, maxLength:30 })
+  @MinLength(3) //todo: define min length
+  @MaxLength(30) //todo: define max legth
+  @ApiProperty({
+    uniqueItems: true,
+    nullable: false,
+    minLength: 3,
+    maxLength: 30,
+  })
   loginName: string;
-  
+
   @IsOptional()
   @ApiProperty({ required: false })
   userName?: string;
@@ -30,26 +34,21 @@ export class CreateUserDto {
   @IsOptional()
   @ApiProperty({ required: false, format: 'email' })
   email?: string;
-  
+
   @IsString()
-  @MaxLength(30)                      //todo: define max legth   
+  @MaxLength(30) //todo: define max legth
   @IsOptional()
   @ApiProperty({ required: false, maxLength: 30 })
   firstName?: string;
 
   @IsString()
-  @MaxLength(30)                      //todo: define max legth  
+  @MaxLength(30) //todo: define max legth
   @IsOptional()
   @ApiProperty({ required: false, maxLength: 30 })
   lastName?: string;
 
-  @ApiProperty({ required: false })
   @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  avatarId?: number;
-
-  @IsOptional()
+  @IsString()
   @ApiProperty({ required: false })
   avatarUrl?: string;
 

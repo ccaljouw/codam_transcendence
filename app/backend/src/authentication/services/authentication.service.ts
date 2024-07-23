@@ -1,6 +1,6 @@
 import {
   Injectable,
-  InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserProfileDto, CreateUserDto } from '@ft_dto/users';
@@ -72,13 +72,13 @@ export class AuthService {
         where: { loginName: username },
         include: { auth: true },
       });
+      if (!user) throw new NotFoundException(`User ${username} not found`);
       const validPwd = await bcrypt.compare(password, user.auth?.pwd);
-      console.log('Valid pwd', validPwd);
       if (validPwd) {
         console.log('password correct');
 
         if (user.twoFactEnabled) {
-          if (!token) {
+          if (token == '') {
             console.log('2FA token is required');
             throw new UnauthorizedException('2FA token is required');
           }
@@ -98,10 +98,10 @@ export class AuthService {
         throw new UnauthorizedException('Invallid user-password combination');
       }
     } catch (error) {
-      if (error instanceof UnauthorizedException) {
+      if (error instanceof UnauthorizedException || NotFoundException) {
         throw error;
       } else {
-        throw new InternalServerErrorException('Unexpected error logging in');
+        throw this.throwError(error, 'Error logging in');
       }
     }
   }
@@ -135,16 +135,18 @@ export class AuthService {
         where: { id },
         include: { auth: true },
       });
-
-      if (user.auth?.pwd === oldPwd) {
+      if (!user) {
+        throw new NotFoundException(`User with id ${id} not found`);
+      }
+      const validPwd = await bcrypt.compare(oldPwd, user.auth?.pwd);
+      if (validPwd) {
         await this.db.auth.update({
           where: { id },
           data: { pwd: newPwd },
         });
         console.log('Pwd updated');
       } else {
-        console.log('Old pwd incorrect');
-        throw new UnauthorizedException('Old password incorrect');
+        throw new UnauthorizedException('Incorrect password');
       }
     } catch (error) {
       throw error;

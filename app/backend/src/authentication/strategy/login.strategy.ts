@@ -24,9 +24,9 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
     try {
       user = await this.authService.validateUser(loginName, password, token);
-    } catch (error) {
       if (!user)
         throw new UnauthorizedException('Invallid user-password combination');
+    } catch (error) {
       throw error;
     }
     const jwt: string = await this.authService.generateJwt(user);
