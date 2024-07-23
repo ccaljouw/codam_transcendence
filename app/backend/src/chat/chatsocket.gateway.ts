@@ -42,7 +42,7 @@ export class ChatSocketGateway {
 			userName: payload.userName,
 			message: payload.message,
 			room: payload.room,
-			action: false,
+			action: payload.action	|| false,
 			inviteId: payload.inviteId,
 			invite: invite,
 			chatType: payload.chatType
@@ -82,6 +82,7 @@ export class ChatSocketGateway {
 	// This is the function that is called when a user leaves a room.
 	@SubscribeMessage('chat/leaveRoom')
 	async leaveRoom(client: Socket, payload: ChatMessageToRoomDto) {
+		console.log("Socket: leave room", payload);
 		// this.chat_io
 		await this.chatSocketService.changeChatUserStatus({ token: client.id, userId: payload.userId, chatId: parseInt(payload.room), isInChatRoom: false });
 		const userStillInChatRoom = await this.chatSocketService.isUserInChatRoom(parseInt(payload.room), payload.userId);

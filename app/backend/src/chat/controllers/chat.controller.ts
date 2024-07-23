@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UpdateChatMessageDto, CreateDMDto, CreateChatMessageDto, FetchChatMessageDto, UpdateInviteDto, FetchChatDto, ChatMessageToRoomDto, UpdateChatDto, UpdateChatUserDto } from '@ft_dto/chat';
 import { ChatMessageService } from '../services/chat-messages.service';
@@ -85,6 +85,16 @@ export class ChatMessagesController {
 		const chatUser = await this.chatService.getChatUser(chatId, userId);
 		return chatUser;
 	}
+
+	@Delete('chatUser/:chatId/:userId')
+	@ApiOperation({ summary: 'Deletes chat user' })
+	@ApiOkResponse({ type: Boolean })
+	@ApiNotFoundResponse({ description: 'No chat user with #${chatId}' })
+	async deleteChatUser(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number) {
+		const chatUserResult = await this.chatService.deleteChatUser(chatId, userId);
+		return chatUserResult;
+	}
+
 
 	@Get('unreadMessagesFromFriends/:userId')
   @UseGuards(JwtAuthGuard)

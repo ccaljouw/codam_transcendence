@@ -106,8 +106,8 @@ model ChatUsers {
 
 	createdAt DateTime @default(now())
 	updatedAt DateTime @updatedAt
-	user      User     @relation(fields: [userId], references: [id])
-	chat      Chat     @relation(fields: [chatId], references: [id])
+	user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+	chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
 	@@unique([chatId, userId])
 }
 
@@ -119,7 +119,7 @@ model ChatMessages {
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  chat        Chat     @relation(fields: [chatId], references: [id])
+  chat        Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
   invite      Invite?  @relation(fields: [inviteId], references: [id])
   inviteId    Int? @unique
 }

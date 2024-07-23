@@ -110,7 +110,7 @@ export class ChatMessageService {
 				{
 					chatId: message.chatId,
 					userId: message.userId,
-					userName: message.chat.users.find(user => user.user.id === message.userId).user.userName,
+					userName: message.chat.users.find(user => user.user.id === message.userId)?.user.userName || 'Unknown User',
 					message: message.content,
 					inviteId: message.inviteId,
 					invite: message.invite

@@ -15,6 +15,7 @@ import { UpdateChatUserDto } from '@ft_dto/chat';
 import useFetch from 'src/globals/functionComponents/useFetch';
 import ChannelStatusIndicator from 'src/globals/functionComponents/channelStatus';
 import ChannelSettings from './components/ChannelSettings';
+import LeaveChannel from './components/LeaveChannel';
 
 
 
@@ -44,6 +45,9 @@ export default function ChatArea() {
 		}
 		if (currentChatRoom.id != -1) {
 			chatUserFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + currentUser.id });
+		}
+		if (currentChatRoom.id == -1 ) {
+			setUserListType(UserListType.AllUsers);
 		}
 	}, [currentChatRoom, currentChatRoom.users?.length]);
 
@@ -170,7 +174,8 @@ export default function ChatArea() {
 					}
 					{userListType == UserListType.Chats && <ChannelList />}
 					{userListType == UserListType.AllUsers && <UserList userDisplayFunction={ChatAreaUserList} fetchUrl={constants.API_ALL_USERS_BUT_ME + currentUser.id} />}
-					{userListType == UserListType.Channel && <><UserList key={currentChatRoom.users.length} userDisplayFunction={ChatAreaChannelUserList} fetchUrl={constants.CHAT_GET_USERS_IN_CHAT + currentChatRoom.id} /></>}
+					{userListType == UserListType.Channel && <><UserList key={currentChatRoom?.users?.length} userDisplayFunction={ChatAreaChannelUserList} fetchUrl={constants.CHAT_GET_USERS_IN_CHAT + currentChatRoom.id} />
+					<LeaveChannel room={currentChatRoom}/></>}
 					{userListType == UserListType.Settings && <><ChannelSettings room={currentChatRoom} /></>}
 				</div>
 			</div>

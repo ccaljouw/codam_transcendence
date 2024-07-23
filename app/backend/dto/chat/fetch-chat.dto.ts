@@ -1,4 +1,4 @@
-import { IsArray, IsEnum, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ChatType, ChatUsers } from '@prisma/client';
 
 export class FetchChatDto {
@@ -19,5 +19,9 @@ export class FetchChatDto {
 
 	@IsEnum(ChatType)
 	visibility: ChatType;
+
+	@IsOptional()
+	@IsString()
+	action?: string;
 
 }

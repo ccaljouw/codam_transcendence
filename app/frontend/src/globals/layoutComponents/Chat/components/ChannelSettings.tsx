@@ -22,6 +22,7 @@ export default function ChannelSettings({room} : {room: FetchChatDto}) {
 	useEffect(() => {
 		if (chatPatched) {
 			console.log("Chat patched");
+			chatPatched.action = "patch";
 			transcendenceSocket.emit('chat/patch', chatPatched);
 			// todo: make it so that the change take effect immediately, perhaps by sending a websocket message
 		}

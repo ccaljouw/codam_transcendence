@@ -92,6 +92,23 @@ export class ChatService {
 		return chatUser;
 	}
 
+	async deleteChatUser(chatId: number, userId: number): Promise<boolean> {
+		const chatUser = await this.db.chatUsers.delete({
+			where: { chatId_userId: { chatId, userId } }
+		});
+		const usersLeft = await this.db.chatUsers.findMany({
+			where: { chatId }
+		});
+		// If no users left, delete the chat
+		if (usersLeft.length == 0) {
+			await this.db.chat.delete({ where: { id: chatId } });
+		}
+		else if (chatUser.role == ChatUserRole.OWNER) {
+			// TODO - assign new owner
+		}
+		return true;
+	}
+
 	async createChannel(userId: number): Promise<FetchChatDto> {
 		console.log("Creating new channel for user ", userId);
 		const newChat = await this.db.chat.create({

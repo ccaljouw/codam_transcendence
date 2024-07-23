@@ -110,7 +110,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 	}
 
 	useEffect(() => {
-		console.log("Current chat room: ", currentChatRoom);
+			console.log("Current chat room: ", currentChatRoom);
 		if (currentChatRoom.id != -1) {
 			chatSocket.off('chat/messageFromRoom');
 			chatSocket.off('invite/inviteResponse');
@@ -166,7 +166,20 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 			chatSocket.on('invite/inviteResponse', (payload: InviteSocketMessageDto) => { inviteResponseHandler(payload, currentUser, currentChatRoom, chatMessagesFetcher, friendInviteFetcher) });
 			chatSocket.on('chat/patch', (payload: FetchChatDto) => {
 				console.log("Chat patched (socket): ", payload);
-				fetchChat(chatFetcher, payload.id, currentUser.id);
+				console.log("Id (socket)", payload.id);
+				if (payload.action == "patch")
+					fetchChat(chatFetcher, payload.id, currentUser.id);
+				else if (payload.action == "delete_user")
+				{
+					console.log("User was deleted from the chat room", payload);
+					if (payload.users.find(user => user.userId == currentUser.id) != undefined)
+					{
+						console.log("Someone else was deleted from the chat room");
+						setCurrentChatRoom(payload);
+						// fetchChat(chatFetcher, payload.id, currentUser.id);
+					}
+				}
+
 			});
 		}
 		return () => {

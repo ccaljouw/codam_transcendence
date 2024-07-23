@@ -16,7 +16,10 @@ export default function ChannelStatusIndicator(props: { userId: number, onlineSt
 		if (!currentChatRoom || currentChatRoom.users === undefined) return StatusDisplay.OFFLINE;
 		const user = currentChatRoom.users.find(user => user.userId === props.userId);
 		if (!user) return StatusDisplay.OFFLINE;
-
+		if (user.isInChatRoom) 
+				console.log('user in channel', user);
+		else
+			console.log('user not in channel', user);
 		if (props.onlineStatus !== OnlineStatus.OFFLINE) {
 			return user.isInChatRoom ? StatusDisplay.IN_CHANNEL : StatusDisplay.ONLINE;
 		} else {
@@ -31,11 +34,13 @@ export default function ChannelStatusIndicator(props: { userId: number, onlineSt
 	}, [currentChatRoom])
 
 	useEffect(() => {
-		if (someUserUpdatedTheirStatus === undefined) return;
+		console.log('someUserUpdatedTheirStatus', someUserUpdatedTheirStatus);
+		if (someUserUpdatedTheirStatus === undefined || someUserUpdatedTheirStatus.status == props.onlineStatus) return;
 		if (someUserUpdatedTheirStatus.userId === props.userId && someUserUpdatedTheirStatus.status == OnlineStatus.OFFLINE) {
 			setStatus(StatusDisplay.OFFLINE);
 		}
 		else if (someUserUpdatedTheirStatus.userId === props.userId && someUserUpdatedTheirStatus.status == OnlineStatus.ONLINE) {
+			console.log('setting status to online');
 			setStatus(StatusDisplay.ONLINE);
 		}
 

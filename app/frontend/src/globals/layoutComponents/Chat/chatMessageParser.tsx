@@ -35,6 +35,8 @@ export const messageParser = (
 			case "LEAVE":
 				changeRoomStatusCallback(message.userId, false);
 				return <>{'<<'} {message.userName} has left the chat {'>>'}</>
+			default:
+				return <>{message.message}</>
 		}
 	}
 	else if (message.inviteId) {
