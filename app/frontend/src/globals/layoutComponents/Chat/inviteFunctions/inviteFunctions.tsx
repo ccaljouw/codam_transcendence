@@ -4,7 +4,7 @@ import { FetchChatDto, InviteSocketMessageDto } from "@ft_dto/chat";
 import { UserProfileDto } from "@ft_dto/users";
 import { Socket } from "socket.io-client";
 import { fetchProps } from "src/globals/functionComponents/useFetch";
-import { fetchMessages } from "./chatFetchFunctions";
+import { fetchMessages } from "../chatFetchFunctions";
 import { gameResponseReceivedHandler } from "./gameInvite";
 
 export interface inviteCallbackProps {

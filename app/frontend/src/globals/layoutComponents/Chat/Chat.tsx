@@ -13,8 +13,8 @@ import { sendMessage, joinRoom, leaveRoom } from './chatSocketFunctions';
 import { fetchMessages, fetchDM, fetchChat } from './chatFetchFunctions';
 import { messageParser, parserProps } from './chatMessageParser';
 import { InviteSocketMessageDto } from '@ft_dto/chat';
-import { inviteCallback, inviteResponseHandler } from './inviteFunctions';
 import { useRouter } from 'next/navigation';
+import { inviteCallback, inviteResponseHandler } from './inviteFunctions/inviteFunctions';
 
 const chatSocket = transcendenceSocket;
 
@@ -185,6 +185,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		return () => {
 			chatSocket.off('chat/messageFromRoom');
 			chatSocket.off('invite/inviteResponse')
+			chatSocket.off('chat/patch');
 			setCurrentChatRoom({ id: -1, name: '', visibility: ChatType.PUBLIC, users: [], ownerId: 0 });
 		};
 	}, [chatId, user2, firstRender.current]);

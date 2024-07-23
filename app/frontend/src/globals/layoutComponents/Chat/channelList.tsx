@@ -40,7 +40,7 @@ export default function ChannelList(): JSX.Element {
 			return (
 				<div key={channel.id} className='channel'>
 					<span className="channelListLink" onClick={() => channelClickHandler(channel)
-					}>{channel.name} {channel.id}</span>
+					}>{channel.name}</span>
 				</div>
 			)
 		})}

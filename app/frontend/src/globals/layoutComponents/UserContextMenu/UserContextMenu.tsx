@@ -56,11 +56,11 @@ export default function UserContextMenu({ user }:
 		}
 		inviteFetcher({ url: constants.BACKEND_BASEURL + "invite/create", fetchMethod: 'POST', payload: inviteMessage });
 		if (type == InviteType.GAME)
-			{
-				// should probably navigate to game page here
-				router.push('/game');
+		{
+			// should probably navigate to game page here
+			router.push('/game');
 			console.log(`Invite this user to a game: ${user.userName}`);
-			}
+		}
 	}
 
 
@@ -116,7 +116,8 @@ export default function UserContextMenu({ user }:
 				room: chat.id.toString(),
 				message: user.userName,
 				action: true,
-				inviteId: invite.id
+				inviteId: invite.id,
+				chatType: "DM"
 			}
 			if (chat.id != currentChatRoom.id) { // if not in chat room, set payload to send message to room
 				setSocketPayload(payload);
@@ -143,7 +144,7 @@ export default function UserContextMenu({ user }:
 			) : (
 			  <>
 				
-				<span className={style.userlink_item} onClick={() => createInvite(InviteType.GAME, 0)} title='Invite to game'> 🏓</span> |
+				<span className={style.userlink_item} onClick={() => createInvite(InviteType.GAME, 0)} title='Invite to game'> 🏓</span>
 				<span className={style.userlink_item} onClick={() => handleProfileClick()} title='Visit Profile'>👤</span>
 				{currentChatRoom.visibility !== ChatType.DM && (
 				  <span className={style.userlink_item} onClick={() => createInvite(InviteType.CHAT, currentChatRoom.id)} title='Invite to chat'>💬</span>

@@ -9,7 +9,7 @@ export class UpdateChatDto {
 	@IsString()
 	@IsOptional()
 	@ApiProperty({ required: false, type: String })
-	name?: string; //todo: Albert: remove capital letter S from String. - Jorien
+	name?: string; 
 
 	@IsEnum(ChatType)
 	@IsOptional()

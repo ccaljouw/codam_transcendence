@@ -24,7 +24,6 @@ export default function ChannelSettings({room} : {room: FetchChatDto}) {
 			console.log("Chat patched");
 			chatPatched.action = "patch";
 			transcendenceSocket.emit('chat/patch', chatPatched);
-			// todo: make it so that the change take effect immediately, perhaps by sending a websocket message
 		}
 	}, [chatPatched]);
 
@@ -42,9 +41,9 @@ export default function ChannelSettings({room} : {room: FetchChatDto}) {
 				</div>
 				<div className="col col-6">
 					<select className="btn-outline-dark form-select custom-select form-select-sm" defaultValue={room.visibility} name="visibility">
-						<option key="Public" value="Public" id="visibility">Public</option>
-						<option key="Private" value="Private" id="visibility">Private</option>
-						<option key="Password" value="Password" id="visibility">Password</option>
+						<option key="Public" value="PUBLIC" id="visibility">Public</option>
+						<option key="Private" value="PRIVATE" id="visibility">Private</option>
+						<option key="Password" value="PROTECTED" id="visibility">Password</option>
 					</select>
 				</div>
 			</form>

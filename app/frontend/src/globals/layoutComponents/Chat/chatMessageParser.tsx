@@ -1,11 +1,12 @@
 import { ChatMessageToRoomDto, FetchChatDto } from "@ft_dto/chat";
 import { fetchProps } from "src/globals/functionComponents/useFetch";
-import { inviteCallbackProps } from "./inviteFunctions";
 import { UserProfileDto } from "@ft_dto/users";
 import { Socket } from "socket.io-client";
-import { friendInviteParser } from "./friendInvite";
-import { gameInviteParser } from "./gameInvite";
+
 import { IsBlocked } from "src/globals/functionComponents/FriendOrBlocked";
+import { gameInviteParser } from "./inviteFunctions/gameInvite";
+import { inviteCallbackProps } from "./inviteFunctions/inviteFunctions";
+import { friendInviteParser } from "./inviteFunctions/friendInvite";
 
 
 export interface parserProps {
@@ -79,6 +80,8 @@ const inviteParser = (
 			return friendInviteParser(message, currentUser, inviteCallback, inviteCallbackProps);
 		case "GAME":
 			return gameInviteParser(message, currentUser, inviteCallback, inviteCallbackProps);
+		// case "CHAT":
+			// return chatInviteParser(message, currentUser, inviteCallback, inviteCallbackProps);;
 	}
 	return <>Error parsing invite</>;
 }

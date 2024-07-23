@@ -96,7 +96,7 @@ export default function ChatArea() {
 							indexInUserList={indexInUserList} /> */}
 						<ChannelStatusIndicator userId={user.id} onlineStatus={user.online} />
 						&nbsp;&nbsp;
-						<span className={IsBlocked(user.id, currentUser) ? 'blocked' : ''} onClick={() => { !IsBlocked(user.id, currentUser) ? setSecondUser(user.id) : setNewChatRoom({ room: -1, count: newChatRoom.count++ }) }}>{user.firstName} {user.lastName}</span>
+						<span className={IsBlocked(user.id, currentUser) ? 'blocked' : ''} onClick={() => { !IsBlocked(user.id, currentUser) ? setSecondUser(user.id) : setNewChatRoom({ room: -1, count: newChatRoom.count++ }) }}>{user.userName}</span>
 						&nbsp;
 						{/* TODO: implement proper context menu for channels */}
 						<UserContextMenu user={user} />

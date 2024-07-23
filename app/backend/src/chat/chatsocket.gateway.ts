@@ -35,6 +35,7 @@ export class ChatSocketGateway {
 	@SubscribeMessage('chat/msgToRoom')
 	async handleMessageToRoom(_client: Socket, payload: ChatMessageToRoomDto) {
 		let invite = null;
+		console.log("Socket: message to room", payload);
 		if (payload.inviteId)
 			invite = await this.inviteService.findOne(payload.inviteId);
 		const messageToChat: ChatMessageToRoomDto = {
