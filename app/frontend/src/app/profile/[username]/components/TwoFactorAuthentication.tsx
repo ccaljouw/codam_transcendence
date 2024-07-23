@@ -54,7 +54,7 @@ export default function TwoFactorAuthentication(): JSX.Element {
     if (token) {
       console.log(`got token from form: ${token}`)
       try {
-        await fetchFAValid({
+        fetchFAValid({
           url: constants.API_CHECK2FATOKEN,
           fetchMethod: 'POST',
           payload: {  userId: currentUser.id, token}

@@ -12,6 +12,7 @@ import { optionalAttributes } from 'src/app/profile/[username]/components/utils/
 import Avatar from 'src/app/profile/[username]/components/Avatar';
 import TwoFactorAuthentication from './TwoFactorAuthentication';
 import ChangePassword from './ChangePassword';
+import { useRouter } from 'next/navigation';
 
 export default function UserInfo({user, editable} : {user: UserProfileDto, editable: boolean}): JSX.Element {
 	const {currentUser, setCurrentUser} = useContext(TranscendenceContext);
@@ -21,6 +22,7 @@ export default function UserInfo({user, editable} : {user: UserProfileDto, edita
 	const lastnameAttributes: optionalAttributes={type:"text", name:"lastName", required:true, autoComplete:"off", minLength:1, maxLength:30};
 	const emailAttributes: optionalAttributes={type:"email", name:"email", required:true, autoComplete:"on"};
 	const hashAttributes: optionalAttributes={type:"password", name:"pwd", required:true, autoComplete:"off", minLength:3, maxLength:30};
+  const router = useRouter();
 	
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		console.log("submitting form field entry");
@@ -31,6 +33,12 @@ export default function UserInfo({user, editable} : {user: UserProfileDto, edita
 	useEffect(() => {
     if (updatedUser != null)
       {
+        //TODO: jorien, evaluate this hack and change if needed
+        if (currentUser.userName != updatedUser.userName)
+        {
+            console.log("It seems that the username has been changed");
+            router.push(`/profile/${updatedUser.userName}`);
+        }
         setCurrentUser(updatedUser);
         console.log("reload page from userInfo");
       }
