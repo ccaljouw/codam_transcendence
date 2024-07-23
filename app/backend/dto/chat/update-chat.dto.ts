@@ -1,27 +1,16 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateChatDto } from './create-chat.dto';
-import { IsArray, IsDefined, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { ChatUsers } from '@prisma/client';
-import { UpdateChatUserDto } from './update-chatUser.dto';
+import { ChatType } from '@prisma/client';
 
-export class UpdateChatDto extends PartialType(CreateChatDto) {
+export class UpdateChatDto {
 
-  @IsNotEmpty()
-  @IsInt()
-  @ApiProperty({ required: true, type: Number })
-  id: number;
+	@IsString()
+	@IsOptional()
+	@ApiProperty({ required: false, type: String })
+	name?: string; //todo: Albert: remove capital letter S from String. - Jorien
 
-  @IsInt()
-  @ApiProperty({ required: false, type: Number })
-  ownerId?: number;
-
-	@IsArray()
-  @ApiProperty({ required: false, type: UpdateChatUserDto })
-  users?:   ChatUsers[]
-
-  @IsString()
-  @ApiProperty({ required: false, type: String })
-  name?: String; //todo: Albert: remove capital letter S from String. - Jorien
-
+	@IsEnum(ChatType)
+	@IsOptional()
+	@ApiProperty({ required: false, enum: ChatType })
+	visibility?: ChatType;
 }

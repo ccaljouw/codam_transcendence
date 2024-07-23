@@ -1,4 +1,4 @@
-import { ChatMessageToRoomDto, UpdateChatDto } from "@ft_dto/chat";
+import { ChatMessageToRoomDto, FetchChatDto } from "@ft_dto/chat";
 import { fetchProps } from "src/globals/functionComponents/useFetch";
 import { inviteCallbackProps } from "./inviteFunctions";
 import { UserProfileDto } from "@ft_dto/users";
@@ -10,7 +10,7 @@ import { IsBlocked } from "src/globals/functionComponents/FriendOrBlocked";
 
 export interface parserProps {
 	inviteCallback: (props: inviteCallbackProps) => void,
-	currentChatRoom: UpdateChatDto,
+	currentChatRoom: FetchChatDto,
 	currentUser: UserProfileDto,
 	chatSocket: Socket,
 	friendInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>,
@@ -48,7 +48,7 @@ export const messageParser = (
 
 const inviteParser = (
 	message: ChatMessageToRoomDto,
-	currentChatRoom: UpdateChatDto,
+	currentChatRoom: FetchChatDto,
 	currentUser: UserProfileDto,
 	chatSocket: Socket,
 	inviteCallback: (props: inviteCallbackProps) => void,

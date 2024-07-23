@@ -1,16 +1,16 @@
-import { UpdateChatDto } from "@ft_dto/chat";
-import { FormEvent, useContext } from "react";
+import { FetchChatDto, UpdateChatDto } from "@ft_dto/chat";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import EditableDataField, { optionalAttributes } from "src/app/profile/[username]/components/utils/EditableDataField";
 import { constants } from "src/globals/constants.globalvar";
 import { TranscendenceContext } from "src/globals/contextprovider.globalvar";
 import FormToUpdateChatDto from "src/globals/functionComponents/form/FormToUpdateChatDto";
 import useFetch from "src/globals/functionComponents/useFetch";
+import { transcendenceSocket } from "src/globals/socket.globalvar";
 
-export default function ChannelSettings({room} : {room: UpdateChatDto}) {
-	const { currentUser} = useContext(TranscendenceContext);
+export default function ChannelSettings({room} : {room: FetchChatDto}) {
 	const nameAttributes: optionalAttributes={type:"text", name:"name", required:false, autoComplete:"off", minLength:6, maxLength:30}; //todo: JMA: finetune min and max
-	const { data: chatPatched, error: patchError, isLoading: patchIsLoading, fetcher: chatPatcher } = useFetch<Partial<UpdateChatDto>, boolean>();
-	const { data: chatDeleted, error: deleteError, isLoading: deleteIsLoading, fetcher: chatDeleter } = useFetch<Partial<UpdateChatDto>, boolean>();
+	const { data: chatPatched, error: patchError, isLoading: patchIsLoading, fetcher: chatPatcher } = useFetch<UpdateChatDto, FetchChatDto>();
+	const { data: chatDeleted, error: deleteError, isLoading: deleteIsLoading, fetcher: chatDeleter } = useFetch<Partial<FetchChatDto>, boolean>();
 	// const { data: chatPatched, error: patchError, isLoading: patchIsLoading, fetcher: chatPatcher } = useFetch<Partial<UpdateChatDto>, boolean>();
 
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -18,6 +18,14 @@ export default function ChannelSettings({room} : {room: UpdateChatDto}) {
 		event.preventDefault();
 		await chatPatcher({url: constants.API_CHAT + room.id, fetchMethod: 'PATCH', payload: FormToUpdateChatDto(event)})
 	}
+
+	useEffect(() => {
+		if (chatPatched) {
+			console.log("Chat patched");
+			transcendenceSocket.emit('chat/patch', chatPatched);
+			// todo: make it so that the change take effect immediately, perhaps by sending a websocket message
+		}
+	}, [chatPatched]);
 
 	const handleDeleteClick = async () => {
 		console.log("submitting form field entry");
@@ -44,7 +52,7 @@ export default function ChannelSettings({room} : {room: UpdateChatDto}) {
 				<EditableDataField name="Channel name" data={room.name!.toString()} attributes={nameAttributes}/>
 			</form>
 			{/* todo: albert: trigger reload when chat patch worked */}
-			{chatPatched == true && "Albert: trigger page reload"}
+			{/* {chatPatched && setCurrentChatRoom} */}
 			{patchIsLoading && "Updating chat name..."}
 			<button className="btn btn-outline-dark btn-sm"onClick={handleDeleteClick} >Delete channel</button>
 			{chatDeleted == true && "Albert: trigger page reload"}

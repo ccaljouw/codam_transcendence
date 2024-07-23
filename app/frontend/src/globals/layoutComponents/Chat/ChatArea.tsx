@@ -41,7 +41,9 @@ export default function ChatArea() {
 		if (currentChatRoom.id != -1 && currentChatRoom.visibility !== ChatType.DM) {
 			setUserListType(UserListType.Channel);
 		}
-		chatUserFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + currentUser.id });
+		if (currentChatRoom.id != -1) {
+			chatUserFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + currentUser.id });
+		}
 	}, [currentChatRoom]);
 
 	useEffect(() => {
@@ -157,7 +159,7 @@ export default function ChatArea() {
 								</>
 							}
 						</>}
-			
+
 				</div>
 				<div className='chat-userlist'>
 					{userListType == UserListType.Friends &&
@@ -168,7 +170,7 @@ export default function ChatArea() {
 					{userListType == UserListType.Chats && <ChannelList />}
 					{userListType == UserListType.AllUsers && <UserList userDisplayFunction={ChatAreaUserList} fetchUrl={constants.API_ALL_USERS_BUT_ME + currentUser.id} />}
 					{userListType == UserListType.Channel && <><UserList userDisplayFunction={ChatAreaChannelUserList} fetchUrl={constants.CHAT_GET_USERS_IN_CHAT + currentChatRoom.id} /></>}
-					{userListType == UserListType.Settings && <><ChannelSettings room={currentChatRoom}/></>}
+					{userListType == UserListType.Settings && <><ChannelSettings room={currentChatRoom} /></>}
 				</div>
 			</div>
 		</>

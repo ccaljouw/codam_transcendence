@@ -1,6 +1,6 @@
 import { InviteType } from "@prisma/client";
 import { constants } from "src/globals/constants.globalvar";
-import { UpdateChatDto, InviteSocketMessageDto } from "@ft_dto/chat";
+import { FetchChatDto, InviteSocketMessageDto } from "@ft_dto/chat";
 import { UserProfileDto } from "@ft_dto/users";
 import { Socket } from "socket.io-client";
 import { fetchProps } from "src/globals/functionComponents/useFetch";
@@ -12,7 +12,7 @@ export interface inviteCallbackProps {
 	accept: boolean,
 	senderId: number | undefined,
 	inviteType: InviteType
-	currentChatRoom: UpdateChatDto,
+	currentChatRoom: FetchChatDto,
 	currentUser: UserProfileDto,
 	chatSocket: Socket,
 	friendInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>
@@ -45,7 +45,7 @@ export const inviteCallback = (
 export const inviteResponseHandler = async ( // This function triggers the actions that need to be taken when an invite response is received.
 	payload: InviteSocketMessageDto,
 	currentUser: UserProfileDto,
-	currentChatRoom: UpdateChatDto,
+	currentChatRoom: FetchChatDto,
 	chatMessagesFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>,
 	friendInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>,
 ) => {

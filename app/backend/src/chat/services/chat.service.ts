@@ -1,8 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/database/prisma.service";
-import { CreateDMDto, UpdateChatDto, UpdateChatUserDto } from "@ft_dto/chat";
+import { CreateDMDto, FetchChatDto, UpdateChatUserDto } from "@ft_dto/chat";
 import { UserProfileDto } from "@ft_dto/users";
 import { ChatType, ChatUserRole } from "@prisma/client";
+import { UpdateChatDto } from "@ft_dto/chat/update-chat.dto";
 
 @Injectable()
 export class ChatService {
@@ -10,7 +11,16 @@ export class ChatService {
 		private db: PrismaService
 	) { }
 
-	async findOne(id: number): Promise<UpdateChatDto> {
+	async update(chatId: number, data: UpdateChatDto): Promise<FetchChatDto> {
+		const chat = await this.db.chat.update({
+			where: { id: chatId },
+			include: { users: true },
+			data
+		});
+		return chat;
+	}
+
+	async findOne(id: number): Promise<FetchChatDto> {
 		const chat = await this.db.chat.findUnique({
 			where: { id },
 			include: { users: true }
@@ -18,7 +28,7 @@ export class ChatService {
 		return chat;
 	}
 
-	async findDMChat(user1: number, user2: number): Promise<UpdateChatDto | null> {
+	async findDMChat(user1: number, user2: number): Promise<FetchChatDto | null> {
 		// Check if chat exists
 		const exists = await this.db.chat.findFirst(
 			{
@@ -28,7 +38,8 @@ export class ChatService {
 						{ users: { some: { userId: user1 } } },
 						{ users: { some: { userId: user2 } } },
 					]
-				}
+				},
+				include: { users: true }
 			});
 		if (exists) // Return chat id if it exists
 		{
@@ -38,7 +49,7 @@ export class ChatService {
 	}
 
 	// This function is used to create a chat between two users.
-	async createDM(payload: CreateDMDto): Promise<UpdateChatDto> {
+	async createDM(payload: CreateDMDto): Promise<FetchChatDto> {
 
     const exists = await this.findDMChat(payload.user1Id, payload.user2Id);
     if (exists) {
@@ -51,7 +62,8 @@ export class ChatService {
 			data: {
 				ownerId: payload.user1Id,
 				visibility: "DM",
-			}
+			},
+			include: { users: true }
 		});
 
 		// Add users to chat
@@ -62,7 +74,7 @@ export class ChatService {
 			]
 		});
 
-		return ({ id: newChat.id, ownerId: newChat.ownerId, visibility: newChat.visibility })
+		return (newChat)
 	}
 
 	async getUsersInChat(chatId: number): Promise<UserProfileDto[]> {
@@ -80,14 +92,15 @@ export class ChatService {
 		return chatUser;
 	}
 
-	async createChannel(userId: number): Promise<UpdateChatDto> {
+	async createChannel(userId: number): Promise<FetchChatDto> {
 		console.log("Creating new channel for user ", userId);
 		const newChat = await this.db.chat.create({
 			data: {
 				visibility: ChatType.PUBLIC,
 				ownerId: userId,
 				name: "New Channel " + Math.floor(Math.random() * 1000)
-			}
+			},
+			include: { users: true }
 		});
 		const newChatUser = await this.db.chatUsers.create({
 			data: {
@@ -100,7 +113,7 @@ export class ChatService {
 		return (newChat)
 	}
 
-	async getChannelsForUser(userId: number): Promise<UpdateChatDto[]> {
+	async getChannelsForUser(userId: number): Promise<FetchChatDto[]> {
 		const userChannels = await this.db.chatUsers.findMany({
 			where: {
 				userId,
@@ -108,7 +121,9 @@ export class ChatService {
 					NOT: { visibility: ChatType.DM }
 				}
 			},
-			include: { chat: true }
+			include: { chat: 
+				{ include: { users: true } }
+			 }
 		});
 		const openChannels = await this.db.chat.findMany({
 			where: {
@@ -117,12 +132,13 @@ export class ChatService {
 					users: { some: { userId } }
 				}
 			},
+			include: { users: true }
 		});
 
 		return userChannels.map(c => c.chat).concat(openChannels);
 	}
 
-	async getSingleChannelForUser(userId: number, channelId: number): Promise<UpdateChatDto> {
+	async getSingleChannelForUser(userId: number, channelId: number): Promise<FetchChatDto> {
 		console.log("Getting channel ", channelId, " for user ", userId);
 		const chatUser = await this.db.chatUsers.findFirst({
 			where: { userId, chatId: channelId }

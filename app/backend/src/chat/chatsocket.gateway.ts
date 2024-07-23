@@ -1,6 +1,6 @@
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { ChatSocketService } from './services/chatsocket.service';
-import { ChatMessageToRoomDto, InviteSocketMessageDto } from '@ft_dto/chat';
+import { ChatMessageToRoomDto, FetchChatDto, InviteSocketMessageDto } from '@ft_dto/chat';
 import { Server, Socket } from 'socket.io';
 import { SocketServerProvider } from '../socket/socketserver.gateway';
 import { ChatMessageService } from './services/chat-messages.service';
@@ -105,5 +105,18 @@ export class ChatSocketGateway {
 		for (const token of tokens) {
 			this.chat_io.to(token).emit('invite/inviteResponse', payload);
 		}
+	}
+
+	@SubscribeMessage('chat/patch')
+	async patchChat(client: Socket, payload: FetchChatDto) {
+		console.log("Socket: chat patched", payload);
+		const usersInChat = await this.chatDbService.getUsersInChat(payload.id);
+		for (const user of usersInChat) {
+			const tokens = await this.tokenService.findAllTokensAsStringForUser(user.id);
+			for (const token of tokens) {
+				console.log("Emitting chat/patch to token", token, user.id);
+				this.chat_io.to(token).emit('chat/patch', payload);
+			}
+		}	
 	}
 }

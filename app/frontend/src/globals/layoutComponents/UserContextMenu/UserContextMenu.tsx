@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import { UserListContext } from 'src/globals/functionComponents/UserList';
 import { transcendenceSocket } from 'src/globals/socket.globalvar';
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
-import { ChatMessageToRoomDto, CreateDMDto, CreateInviteDto, UpdateChatDto, UpdateInviteDto } from '@ft_dto/chat';
+import { ChatMessageToRoomDto, CreateDMDto, CreateInviteDto, FetchChatDto, UpdateInviteDto } from '@ft_dto/chat';
 import useFetch from 'src/globals/functionComponents/useFetch'
 import { constants } from 'src/globals/constants.globalvar';
 import { IsBlocked, IsFriend } from 'src/globals/functionComponents/FriendOrBlocked';
@@ -20,7 +20,7 @@ export default function UserContextMenu({ user }:
 	const { contextMenuClickSent, triggerContextMenuClick } = useContext(UserListContext);
 	const { currentUser, setCurrentUser, newChatRoom, setNewChatRoom, currentChatRoom } = useContext(TranscendenceContext);
 	const { data: invite, isLoading: inviteLoading, error: inviteError, fetcher: inviteFetcher } = useFetch<CreateInviteDto, UpdateInviteDto>();
-	const { data: chat, isLoading: chatLoading, error: chatError, fetcher: chatFetcher } = useFetch<CreateDMDto, UpdateChatDto>();
+	const { data: chat, isLoading: chatLoading, error: chatError, fetcher: chatFetcher } = useFetch<CreateDMDto, FetchChatDto>();
 	const { data: blockData, isLoading: blockLoading, error: blockError, fetcher: blockFetcher } = useFetch<null, UserProfileDto>();
 	const { data: newChatMessage, isLoading: newChatMessageLoading, error: newChatMessageError, fetcher: newChatMessageFetcher } = useFetch<ChatMessageToRoomDto, number>();
 	const userIsFriend = IsFriend(user.id, currentUser);

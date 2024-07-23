@@ -1,6 +1,6 @@
 "use client"
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { FetchChatMessageDto, ChatMessageToRoomDto, UpdateChatDto, CreateDMDto, UpdateInviteDto, UpdateChatUserDto, CreateChatMessageDto } from '@ft_dto/chat';
+import { FetchChatMessageDto, ChatMessageToRoomDto, FetchChatDto, CreateDMDto, UpdateInviteDto, UpdateChatUserDto, CreateChatMessageDto } from '@ft_dto/chat';
 import { UserProfileDto } from '@ft_dto/users';
 import { constants } from '@ft_global/constants.globalvar';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
@@ -25,11 +25,11 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 	const firstRender = useRef(true);
 	const { currentUser, someUserUpdatedTheirStatus, currentChatRoom, setCurrentChatRoom, setCurrentUser, newChatRoom, setNewChatRoom } = useContext(TranscendenceContext);
 	const messageBox = useRef<HTMLDivElement>(null);
-	const { data: chatFromDb, isLoading: chatLoading, error: chatError, fetcher: chatFetcher } = useFetch<CreateDMDto, UpdateChatDto>();
+	const { data: chatFromDb, isLoading: chatLoading, error: chatError, fetcher: chatFetcher } = useFetch<CreateDMDto, FetchChatDto>();
 	const { data: updatedChat, isLoading: updatedChatLoading, error: updatedChatError, fetcher: updatedChatFetcher } = useFetch<null, number>();
 	const { data: chatMessages, isLoading: chatMessagesLoading, error: chatMessagesError, fetcher: chatMessagesFetcher } = useFetch<null, FetchChatMessageDto[]>();
 	const { data: friendInvite, isLoading: friendInviteLoading, error: friendInviteError, fetcher: friendInviteFetcher } = useFetch<null, UserProfileDto>();
-	const { data: chatInvite, isLoading: chatInviteLoading, error: chatInviteError, fetcher: chatInviteFetcher } = useFetch<null, UpdateChatDto>();
+	const { data: chatInvite, isLoading: chatInviteLoading, error: chatInviteError, fetcher: chatInviteFetcher } = useFetch<null, FetchChatDto>();
 	const { data: newMessage, isLoading: newMessageLoading, error: newMessageError, fetcher: newMessageFetcher } = useFetch<CreateChatMessageDto, number>();
 	const router = useRouter();
 
@@ -159,11 +159,15 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 			}
 			chatSocket.on('chat/messageFromRoom', handleMessageFromRoom);
 			chatSocket.on('invite/inviteResponse', (payload: InviteSocketMessageDto) => { inviteResponseHandler(payload, currentUser, currentChatRoom, chatMessagesFetcher, friendInviteFetcher) });
+			chatSocket.on('chat/patch', (payload: FetchChatDto) => {
+				console.log("Chat patched (socket): ", payload);
+				fetchChat(chatFetcher, payload.id, currentUser.id);
+			});
 		}
 		return () => {
 			chatSocket.off('chat/messageFromRoom');
 			chatSocket.off('invite/inviteResponse')
-			setCurrentChatRoom({ id: -1 });
+			setCurrentChatRoom({ id: -1, name: '', visibility: ChatType.PUBLIC, users: [], ownerId: 0 });
 		};
 	}, [chatId, user2, firstRender.current]);
 
