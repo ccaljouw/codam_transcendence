@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UpdateChatMessageDto, CreateDMDto, CreateChatMessageDto, FetchChatMessageDto, UpdateInviteDto, FetchChatDto, ChatMessageToRoomDto, UpdateChatDto } from '@ft_dto/chat';
+import { UpdateChatMessageDto, CreateDMDto, CreateChatMessageDto, FetchChatMessageDto, UpdateInviteDto, FetchChatDto, ChatMessageToRoomDto, UpdateChatDto, UpdateChatUserDto } from '@ft_dto/chat';
 import { ChatMessageService } from '../services/chat-messages.service';
 import { ChatService } from '../services/chat.service';
 import { ChatSocketService } from '../services/chatsocket.service';
@@ -79,7 +79,7 @@ export class ChatMessagesController {
 
 	@Get('chatUser/:chatId/:userId')
 	@ApiOperation({ summary: 'Returns chat user' })
-	@ApiOkResponse({ type: FetchChatDto })
+	@ApiOkResponse({ type: UpdateChatUserDto })
 	@ApiNotFoundResponse({ description: 'No chat user with #${chatId}' })
 	async getChatUser(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number) {
 		const chatUser = await this.chatService.getChatUser(chatId, userId);

@@ -1,5 +1,6 @@
 import { IsBoolean, IsInt, IsNumber, IsOptional, IsString } from "class-validator";
-import { CreateInviteDto } from "./create-invite.dto";
+import { UpdateInviteDto } from "./update-invite.dto";
+import { ChatType } from "@prisma/client";
 
 export class ChatMessageToRoomDto {
 	
@@ -13,8 +14,9 @@ export class ChatMessageToRoomDto {
 	message: string = "";
 	@IsBoolean()
 	action: boolean = false;
+	chatType?: ChatType;
 	@IsOptional()
 	@IsNumber()
 	inviteId?: number;
-	invite?: CreateInviteDto;
+	invite?: UpdateInviteDto;
 }

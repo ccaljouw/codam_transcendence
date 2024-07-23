@@ -4,6 +4,8 @@ import { ChatType } from '@prisma/client';
 
 export class UpdateChatDto {
 
+	
+
 	@IsString()
 	@IsOptional()
 	@ApiProperty({ required: false, type: String })

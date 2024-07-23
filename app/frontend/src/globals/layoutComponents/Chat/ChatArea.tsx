@@ -38,13 +38,14 @@ export default function ChatArea() {
 
 	useEffect(() => {
 		if (!currentChatRoom) return;
+		console.log('currentChatRoom: chatarea', currentChatRoom);
 		if (currentChatRoom.id != -1 && currentChatRoom.visibility !== ChatType.DM) {
 			setUserListType(UserListType.Channel);
 		}
 		if (currentChatRoom.id != -1) {
 			chatUserFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + currentUser.id });
 		}
-	}, [currentChatRoom]);
+	}, [currentChatRoom, currentChatRoom.users?.length]);
 
 	useEffect(() => {
 		if (newChatRoom.room === currentChatRoom.id && currentChatRoom.visibility !== ChatType.DM) {
@@ -89,7 +90,7 @@ export default function ChatArea() {
 							status={user.online}
 							statusChangeCallback={statusChangeCallback}
 							indexInUserList={indexInUserList} /> */}
-						<ChannelStatusIndicator userId={user.id} />
+						<ChannelStatusIndicator userId={user.id} onlineStatus={user.online} />
 						&nbsp;&nbsp;
 						<span className={IsBlocked(user.id, currentUser) ? 'blocked' : ''} onClick={() => { !IsBlocked(user.id, currentUser) ? setSecondUser(user.id) : setNewChatRoom({ room: -1, count: newChatRoom.count++ }) }}>{user.firstName} {user.lastName}</span>
 						&nbsp;
@@ -169,7 +170,7 @@ export default function ChatArea() {
 					}
 					{userListType == UserListType.Chats && <ChannelList />}
 					{userListType == UserListType.AllUsers && <UserList userDisplayFunction={ChatAreaUserList} fetchUrl={constants.API_ALL_USERS_BUT_ME + currentUser.id} />}
-					{userListType == UserListType.Channel && <><UserList userDisplayFunction={ChatAreaChannelUserList} fetchUrl={constants.CHAT_GET_USERS_IN_CHAT + currentChatRoom.id} /></>}
+					{userListType == UserListType.Channel && <><UserList key={currentChatRoom.users.length} userDisplayFunction={ChatAreaChannelUserList} fetchUrl={constants.CHAT_GET_USERS_IN_CHAT + currentChatRoom.id} /></>}
 					{userListType == UserListType.Settings && <><ChannelSettings room={currentChatRoom} /></>}
 				</div>
 			</div>

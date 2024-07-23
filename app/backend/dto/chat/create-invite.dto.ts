@@ -1,5 +1,4 @@
 import { IsEnum, IsInt, IsNotEmpty } from "class-validator";
-import { CreateChatUserDto } from "./create-chatUser.dto";
 import { ApiProperty } from "@nestjs/swagger";
 import { InviteStatus, InviteType } from "@prisma/client";
 

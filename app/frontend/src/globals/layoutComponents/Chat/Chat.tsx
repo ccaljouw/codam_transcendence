@@ -1,6 +1,6 @@
 "use client"
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { FetchChatMessageDto, ChatMessageToRoomDto, FetchChatDto, CreateDMDto, UpdateInviteDto, UpdateChatUserDto, CreateChatMessageDto } from '@ft_dto/chat';
+import { useContext, useEffect, useMemo, useOptimistic, useRef, useState } from 'react';
+import { FetchChatMessageDto, ChatMessageToRoomDto, FetchChatDto, CreateDMDto, UpdateInviteDto, CreateChatMessageDto, UpdateChatUserDto } from '@ft_dto/chat';
 import { UserProfileDto } from '@ft_dto/users';
 import { constants } from '@ft_global/constants.globalvar';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
@@ -31,6 +31,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 	const { data: friendInvite, isLoading: friendInviteLoading, error: friendInviteError, fetcher: friendInviteFetcher } = useFetch<null, UserProfileDto>();
 	const { data: chatInvite, isLoading: chatInviteLoading, error: chatInviteError, fetcher: chatInviteFetcher } = useFetch<null, FetchChatDto>();
 	const { data: newMessage, isLoading: newMessageLoading, error: newMessageError, fetcher: newMessageFetcher } = useFetch<CreateChatMessageDto, number>();
+	const { data: newUserForChannel, isLoading: newUserForChannelLoading, error: newUserForChannelError, fetcher: newUserForChannelFetcher } = useFetch<null, UpdateChatUserDto>();
 	const router = useRouter();
 
 	// ****************************************** THIS IS STUFF YOU MIGHT WANT TO ALTER, CARLOS ****************************************** //
@@ -70,6 +71,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		console.log("User status changed: ", userId, onlineStatus);
 
 		let updatedUserArray : ChatUsers[] = [];
+		// If the user is in the chat room, we need to update their status.
 		if (currentChatRoom.users?.find(user => user.userId == userId) != undefined)
 		{
 		updatedUserArray = currentChatRoom.users?.map((user: ChatUsers) => {
@@ -81,8 +83,11 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 			});
 			setCurrentChatRoom({ ...currentChatRoom, users: updatedUserArray });
 		}else{
-			console.log("User not found in room: ", userId);
-			fetchChat(chatFetcher, currentChatRoom.id, currentUser.id);
+			// newUserForChannelFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + userId });
+			console.log("User not found in chat room: ", userId);
+			newUserForChannelFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + userId });
+			// fetchChat(chatFetcher, currentChatRoom.id, currentUser.id);
+			// fetchMessages
 		}
 	};
 
@@ -197,6 +202,17 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		}
 
 	}, [chatFromDb])
+
+	useEffect(() => {
+		const newUser = newUserForChannel as ChatUsers;
+		console.log("New user for channel: ", newUser);
+		if (newUser) {
+			newUser.isInChatRoom = true;
+			const newChatUsers = currentChatRoom.users?.concat(newUser);
+			setCurrentChatRoom({ ...currentChatRoom, users: newChatUsers });
+			console.log(currentChatRoom.users);
+		}
+	}, [newUserForChannel]);
 
 	// This effect is used to leave the room and reset the chat when the user2 changes.
 	useEffect(() => {

@@ -11,7 +11,7 @@ export interface inviteCallbackProps {
 	inviteId: number | undefined,
 	accept: boolean,
 	senderId: number | undefined,
-	inviteType: InviteType
+	inviteType: InviteType | undefined,
 	currentChatRoom: FetchChatDto,
 	currentUser: UserProfileDto,
 	chatSocket: Socket,

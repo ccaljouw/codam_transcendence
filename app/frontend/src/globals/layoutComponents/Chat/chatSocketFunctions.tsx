@@ -23,7 +23,8 @@ export const sendMessage = (
 		userId: currentUserId,
 		userName: currentUser.userName,
 		room: currentChat.id.toString(),
-		message: message, action: false
+		message: message, action: false,
+		chatType: currentChat.visibility,
 	};
 	// this function sends the message to the socket
 	chatSocket.emit("chat/msgToRoom", payload);

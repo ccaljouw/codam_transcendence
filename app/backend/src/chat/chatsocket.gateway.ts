@@ -44,18 +44,20 @@ export class ChatSocketGateway {
 			room: payload.room,
 			action: false,
 			inviteId: payload.inviteId,
-			invite: invite
+			invite: invite,
+			chatType: payload.chatType
 		};
 
 		// const messageResult = await this.chatMessageService.messageToDB({ chatId: parseInt(payload.room), userId: payload.userId, content: payload.message, inviteId: payload.inviteId }); //replace with api call in frontend?
-		const usersNotInRoom = await this.chatMessageService.getUsersNotInRoom(parseInt(payload.room), payload.userId);
-		const tokenArray = await this.chatSocketService.getUserTokenArray(usersNotInRoom);
-		tokenArray.forEach(element => {
-			if (element !== null) // if the user is online (ie has a token that is not null) but not in the room, send notification
-			{
-				this.chat_io.to(element).emit('chat/messageToUserNotInRoom', messageToChat);
-			}
-		});
+		if (payload.chatType === "DM")
+		{	const usersNotInRoom = await this.chatMessageService.getUsersNotInRoom(parseInt(payload.room), payload.userId);
+	const tokenArray = await this.chatSocketService.getUserTokenArray(usersNotInRoom);
+	tokenArray.forEach(element => {
+		if (element !== null) // if the user is online (ie has a token that is not null) but not in the room, send notification
+		{
+			this.chat_io.to(element).emit('chat/messageToUserNotInRoom', messageToChat);
+		}
+	});}
 		this.chat_io.to(payload.room).emit('chat/messageFromRoom', messageToChat);
 		return;
 	}

@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useEffect, useRef, useState } from "react";
-import { OnlineStatus } from "@prisma/client";
+import { ChatType, OnlineStatus } from "@prisma/client";
 import { UserProfileDto, UpdateUserDto } from "@ft_dto/users";
 import { ChatMessageToRoomDto, FetchChatDto } from "@ft_dto/chat";
 import { WebsocketStatusChangeDto, CreateTokenDto } from '@ft_dto/socket'
