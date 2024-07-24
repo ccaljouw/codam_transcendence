@@ -31,7 +31,7 @@ function ChooseAchievementElement({index} : {index:number}) : JSX.Element {
 							
 							{id: "🤖", title: "Bot battle", description: "Awarded for playing match against the computer."}, //features related
 							{id: "🎮", title: "In Control", description: "Awarded for using the strongpong controller."},
-							{id: "💬", title: "Communicator", description: "Awarded for sending more then 100 messages to someone."},
+							{id: "💬", title: "Communicator", description: "Awarded for sending more then 100 messages."},
 
 							{id: "🏓", title: "POMG", description: "Awarded for being a StrongPong developer."}];
 							

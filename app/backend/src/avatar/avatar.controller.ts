@@ -48,7 +48,7 @@ export class AvatarController {
       }),
     )
     file: Express.Multer.File,
-  ) {
+  ): Promise<string> {
     return this.avatarService.uploadFile(file);
   }
 

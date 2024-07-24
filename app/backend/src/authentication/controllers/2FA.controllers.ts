@@ -20,7 +20,7 @@ export class TwoFAController {
   @Post('check')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Checks token after scenning QR code' })
-  async checkFAToken(@Body() checkToken: CheckTokenDto) {
+  async checkFAToken(@Body() checkToken: CheckTokenDto): Promise<boolean> {
     console.log('checking token');
     console.log(checkToken);
     return this.twoFA.checkFAToken(checkToken.userId, checkToken.token);
@@ -29,14 +29,16 @@ export class TwoFAController {
   @Patch('enable/:id')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Turns on 2FA and generates and stores token' })
-  async enable2FA(@Param('id', ParseIntPipe) id: number) {
+  async enable2FA(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ res: string }> {
     return this.twoFA.enable2FA(id);
   }
 
   @Patch('disable/:id')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Turns off 2FA' })
-  async disable2FA(@Param('id', ParseIntPipe) id: number) {
+  async disable2FA(@Param('id', ParseIntPipe) id: number): Promise<boolean> {
     return this.twoFA.disable2FA(id);
   }
 }

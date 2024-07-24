@@ -128,7 +128,7 @@ export class AuthService {
     }
   }
 
-  async changePwd(id: number, oldPwd: string, newPwd: string) {
+  async changePwd(id: number, oldPwd: string, newPwd: string): Promise<void> {
     console.log(`Trying to update pwd: ${id}, ${oldPwd}, ${newPwd}`);
     try {
       const user = await this.db.user.findUnique({

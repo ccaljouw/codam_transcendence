@@ -66,7 +66,7 @@ export class AuthController {
 
   @Patch('change_pwd')
   @UseGuards(JwtAuthGuard)
-  async changePwd(@Body() updatePwdDto: UpdatePwdDto) {
+  async changePwd(@Body() updatePwdDto: UpdatePwdDto): Promise<void> {
     return this.authService.changePwd(
       updatePwdDto.userId,
       updatePwdDto.oldPwd,
