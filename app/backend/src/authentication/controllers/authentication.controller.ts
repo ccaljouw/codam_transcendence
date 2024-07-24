@@ -36,7 +36,7 @@ export class AuthController {
     const { user, jwt }: { user: UserProfileDto; jwt: string } = req.user;
     console.log(`Auth callback for ${user.id} with jwt ${jwt}`);
     res.redirect(
-      `${this.configService.get('HOST')}:3000?user=${user.id}&jwt=${jwt}`,
+      `${this.configService.get('FRONTEND_URL')}?user=${user.id}&jwt=${jwt}`,
     );
   }
 

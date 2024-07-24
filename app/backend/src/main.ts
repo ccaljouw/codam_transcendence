@@ -17,7 +17,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  // const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(
     new PrismaClientExceptionFilter(),
     new HttpErrorFilter(),
@@ -30,7 +29,10 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true })); //forbidNonWhitelisted: true
 
   app.enableCors({
-    origin: `${process.env.HOST}:3000`,
+    origin: [
+      `${process.env.FRONTEND_URL_LOCAL}`,
+      `${process.env.FRONTEND_URL}`,
+    ],
     methods: 'GET,PATCH,POST,DELETE, ',
     allowedHeaders: 'Content-Type, Authorization',
     credentials: true, // Enable credentials (cookies, authorization headers)

@@ -72,7 +72,7 @@ export default function Avatar({user, editable} : {user: UserProfileDto, editabl
           <p>Avatar</p>
         </div>
         <div style={{ gridColumn: '2 / 3' }}>
-          <img src={avatarUrl} alt={`${constants.BACKEND_BASEURL}/avatar/favicon.ico`} width="100" height="100" style={{ borderRadius: '40%' }}/>
+          <img src={avatarUrl} alt={`${constants.API_AVATAR}/favicon.ico`} width="100" height="100" style={{ borderRadius: '40%' }}/>
         </div>
         <div style={{ gridColumn: '4 / 6' }}>
           <input
@@ -91,7 +91,7 @@ export default function Avatar({user, editable} : {user: UserProfileDto, editabl
     {editable && error != null && <p>Not possible to update avatar: {error.message}</p>}
     {editable && errorSroringNewAvatarUrl != null && <p>Error storing new avatarUrl in database...</p>}
     {editable == false &&         
-      <img src={user.avatarUrl} alt={`${constants.BACKEND_BASEURL}/avatar/favicon.ico`} width="100" height="100" style={{ borderRadius: '40%' }}/>
+      <img src={user.avatarUrl} alt={`${constants.API_AVATAR}/favicon.ico`} width="100" height="100" style={{ borderRadius: '40%' }}/>
     }
     </>
   );

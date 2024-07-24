@@ -14,11 +14,11 @@ export class constants {
 	static configuration = 'test';
 	static themes = ['classic', 'blackAndWhite', 'neon'];
 
-	static BACKEND_BASEURL = `http://localhost:3001/`;
+	static BACKEND_BASEURL = `http://localhost:3001`;
 	static FRONTEND_BASEURL = 'http://localhost:3000'; //todo: JMA: consider adding '/' at end of url
 
 
-	static API_USERS = this.BACKEND_BASEURL + 'users/';
+	static API_USERS = this.BACKEND_BASEURL + '/users/';
 	static API_ALL_USERS = this.API_USERS + 'all/';
 	static API_ALL_USERS_BUT_ME = this.API_USERS + 'allButMe/';
 	static API_ADD_TOKEN = this.API_USERS + 'token/';
@@ -26,10 +26,10 @@ export class constants {
 	static API_BLOCK = this.API_USERS + 'block/';
 	static API_UNBLOCK = this.API_USERS + 'unblock/';
   
-  static API_AVATAR = this.BACKEND_BASEURL + 'avatar/';
+  static API_AVATAR = this.BACKEND_BASEURL + '/avatar/';
   static API_NEW_AVATAR = this.API_AVATAR + 'new/';
   
-	static API_CHAT = this.BACKEND_BASEURL + 'chat/';
+	static API_CHAT = this.BACKEND_BASEURL + '/chat/';
 	static CHAT_CHECK_IF_DM_EXISTS = this.API_CHAT + 'checkIfDMExists/';
 	static CHAT_GET_UNREADS = this.API_CHAT + 'getUnreads/';
 	static CHAT_GET_MESSAGES_FROM_CHAT = this.API_CHAT + 'messages/';
@@ -43,32 +43,32 @@ export class constants {
 	static CHAT_GET_CHANNEL_WITH_USER = this.API_CHAT + 'channelWithUser/';
 	static CHAT_GET_CHATUSER = this.API_CHAT + 'chatUser/';
   
-	static API_INVITE = this.BACKEND_BASEURL + 'invite/';
+	static API_INVITE = this.BACKEND_BASEURL + '/invite/';
 	static INVITE_RESPOND_TO_FRIEND_REQUEST = this.API_INVITE + 'respondToFriendRequest/';
 	static INVITE_RESPOND_TO_GAME_REQUEST = this.API_INVITE + 'respondToGameRequest/';
   
   
-	static API_GAME = this.BACKEND_BASEURL + 'game/'
+	static API_GAME = this.BACKEND_BASEURL + '/game/'
   
-	static API_TEST = this.BACKEND_BASEURL + 'test/';
+	static API_TEST = this.BACKEND_BASEURL + '/test/';
 	static API_TEST_BACKEND = this.API_TEST + 'backend';
 	static API_TEST_FRONTEND = this.API_TEST + 'frontend';
 	static API_TEST_ALL = this.API_TEST + 'all';
 	static API_TEST_OUTPUT = this.API_TEST + 'output';
 	static API_TEST_REPORT = this.API_TEST + 'report';
   
-	static API_SWAGGER = this.BACKEND_BASEURL + 'api';
+	static API_SWAGGER = this.BACKEND_BASEURL + '/api';
 
-	static API_REGISTER = this.BACKEND_BASEURL + 'auth/register/';
-  static API_LOGIN = this.BACKEND_BASEURL + 'auth/login/';
-	static API_AUTH42 = this.BACKEND_BASEURL + 'auth/42/';
-  static API_CHANGEPWD = this.BACKEND_BASEURL + 'auth/change_pwd/';
+	static API_REGISTER = this.BACKEND_BASEURL + '/auth/register/';
+  static API_LOGIN = this.BACKEND_BASEURL + '/auth/login/';
+	static API_AUTH42 = this.BACKEND_BASEURL + '/auth/42/';
+  static API_CHANGEPWD = this.BACKEND_BASEURL + '/auth/change_pwd/';
   
-  static API_ENABLE2FA = this.BACKEND_BASEURL + 'auth/2FA/enable/';
-  static API_DISABLE2FA = this.BACKEND_BASEURL + 'auth/2FA/disable/';
-  static API_CHECK2FATOKEN = this.BACKEND_BASEURL + 'auth/2FA/check/';
+  static API_ENABLE2FA = this.BACKEND_BASEURL + '/auth/2FA/enable/';
+  static API_DISABLE2FA = this.BACKEND_BASEURL + '/auth/2FA/disable/';
+  static API_CHECK2FATOKEN = this.BACKEND_BASEURL + '/auth/2FA/check/';
   
-  static API_STATS = this.BACKEND_BASEURL + 'stats/';
+  static API_STATS = this.BACKEND_BASEURL + '/stats/';
   static API_TOP_10 = this.API_STATS + 'top10/';
   static API_LAST_10 = this.API_STATS + 'last10Games/';
   static API_RANK = this.API_STATS + 'rank';

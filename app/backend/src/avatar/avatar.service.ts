@@ -12,15 +12,17 @@ export class AvatarService {
     try {
       console.log(file);
       const filename = `${uuidv4()}${path.extname(file.originalname)}`;
+      if (!filename) throw new Error('Error getting filename');
       const filePath = path.join(
         __dirname,
         '../../../../',
         'shared/avatars',
         filename,
       );
+      if (!filePath) throw new Error('Error getting filePath');
       console.log(`Filename: ${filename}, filepath: ${filePath}`);
       fs.renameSync(file.path, filePath);
-      return `${this.configService.get('BASE_URL_BACKEND')}/avatar/${filename}`;
+      return `${this.configService.get('BACKEND_URL')}/avatar/${filename}`;
     } catch (error) {
       throw error;
     }

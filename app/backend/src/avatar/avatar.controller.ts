@@ -21,6 +21,7 @@ import { Response } from 'express';
 import * as path from 'path';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 
+// TODO: define max filesize
 @Controller('avatar')
 @ApiTags('avatar')
 export class AvatarController {
@@ -41,20 +42,18 @@ export class AvatarController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: 500000 }),
+          new MaxFileSizeValidator({ maxSize: 8000000 }),
           new FileTypeValidator({ fileType: /image\/(png|jpeg|jpg|gif)/ }),
         ],
       }),
     )
     file: Express.Multer.File,
   ) {
-    console.log('In avatar controler: ');
-    console.log(file);
-    console.log(file.mimetype);
     return this.avatarService.uploadFile(file);
   }
 
   @Get('list')
+  @UseGuards(JwtAuthGuard)
   listFiles(@Res() res: Response) {
     const directoryPath = path.join(
       __dirname,
@@ -82,6 +81,7 @@ export class AvatarController {
   }
 
   @Delete('delete/:filename')
+  @UseGuards(JwtAuthGuard)
   deleteFile(@Param('filename') filename: string, @Res() res: Response) {
     const filePath = path.join(
       __dirname,
