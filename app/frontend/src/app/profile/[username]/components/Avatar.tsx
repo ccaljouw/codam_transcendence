@@ -4,6 +4,7 @@ import EditButton from "src/app/profile/[username]/components/utils/EditButton";
 import useFetch from "src/globals/functionComponents/useFetch";
 import { TranscendenceContext } from "src/globals/contextprovider.globalvar";
 import { UpdateUserDto, UserProfileDto } from "@ft_dto/users";
+import { use } from "passport";
 
 export default function Avatar({user, editable} : {user: UserProfileDto, editable: boolean}) : JSX.Element {
   const {currentUser, setCurrentUser} = useContext(TranscendenceContext);
@@ -11,6 +12,7 @@ export default function Avatar({user, editable} : {user: UserProfileDto, editabl
   const [error, setError] = useState<Error | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string>(currentUser.avatarUrl)
   const {data: newAvatarUrl, isLoading: storingNewAvatarUrl, error: errorSroringNewAvatarUrl, fetcher: storeNewAvatarUrl} = useFetch<UpdateUserDto, boolean >();
+  const {data: postedAvatarUrl, isLoading: postingAvatar, error: errorPostingAvatar, fetcher: postAvatar} = useFetch<FormData, {avatarUrl: string}>();
 
   useEffect(() => {
     if (avatarUrl != null)
@@ -21,29 +23,39 @@ export default function Avatar({user, editable} : {user: UserProfileDto, editabl
 		}
 	}, [avatarUrl]);
   
+  useEffect(() => {
+    if (postedAvatarUrl != null)
+      {
+      console.log(`postedAvatarUrl: ${postedAvatarUrl.avatarUrl}`);
+      setAvatarUrl(postedAvatarUrl.avatarUrl);
+      storeNewAvatarUrl({ url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: { avatarUrl: postedAvatarUrl.avatarUrl }});
+    }
+  }, [postedAvatarUrl]);
+
   const selectNewImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
       try {
         if(file) {
-          setIsLoading(true);
-          const headers: HeadersInit = {};
+          // setIsLoading(true);
+          // const headers: HeadersInit = {};
           const formData = new FormData();
           console.log(`Form data: `);
           formData.append('file', file);
           console.log(formData);
-          const response = await fetch(constants.API_NEW_AVATAR, {
+          // const response = await fetch(constants.API_NEW_AVATAR, {
             
-            method: 'POST',
-            body: formData,
-            credentials: 'include',
-            headers: headers,
-          });
-          if (!response.ok) {
-              throw new Error(`Response not ok: ${response.status}: ${response.statusText}`);
-          }
-          const newUrl = await response.json();
-          setAvatarUrl(newUrl.avatarUrl);
-          storeNewAvatarUrl({ url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: { avatarUrl: newUrl }});
+          //   method: 'POST',
+          //   body: formData,
+          //   credentials: 'include',
+          //   headers: headers,
+          // });
+          // if (!response.ok) {
+          //     throw new Error(`Response not ok: ${response.status}: ${response.statusText}`);
+          // }
+          // const newUrl = await response.json();
+          postAvatar({url: constants.API_NEW_AVATAR, fetchMethod: 'POST', payload: formData});
+          // setAvatarUrl(newUrl.avatarUrl);
+          // storeNewAvatarUrl({ url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: { avatarUrl: newUrl }});
         } else {
           console.log("no file selected");
         }

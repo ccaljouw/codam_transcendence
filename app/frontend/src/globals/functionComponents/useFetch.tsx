@@ -25,16 +25,22 @@ export default function useFetch<T, U>(): fetchOutput<T, U> {
     } : fetchProps<T> ) : Promise<void> => {
         setIsLoading(true);
         try {
-            const headers: HeadersInit = { 'Content-Type': 'application/json' };
+            let requestContent: any = null;
+            const headers: HeadersInit = {};
+            if (!(payload instanceof FormData)) {
+              headers['Content-Type'] = 'application/json';
+              requestContent = JSON.stringify(payload);
+            } else {
+              requestContent = payload;
+            }
 
             const response = await fetch(url, {
                 method: fetchMethod,
                 headers,
                 credentials: 'include',
-                body: JSON.stringify(payload),
+                body: requestContent,
             });
             if (!response.ok) {
-              // Try to parse the error response
               let errorMessage = `Response not ok: ${response.status} - ${response.statusText}`;
               try {
                 const errorResponse = await response.json();
@@ -46,9 +52,8 @@ export default function useFetch<T, U>(): fetchOutput<T, U> {
               }
               throw new Error(errorMessage);
             }
-      
             setData(await response.json() as U);
-        } catch (e: any) { //todo: add type
+        } catch (e: any) {
             console.log("useFetch error: ", e);
             setError(e);
         } finally {
@@ -58,4 +63,4 @@ export default function useFetch<T, U>(): fetchOutput<T, U> {
     return ({data, isLoading, error, fetcher});
 };
 
-//todo: check if fetchProps and fetchOutput should be types or interfaces
+//TODO: Jorien, check if fetchProps and fetchOutput should be types or interfaces
