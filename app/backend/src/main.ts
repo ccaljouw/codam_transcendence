@@ -32,7 +32,7 @@ async function bootstrap() {
   app.enableCors({
     origin: 'http://localhost:3000', //TODO: change host?
     methods: 'GET,PATCH,POST,DELETE, ',
-    allowedHeaders: 'Content-Type, Authorization', // TODO: use authorization headers
+    allowedHeaders: 'Content-Type, Authorization',
     credentials: true, // Enable credentials (cookies, authorization headers)
   });
   await app.listen(3000);

@@ -1,54 +1,77 @@
 import { GameResultDto } from '@ft_dto/stats';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsBoolean,
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
 } from 'class-validator';
 
 export class StatsDto {
-  @IsNotEmpty()
-  @IsInt()
   @ApiProperty({ required: true, type: Number })
+  @IsNotEmpty()
+  @Type(() => Number)
+  @IsInt()
   userId: number;
-  
+
+  @ApiProperty({ required: true, type: Boolean })
+  @IsNotEmpty()
   @IsBoolean()
-  @ApiProperty({ required: false, type: Boolean })
   wonLastGame: boolean;
 
+  @ApiProperty({ required: true, type: Number })
+  @IsNotEmpty()
+  @Type(() => Number)
   @IsInt()
-  @ApiProperty({ required: false, type: Number })
   wins: number;
 
+  @ApiProperty({ required: true, type: Number })
+  @IsNotEmpty()
+  @Type(() => Number)
   @IsInt()
-  @ApiProperty({ required: false, type: Number })
   losses: number;
-  
+
+  @ApiProperty({ required: true, type: Number })
+  @IsNotEmpty()
+  @Type(() => Number)
   @IsNumber()
-  @ApiProperty({ required: false, type: Number })
   winLossRatio: number;
 
+  @ApiProperty({ required: true, type: Number })
+  @IsNotEmpty()
+  @Type(() => Number)
   @IsInt()
-  @ApiProperty({ required: false, type: Number })
   consecutiveWins: number;
 
+  @ApiProperty({ required: true, type: Number })
+  @IsNotEmpty()
+  @Type(() => Number)
   @IsInt()
-  @ApiProperty({ required: false, type: Number })
   maxConsecutiveWins: number;
 
-  @ApiProperty({ required: false, type: [Number] })
+  @ApiProperty({ required: true, type: [Number] })
+  @IsArray()
+  @Type(() => Number)
+  @IsInt({ each: true })
   achievements: number[];
-  
-  @IsInt()
+
   @ApiProperty({ required: false, type: Number })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
   rank?: number;
 
-  @IsInt()
   @ApiProperty({ required: false, type: Number })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
   friends?: number;
-  
 
   @ApiProperty({ required: false, type: [GameResultDto] })
+  @IsOptional()
+  @IsArray()
   last10Games?: GameResultDto[];
 }

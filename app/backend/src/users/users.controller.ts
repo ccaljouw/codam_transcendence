@@ -9,7 +9,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
-  ApiBadRequestResponse,
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiNotFoundResponse,
@@ -32,7 +31,7 @@ export class UsersController {
   ) {}
 
   @Post('token')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Adds token with user id to database' })
   @ApiCreatedResponse({
     description: 'Token successfully created',
@@ -55,7 +54,7 @@ export class UsersController {
   }
 
   @Get('username/:userName')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Returns user with specified userName' })
   @ApiOkResponse({ type: UserProfileDto })
   @ApiNotFoundResponse({
@@ -66,7 +65,7 @@ export class UsersController {
   }
 
   @Get('allButMe/:id')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary:
       'Returns all users currently in the database except the one with the specified id',
@@ -80,7 +79,7 @@ export class UsersController {
   }
 
   @Get('friendsFrom/:id')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'Returns all friends of the user with the specified id',
   })
@@ -94,7 +93,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Returns user with specified id' })
   @ApiOkResponse({ type: UserProfileDto })
   @ApiNotFoundResponse({ description: 'User with #${id} does not exist' })
@@ -103,14 +102,11 @@ export class UsersController {
   }
 
   @Patch(':id')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Updates user with specified id' })
   @ApiOkResponse({ type: UserProfileDto })
   @ApiConflictResponse({
     description: `Conflict: Unique constraint failed on the field: []`,
-  })
-  @ApiBadRequestResponse({
-    description: 'Bad request: description of validation error',
   })
   update(
     @Param('id', ParseIntPipe) id: number,
@@ -120,7 +116,7 @@ export class UsersController {
   }
 
   @Get('block/:id/:blockId')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Blocks user with specified id' })
   @ApiOkResponse({ description: 'User successfully blocked' })
   blockUser(
@@ -131,7 +127,7 @@ export class UsersController {
   }
 
   @Get('unblock/:id/:blockId')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Unblocks user with specified id' })
   @ApiOkResponse({ description: 'User successfully unblocked' })
   unblockUser(
