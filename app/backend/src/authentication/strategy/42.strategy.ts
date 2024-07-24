@@ -18,7 +18,7 @@ export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
       tokenURL: 'https://api.intra.42.fr/oauth/token',
       clientID: configService.get('CLIENT_ID'),
       clientSecret: configService.get('SECRET'),
-      callbackURL: configService.get('HOST') + ':3001/auth/42/callback',
+      callbackURL: `${configService.get('HOST')}:3001/auth/42/callback`,
     });
   }
 

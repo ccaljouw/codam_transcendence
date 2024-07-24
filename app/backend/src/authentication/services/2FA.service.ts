@@ -28,9 +28,11 @@ export class TwoFAService {
         const secret: speakeasy.GeneratedSecret = await this.generate2FASecret(
           user.loginName,
         );
+        if (!secret) throw new Error('Error generating 2FA secret');
         await this.store2FASecret(secret.base32, userId);
         console.log('succesfully enabled 2FA and stored token');
         const qr = await this.generateQRCode(secret.otpauth_url);
+        if (!qr) throw new Error('Error generating QR code');
         return { res: qr };
       }
     } catch (error) {

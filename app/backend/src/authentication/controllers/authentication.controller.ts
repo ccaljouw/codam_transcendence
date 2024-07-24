@@ -16,11 +16,15 @@ import { LocalAuthGuard } from '../guard/login-auth.guard';
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { UpdatePwdDto } from '@ft_dto/authentication';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 @ApiTags('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private configService: ConfigService,
+  ) {}
 
   @Get('42')
   @UseGuards(AuthGuard('42'))
@@ -31,7 +35,9 @@ export class AuthController {
   async fortyTwoAuthRedirect(@Req() req: Request | any, @Res() res: Response) {
     const { user, jwt }: { user: UserProfileDto; jwt: string } = req.user;
     console.log(`Auth callback for ${user.id} with jwt ${jwt}`);
-    res.redirect(`http://localhost:3000?user=${user.id}&jwt=${jwt}`);
+    res.redirect(
+      `${this.configService.get('HOST')}:3000?user=${user.id}&jwt=${jwt}`,
+    );
   }
 
   @Post('register')

@@ -30,7 +30,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true })); //forbidNonWhitelisted: true
 
   app.enableCors({
-    origin: 'http://localhost:3000', //TODO: change host?
+    origin: `${process.env.HOST}:3000`,
     methods: 'GET,PATCH,POST,DELETE, ',
     allowedHeaders: 'Content-Type, Authorization',
     credentials: true, // Enable credentials (cookies, authorization headers)
