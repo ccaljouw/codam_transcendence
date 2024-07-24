@@ -16,11 +16,9 @@ import { SeedController } from './seed.controller';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../../../..', 'coverage', 'test_output.html'),
       serveRoot: '/test/output',
-    })
+    }),
   ],
   controllers: [TestingController, SeedController],
   providers: [SeedService, TestingService, PrismaService],
 })
-
-export class TestingModule {
-}
+export class TestingModule {}

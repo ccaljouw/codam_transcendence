@@ -7,15 +7,14 @@ import { SeedService } from './services/seed.service';
 export class SeedController {
   constructor(private readonly seedService: SeedService) {}
 
-
   @Get()
-  @ApiOperation({ summary: '(Runs seed)'})
+  @ApiOperation({ summary: '(Runs seed)' })
   async runSeed() {
     try {
       const outputMessage = await this.seedService.runSeed();
       return { msg: outputMessage };
     } catch (error) {
-        return { msg: 'Error running seed' }
+      return { msg: 'Error running seed' };
     }
   }
 }
