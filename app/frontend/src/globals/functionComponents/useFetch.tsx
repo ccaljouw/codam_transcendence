@@ -27,15 +27,10 @@ export default function useFetch<T, U>(): fetchOutput<T, U> {
         try {
             const headers: HeadersInit = { 'Content-Type': 'application/json' };
 
-            const jwtToken = sessionStorage.getItem('jwt');
-            if (jwtToken) {
-                headers['Authorization'] = `Bearer ${jwtToken}`;
-            } else {
-              console.log('No jwt token in session storage');
-            }
             const response = await fetch(url, {
                 method: fetchMethod,
                 headers,
+                credentials: 'include',
                 body: JSON.stringify(payload),
             });
             if (!response.ok) {

@@ -3,17 +3,18 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserProfileDto, CreateUserDto } from '@ft_dto/users';
-import { PrismaService } from 'src/database/prisma.service';
-import { JwtService } from '@nestjs/jwt';
-import { TwoFAService } from './2FA.service';
-import * as bcrypt from 'bcrypt';
-import { StatsService } from 'src/stats/stats.service';
 import {
   PrismaClientKnownRequestError,
   PrismaClientUnknownRequestError,
   PrismaClientValidationError,
 } from '@prisma/client/runtime/library';
+import { Request, Response } from 'express';
+import { UserProfileDto, CreateUserDto } from '@ft_dto/users';
+import { PrismaService } from 'src/database/prisma.service';
+import { JwtService } from '@nestjs/jwt';
+import { TwoFAService } from './2FA.service';
+import { StatsService } from 'src/stats/stats.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -68,11 +69,13 @@ export class AuthService {
   ): Promise<UserProfileDto> {
     let user: UserProfileDto | any;
     try {
+      console.log('In validateUser in auth service');
       user = await this.db.user.findUnique({
         where: { loginName: username },
         include: { auth: true },
       });
-      if (!user) throw new NotFoundException(`User ${username} not found`);
+      if (!user)
+        throw new UnauthorizedException('Invallid user-password combination');
       const validPwd = await bcrypt.compare(password, user.auth?.pwd);
       if (validPwd) {
         console.log('password correct');
@@ -109,7 +112,7 @@ export class AuthService {
   async registerUser(
     createUser: CreateUserDto,
     pwd: string,
-  ): Promise<{ user: UserProfileDto; jwt: string }> {
+  ): Promise<UserProfileDto> {
     let user: UserProfileDto;
     try {
       console.log('trying to register user: ');
@@ -117,12 +120,8 @@ export class AuthService {
       const hash = await bcrypt.hash(pwd, salt);
 
       user = await this.createUser(createUser, hash);
-
-      const payload = { loginName: user.loginName, id: user.id };
-      const jwt: string = this.jwtService.sign(payload);
-      console.log(`Registered ${user.userName} with jwt ${jwt}`);
-
-      return { user, jwt };
+      console.log(`Registered ${user.userName}`);
+      return user;
     } catch (error) {
       throw error;
     }
@@ -149,6 +148,21 @@ export class AuthService {
         throw new UnauthorizedException('Incorrect password');
       }
     } catch (error) {
+      throw error;
+    }
+  }
+
+  async setJwtCookie(user: UserProfileDto, req: Request): Promise<void> {
+    try {
+      const jwt: string = await this.generateJwt(user);
+      (req.res as Response).cookie('jwt', jwt, {
+        httpOnly: true,
+        //TODO: determine validity
+        maxAge: 3600000, // expires in 1 hour
+        sameSite: 'strict',
+      });
+    } catch (error) {
+      console.log('Error setting jwt cookie:', error.message);
       throw error;
     }
   }

@@ -17,7 +17,7 @@ export class TwoFAService {
         where: { id: userId },
       });
       if (!user) {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException(`User with id ${userId} not found`);
       }
       if (user.twoFactEnabled == true) {
         console.log('2FA already enabled');
@@ -112,7 +112,7 @@ export class TwoFAService {
       });
       if (!user || !user.auth.twoFactSecret) {
         console.log('Error during 2FA token verification:');
-        throw new UnauthorizedException();
+        throw new UnauthorizedException(`User with id ${id} not found`);
       }
       await this.verify2FASecret(user.auth.twoFactSecret, token);
       await this.db.user.update({

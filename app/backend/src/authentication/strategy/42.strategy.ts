@@ -26,7 +26,7 @@ export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
     accessToken: string,
     refreshToken: string,
     profile: any,
-  ): Promise<{ user: UserProfileDto; jwt: string }> {
+  ): Promise<UserProfileDto> {
     let user: UserProfileDto;
     const updatefields = new UpdateUserDto();
 
@@ -61,13 +61,11 @@ export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
           },
           null,
         );
-        const jwt: string = await this.authService.generateJwt(user);
-        return { user, jwt };
+        return user;
       } else {
         throw error;
       }
     }
-    const jwt: string = await this.authService.generateJwt(user);
-    return { user, jwt };
+    return user;
   }
 }

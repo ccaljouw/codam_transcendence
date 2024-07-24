@@ -4,9 +4,12 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { PrismaClientExceptionFilter } from './errorHandling/prisma-client-exception.filter';
 import { HttpErrorFilter } from './errorHandling/exception.filter';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.use(cookieParser());
 
   const config = new DocumentBuilder()
     .setTitle('Transcendence')
@@ -34,8 +37,8 @@ async function bootstrap() {
       `${process.env.FRONTEND_URL}`,
     ],
     methods: 'GET,PATCH,POST,DELETE, ',
-    allowedHeaders: 'Content-Type, Authorization',
-    credentials: true, // Enable credentials (cookies, authorization headers)
+    allowedHeaders: 'Content-Type',
+    credentials: true,
   });
   await app.listen(3000);
 }

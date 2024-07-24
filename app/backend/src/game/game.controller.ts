@@ -6,6 +6,7 @@ import {
   Delete,
   Patch,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiNotFoundResponse,
@@ -16,6 +17,7 @@ import {
 import { UpdateGameDto } from 'dto/game/update-game.dto';
 import { GameService } from './game.service';
 import { UpdateGameStateDto } from 'dto/game/update-game-state.dto';
+import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 
 @Controller('game')
 @ApiTags('game')
@@ -23,6 +25,7 @@ export class GameController {
   constructor(private readonly gameService: GameService) {}
 
   @Get('all')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Returns all games currently in the database' })
   @ApiOkResponse({ type: [UpdateGameDto] })
   @ApiNotFoundResponse({ description: `No games in the database` })
@@ -31,6 +34,7 @@ export class GameController {
   }
 
   @Get('getGame/:userId/:clientId')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary:
       'Checks if there is a player waiting and if so returns new game id',
@@ -49,6 +53,7 @@ export class GameController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Returns game with specified id' })
   @ApiOkResponse({ type: UpdateGameDto })
   @ApiNotFoundResponse({ description: 'Game with #${id} does not exist' })
@@ -57,6 +62,7 @@ export class GameController {
   }
 
   @Get(':clientId')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Returns gameId of game that contains clientId' })
   @ApiNotFoundResponse({
     description: `No games with this clientId in the database`,
@@ -66,6 +72,7 @@ export class GameController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Updates user with specified id' })
   @ApiOkResponse({ type: UpdateGameStateDto })
   update(
@@ -76,6 +83,7 @@ export class GameController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Deletes game with specified id' })
   @ApiOkResponse({
     description: 'Game successfully deleted',

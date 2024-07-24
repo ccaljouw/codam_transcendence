@@ -15,7 +15,6 @@ export default function useAuthentication() : authenticationOutput {
 	const { currentUser, setCurrentUser } = useContext(TranscendenceContext);
 	const params = useSearchParams();
 	const userFromUrl = params.get('user');
-  const jwtToken = params.get('jwt');
 	const {data: user, fetcher: userFetcher} = useFetch<null, UserProfileDto>();
 	const [idFromStorage, setIdFromStorage] = useState<string | null>(null);
 	const router = useRouter();
@@ -31,10 +30,6 @@ export default function useAuthentication() : authenticationOutput {
 		}
 		if (userFromUrl != null)
 		{
-      if (jwtToken) {
-        console.log("setting jwt token in session storage");
-        sessionStorage.setItem('jwt', jwtToken);
-      }
 			loginUser(constants.API_USERS + userFromUrl);
 			router.push(pathname);
 		}
@@ -60,8 +55,6 @@ export default function useAuthentication() : authenticationOutput {
 		{
 			console.log("updating sessionStorage from useAuthentication")
 			sessionStorage.setItem('userId', JSON.stringify(user.id));
-      if (jwtToken)
-        sessionStorage.setItem('jwt', jwtToken);
 		}
 	};
 

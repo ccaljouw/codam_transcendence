@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 export class AvatarService {
   constructor(private configService: ConfigService) {}
 
-  uploadFile(file: Express.Multer.File): string {
+  uploadFile(file: Express.Multer.File): { avatarUrl: string } {
     try {
       console.log(file);
       const filename = `${uuidv4()}${path.extname(file.originalname)}`;
@@ -22,7 +22,9 @@ export class AvatarService {
       if (!filePath) throw new Error('Error getting filePath');
       console.log(`Filename: ${filename}, filepath: ${filePath}`);
       fs.renameSync(file.path, filePath);
-      return `${this.configService.get('BACKEND_URL')}/avatar/${filename}`;
+      return {
+        avatarUrl: `${this.configService.get('BACKEND_URL')}/avatar/${filename}`,
+      };
     } catch (error) {
       throw error;
     }

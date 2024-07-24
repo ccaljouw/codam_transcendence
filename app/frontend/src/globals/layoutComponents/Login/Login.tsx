@@ -20,19 +20,18 @@ type LoginCredentials = {
 export default function Login() : JSX.Element {
   const pathname = usePathname();
 	const {setCurrentUser} = useContext(TranscendenceContext);
-  let {data: loggedUser, isLoading, error, fetcher} = useFetch<LoginCredentials, { user: UserProfileDto; jwt: string }>();
+  let {data: loggedUser, isLoading, error, fetcher} = useFetch<LoginCredentials, UserProfileDto>();
 
   useEffect(() => {
     if (loggedUser != null) {
-      setLoggedUser(loggedUser.user, loggedUser.jwt);
+      setLoggedUser(loggedUser);
     }
   }, [loggedUser]);
 
-	const setLoggedUser = (user: UserProfileDto, jwt: string) => {
+	const setLoggedUser = (user: UserProfileDto) => {
 		console.log("Setting new user with id " + user.id + " in ChooseUser");
 		setCurrentUser(user);
 		sessionStorage.setItem('userId', JSON.stringify(user.id));
-    sessionStorage.setItem('jwt', jwt);
 	}
 
     const handleSubmit = async (e: FormEvent) => {

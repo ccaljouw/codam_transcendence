@@ -26,14 +26,7 @@ export default function Avatar({user, editable} : {user: UserProfileDto, editabl
       try {
         if(file) {
           setIsLoading(true);
-
-          const jwtToken = sessionStorage.getItem('jwt');
-          console.log('Jwt', jwtToken);
-          const headers: HeadersInit = jwtToken ? { 'Authorization': `Bearer ${jwtToken}` } : {};
-          if (!jwtToken) {
-              console.log('No jwt token in session storage');
-          }
-
+          const headers: HeadersInit = {};
           const formData = new FormData();
           console.log(`Form data: `);
           formData.append('file', file);
@@ -42,13 +35,14 @@ export default function Avatar({user, editable} : {user: UserProfileDto, editabl
             
             method: 'POST',
             body: formData,
+            credentials: 'include',
             headers: headers,
           });
           if (!response.ok) {
               throw new Error(`Response not ok: ${response.status}: ${response.statusText}`);
           }
-          const newUrl = await response.text();
-          setAvatarUrl(newUrl);
+          const newUrl = await response.json();
+          setAvatarUrl(newUrl.avatarUrl);
           storeNewAvatarUrl({ url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: { avatarUrl: newUrl }});
         } else {
           console.log("no file selected");

@@ -18,18 +18,18 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     req: Request,
     loginName: string,
     password: string,
-  ): Promise<{ user: UserProfileDto; jwt: string }> {
+  ): Promise<UserProfileDto> {
     let user: UserProfileDto;
     const { token } = req.body;
 
     try {
+      console.log(`In login strategy: ${loginName}`);
       user = await this.authService.validateUser(loginName, password, token);
       if (!user)
         throw new UnauthorizedException('Invallid user-password combination');
     } catch (error) {
       throw error;
     }
-    const jwt: string = await this.authService.generateJwt(user);
-    return { user, jwt };
+    return user;
   }
 }

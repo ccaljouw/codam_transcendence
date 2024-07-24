@@ -6,6 +6,7 @@ import {
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -33,11 +34,15 @@ export class AuthController {
   @Get('42/callback')
   @UseGuards(AuthGuard('42'))
   async fortyTwoAuthRedirect(@Req() req: Request | any, @Res() res: Response) {
-    const { user, jwt }: { user: UserProfileDto; jwt: string } = req.user;
-    console.log(`Auth callback for ${user.id} with jwt ${jwt}`);
-    res.redirect(
-      `${this.configService.get('FRONTEND_URL')}?user=${user.id}&jwt=${jwt}`,
-    );
+    try {
+      const user: UserProfileDto = req.user;
+      if (!user) throw new UnauthorizedException();
+      await this.authService.setJwtCookie(user, req);
+      console.log(`Auth callback for ${user.id}`);
+      res.redirect(`${this.configService.get('FRONTEND_URL')}?user=${user.id}`);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Post('register')
@@ -48,20 +53,33 @@ export class AuthController {
     description: 'User successfully created',
     type: UserProfileDto,
   })
-  async register(
-    @Req() req: Request,
-  ): Promise<{ user: UserProfileDto; jwt: string }> {
-    return this.authService.registerUser(req.body.createUser, req.body.pwd);
+  async register(@Req() req: Request): Promise<UserProfileDto> {
+    try {
+      const { createUser, pwd } = req.body;
+      const user: UserProfileDto = await this.authService.registerUser(
+        createUser,
+        pwd,
+      );
+      if (!user) throw new UnauthorizedException();
+      await this.authService.setJwtCookie(user, req);
+      return user;
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Post('login')
   @UseGuards(LocalAuthGuard)
-  async login(
-    @Req() req: Request | any,
-  ): Promise<{ user: UserProfileDto; jwt: string }> {
-    const { user, jwt }: { user: UserProfileDto; jwt: string } = req.user;
-    console.log(`Logged in ${user.userName} with jwt ${jwt}`);
-    return { user, jwt };
+  async login(@Req() req: Request | any): Promise<UserProfileDto> {
+    try {
+      const user: UserProfileDto = req.user;
+      if (!user) throw new UnauthorizedException();
+      console.log(`Logged in ${user.userName}`);
+      await this.authService.setJwtCookie(user, req);
+      return user;
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Patch('change_pwd')
