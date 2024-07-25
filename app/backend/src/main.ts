@@ -40,6 +40,6 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type',
     credentials: true,
   });
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();
