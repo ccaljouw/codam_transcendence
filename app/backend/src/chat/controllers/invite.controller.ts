@@ -3,6 +3,7 @@ import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nest
 import { CreateInviteDto, UpdateInviteDto } from '@ft_dto/chat';
 import { InviteService } from '../services/invite.service';
 import { InviteStatus, InviteType } from '@prisma/client';
+import { UserProfileDto } from '@ft_dto/users';
 
 @Controller('invite')
 @ApiTags('invite')
@@ -118,7 +119,7 @@ export class InviteController {
 
 	@Get('respondToFriendRequest/:id/:accept')
 	@ApiOperation({ summary: 'Returns updated invite' })
-	@ApiOkResponse({ type: UpdateInviteDto })
+	@ApiOkResponse({ type: UserProfileDto })
 	respondToFriendInvite(@Param('id', ParseIntPipe) id: number, @Param('accept') accept: string) {
 		return this.inviteService.respondToFriendRequest(id, accept === "true" ? true : false);
 	}
@@ -127,6 +128,14 @@ export class InviteController {
 	@ApiOperation({ summary: 'Returns updated invite' })
 	@ApiOkResponse({ type: UpdateInviteDto })
 	respondToGameInvite(@Param('id', ParseIntPipe) id: number, @Param('accept') accept: string) {
+		return this.inviteService.updateIvite({ id, state: (accept === "true" ? InviteStatus.ACCEPTED : InviteStatus.REJECTED) });
+	}
+
+	@Get('respondToChatRequest/:id/:accept')
+	@ApiOperation({ summary: 'Returns updated invite' })
+	@ApiOkResponse({ type: UpdateInviteDto })
+	respondToChatInvite(@Param('id', ParseIntPipe) id: number, @Param('accept') accept: string) {
+		console.log("Responding to chat invite", id, accept);
 		return this.inviteService.updateIvite({ id, state: (accept === "true" ? InviteStatus.ACCEPTED : InviteStatus.REJECTED) });
 	}
 }

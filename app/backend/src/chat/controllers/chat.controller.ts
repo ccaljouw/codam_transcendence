@@ -143,6 +143,15 @@ export class ChatMessagesController {
 		return -1;
 	}
 
+	@Get('name/:chatId')
+	@ApiOperation({ summary: 'Returns chat name' })
+	@ApiOkResponse({ type: Object })
+	@ApiNotFoundResponse({ description: 'No chat with #${chatId}' })
+	async getChatName(@Param('chatId', ParseIntPipe) chatId: number) {
+		const chat = await this.chatService.findOne(chatId);
+		return {name: chat.name};
+	}
+
 	@Post('createDM')
 	@ApiOperation({ summary: 'Returns chat id of created of existing chat' })
 	@ApiOkResponse({ type: Number })

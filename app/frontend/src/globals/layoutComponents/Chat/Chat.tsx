@@ -45,6 +45,8 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		if (!gameInvite)
 			return;
 		console.log("Game invite: ", gameInvite);
+
+		// CODE IF THE INVITE WAS ACCEPTED
 		if (gameInvite.state == InviteStatus.ACCEPTED) {
 			const gameAcceptPayload: InviteSocketMessageDto = {
 				userId: currentUser.id,
@@ -58,15 +60,30 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 			router.push('/game');
 			console.log("Starting game");
 		}
+
+		// CODE IF THE INVITE WAS DENIED (we probably don't need to do anything here, the socket message is sent elsewhere)
 		else {
 			console.log("Game invite was denied");
 		}
-		fetchMessages(currentChatRoom, chatMessagesFetcher, currentUser.id);
+		// Refresh the chat messages to update the invite displayed.
+			fetchMessages(currentChatRoom, chatMessagesFetcher, currentUser.id);
 	}, [gameInvite]);
 
 	// ****************************************** END OF STUFF YOU MIGHT WANT TO ALTER, BEGINNING OF STUFF YOU MIGHT WANNA LEAVE BE ****************************************** //
 
-
+	useEffect(() => {
+		const chatAcceptPayload: InviteSocketMessageDto = {
+			userId: currentUser.id,
+			senderId: chatInvite?.ownerId ? chatInvite.ownerId : 0,
+			accept: true,
+			type: InviteType.CHAT,
+			directMessageId: currentChatRoom.id
+		}
+		chatSocket.emit('invite/inviteResponse', chatAcceptPayload);
+		// Refresh the chat messages to update the invite displayed.
+			fetchMessages(currentChatRoom, chatMessagesFetcher, currentUser.id);
+	}, [chatInvite]);
+	
 	const changeRoomStatusCallBack = (userId: number, onlineStatus: boolean) => {
 		console.log("User status changed: ", userId, onlineStatus);
 
@@ -83,11 +100,8 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 			});
 			setCurrentChatRoom({ ...currentChatRoom, users: updatedUserArray });
 		}else{
-			// newUserForChannelFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + userId });
 			console.log("User not found in chat room: ", userId);
 			newUserForChannelFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + userId });
-			// fetchChat(chatFetcher, currentChatRoom.id, currentUser.id);
-			// fetchMessages
 		}
 	};
 
@@ -103,7 +117,8 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 	}), [currentChatRoom, currentUser]);
 
 	const handleMessageFromRoom = (payload: ChatMessageToRoomDto) => {
-		console.log("Message from room: ", payload);
+		console.log("Message from room: ", payload, );
+		console.log("Current chat room: (msg) ", currentChatRoom);
 		const message = messageParser(payload, messageParserProps)
 		if (message) {
 			setChat(prevChat => [...prevChat, message]);
@@ -120,6 +135,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		}
 	}, [currentChatRoom])
 
+	// This effect is used to handle the friend invite response from the invitee.
 	useEffect(() => {
 		if (friendInvite && Object.keys(friendInvite).length > 0) { // If the friend invite is not empty, we need to update the user's friends list.
 			setCurrentUser(friendInvite);
@@ -154,7 +170,8 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		if (firstRender.current) // This is to ensure that the chat is only created once.
 		{
 			firstRender.current = false;
-			if (user2 && user2 != otherUserForDm) {
+			if (user2 && user2 !== -1) // If we have a user2, we need to create a DM chat.
+			{
 				setOtherUserForDm(user2);
 				fetchDM(chatFetcher, currentUser.id, user2) // This will set the chatID.
 			}

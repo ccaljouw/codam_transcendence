@@ -29,6 +29,8 @@ interface TranscendenceContextVars {
 	setAllUsersUnreadCounter: (val: number) => void;
 	friendsUnreadCounter: number;
 	setFriendsUnreadCounter: (val: number) => void;
+	switchToChannelCounter: { channel: number, count: number, invite: number };
+	setSwitchToChannelCounter: (val: { channel: number, count: number, invite: number }) => void;
 }
 
 // Initialize the context
@@ -47,6 +49,8 @@ export const TranscendenceContext = createContext<TranscendenceContextVars>({
 	setAllUsersUnreadCounter: () => { },
 	friendsUnreadCounter: 0,
 	setFriendsUnreadCounter: () => { },
+	switchToChannelCounter: { channel: -1, count: 0, invite: -1 },
+	setSwitchToChannelCounter: () => { }
 });
 
 export function ContextProvider({ children }: { children: React.ReactNode }) {
@@ -63,6 +67,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	const { data: addToken, isLoading: addTokenLoading, error: addTokenError, fetcher: addTokenFetcher } = useFetch<CreateTokenDto, boolean>();
 	const { data: unreadMessageCount, isLoading: unreadMessageCountLoading, error: unreadMessageCountError, fetcher: unreadMessageCountFetcher } = useFetch<null, number>();
 	const { data: unreadsFromFriends, isLoading: unreadsFromFriendsLoading, error: unreadsFromFriendsError, fetcher: unreadsFromFriendsFetcher } = useFetch<number, number>();
+	const [switchToChannelCounter, setSwitchToChannelCounter] = useState({ channel: -1, count: 0, invite: -1 });
 
 
 	useEffect(() => {
@@ -147,7 +152,9 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		allUsersUnreadCounter,
 		setAllUsersUnreadCounter,
 		friendsUnreadCounter,
-		setFriendsUnreadCounter
+		setFriendsUnreadCounter,
+		switchToChannelCounter,
+		setSwitchToChannelCounter
 	}
 
 	useEffect(() => {

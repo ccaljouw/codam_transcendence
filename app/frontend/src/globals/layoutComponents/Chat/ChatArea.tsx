@@ -89,11 +89,7 @@ export default function ChatArea() {
 				:
 				<>
 					<li key={user.id}>
-						{/* <StatusIndicator
-							userId={user.id}
-							status={user.online}
-							statusChangeCallback={statusChangeCallback}
-							indexInUserList={indexInUserList} /> */}
+
 						<ChannelStatusIndicator userId={user.id} onlineStatus={user.online} />
 						&nbsp;&nbsp;
 						<span className={IsBlocked(user.id, currentUser) ? 'blocked' : ''} onClick={() => { !IsBlocked(user.id, currentUser) ? setSecondUser(user.id) : setNewChatRoom({ room: -1, count: newChatRoom.count++ }) }}>{user.userName}</span>

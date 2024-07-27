@@ -30,8 +30,11 @@ export const inviteCallback = (
 		case InviteType.GAME:
 			props.gameInviteFetcher({ url: constants.INVITE_RESPOND_TO_GAME_REQUEST + props.inviteId + "/" + (props.accept ? "true" : "false") });
 			break;
+		case InviteType.CHAT:
+			props.chatInviteFetcher({ url: constants.INVITE_RESPOND_TO_CHAT_REQUEST + props.inviteId + "/" + (props.accept ? "true" : "false") });
+			break	
 	}
-	if (!props.accept) {
+	if (!props.accept) { // If the invite was rejected, we need to send a response to the sender. If it was accepted, response will be handled bu the useEffect on the useFetch hook.
 		const inviteResponsePayload: InviteSocketMessageDto = {
 			userId: props.currentUser.id,
 			senderId: props.senderId ? props.senderId : 0,
@@ -49,7 +52,7 @@ export const inviteResponseHandler = async ( // This function triggers the actio
 	chatMessagesFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>,
 	friendInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>,
 ) => {
-	if (payload.senderId != currentUser.id)
+	if (payload.senderId != currentUser.id) // If the sender is not the current user, we don't need to do anything.
 		return;
 	if (currentChatRoom.id == payload.directMessageId) // If the chat is open, we need to fetch the messages to update the invite.
 		fetchMessages(currentChatRoom, chatMessagesFetcher, currentUser.id);

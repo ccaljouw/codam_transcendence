@@ -7,7 +7,7 @@ export class CreateInviteDto {
   @IsInt()
   @IsOptional()
   @ApiProperty({ required: true, type: Number })
-  chatId?: number;
+  chatId: number;
   
   @IsNotEmpty()
   @IsInt()
