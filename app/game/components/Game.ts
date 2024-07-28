@@ -14,7 +14,6 @@ import { updateObjects, checkForGoals } from '../utils/updateObjects'
 import { countdown, setTheme } from '../utils/utils'
 import { initializeGameObjects, drawGameObjects, resetGameObjects } from '../utils/objectController'
 
-
 export class Game {
 	canvas?: HTMLCanvasElement;
 	ctx: CanvasRenderingContext2D;
@@ -56,6 +55,11 @@ export class Game {
 	}
 	
 
+	redrawGameObjects() {
+		this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+		drawGameObjects(this);
+	}
+
 	gameLoop(currentTime:number) {
 		let deltaTime = (currentTime - this.lastFrameTime) / 1000;
 		this.lastFrameTime = currentTime;
@@ -75,8 +79,7 @@ export class Game {
 		}
 		
 		if (this.canvas) {
-				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-				drawGameObjects(this);
+				this.redrawGameObjects();
 				this.currentAnimationFrame = requestAnimationFrame(this.gameLoop.bind(this));
 		}
 	}
@@ -89,11 +92,12 @@ export class Game {
 		this.winner = this.players[winningSide];
 		if (this.canvas) {
 			this.messageFields[0]?.setText(this.winner?.getName() + " won the match!");
-			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-			drawGameObjects(this);
+			this.redrawGameObjects();
 		}
 		cancelAnimationFrame(this.currentAnimationFrame);
+		this.ball?.resetBothRallies();
 		console.log("player: ", this.winner?.getSide(), this.winner?.getName(), " won the match");
+		//todo: do we need this below?
 		// this.gameSocket.off(`game/updateGameObjects`);
 		// this.gameSocket.off(`game/updateGameState`);
 	}
@@ -105,8 +109,7 @@ export class Game {
 			} else {
 				this.messageFields[0]?.setText("Game aborted");
 			}
-			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-			drawGameObjects(this);
+			this.redrawGameObjects();
 		}
 		this.gameState = `FINISHED`;
 		cancelAnimationFrame(this.currentAnimationFrame);
@@ -117,15 +120,16 @@ export class Game {
 		if (this.gameState === `FINISHED`) {
 			return;
 		}
+		this.ball?.resetRally();
 		console.log("script: resetGame called");
 		resetGameObjects(this);
 		this.messageFields[0]?.setText("GOAL!");
 		countdown(this);
 	}
  
-
 	startGame() {
 		this.gameState = `STARTED`;
+		console.log("script: game started");
 		countdown(this);
 		this.gameLoop(1);
 	}

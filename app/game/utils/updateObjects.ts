@@ -2,11 +2,10 @@ import { Game } from '../components/Game'
 import * as CON from './constants'
 import { Ball } from '../gameObjects/Ball'
 import { detectCollision } from './collisionDetection'
-import { detectScore, checkWinCondition } from './utils'
+import { detectScore, checkWinCondition, setWallTheme } from './utils'
 import { GameState } from '@prisma/client'
 import { UpdateGameStateDto } from '@ft_dto/game'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
-
 
 export function updateObjects(game: Game, deltaTime: number) {
   if (game.gameState !== GameState.STARTED) {
@@ -59,9 +58,7 @@ function emmitBallPosition(game: Game, deltaTime: number) {
       ballDY: game.ball?.movementComponent.getSpeedY()
     });
     game.elapasedTimeSincceLastUpdate = 0;
-  
-   let collisionDetected = detectCollision(game.ball as Ball, game.paddels, game.walls, game.soundFX, game.config);
-    //todo option to add collision emit
+    detectCollision(game.ball as Ball, game.paddels, game.walls, game.soundFX, game.config);
   }
 }
 
@@ -99,12 +96,59 @@ export function checkForGoals(game: Game) {
   
   let winningSide: number = checkWinCondition(game) ?? -1;
   if (winningSide !== -1) {
-    const payload : UpdateGameStateDto  = {id: game.roomId, state: GameState.FINISHED, winnerId: winningSide, score1: game.players[0].getScore(), score2: game.players[1].getScore()};
+    console.log(`Script: game finished, longest rally: ${game.ball?.getLongestRally()}`);
+    const payload : UpdateGameStateDto  = {id: game.roomId, state: GameState.FINISHED, winnerId: winningSide, score1: game.players[0].getScore(), score2: game.players[1].getScore(), longestRally: game.ball?.getLongestRally()};
     gameSocket.emit("game/updateGameState", payload);
     game.finishGame(winningSide);
-  
+    
   } else {
     game.resetGame();
     gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, resetGame: 1});
   }
 }
+
+export function updateWalls(game: Game) {
+  if (CON.config[game.config].helpAtEnd == false) {
+    return;
+  }
+  
+  const triggerScore = CON.config[game.config].winningScore - 1;
+  const player_1_score = game.players[0].getScore();
+  const player_2_score = game.players[1].getScore();
+  
+  if (player_1_score === triggerScore + 1 || player_2_score === triggerScore + 1) {
+    return;
+  }
+  
+  if (player_1_score === player_2_score ) {
+    game.walls.forEach(wall => {
+      console.log("Script: wall name: ", wall.getName());
+      if (wall.getName().includes("Back")) {
+        wall.deactivate();
+      }
+    });
+    return;
+  }
+  
+  if (player_1_score === triggerScore) {
+    game.walls.forEach(wall => {
+      console.log("Script: wall name: ", wall.getName());
+      if (wall.getName().includes("Right")) {
+        console.log("Script: activating right back walls");
+        wall.activate();
+      }
+    });
+  }
+          
+  if (player_2_score === triggerScore) {
+    game.walls.forEach(wall => {
+      console.log("Script: wall name: ", wall.getName());
+      if (wall.getName().includes("Left")) {
+        console.log("Script: activating left back walls");
+        wall.activate();
+      }
+    });
+  }
+  setWallTheme(game);
+}
+ 

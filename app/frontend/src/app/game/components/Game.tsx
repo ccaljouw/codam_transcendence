@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 export default function GameComponent() {
 	const gameSocket = transcendenceSocket;
 	const canvasRef = useRef< HTMLCanvasElement | null >(null);
-	const userId  = sessionStorage.getItem('userId'); // todo: change to token
+	const userId  = sessionStorage.getItem('userId');
 	const [game, setGame] = useState< Game | null >(null);
 	const [gameData , setGameData] = useState<UpdateGameDto | null> (null);
 	const [roomId, setRoomId] = useState<number>(0);
@@ -113,8 +113,7 @@ export default function GameComponent() {
 	// start game when game state is ready to start
 	useEffect(() => {
 		if (gameState === GameState.ABORTED) {
-			console.log("Game: game aborted add more code cleanup code here!!");
-			// todo add code
+			console.log("Game: game aborted");
 			return;
 		}
 		if (gameState === GameState.FINISHED) {

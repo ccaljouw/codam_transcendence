@@ -18,12 +18,12 @@ function detectWallCollisions(ball: Ball, walls: Wall[], soundFX: SoundFX, confi
 			if (nextBallY < wall.getY() + wall.getHeight() && ball.getY() + ball.getHeight() > wall.getY()) {
 				soundFX.playWallHit();
 				//determine which wall the ball hit
-				if (wall.getType() === 0) {
+				if (wall.getType() === 0 && wall.getActive()) {
 					ball.setLastCollisionWithHorizontalWall();
 					ball.hitHorizontalWall();
 					return true;
 				}
-				else {
+				else if (wall.getActive()) {
 					ball.setLastCollisionWithVerticalWall();
 					ball.hitVerticalWall();
 					return true;
@@ -33,7 +33,6 @@ function detectWallCollisions(ball: Ball, walls: Wall[], soundFX: SoundFX, confi
 	}
 	return false;
 }
-	
 
 function detectPaddleCollisions(ball: Ball, paddles: Paddle[], soundFX: SoundFX, config: keyof typeof CON.config) {
 	if (!ball.canCollideWithPaddle(config)) {	return false;	}
@@ -55,7 +54,6 @@ function detectPaddleCollisions(ball: Ball, paddles: Paddle[], soundFX: SoundFX,
 	}
 	return false;
 }
-
 
 export function detectCollision(ball: Ball, paddles: Paddle[], walls: Wall[], soundFX: SoundFX, config: keyof typeof CON.config) {
 	return (detectPaddleCollisions(ball, paddles, soundFX, config) || detectWallCollisions(ball, walls, soundFX, config));

@@ -46,10 +46,8 @@ export function paddleInitializer (game: Game ) {
 	game.paddels.push(rightPaddle);
 }
 
-
-export function wallInitializer (walles: Wall[], config: string) {
-	if (CON.config[config].leftBackWall == true) {
-		walles.push(new Wall("LeftBackTopWall",
+export function setVerticalWalls (walls: Wall[], config: string) {
+		walls.push(new Wall("LeftBackTopWall",
 			1,
 			0,
 			0,
@@ -57,7 +55,7 @@ export function wallInitializer (walles: Wall[], config: string) {
 			CON.config[config].screenHeight / 2 - CON.config[config].backWallGap,
 			CON.BASE_COLOR
 		));
-		walles.push(new Wall("LeftBackBottomWall",
+		walls.push(new Wall("LeftBackBottomWall",
 			1,
 			0,
 			CON.config[config].screenHeight / 2 + CON.config[config].backWallGap,
@@ -65,10 +63,7 @@ export function wallInitializer (walles: Wall[], config: string) {
 			CON.config[config].screenHeight /  2 - CON.config[config].backWallGap,
 			CON.BASE_COLOR
 		));
-	}
-
-	if (CON.config[config].rightBackWall == true) {
-		walles.push(new Wall("RightBackTopWall",
+		walls.push(new Wall("RightBackTopWall",
 			1,
 			CON.config[config].screenWidth - CON.config[config].wallWidth,
 			0,
@@ -76,17 +71,25 @@ export function wallInitializer (walles: Wall[], config: string) {
 			CON.config[config].screenHeight / 2 - CON.config[config].backWallGap,
 			CON.BASE_COLOR
 		));
-		walles.push(new Wall("RightBackBottomWall",
+		walls.push(new Wall("RightBackBottomWall",
 			1,
 			CON.config[config].screenWidth - CON.config[config].wallWidth,
 			CON.config[config].screenHeight / 2 + CON.config[config].backWallGap,
 			CON.config[config].wallWidth, CON.config[config].screenHeight / 2 - CON.config[config].backWallGap,
 			CON.BASE_COLOR
 		));
-	}
 	
-	//type 0 = horizontal wall, type 1 = vertical wall
-	walles.push(new Wall("TopWall",
+
+	//decativate the vertical walls
+	walls.forEach(wall => {
+		if (wall.getType() === 1) {
+			wall.deactivate();
+		}
+	});
+}
+
+export function setHorizontalWalls (walls: Wall[], config: string) {
+	walls.push(new Wall("TopWall",
 		0,
 		0,
 		0,
@@ -94,13 +97,19 @@ export function wallInitializer (walles: Wall[], config: string) {
 		CON.config[config].wallWidth,
 		CON.BASE_COLOR
 	));
-	walles.push(new Wall("BottomWall",
+	walls.push(new Wall("BottomWall",
 		0,
 		0,
 		(CON.config[config].screenHeight - CON.config[config].wallWidth),
 		CON.config[config].screenWidth,
 		CON.config[config].wallWidth, CON.BASE_COLOR
 	));
+}
+
+//type 0 = horizontal wall, type 1 = vertical wall
+export function wallInitializer (walls: Wall[], config: string) {
+	setHorizontalWalls(walls, config);	
+	setVerticalWalls(walls, config);
 }
 
 
@@ -110,7 +119,8 @@ export function lineInitializer (lines: GameObject[], config: string) {
 		(CON.config[config].screenWidth / 2) - (CON.config[config].lineWidth / 2),
 		0,
 		CON.config[config].lineWidth,
-		CON.config[config].screenHeight, CON.BASE_COLOR
+		CON.config[config].screenHeight,
+		CON.BASE_COLOR
 	));
 }
 

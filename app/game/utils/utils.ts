@@ -1,6 +1,5 @@
 import { GameObject } from '../gameObjects/GameObject'
 import { Ball } from '../gameObjects/Ball'
-// import { PlayerComponent } from '../components/PlayerComponent'
 import { Game } from '../components/Game'
 import * as CON from './constants'
 import { TextComponent } from '../components/TextComponent'
@@ -8,6 +7,7 @@ import { drawGameObjects } from './objectController'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { GameState } from '@prisma/client'
 import { UpdateGameStateDto } from '@ft_dto/game'
+import { updateWalls } from './updateObjects'
 
 export function drawGameObject(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, color: string) {
 	ctx.fillStyle = color;
@@ -69,6 +69,7 @@ export function countdown(game: Game) {
 	}, 1000);
 }
 
+
 export function checkWinCondition(game: Game) {
 	let winningScore = CON.config[game.config].winningScore;
 	for (let player of game.players) {
@@ -103,9 +104,15 @@ function setPaddleTheme(game: Game) {
 	game.paddels.forEach(paddle => paddle.setColor(CON.themes[game.theme].rightPaddleColor));
 }
 
-function setWallTheme(game: Game) {
-	game.walls.forEach(wall => wall.setColor(CON.themes[game.theme].backWallColor));
-	game.walls.forEach(wall => wall.setColor(CON.themes[game.theme].wallColor));
+export function setWallTheme(game: Game) {
+	game.walls.forEach(wall => {
+		if (wall.getType() == 0) {
+			wall.setColor(CON.themes[game.theme].wallColor);
+		}
+		else {
+			wall.setColor(CON.themes[game.theme].backWallColor);
+		}
+	});
 }
 
 function setPlayerTheme(game: Game) {

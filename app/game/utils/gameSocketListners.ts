@@ -2,6 +2,7 @@ import { Game } from '../components/Game'
 import { GameState } from '@prisma/client'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { UpdateGameObjectsDto, UpdateGameStateDto, UpdateGameDto } from '@ft_dto/game'
+import { updateWalls } from './updateObjects';
 
 
 export function setSocketListeners(game: Game) {
@@ -17,7 +18,8 @@ export function setSocketListeners(game: Game) {
       return;
     }
     
-    console.log(`Script (${game.gameData!.id}) received game objects update`, payload);
+    // turn off console.log for production
+    // console.log(`Script (${game.gameData!.id}) received game objects update`, payload);
 
     if (payload.roomId !== undefined) {
       game.receivedUpdatedGameObjects = {
@@ -38,6 +40,7 @@ export function setSocketListeners(game: Game) {
     
     if (payload.score1! >= 0 || payload.score2! >= 0) {
       setNewScore(game, payload.score1!, payload.score2!);
+      updateWalls(game);
     }
   });
 
