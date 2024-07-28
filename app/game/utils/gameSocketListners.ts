@@ -45,23 +45,22 @@ export function setSocketListeners(game: Game) {
   });
 
   gameSocket.on(`game/updateGameState`, (payload: UpdateGameStateDto) => {
-
-    console.log(`Script: received game state update from server`, payload.id, payload.state, payload.winnerId);
-
     if (game.gameState === GameState.FINISHED) {
       return;
     }
+    
+    console.log(`Script: received game state update from server`, payload.id, payload.state, payload.winnerId);
+
+    if (payload.state === GameState.FINISHED) {
+      game.finishGame(payload.winnerId!);
+      return;
+    } 
 
     if (payload.state === GameState.ABORTED) {
       game.abortGame(1);
       return;
     }
     
-    if (payload.state === GameState.FINISHED) {
-      game.finishGame(payload.winnerId!);
-      return;
-    } 
-
     game.gameState = payload.state;
     
     if (game.gameState === GameState.STARTED && !gamerunning) {

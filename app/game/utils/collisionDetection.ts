@@ -23,7 +23,7 @@ function detectWallCollisions(ball: Ball, walls: Wall[], soundFX: SoundFX, confi
 					ball.hitHorizontalWall();
 					return true;
 				}
-				else if (wall.getActive()) {
+				else if (wall.getType() === 1 && wall.getActive()) {
 					ball.setLastCollisionWithVerticalWall();
 					ball.hitVerticalWall();
 					return true;

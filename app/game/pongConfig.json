@@ -137,6 +137,6 @@
     "paddleGap": "2",
 
     "AILevel": "0.7",
-    "helpAtEnd": "false"
+    "helpAtEnd": "true"
   }
 }

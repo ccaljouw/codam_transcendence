@@ -117,8 +117,6 @@ export default function GameComponent() {
 			return;
 		}
 		if (gameState === GameState.FINISHED) {
-			console.log("Game: game finished add more code cleanup code here!!");
-			// Router.push('/home');
 			return;
 		}
 		if (gameState === GameState.READY_TO_START && game && canvasRef.current) {

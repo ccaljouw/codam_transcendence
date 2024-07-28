@@ -122,9 +122,10 @@ export function updateWalls(game: Game) {
   
   if (player_1_score === player_2_score ) {
     game.walls.forEach(wall => {
-      console.log("Script: wall name: ", wall.getName());
       if (wall.getName().includes("Back")) {
         wall.deactivate();
+        game.messageFields[1]?.setText("");
+
       }
     });
     return;
@@ -132,20 +133,18 @@ export function updateWalls(game: Game) {
   
   if (player_1_score === triggerScore) {
     game.walls.forEach(wall => {
-      console.log("Script: wall name: ", wall.getName());
       if (wall.getName().includes("Right")) {
-        console.log("Script: activating right back walls");
         wall.activate();
+        game.messageFields[1]?.setText("Match point");
       }
     });
   }
           
   if (player_2_score === triggerScore) {
     game.walls.forEach(wall => {
-      console.log("Script: wall name: ", wall.getName());
       if (wall.getName().includes("Left")) {
-        console.log("Script: activating left back walls");
         wall.activate();
+        game.messageFields[1]?.setText("Match point");
       }
     });
   }

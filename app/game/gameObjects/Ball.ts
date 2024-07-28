@@ -159,10 +159,6 @@ export class Ball extends GameObject {
 		}
 	}
 
-	public getRally() {
-		return this._rally;
-	}
-
 	public resetRally() {
 		this._rally = 0;
 	}

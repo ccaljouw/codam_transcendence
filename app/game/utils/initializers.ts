@@ -133,7 +133,6 @@ export function keyListenerInitializer (game: Game) {
 		console.log("Space pressed. No function added yet");
 		//startKeyPressed(game, game.config);
 	});
-	//add esc key to abort game
 	game.keyListener.addKeyCallback("Escape", () => {
 		console.log("Escape key pressed, aborting game")
 		escapeKeyPressed(game)
@@ -151,7 +150,7 @@ export function messageFieldInitializer (messageFields: TextComponent[], config:
 		CON.config[config].bottomMessageOffset_X,
 		CON.config[config].screenHeight - CON.config[config].wallWidth -	CON.config[config].bottomMessageOffset_Y));
 	messageFields.push(new TextComponent("right",
-		"RIGHT MESSAGE",
+		"Get Ready",
 		CON.BASE_FONT,
 		CON.BASE_COLOR,
 		CON.ALIGN,

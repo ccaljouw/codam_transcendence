@@ -49,11 +49,11 @@ export function escapeKeyPressed(game: Game) {
 	const gameSocket = transcendenceSocket;
 	const payload : UpdateGameStateDto  = {id: game.roomId, state: GameState.ABORTED};
   gameSocket.emit("game/updateGameState", payload);
-	//todo: close canvas or link to other page
 	game.abortGame(0);
 }
 
 export function countdown(game: Game) {
+	console.log("Script: countdown started");
 	let count = CON.config[game.config].countdownTime;
 	let interval = setInterval(() => {
 		game.messageFields[0]?.setText(count.toString());
@@ -82,7 +82,6 @@ export function checkWinCondition(game: Game) {
 
 export function settleScore(thisSideScored: CON.PlayerSide, game: Game) {
 	const gameSocket = transcendenceSocket;
-
 	game.players[thisSideScored].setScore(game.players[thisSideScored].getScore() + 1);
 	gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, score1: game.players[0].getScore(), score2: game.players[1].getScore()});
 }

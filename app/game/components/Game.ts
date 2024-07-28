@@ -64,16 +64,16 @@ export class Game {
 		let deltaTime = (currentTime - this.lastFrameTime) / 1000;
 		this.lastFrameTime = currentTime;
 		
-		if (this.gameState == `FINISHED` ) {
+		if (this.gameState == GameState.FINISHED ) {
 			return;
 		}
 
-		if (this.gameState == `WAITING` && this.canvas) {
+		if (this.gameState == GameState.WAITING && this.canvas) {
 			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 			this.messageFields[0].setText(CON.config[this.config].startMessage);
 		}
 		
-		if (this.gameState == `STARTED`) {
+		if (this.gameState == GameState.STARTED) {
 			updateObjects(this, deltaTime);
 			checkForGoals(this);
 		}
@@ -85,10 +85,10 @@ export class Game {
 	}
 
 	finishGame(winningSide: number) {
-		if (this.gameState === `FINISHED`) {
+		if (this.gameState === GameState.FINISHED) {
 			return;
 		}
-		this.gameState = `FINISHED`;
+		this.gameState = GameState.FINISHED;
 		this.winner = this.players[winningSide];
 		if (this.canvas) {
 			this.messageFields[0]?.setText(this.winner?.getName() + " won the match!");
@@ -111,13 +111,13 @@ export class Game {
 			}
 			this.redrawGameObjects();
 		}
-		this.gameState = `FINISHED`;
+		this.gameState = GameState.FINISHED;
 		cancelAnimationFrame(this.currentAnimationFrame);
 		console.log("script: game aborted");
 	}
 
 	resetGame() {
-		if (this.gameState === `FINISHED`) {
+		if (this.gameState === GameState.FINISHED) {
 			return;
 		}
 		this.ball?.resetRally();
@@ -128,8 +128,7 @@ export class Game {
 	}
  
 	startGame() {
-		this.gameState = `STARTED`;
-		console.log("script: game started");
+		this.gameState = GameState.STARTED;
 		countdown(this);
 		this.gameLoop(1);
 	}
