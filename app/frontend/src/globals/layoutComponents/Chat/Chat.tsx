@@ -23,13 +23,13 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 	const [otherUserForDm, setOtherUserForDm] = useState<number>(-1);
 	const [chat, setChat] = useState<JSX.Element[]>([]);
 	const firstRender = useRef(true);
-	const { currentUser, someUserUpdatedTheirStatus, currentChatRoom, setCurrentChatRoom, setCurrentUser, newChatRoom, setNewChatRoom } = useContext(TranscendenceContext);
+	const { currentUser, someUserUpdatedTheirStatus, currentChatRoom, setCurrentChatRoom, setCurrentUser, newChatRoom, setNewChatRoom, switchToChannelCounter, setSwitchToChannelCounter } = useContext(TranscendenceContext);
 	const messageBox = useRef<HTMLDivElement>(null);
 	const { data: chatFromDb, isLoading: chatLoading, error: chatError, fetcher: chatFetcher } = useFetch<CreateDMDto, FetchChatDto>();
 	const { data: updatedChat, isLoading: updatedChatLoading, error: updatedChatError, fetcher: updatedChatFetcher } = useFetch<null, number>();
 	const { data: chatMessages, isLoading: chatMessagesLoading, error: chatMessagesError, fetcher: chatMessagesFetcher } = useFetch<null, FetchChatMessageDto[]>();
 	const { data: friendInvite, isLoading: friendInviteLoading, error: friendInviteError, fetcher: friendInviteFetcher } = useFetch<null, UserProfileDto>();
-	const { data: chatInvite, isLoading: chatInviteLoading, error: chatInviteError, fetcher: chatInviteFetcher } = useFetch<null, FetchChatDto>();
+	const { data: chatInvite, isLoading: chatInviteLoading, error: chatInviteError, fetcher: chatInviteFetcher } = useFetch<null, UpdateInviteDto>();
 	const { data: newMessage, isLoading: newMessageLoading, error: newMessageError, fetcher: newMessageFetcher } = useFetch<CreateChatMessageDto, number>();
 	const { data: newUserForChannel, isLoading: newUserForChannelLoading, error: newUserForChannelError, fetcher: newUserForChannelFetcher } = useFetch<null, UpdateChatUserDto>();
 	const router = useRouter();
@@ -41,7 +41,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 
 
 	// THIS USEEFFECT TRIGGERS WHEN THE GAME INVITE IS ACCEPTED OR DENIED, AND HANDLES THE RESPONSE BY THE ONE WHO WAS INVITED AND JUST ACCEPTED OR DENIED
-	useEffect(() => {
+	useEffect(() => { // UseEffect is used to handle the GAME invite response from the invitee.
 		if (!gameInvite)
 			return;
 		console.log("Game invite: ", gameInvite);
@@ -71,17 +71,21 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 
 	// ****************************************** END OF STUFF YOU MIGHT WANT TO ALTER, BEGINNING OF STUFF YOU MIGHT WANNA LEAVE BE ****************************************** //
 
-	useEffect(() => {
+	useEffect(() => { // UseEffect is used to handle the CHAT invite response from the invitee.
+		if (!chatInvite)
+			return;
 		const chatAcceptPayload: InviteSocketMessageDto = {
 			userId: currentUser.id,
-			senderId: chatInvite?.ownerId ? chatInvite.ownerId : 0,
+			senderId: chatInvite.senderId ? chatInvite.senderId : 0,
 			accept: true,
 			type: InviteType.CHAT,
-			directMessageId: currentChatRoom.id
+			directMessageId: currentChatRoom.id,
+			channelId: chatInvite.chatId
 		}
 		chatSocket.emit('invite/inviteResponse', chatAcceptPayload);
 		// Refresh the chat messages to update the invite displayed.
-			fetchMessages(currentChatRoom, chatMessagesFetcher, currentUser.id);
+			// fetchMessages(currentChatRoom, chatMessagesFetcher, currentUser.id);
+		setNewChatRoom({ room: chatInvite.chatId? chatInvite.chatId : -1, count: newChatRoom.count + 1 });
 	}, [chatInvite]);
 	
 	const changeRoomStatusCallBack = (userId: number, onlineStatus: boolean) => {
@@ -128,15 +132,16 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 	useEffect(() => {
 			console.log("Current chat room: ", currentChatRoom);
 		if (currentChatRoom.id != -1) {
+			setSwitchToChannelCounter({ channel: -1, count: 0, invite: -1 });
 			chatSocket.off('chat/messageFromRoom');
 			chatSocket.off('invite/inviteResponse');
 			chatSocket.on('chat/messageFromRoom', handleMessageFromRoom);
-			chatSocket.on('invite/inviteResponse', (payload: InviteSocketMessageDto) => { inviteResponseHandler(payload, currentUser, currentChatRoom, chatMessagesFetcher, friendInviteFetcher) });
+			chatSocket.on('invite/inviteResponse', (payload: InviteSocketMessageDto) => { inviteResponseHandler(payload, currentUser, currentChatRoom, chatMessagesFetcher, friendInviteFetcher, newChatRoom, setNewChatRoom, switchToChannelCounter, setSwitchToChannelCounter ) });
 		}
 	}, [currentChatRoom])
 
-	// This effect is used to handle the friend invite response from the invitee.
-	useEffect(() => {
+	
+	useEffect(() => { // UseEffect is used to handle the FRIEND invite response from the invitee.
 		if (friendInvite && Object.keys(friendInvite).length > 0) { // If the friend invite is not empty, we need to update the user's friends list.
 			setCurrentUser(friendInvite);
 			const newFriend = friendInvite.friends?.find(friend => !currentUser.friends?.some(existingFriend => existingFriend.id === friend.id)); // We need to find the new friend in order to send the invite response.
@@ -181,7 +186,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 
 			}
 			chatSocket.on('chat/messageFromRoom', handleMessageFromRoom);
-			chatSocket.on('invite/inviteResponse', (payload: InviteSocketMessageDto) => { inviteResponseHandler(payload, currentUser, currentChatRoom, chatMessagesFetcher, friendInviteFetcher) });
+			chatSocket.on('invite/inviteResponse', (payload: InviteSocketMessageDto) => { inviteResponseHandler(payload, currentUser, currentChatRoom, chatMessagesFetcher, friendInviteFetcher, newChatRoom, setNewChatRoom, switchToChannelCounter, setSwitchToChannelCounter) });
 			chatSocket.on('chat/patch', (payload: FetchChatDto) => {
 				console.log("Chat patched (socket): ", payload);
 				console.log("Id (socket)", payload.id);
