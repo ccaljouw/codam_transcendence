@@ -77,7 +77,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     };
   }, [roomId]);
   
-  // get/update game data
+  // update game data
   useEffect(() => {
     if (!fetchedGameData) return;
     if (fetchedGameData.state === GameState.READY_TO_START && roomId !== 0 && canvasRef.current) {
@@ -106,10 +106,6 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 	
 	// create game instance when canvas is available and there are two players
 	useEffect(() => {
-		if (waitingForPlayers === true) {
-      console.log("Game: waiting for players to join");
-			return;
-		}
 		if (!game && canvasRef.current && instanceType !== InstanceTypes.notSet) {
 			console.log("Game: creating game instance of type: ", instanceType);
 
@@ -118,7 +114,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 			setGame(newGame);
 			canvasRef.current.focus();
 		}
-	}, [canvasRef, instanceType, fetchedGameData, game]);
+}, [instanceType]);
   
 
 	return (
