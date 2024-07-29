@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
 export default function GameComponent({inviteId}: {inviteId: number}) {
 	const gameSocket = transcendenceSocket;
 	const canvasRef = useRef< HTMLCanvasElement | null >(null);
-	const userId  = sessionStorage.getItem('userId'); // todo: change to token
+	const userId  = sessionStorage.getItem('userId');
 	const [game, setGame] = useState< Game | null >(null);
 	const [roomId, setRoomId] = useState<number>(0);
 	const [waitingForPlayers, setWaitingForPlayers] = useState<boolean>(true);
@@ -47,7 +47,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
       //TODO: add message somewhere that game was aborted?
       router.push(`/play`);
     }
-
+    //TODO: add message for finishing game?
   };
   
   // handle incomming game messages
@@ -80,6 +80,12 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
   // get/update game data
   useEffect(() => {
     if (!fetchedGameData) return;
+    if (fetchedGameData.state === GameState.READY_TO_START && roomId !== 0 && canvasRef.current) {
+      console.log("Game: starting game");
+      canvasRef.current.focus();
+      const payload: UpdateGameStateDto = {id: roomId, state: GameState.STARTED};
+      gameSocket.emit("game/updateGameState", payload);
+    }
     if (roomId === 0) {
       setRoomId(fetchedGameData.id);
     } else {
@@ -88,27 +94,6 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     if(fetchedGameData.state === GameState.READY_TO_START)
       setWaitingForPlayers(false);
   }, [fetchedGameData]);
-
-  // start game when game state is ready to start
-  useEffect(() => {
-    if (fetchedGameData?.state === GameState.ABORTED) {
-      console.log("Game: game aborted add more code cleanup code here!!");
-      // todo add code
-      return;
-    }
-    if (fetchedGameData?.state === GameState.FINISHED) {
-      console.log("Game: game finished add more code cleanup code here!!");
-      // Router.push('/home');
-      return;
-    }
-    if (fetchedGameData?.state === GameState.READY_TO_START && game && canvasRef.current) {
-      console.log("Game: starting game");
-      canvasRef.current.focus();
-      const payload: UpdateGameStateDto = {id: roomId, state: GameState.STARTED};
-      gameSocket.emit("game/updateGameState", payload);
-    }
-  }, [fetchedGameData]);
-  
 
 	// set instance type
 	useEffect(() => {

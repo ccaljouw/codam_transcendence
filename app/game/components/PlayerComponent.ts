@@ -39,8 +39,6 @@ export class PlayerComponent {
 			CON.config[config].scoreFieldOffset_Y
 		);
 		
-				console.log("!!! offset: ", CON.config[config].scoreFieldOffset_Y);
-
 		if (this._side == 1) {
 			//this._bot = true;
 			this.nameField?.setX(CON.config[config].screenWidth / 2 + CON.config[config].playerNameOffset_X);
@@ -52,6 +50,7 @@ export class PlayerComponent {
 		}
 	}
 	
+
 	setId(id: string) {
 		this._id = id;
 	}

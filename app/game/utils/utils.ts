@@ -1,6 +1,5 @@
 import { GameObject } from '../gameObjects/GameObject'
 import { Ball } from '../gameObjects/Ball'
-// import { PlayerComponent } from '../components/PlayerComponent'
 import { Game } from '../components/Game'
 import * as CON from './constants'
 import { TextComponent } from '../components/TextComponent'
@@ -8,6 +7,7 @@ import { drawGameObjects } from './objectController'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { GameState } from '@prisma/client'
 import { UpdateGameStateDto } from '@ft_dto/game'
+import { updateWalls } from './updateObjects'
 
 export function drawGameObject(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, color: string) {
 	ctx.fillStyle = color;
@@ -49,11 +49,11 @@ export function escapeKeyPressed(game: Game) {
 	const gameSocket = transcendenceSocket;
 	const payload : UpdateGameStateDto  = {id: game.roomId, state: GameState.ABORTED};
   gameSocket.emit("game/updateGameState", payload);
-	//todo: close canvas or link to other page
 	game.abortGame(0);
 }
 
 export function countdown(game: Game) {
+	console.log("Script: countdown started");
 	let count = CON.config[game.config].countdownTime;
 	let interval = setInterval(() => {
 		game.messageFields[0]?.setText(count.toString());
@@ -69,6 +69,7 @@ export function countdown(game: Game) {
 	}, 1000);
 }
 
+
 export function checkWinCondition(game: Game) {
 	let winningScore = CON.config[game.config].winningScore;
 	for (let player of game.players) {
@@ -81,7 +82,6 @@ export function checkWinCondition(game: Game) {
 
 export function settleScore(thisSideScored: CON.PlayerSide, game: Game) {
 	const gameSocket = transcendenceSocket;
-
 	game.players[thisSideScored].setScore(game.players[thisSideScored].getScore() + 1);
 	gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, score1: game.players[0].getScore(), score2: game.players[1].getScore()});
 }
@@ -103,9 +103,15 @@ function setPaddleTheme(game: Game) {
 	game.paddels.forEach(paddle => paddle.setColor(CON.themes[game.theme].rightPaddleColor));
 }
 
-function setWallTheme(game: Game) {
-	game.walls.forEach(wall => wall.setColor(CON.themes[game.theme].backWallColor));
-	game.walls.forEach(wall => wall.setColor(CON.themes[game.theme].wallColor));
+export function setWallTheme(game: Game) {
+	game.walls.forEach(wall => {
+		if (wall.getType() == 0) {
+			wall.setColor(CON.themes[game.theme].wallColor);
+		}
+		else {
+			wall.setColor(CON.themes[game.theme].backWallColor);
+		}
+	});
 }
 
 function setPlayerTheme(game: Game) {
