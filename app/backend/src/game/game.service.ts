@@ -35,7 +35,7 @@ export class GameService {
       return await this.db.game.create({
         data: {
           state: 'WAITING',
-          inviteId: invite,
+          inviteId: invite === 0 ? null : invite,
           GameUsers: {
             create: [
               {
@@ -86,16 +86,17 @@ export class GameService {
       const game = await this.db.game.findFirst({
         where: {
           state: 'WAITING',
-          inviteId: 0,
-          NOT: { GameUsers: { some: { userId } } },
         },
         include: { GameUsers: { include: { user: true } } },
       });
       if (!game) return await this.createGameWithPlayer1(userId, clientId, 0);
-      else {
+      else if (
+        game.GameUsers.length === 1 &&
+        game.GameUsers[0].userId !== userId
+      ) {
         console.log('Found open game:', game);
         return await this.addSecondPlayer(game.id, userId, clientId);
-      }
+      } else return game;
     } catch (error) {
       console.log('Error finding random game:', error);
       throw error;

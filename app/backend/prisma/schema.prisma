@@ -130,7 +130,7 @@ model Game {
   GameUsers       GameUser[]
   longestRally    Int      @default(0)
   winnerId        Int?
-  inviteId        Int     @unique @default(0)
+  inviteId        Int?     @unique @default(0)
   
   gameStartedAt   DateTime?
   gameFinishedAt  DateTime?

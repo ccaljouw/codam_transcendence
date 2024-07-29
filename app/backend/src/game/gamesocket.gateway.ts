@@ -71,10 +71,10 @@ export class GamesocketGateway {
       this.game_io
         .to(payload.id.toString())
         .emit('game/updateGameState', payload);
-      
-        this.gamesocketService.disconnect(client);
-      } else {
-        console.log('Game Socket Server: client not in any game');
+
+      this.gamesocketService.disconnect(client);
+    } else {
+      console.log('Game Socket Server: client not in any game');
     }
   }
 }
