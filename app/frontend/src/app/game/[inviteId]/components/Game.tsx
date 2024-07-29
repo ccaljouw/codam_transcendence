@@ -31,6 +31,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     router.push('/play');
   }
 
+  // TODO: sounds like a gameState update check, why is this a different message?
   const handleMessage = (msg: string) => {
     console.log(`Game: got game/message ${msg}`);
     if (fetchedGameData?.state === GameState.WAITING && fetchedGameData.id) {
