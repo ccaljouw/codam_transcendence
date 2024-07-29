@@ -4,12 +4,13 @@ import { useContext, useEffect, useState } from 'react';
 import { UserListContext } from 'src/globals/functionComponents/UserList';
 import { transcendenceSocket } from 'src/globals/socket.globalvar';
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar';
-import { ChatMessageToRoomDto, CreateDMDto, CreateInviteDto, UpdateChatDto, UpdateInviteDto } from '@ft_dto/chat';
+import { ChatMessageToRoomDto, CreateDMDto, CreateInviteDto, FetchChatDto, UpdateInviteDto } from '@ft_dto/chat';
 import useFetch from 'src/globals/functionComponents/useFetch'
 import { constants } from 'src/globals/constants.globalvar';
 import { IsBlocked, IsFriend } from 'src/globals/functionComponents/FriendOrBlocked';
 import { ChatType, InviteType } from '@prisma/client';
 import { useRouter } from 'next/navigation';
+import { UpdateGameDto } from '@ft_dto/game';
 
 export default function UserContextMenu({ user }:
 	{
@@ -20,8 +21,9 @@ export default function UserContextMenu({ user }:
 	const { contextMenuClickSent, triggerContextMenuClick } = useContext(UserListContext);
 	const { currentUser, setCurrentUser, newChatRoom, setNewChatRoom, currentChatRoom } = useContext(TranscendenceContext);
 	const { data: invite, isLoading: inviteLoading, error: inviteError, fetcher: inviteFetcher } = useFetch<CreateInviteDto, UpdateInviteDto>();
-	const { data: chat, isLoading: chatLoading, error: chatError, fetcher: chatFetcher } = useFetch<CreateDMDto, UpdateChatDto>();
+	const { data: chat, isLoading: chatLoading, error: chatError, fetcher: chatFetcher } = useFetch<CreateDMDto, FetchChatDto>();
 	const { data: blockData, isLoading: blockLoading, error: blockError, fetcher: blockFetcher } = useFetch<null, UserProfileDto>();
+	const { data: newChatMessage, isLoading: newChatMessageLoading, error: newChatMessageError, fetcher: newChatMessageFetcher } = useFetch<ChatMessageToRoomDto, number>();
 	const userIsFriend = IsFriend(user.id, currentUser);
 	const router = useRouter();
 
@@ -34,6 +36,7 @@ export default function UserContextMenu({ user }:
 		if (socketPayload && currentChatRoom.id == parseInt(socketPayload.room)) {
 			transcendenceSocket.emit('chat/msgToRoom', socketPayload);
 			setSocketPayload(null); // reset payload so it doesn't send again
+			newChatMessageFetcher({ url: constants.CHAT_MESSAGE_TO_DB, fetchMethod: 'POST', payload: socketPayload });
 		}
 	}, [currentChatRoom]);
 
@@ -46,19 +49,13 @@ export default function UserContextMenu({ user }:
 	const createInvite = (type: InviteType, chat: number) => {
 		setDropdownVisible(false);
 		const inviteMessage: CreateInviteDto = {
-			chatId: chat,
+			chatId: currentChatRoom.id,
 			senderId: currentUser.id,
 			recipientId: user.id,
 			type: type,
 			state: "SENT"
 		}
-		inviteFetcher({ url: constants.BACKEND_BASEURL + "invite/create", fetchMethod: 'POST', payload: inviteMessage });
-		if (type == InviteType.GAME)
-			{
-				// should probably navigate to game page here
-				router.push('/game');
-			console.log(`Invite this user to a game: ${user.userName}`);
-			}
+		inviteFetcher({ url: constants.BACKEND_BASEURL + "/invite/create", fetchMethod: 'POST', payload: inviteMessage });
 	}
 
 
@@ -85,6 +82,7 @@ export default function UserContextMenu({ user }:
 
 	useEffect(() => {
 		if (invite) {
+      console.log('Invite', invite);
 			if (!chat) {
 				const payload: CreateDMDto = {
 					user1Id: currentUser.id,
@@ -95,6 +93,10 @@ export default function UserContextMenu({ user }:
 			else if (chat.id != currentChatRoom.id) {
 				setNewChatRoom({ room: chat.id, count: newChatRoom.count++ }); // set new chat room, count to trigger useEffect
 			}
+      if (invite.type == InviteType.GAME) {
+        console.log(`Invite this user to a game: ${user.userName}`);
+        router.push(`/game/${invite.id}`);
+      }
 		}
 	}, [invite]);
 
@@ -114,7 +116,8 @@ export default function UserContextMenu({ user }:
 				room: chat.id.toString(),
 				message: user.userName,
 				action: true,
-				inviteId: invite.id
+				inviteId: invite.id,
+				chatType: "DM"
 			}
 			if (chat.id != currentChatRoom.id) { // if not in chat room, set payload to send message to room
 				setSocketPayload(payload);
@@ -122,6 +125,7 @@ export default function UserContextMenu({ user }:
 			}
 			else { // if already in chat room, send message to room
 				transcendenceSocket.emit('chat/msgToRoom', payload);
+				newChatMessageFetcher({ url: constants.CHAT_MESSAGE_TO_DB, fetchMethod: 'POST', payload });
 			}
 		}
 	}, [chat, invite]);
@@ -140,9 +144,9 @@ export default function UserContextMenu({ user }:
 			) : (
 			  <>
 				
-				<span className={style.userlink_item} onClick={() => createInvite(InviteType.GAME, 0)} title='Invite to game'> 🏓</span> |
+				<span className={style.userlink_item} onClick={() => createInvite(InviteType.GAME, 0)} title='Invite to game'> 🏓</span>
 				<span className={style.userlink_item} onClick={() => handleProfileClick()} title='Visit Profile'>👤</span>
-				{currentChatRoom.visibility !== ChatType.DM && (
+				{currentChatRoom.visibility !== ChatType.DM && currentChatRoom.id != -1 && (
 				  <span className={style.userlink_item} onClick={() => createInvite(InviteType.CHAT, currentChatRoom.id)} title='Invite to chat'>💬</span>
 				)}
 				{!userIsFriend && (

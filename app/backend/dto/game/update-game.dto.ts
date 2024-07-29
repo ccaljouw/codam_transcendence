@@ -1,6 +1,13 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { GameState } from '@prisma/client';
 import { Type } from 'class-transformer';
-import { IsArray, IsInt, IsNotEmpty, IsOptional } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+} from 'class-validator';
 import { CreateGameDto } from 'dto/game/create-game.dto';
 import { UpdateGameUserDto } from 'dto/game/update-gameUser.dto';
 
@@ -10,6 +17,10 @@ export class UpdateGameDto extends PartialType(CreateGameDto) {
   @Type(() => Number)
   @IsInt()
   id: number;
+
+  @ApiProperty({ required: true })
+  @IsEnum(GameState)
+  state: GameState;
 
   @ApiProperty({ required: false })
   @IsOptional()

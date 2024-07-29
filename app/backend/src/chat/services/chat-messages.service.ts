@@ -12,18 +12,43 @@ export class ChatMessageService {
 	) { }
 
 	// Called by socket when a user sends a message, adds the message to the database, sets unread messages for all offline users in the chat
-	async messageToDB(theMessage: CreateChatMessageDto): Promise<{ messageId: number, usersNotInRoom: number[] }> {
+	async messageToDB(theMessage: CreateChatMessageDto): Promise<{ messageId: number }> {
 		const newMessage = await this.db.chatMessages.create({ data: theMessage });
+		// const chatUsersNotInRoom = await this.db.chatUsers.findMany({
+		// 	where: {
+		// 		chatId: theMessage.chatId,
+		// 		isInChatRoom: false
+		// 	}
+		// });
+		// let idsOfUsersNotInRoom: number[] = [];
+		// for (const chatUser of chatUsersNotInRoom) {
+		// 	const user = await this.db.user.findUnique({ where: { id: chatUser.userId }, include: { blocked: true } });
+		// 	if (user.blocked.some(block => block.id === theMessage.userId)) // If the user is blocked, continue
+		// 		continue;
+		// 	await this.db.chatUsers.update({
+		// 		where: { id: chatUser.id },
+		// 		data: {
+		// 			unreadMessages: chatUser.unreadMessages + 1
+		// 		}
+		// 	});
+		// 	idsOfUsersNotInRoom.push(chatUser.userId);
+		// }
+		return { messageId: newMessage.id };
+	}
+
+	async getUsersNotInRoom(chatId: number, senderId: number): Promise<number[]> {
+		let idsOfUsersNotInRoom: number[] = [];
 		const chatUsersNotInRoom = await this.db.chatUsers.findMany({
 			where: {
-				chatId: theMessage.chatId,
+				chatId,
 				isInChatRoom: false
 			}
 		});
-		let idsOfUsersNotInRoom: number[] = [];
 		for (const chatUser of chatUsersNotInRoom) {
 			const user = await this.db.user.findUnique({ where: { id: chatUser.userId }, include: { blocked: true } });
-			if (user.blocked.some(block => block.id === theMessage.userId)) // If the user is blocked, continue
+			if (user.blocked.some(block => block.id === senderId)) // If the user is blocked, continue
+				continue;
+			if (chatUser.userId === senderId) // If the user is the sender, continue
 				continue;
 			await this.db.chatUsers.update({
 				where: { id: chatUser.id },
@@ -33,8 +58,9 @@ export class ChatMessageService {
 			});
 			idsOfUsersNotInRoom.push(chatUser.userId);
 		}
-		return { messageId: newMessage.id, usersNotInRoom: idsOfUsersNotInRoom };
+		return idsOfUsersNotInRoom;
 	}
+
 
 	// Called by the chat controller to get all messages in a chat
 	async findMessagesInChat(chatId: number, userId: number): Promise<FetchChatMessageDto[]> {
@@ -84,7 +110,7 @@ export class ChatMessageService {
 				{
 					chatId: message.chatId,
 					userId: message.userId,
-					userName: message.chat.users.find(user => user.user.id === message.userId).user.userName,
+					userName: message.chat.users.find(user => user.user.id === message.userId)?.user.userName || 'Unknown User',
 					message: message.content,
 					inviteId: message.inviteId,
 					invite: message.invite

@@ -9,7 +9,7 @@ export default function RandomMatchButton() : JSX.Element {
 				<img src="favicon.ico"/>
 				<H3 text="play a match"/>
 				<br/>
-				<Link className="btn btn-dark" href="/game">Random Match</Link>
+				<Link className="btn btn-dark" href="/game/0">Random Match</Link>
 			</div>
 		</>
 	);

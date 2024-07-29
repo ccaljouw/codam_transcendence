@@ -1,6 +1,6 @@
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { ChatSocketService } from './services/chatsocket.service';
-import { ChatMessageToRoomDto, InviteSocketMessageDto } from '@ft_dto/chat';
+import { ChatMessageToRoomDto, FetchChatDto, InviteSocketMessageDto } from '@ft_dto/chat';
 import { Server, Socket } from 'socket.io';
 import { SocketServerProvider } from '../socket/socketserver.gateway';
 import { ChatMessageService } from './services/chat-messages.service';
@@ -37,6 +37,7 @@ export class ChatSocketGateway {
 	@SubscribeMessage('chat/msgToRoom')
 	async handleMessageToRoom(_client: Socket, payload: ChatMessageToRoomDto) {
 		let invite = null;
+		console.log("Socket: message to room", payload);
 		if (payload.inviteId)
 			invite = await this.inviteService.findOne(payload.inviteId);
 		const messageToChat: ChatMessageToRoomDto = {
@@ -44,19 +45,23 @@ export class ChatSocketGateway {
 			userName: payload.userName,
 			message: payload.message,
 			room: payload.room,
-			action: false,
+			action: payload.action || false,
 			inviteId: payload.inviteId,
-			invite: invite
+			invite: invite,
+			chatType: payload.chatType
 		};
 
-		const messageResult = await this.chatMessageService.messageToDB({ chatId: parseInt(payload.room), userId: payload.userId, content: payload.message, inviteId: payload.inviteId }); //replace with api call in frontend?
-		const tokenArray = await this.chatSocketService.getUserTokenArray(messageResult.usersNotInRoom);
-		tokenArray.forEach(element => {
-			if (element !== null) // if the user is online (ie has a token that is not null) but not in the room, send notification
-			{
-				this.chat_io.to(element).emit('chat/messageToUserNotInRoom', messageToChat);
-			}
-		});
+		// const messageResult = await this.chatMessageService.messageToDB({ chatId: parseInt(payload.room), userId: payload.userId, content: payload.message, inviteId: payload.inviteId }); //replace with api call in frontend?
+		if (payload.chatType === "DM") {
+			const usersNotInRoom = await this.chatMessageService.getUsersNotInRoom(parseInt(payload.room), payload.userId);
+			const tokenArray = await this.chatSocketService.getUserTokenArray(usersNotInRoom);
+			tokenArray.forEach(element => {
+				if (element !== null) // if the user is online (ie has a token that is not null) but not in the room, send notification
+				{
+					this.chat_io.to(element).emit('chat/messageToUserNotInRoom', messageToChat);
+				}
+			});
+		}
 		this.chat_io.to(payload.room).emit('chat/messageFromRoom', messageToChat);
 		return;
 	}
@@ -81,6 +86,7 @@ export class ChatSocketGateway {
 	// This is the function that is called when a user leaves a room.
 	@SubscribeMessage('chat/leaveRoom')
 	async leaveRoom(client: Socket, payload: ChatMessageToRoomDto) {
+		console.log("Socket: leave room", payload);
 		// this.chat_io
 		await this.chatSocketService.changeChatUserStatus({ token: client.id, userId: payload.userId, chatId: parseInt(payload.room), isInChatRoom: false });
 		const userStillInChatRoom = await this.chatSocketService.isUserInChatRoom(parseInt(payload.room), payload.userId);
@@ -105,6 +111,19 @@ export class ChatSocketGateway {
 		const tokens = await this.tokenService.findAllTokensAsStringForUser(payload.senderId);
 		for (const token of tokens) {
 			this.chat_io.to(token).emit('invite/inviteResponse', payload);
+		}
+	}
+
+	@SubscribeMessage('chat/patch')
+	async patchChat(client: Socket, payload: FetchChatDto) {
+		console.log("Socket: chat patched", payload);
+		const usersInChat = await this.chatDbService.getUsersInChat(payload.id);
+		for (const user of usersInChat) {
+			const tokens = await this.tokenService.findAllTokensAsStringForUser(user.id);
+			for (const token of tokens) {
+				console.log("Emitting chat/patch to token", token, user.id);
+				this.chat_io.to(token).emit('chat/patch', payload);
+			}
 		}
 	}
 }

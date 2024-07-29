@@ -18,6 +18,7 @@ import { UpdateGameDto } from 'dto/game/update-game.dto';
 import { GameService } from './game.service';
 import { UpdateGameStateDto } from 'dto/game/update-game-state.dto';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
+import { GetGameDto } from '@ft_dto/game';
 
 @Controller('game')
 @ApiTags('game')
@@ -33,23 +34,31 @@ export class GameController {
     return this.gameService.findAll();
   }
 
-  @Get('getGame/:userId/:clientId')
+  @Patch('getGame')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({
-    summary:
-      'Checks if there is a player waiting and if so returns new game id',
-  })
-  async getGame(
-    @Param('userId', ParseIntPipe) userId: number,
-    @Param('clientId') clientId: string,
-  ): Promise<UpdateGameDto> {
-    console.log('in get game');
-    console.log('userId: ', userId);
-    console.log('clientId', clientId);
-    const game = await this.gameService.getGame(userId, clientId);
-    console.log(game.GameUsers[0]);
-    console.log(game.GameUsers[1]);
-    return game;
+  @ApiOperation({ summary: 'returns game for inviteId game id' })
+  async getGameInvite(@Body() getGameDto: GetGameDto): Promise<UpdateGameDto> {
+    console.log('Patch getGame:', getGameDto);
+    if (getGameDto.inviteId === 0)
+      return this.gameService.findRandomGame(
+        getGameDto.userId,
+        getGameDto.clientId,
+      );
+    else
+      return this.gameService.findInviteGame(
+        getGameDto.inviteId,
+        getGameDto.userId,
+        getGameDto.clientId,
+      );
+  }
+
+  @Patch('rejectInvite/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Returns game with specified id' })
+  @ApiOkResponse({ type: UpdateGameDto })
+  @ApiNotFoundResponse({ description: 'Game with #${id} does not exist' })
+  rejectInviteGame(@Param('id', ParseIntPipe) id: number) {
+    return this.gameService.rejectInvite(id);
   }
 
   @Get(':id')

@@ -14,6 +14,8 @@ import ChannelList from './channelList';
 import { UpdateChatUserDto } from '@ft_dto/chat';
 import useFetch from 'src/globals/functionComponents/useFetch';
 import ChannelStatusIndicator from 'src/globals/functionComponents/channelStatus';
+import ChannelSettings from './components/ChannelSettings';
+import LeaveChannel from './components/LeaveChannel';
 
 
 
@@ -37,11 +39,17 @@ export default function ChatArea() {
 
 	useEffect(() => {
 		if (!currentChatRoom) return;
+		console.log('currentChatRoom: chatarea', currentChatRoom);
 		if (currentChatRoom.id != -1 && currentChatRoom.visibility !== ChatType.DM) {
 			setUserListType(UserListType.Channel);
 		}
-		chatUserFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + currentUser.id });
-	}, [currentChatRoom]);
+		if (currentChatRoom.id != -1) {
+			chatUserFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + currentUser.id });
+		}
+		if (currentChatRoom.id == -1 ) {
+			setUserListType(UserListType.AllUsers);
+		}
+	}, [currentChatRoom, currentChatRoom.users?.length]);
 
 	useEffect(() => {
 		if (newChatRoom.room === currentChatRoom.id && currentChatRoom.visibility !== ChatType.DM) {
@@ -86,9 +94,9 @@ export default function ChatArea() {
 							status={user.online}
 							statusChangeCallback={statusChangeCallback}
 							indexInUserList={indexInUserList} /> */}
-						<ChannelStatusIndicator userId={user.id} />
+						<ChannelStatusIndicator userId={user.id} onlineStatus={user.online} />
 						&nbsp;&nbsp;
-						<span className={IsBlocked(user.id, currentUser) ? 'blocked' : ''} onClick={() => { !IsBlocked(user.id, currentUser) ? setSecondUser(user.id) : setNewChatRoom({ room: -1, count: newChatRoom.count++ }) }}>{user.firstName} {user.lastName}</span>
+						<span className={IsBlocked(user.id, currentUser) ? 'blocked' : ''} onClick={() => { !IsBlocked(user.id, currentUser) ? setSecondUser(user.id) : setNewChatRoom({ room: -1, count: newChatRoom.count++ }) }}>{user.userName}</span>
 						&nbsp;
 						{/* TODO: implement proper context menu for channels */}
 						<UserContextMenu user={user} />
@@ -108,7 +116,7 @@ export default function ChatArea() {
 						statusChangeCallback={statusChangeCallback}
 						indexInUserList={indexInUserList} />
 					&nbsp;&nbsp;
-					<span className={IsBlocked(user.id, currentUser) ? 'blocked' : ''} onClick={() => { !IsBlocked(user.id, currentUser) ? setSecondUser(user.id) : setNewChatRoom({ room: -1, count: newChatRoom.count++ }) }}>{user.firstName} {user.lastName}</span>
+					<span className={IsBlocked(user.id, currentUser) ? 'blocked' : ''} onClick={() => { !IsBlocked(user.id, currentUser) ? setSecondUser(user.id) : setNewChatRoom({ room: -1, count: newChatRoom.count++ }) }}>{user.userName}</span>
 
 					&nbsp;
 					<b><UnreadMessages secondUserId={user.id} indexInUserList={indexInUserList} statusChangeCallBack={statusChangeCallback} /></b>
@@ -156,7 +164,7 @@ export default function ChatArea() {
 								</>
 							}
 						</>}
-			
+
 				</div>
 				<div className='chat-userlist'>
 					{userListType == UserListType.Friends &&
@@ -166,15 +174,9 @@ export default function ChatArea() {
 					}
 					{userListType == UserListType.Chats && <ChannelList />}
 					{userListType == UserListType.AllUsers && <UserList userDisplayFunction={ChatAreaUserList} fetchUrl={constants.API_ALL_USERS_BUT_ME + currentUser.id} />}
-					{userListType == UserListType.Channel && <><UserList userDisplayFunction={ChatAreaChannelUserList} fetchUrl={constants.CHAT_GET_USERS_IN_CHAT + currentChatRoom.id} /></>}
-					{userListType == UserListType.Settings && <>
-					<b>Channel settings here.</b><br />
-					Channel visibility: {currentChatRoom.visibility} 
-					<br />&emsp;&emsp;--&gt; Public, Private, Password [with set/change password option]<br />
-					Channel name: {currentChatRoom.name} 
-					<br />&emsp;&emsp;--&gt; Change name<br />
-					Delete channel<br />
-					</>}
+					{userListType == UserListType.Channel && <><UserList key={currentChatRoom?.users?.length} userDisplayFunction={ChatAreaChannelUserList} fetchUrl={constants.CHAT_GET_USERS_IN_CHAT + currentChatRoom.id} />
+					<LeaveChannel room={currentChatRoom}/></>}
+					{userListType == UserListType.Settings && <><ChannelSettings room={currentChatRoom} /></>}
 				</div>
 			</div>
 		</>

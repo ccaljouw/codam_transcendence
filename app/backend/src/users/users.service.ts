@@ -23,15 +23,6 @@ export class UsersService {
     return new Error(`${message}: ${error.message}`);
   }
 
-  private sortFriends(friends: UserProfileDto[]): UserProfileDto[] {
-    if (friends.length === 0) {
-      return friends.sort((a, b) => {
-        if (a.online !== b.online) return b.online > a.online ? 1 : -1;
-        return a.userName.localeCompare(b.userName);
-      });
-    }
-  }
-
   async update(
     id: number,
     updateUserDto: UpdateUserDto,
@@ -42,12 +33,10 @@ export class UsersService {
         where: { id },
         data: updateUserDto,
         include: {
-          friends: true,
+          friends: { orderBy: [{ online: 'desc' }, { userName: 'asc' }] },
           blocked: true,
         },
       });
-      if (!user) throw new NotFoundException(`User with id ${id} not found.`);
-      user.friends = this.sortFriends(user.friends);
       return user;
     } catch (error) {
       throw this.throwError(error, `Error updating user with id ${id}`);
@@ -55,6 +44,7 @@ export class UsersService {
   }
 
   async findAllButMe(id: number): Promise<UserProfileDto[]> {
+    console.log('In findAllButMe');
     try {
       const users = await this.db.user.findMany({
         where: { id: { not: id } },
@@ -101,7 +91,7 @@ export class UsersService {
         },
       });
       if (!user) throw new NotFoundException(`User with id ${id} not found.`);
-      user.friends = this.sortFriends(user.friends);
+      // user.friends = this.sortFriends(user.friends);
       console.log(user);
       return user;
     } catch (error) {
@@ -119,7 +109,7 @@ export class UsersService {
         },
       });
       if (!user) throw new NotFoundException(`User ${userName} not found.`);
-      user.friends = this.sortFriends(user.friends);
+      // user.friends = this.sortFriends(user.friends);
       return user;
     } catch (error) {
       throw this.throwError(error, `Error getting ${userName}`);
@@ -137,7 +127,7 @@ export class UsersService {
         },
       });
       if (!user) throw new NotFoundException(`User ${loginName} not found.`);
-      user.friends = this.sortFriends(user.friends);
+      // user.friends = this.sortFriends(user.friends);
       return user;
     } catch (error) {
       throw this.throwError(error, `Error getting ${loginName}`);
@@ -220,7 +210,7 @@ export class UsersService {
         },
       });
       if (!user) throw new NotFoundException(`User ${id} not found.`);
-      user.friends = this.sortFriends(user.friends);
+      // user.friends = this.sortFriends(user.friends);
 
       await this.expireInvites(id, blockId);
       await this.rejectInvites(id, blockId);
@@ -256,7 +246,7 @@ export class UsersService {
         },
       });
       if (!user) throw new NotFoundException(`User ${id} not found.`);
-      user.friends = this.sortFriends(user.friends);
+      // user.friends = this.sortFriends(user.friends);
       return user;
     } catch (error) {
       throw this.throwError(error, `Error unfriending: ${friendId}`);
@@ -278,7 +268,7 @@ export class UsersService {
         },
       });
       if (!user) throw new NotFoundException(`User ${id} not found.`);
-      user.friends = this.sortFriends(user.friends);
+      // user.friends = this.sortFriends(user.friends);
       return user;
     } catch (error) {
       throw this.throwError(error, `Error unblocking: ${unBlockId}`);

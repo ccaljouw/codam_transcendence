@@ -36,26 +36,11 @@ export default function Avatar({user, editable} : {user: UserProfileDto, editabl
     const file = event.target.files?.[0];
       try {
         if(file) {
-          // setIsLoading(true);
-          // const headers: HeadersInit = {};
           const formData = new FormData();
           console.log(`Form data: `);
           formData.append('file', file);
           console.log(formData);
-          // const response = await fetch(constants.API_NEW_AVATAR, {
-            
-          //   method: 'POST',
-          //   body: formData,
-          //   credentials: 'include',
-          //   headers: headers,
-          // });
-          // if (!response.ok) {
-          //     throw new Error(`Response not ok: ${response.status}: ${response.statusText}`);
-          // }
-          // const newUrl = await response.json();
           postAvatar({url: constants.API_NEW_AVATAR, fetchMethod: 'POST', payload: formData});
-          // setAvatarUrl(newUrl.avatarUrl);
-          // storeNewAvatarUrl({ url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: { avatarUrl: newUrl }});
         } else {
           console.log("no file selected");
         }

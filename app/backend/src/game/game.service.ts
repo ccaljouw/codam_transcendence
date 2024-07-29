@@ -3,8 +3,11 @@ import {
   UpdateGameStateDto,
   UpdateGameUserDto,
 } from '@ft_dto/game';
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateGameDto } from 'dto/game/create-game.dto';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { Socket } from 'socket.io';
 import { GameState } from '@prisma/client';
@@ -22,46 +25,110 @@ export class GameService {
     private statsService: StatsService,
   ) {}
 
-  async getGame(userId: number, clientId: string) {
-    let game: UpdateGameDto;
-
+  private async createGameWithPlayer1(
+    userId: number,
+    clientId: string,
+    invite: number,
+  ) {
+    console.log('CreateGame for', userId, clientId, invite);
     try {
-      game = await this.db.game.findFirst({
-        where: { state: `WAITING` },
+      return await this.db.game.create({
+        data: {
+          state: 'WAITING',
+          inviteId: invite,
+          GameUsers: {
+            create: [
+              {
+                userId,
+                clientId,
+                player: 1,
+              },
+            ],
+          },
+        },
         include: { GameUsers: { include: { user: true } } },
       });
-      if (!game) {
-        game = await this.create({ state: `WAITING` });
-        await this.addUser(game.id, userId, clientId, 1);
-        game = await this.db.game.findFirst({
-          where: { id: game.id },
-          include: { GameUsers: { include: { user: true } } },
-        });
-      } else {
-        //check if user is already in the game
-        const isUserInGame = game.GameUsers.some(
-          (gameUser) => gameUser.userId === userId,
-        );
-        if (!isUserInGame) {
-          console.log(`!!!user is not in game`);
-          await this.addUser(game.id, userId, clientId, 2);
-          game = await this.db.game.update({
-            where: { id: game.id },
-            data: { state: `READY_TO_START` },
-            include: { GameUsers: { include: { user: true } } },
-          });
-        }
-      }
-
-      return game;
     } catch (error) {
-      console.log(`error getting game`);
-      return game;
+      throw error;
     }
   }
 
-  async create(createGameDto: CreateGameDto) {
-    return await this.db.game.create({ data: createGameDto });
+  private async addSecondPlayer(
+    gameId: number,
+    userId: number,
+    clientId: string,
+  ) {
+    console.log('AddSecondPlayer for', gameId, userId, clientId);
+    return await this.db.game.update({
+      where: { id: gameId },
+      data: {
+        state: 'READY_TO_START',
+        GameUsers: {
+          create: [
+            {
+              userId,
+              clientId,
+              player: 2,
+            },
+          ],
+        },
+      },
+      include: { GameUsers: { include: { user: true } } },
+    });
+  }
+
+  async findRandomGame(
+    userId: number,
+    clientId: string,
+  ): Promise<UpdateGameDto> {
+    try {
+      console.log('FindRandomGame for', userId, clientId);
+      const game = await this.db.game.findFirst({
+        where: {
+          state: 'WAITING',
+          inviteId: 0,
+          NOT: { GameUsers: { some: { userId } } },
+        },
+        include: { GameUsers: { include: { user: true } } },
+      });
+      if (!game) return await this.createGameWithPlayer1(userId, clientId, 0);
+      else {
+        console.log('Found open game:', game);
+        return await this.addSecondPlayer(game.id, userId, clientId);
+      }
+    } catch (error) {
+      console.log('Error finding random game:', error);
+      throw error;
+    }
+  }
+
+  async findInviteGame(
+    inviteId: number,
+    userId: number,
+    clientId: string,
+  ): Promise<UpdateGameDto> {
+    console.log('FindInviteGame for ', inviteId, userId, clientId);
+    if (!inviteId) {
+      throw new BadRequestException('InviteId not provided');
+    }
+    try {
+      const game: UpdateGameDto = await this.db.game.findFirst({
+        where: { inviteId },
+        include: { GameUsers: { include: { user: true } } },
+      });
+      console.log('Found invite game:', game);
+      if (!game)
+        return await this.createGameWithPlayer1(userId, clientId, inviteId);
+      else if (
+        game.GameUsers.length === 1 &&
+        game.GameUsers[0].userId !== userId
+      ) {
+        return await this.addSecondPlayer(game.id, userId, clientId);
+      }
+    } catch (error) {
+      console.log('Error finding invite game:', error);
+      throw error;
+    }
   }
 
   async disconnect(client: Socket) {
@@ -73,23 +140,25 @@ export class GameService {
     // get the game id from the db with the token
   }
 
-  async addUser(
-    gameId: number,
-    userId: number,
-    clientId: string,
-    player: number,
-  ) {
-    return this.db.gameUser.create({
-      data: { gameId, userId, clientId, player },
-    });
-  }
-
   async findAll() {
     try {
       const games = await this.db.game.findMany();
       return games;
     } catch (error) {
       throw new NotFoundException(`No games in the database`);
+    }
+  }
+
+  async rejectInvite(id: number) {
+    try {
+      const game = await this.db.game.update({
+        where: { inviteId: id },
+        data: { state: 'ABORTED' },
+        include: { GameUsers: { include: { user: true } } },
+      });
+      return game;
+    } catch (error) {
+      throw error;
     }
   }
 

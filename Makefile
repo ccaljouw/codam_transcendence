@@ -26,5 +26,6 @@ fclean: clean
 
 prune: fclean
 	docker system prune -af
+	docker volume prune -f
 
 .PHONY:	all clean fclean re rebuild run prune backend

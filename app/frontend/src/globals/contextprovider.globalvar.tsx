@@ -1,8 +1,8 @@
 "use client";
 import { createContext, useEffect, useRef, useState } from "react";
-import { OnlineStatus } from "@prisma/client";
+import { ChatType, OnlineStatus } from "@prisma/client";
 import { UserProfileDto, UpdateUserDto } from "@ft_dto/users";
-import { ChatMessageToRoomDto, UpdateChatDto } from "@ft_dto/chat";
+import { ChatMessageToRoomDto, FetchChatDto } from "@ft_dto/chat";
 import { WebsocketStatusChangeDto, CreateTokenDto } from '@ft_dto/socket'
 import { constants } from "@ft_global/constants.globalvar";
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
@@ -19,8 +19,8 @@ interface TranscendenceContextVars {
 	setCurrentUser: (val: UserProfileDto) => void;
 	someUserUpdatedTheirStatus: WebsocketStatusChangeDto;
 	setSomeUserUpdatedTheirStatus: (val: WebsocketStatusChangeDto) => void;
-	currentChatRoom: UpdateChatDto;
-	setCurrentChatRoom: (val: UpdateChatDto) => void;
+	currentChatRoom: FetchChatDto;
+	setCurrentChatRoom: (val: FetchChatDto) => void;
 	newChatRoom: { room: number, count: number };
 	setNewChatRoom: (val: { room: number, count: number }) => void;
 	messageToUserNotInRoom: ChatMessageToRoomDto;
@@ -37,7 +37,7 @@ export const TranscendenceContext = createContext<TranscendenceContextVars>({
 	setCurrentUser: () => { },
 	someUserUpdatedTheirStatus: {} as WebsocketStatusChangeDto,
 	setSomeUserUpdatedTheirStatus: () => { },
-	currentChatRoom: { id: -1 } as UpdateChatDto,
+	currentChatRoom: { id: -1 } as FetchChatDto,
 	setCurrentChatRoom: () => { },
 	newChatRoom: { room: -1, count: 0 },
 	setNewChatRoom: () => { },
@@ -52,7 +52,7 @@ export const TranscendenceContext = createContext<TranscendenceContextVars>({
 export function ContextProvider({ children }: { children: React.ReactNode }) {
 	const [someUserUpdatedTheirStatus, setSomeUserUpdatedTheirStatus] = useState<WebsocketStatusChangeDto>({} as WebsocketStatusChangeDto);
 	const [messageToUserNotInRoom, setMessageToUserNotInRoom] = useState<ChatMessageToRoomDto>({} as ChatMessageToRoomDto);
-	const [currentChatRoom, setCurrentChatRoom] = useState<UpdateChatDto>({ id: -1 } as UpdateChatDto);
+	const [currentChatRoom, setCurrentChatRoom] = useState<FetchChatDto>({ id: -1 } as FetchChatDto);
 	const [newChatRoom, setNewChatRoom] = useState<{ room: number, count: number }>({ room: -1, count: 0 });
 	const [currentUser, setCurrentUser] = useState<UserProfileDto>({} as UserProfileDto);
 	const currentUserRef = useRef<UserProfileDto>(currentUser);

@@ -1,4 +1,4 @@
-import { UpdateChatDto } from "@ft_dto/chat";
+import { FetchChatDto } from "@ft_dto/chat";
 import { use, useContext, useEffect, useState } from "react";
 import { TranscendenceContext } from "src/globals/contextprovider.globalvar";
 import useFetch from "src/globals/functionComponents/useFetch";
@@ -7,8 +7,8 @@ import { constants } from "src/globals/constants.globalvar";
 export default function ChannelList(): JSX.Element {
 	const { currentUser, newChatRoom, setNewChatRoom } = useContext(TranscendenceContext);
 	const [newChannelSet, setNewChannelSet] = useState<boolean>(false);
-	const { data: channelList, error: channelError, isLoading: channelLoading, fetcher: channelListFetcher } = useFetch<null, UpdateChatDto[]>();
-	const { data: newChannel, error: newChannelError, isLoading: newChannelLoading, fetcher: newChannelFetcher } = useFetch<null, UpdateChatDto>();
+	const { data: channelList, error: channelError, isLoading: channelLoading, fetcher: channelListFetcher } = useFetch<null, FetchChatDto[]>();
+	const { data: newChannel, error: newChannelError, isLoading: newChannelLoading, fetcher: newChannelFetcher } = useFetch<null, FetchChatDto>();
 
 	const addChannel = () => {
 		console.log('addChannel');
@@ -26,7 +26,7 @@ export default function ChannelList(): JSX.Element {
 		setNewChatRoom({ room: newChannel.id, count: newChatRoom.count++ });
 	}, [newChannel]);
 
-	const channelClickHandler = (channel: UpdateChatDto) => {
+	const channelClickHandler = (channel: FetchChatDto) => {
 		setNewChatRoom({ room: channel.id, count: newChatRoom.count++ });
 	}
 
@@ -40,7 +40,7 @@ export default function ChannelList(): JSX.Element {
 			return (
 				<div key={channel.id} className='channel'>
 					<span className="channelListLink" onClick={() => channelClickHandler(channel)
-					}>{channel.name} {channel.id}</span>
+					}>{channel.name}</span>
 				</div>
 			)
 		})}

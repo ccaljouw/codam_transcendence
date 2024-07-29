@@ -1,42 +1,56 @@
 import { useContext, useEffect, useState } from "react";
 import { TranscendenceContext } from "../contextprovider.globalvar";
 import { OnlineStatus } from "@prisma/client";
+import { stat } from "fs";
 
-export default function ChannelStatusIndicator(props: {userId: number}): JSX.Element {
-	const {currentChatRoom,someUserUpdatedTheirStatus} = useContext(TranscendenceContext);
-	const [status, setStatus]= useState<boolean>(false);
+const StatusDisplay = {
+	IN_CHANNEL: '🔵',
+	ONLINE: '🟠',
+	OFFLINE: '🔴',
+};
 
-	// useEffect(() => {
-	// 	if (!currentChatRoom || currentChatRoom.users === undefined) return;
-	// 	const user = currentChatRoom.users.find(user => user.id === props.userId);
-	// 	if (!user) return;
-	// 	if (user.isInChatRoom !== status) {
-	// 		setStatus(user.isInChatRoom);
-	// 	}
-	// }, [currentChatRoom])
+export default function ChannelStatusIndicator(props: { userId: number, onlineStatus: OnlineStatus }): JSX.Element {
+	const { currentChatRoom, someUserUpdatedTheirStatus } = useContext(TranscendenceContext);
+
+	const statusSetter = () => {
+		if (!currentChatRoom || currentChatRoom.users === undefined) return StatusDisplay.OFFLINE;
+		const user = currentChatRoom.users.find(user => user.userId === props.userId);
+		if (!user) return StatusDisplay.OFFLINE;
+		if (user.isInChatRoom) 
+				console.log('user in channel', user);
+		else
+			console.log('user not in channel', user);
+		if (props.onlineStatus !== OnlineStatus.OFFLINE) {
+			return user.isInChatRoom ? StatusDisplay.IN_CHANNEL : StatusDisplay.ONLINE;
+		} else {
+			return StatusDisplay.OFFLINE;
+		}
+	}
+
+	const [status, setStatus] = useState<string>(statusSetter());
 
 	useEffect(() => {
-		console.log("ChannelStatusIndicator: useEffect", props.userId, currentChatRoom);
-		if (!currentChatRoom || currentChatRoom.users === undefined) return;
-		const user = currentChatRoom.users.find(user => user.userId === props.userId);
-		if (!user) return;
-		if (user.isInChatRoom !== status) {
-			setStatus(user.isInChatRoom);
-		}
+		setStatus(statusSetter());
 	}, [currentChatRoom])
 
 	useEffect(() => {
-		if (someUserUpdatedTheirStatus === undefined) return;
+		console.log('someUserUpdatedTheirStatus', someUserUpdatedTheirStatus);
+		if (someUserUpdatedTheirStatus === undefined || someUserUpdatedTheirStatus.status == props.onlineStatus) return;
 		if (someUserUpdatedTheirStatus.userId === props.userId && someUserUpdatedTheirStatus.status == OnlineStatus.OFFLINE) {
-			setStatus(false);
+			setStatus(StatusDisplay.OFFLINE);
 		}
+		else if (someUserUpdatedTheirStatus.userId === props.userId && someUserUpdatedTheirStatus.status == OnlineStatus.ONLINE) {
+			console.log('setting status to online');
+			setStatus(StatusDisplay.ONLINE);
+		}
+
 	}, [someUserUpdatedTheirStatus])
 
 	return (
 		<>
-			{status ? '🔵' : '🟠'}
+			{status}
 		</>
 	);
 
-	
+
 }

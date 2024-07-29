@@ -1,16 +1,17 @@
-import { ChatMessageToRoomDto, UpdateChatDto } from "@ft_dto/chat";
+import { ChatMessageToRoomDto, FetchChatDto } from "@ft_dto/chat";
 import { fetchProps } from "src/globals/functionComponents/useFetch";
-import { inviteCallbackProps } from "./inviteFunctions";
 import { UserProfileDto } from "@ft_dto/users";
 import { Socket } from "socket.io-client";
-import { friendInviteParser } from "./friendInvite";
-import { gameInviteParser } from "./gameInvite";
+
 import { IsBlocked } from "src/globals/functionComponents/FriendOrBlocked";
+import { gameInviteParser } from "./inviteFunctions/gameInvite";
+import { inviteCallbackProps } from "./inviteFunctions/inviteFunctions";
+import { friendInviteParser } from "./inviteFunctions/friendInvite";
 
 
 export interface parserProps {
 	inviteCallback: (props: inviteCallbackProps) => void,
-	currentChatRoom: UpdateChatDto,
+	currentChatRoom: FetchChatDto,
 	currentUser: UserProfileDto,
 	chatSocket: Socket,
 	friendInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>,
@@ -25,6 +26,7 @@ export const messageParser = (
 	const { inviteCallback, currentChatRoom, currentUser, chatSocket, friendInviteFetcher, gameInviteFetcher, chatInviteFetcher, changeRoomStatusCallback } = context;
 	if (IsBlocked(message.userId, currentUser))
 		return <></>
+	console.log(message);
 	if (message.action) {
 		if (message.userId == currentUser.id) // If the user is the current user, we don't want to show the message.	
 			return <></>
@@ -35,9 +37,13 @@ export const messageParser = (
 			case "LEAVE":
 				changeRoomStatusCallback(message.userId, false);
 				return <>{'<<'} {message.userName} has left the chat {'>>'}</>
+			default:
+				if (!message.inviteId)
+					return <>{message.message}</>
 		}
 	}
-	else if (message.inviteId) {
+	if (message.inviteId) {
+		console.log("Parsing invite");
 		return inviteParser(message, currentChatRoom, currentUser, chatSocket, inviteCallback, friendInviteFetcher, gameInviteFetcher, chatInviteFetcher);
 	}
 	else {
@@ -48,7 +54,7 @@ export const messageParser = (
 
 const inviteParser = (
 	message: ChatMessageToRoomDto,
-	currentChatRoom: UpdateChatDto,
+	currentChatRoom: FetchChatDto,
 	currentUser: UserProfileDto,
 	chatSocket: Socket,
 	inviteCallback: (props: inviteCallbackProps) => void,
@@ -77,6 +83,8 @@ const inviteParser = (
 			return friendInviteParser(message, currentUser, inviteCallback, inviteCallbackProps);
 		case "GAME":
 			return gameInviteParser(message, currentUser, inviteCallback, inviteCallbackProps);
+		// case "CHAT":
+			// return chatInviteParser(message, currentUser, inviteCallback, inviteCallbackProps);;
 	}
 	return <>Error parsing invite</>;
 }
