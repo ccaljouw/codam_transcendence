@@ -79,6 +79,7 @@ export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
             console.log('Username already exists');
             return this.createNewUserFromProfile(profile, true);
           }
+          throw error;
         }
       } else {
         console.log(`error validating 42user`, error.message);
