@@ -41,6 +41,16 @@ export class AuthController {
       console.log(`Auth callback for ${user.id}`);
       res.redirect(`${this.configService.get('FRONTEND_URL')}?user=${user.id}`);
     } catch (error) {
+      // if (
+      //   res.statusCode === 500 &&
+      //   process.env.SECRET !== process.env.NEXTSECRET
+      // ) {
+      //   process.env.SECRET = process.env.NEXTSECRET;
+      //   this.fortyTwoAuth();
+      // } else {
+      //   throw error;
+      // }
+      console.log('Error in 42 callback:', error);
       throw error;
     }
   }

@@ -3,11 +3,6 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import {
-  PrismaClientKnownRequestError,
-  PrismaClientUnknownRequestError,
-  PrismaClientValidationError,
-} from '@prisma/client/runtime/library';
 import { Request, Response } from 'express';
 import { UserProfileDto, CreateUserDto } from '@ft_dto/users';
 import { PrismaService } from 'src/database/prisma.service';
@@ -24,16 +19,6 @@ export class AuthService {
     private readonly twoFA: TwoFAService,
     private readonly stats: StatsService,
   ) {}
-
-  private throwError(error: any, message: string): any {
-    if (
-      error instanceof PrismaClientKnownRequestError ||
-      PrismaClientValidationError ||
-      PrismaClientUnknownRequestError
-    )
-      return error;
-    return new Error(`${message}: ${error.message}`);
-  }
 
   async createUser(
     createUserDto: CreateUserDto,
@@ -54,7 +39,8 @@ export class AuthService {
       await this.stats.create(user.id);
       return user;
     } catch (error) {
-      throw this.throwError(error, 'Error creating user');
+      console.log('Error creating user:', error.message);
+      throw error;
     }
   }
   async generateJwt(user: UserProfileDto): Promise<string> {
@@ -101,11 +87,8 @@ export class AuthService {
         throw new UnauthorizedException('Invallid user-password combination');
       }
     } catch (error) {
-      if (error instanceof UnauthorizedException || NotFoundException) {
-        throw error;
-      } else {
-        throw this.throwError(error, 'Error logging in');
-      }
+      console.log('Error validating user:', error.message);
+      throw error;
     }
   }
 
@@ -123,6 +106,7 @@ export class AuthService {
       console.log(`Registered ${user.userName}`);
       return user;
     } catch (error) {
+      console.log('Error registering user:', error.message);
       throw error;
     }
   }
@@ -148,6 +132,7 @@ export class AuthService {
         throw new UnauthorizedException('Incorrect password');
       }
     } catch (error) {
+      console.log('Error changing password:', error.message);
       throw error;
     }
   }

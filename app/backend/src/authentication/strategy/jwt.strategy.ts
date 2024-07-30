@@ -33,7 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       );
       return user;
     } catch (error) {
-      console.log(error.message);
+      console.log('Error validating jwt for user:', error.message);
       throw new UnauthorizedException('Not passed jwt guard');
     }
   }
