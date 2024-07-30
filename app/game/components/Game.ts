@@ -92,6 +92,8 @@ export class Game {
 		this.winner = this.players[winningSide];
 		if (this.canvas) {
 			this.messageFields[0]?.setText(this.winner?.getName() + " won the match!");
+			this.messageFields[0]?.setAlign("left");
+			this.messageFields[0]?.setX(50);
 			this.redrawGameObjects();
 		}
 		cancelAnimationFrame(this.currentAnimationFrame);

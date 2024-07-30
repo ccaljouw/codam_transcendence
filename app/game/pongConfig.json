@@ -28,10 +28,10 @@
     "scoreFieldOffset_X": "50",
     "scoreFieldOffset_Y": "150",
 
-    "bottomMessageOffset_X": "300",
+    "bottomMessageOffset_X": "50",
     "bottomMessageOffset_Y": "30",
 
-    "playerNameOffset_X": "200",
+    "playerNameOffset_X": "50",
     "playerNameOffset_Y": "50",
 
     "lineWidth": "6",
@@ -73,12 +73,12 @@
     "winMessage": "Press SPACE to start a new match",
 
     "scoreFieldOffset_X": "50",
-    "scoreFieldOffset_Y": "200",
+    "scoreFieldOffset_Y": "150",
 
-    "bottomMessageOffset_X": "300",
-    "bottomMessageOffset_Y": "30",
+    "bottomMessageOffset_X": "275",
+    "bottomMessageOffset_Y": "50",
 
-    "playerNameOffset_X": "200",
+    "playerNameOffset_X": "50",
     "playerNameOffset_Y": "50",
 
     "lineWidth": "6",
@@ -125,7 +125,7 @@
     "bottomMessageOffset_X": "300",
     "bottomMessageOffset_Y": "30",
 
-    "playerNameOffset_X": "200",
+    "playerNameOffset_X": "50",
     "playerNameOffset_Y": "50",
 
     "lineWidth": "6",

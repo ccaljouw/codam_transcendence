@@ -95,6 +95,8 @@ type Config = {
 	scoreFieldOffset_Y: number;
 	bottomMessageOffset_X: number;
 	bottomMessageOffset_Y: number;
+	topMessageOffset_X: number;
+	topMessageOffset_Y: number;
 	playerNameOffset_X: number;
 	playerNameOffset_Y: number;
 	lineWidth: number;

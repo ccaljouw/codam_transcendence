@@ -14,7 +14,6 @@ export function updateObjects(game: Game, deltaTime: number) {
   game.elapasedTimeSincceLastUpdate += deltaTime;
   updatePaddles(game, deltaTime);
   updateBall(game, deltaTime);
-  // game.messageFields.forEach(message => message.update());
 }
 
 function updatePaddles(game: Game, deltaTime: number) {
@@ -122,13 +121,14 @@ export function updateWalls(game: Game) {
     game.walls.forEach(wall => {
       if (wall.getName().includes("Back")) {
         wall.deactivate();
-        game.messageFields[1]?.setText("");
-
       }
     });
+    if (player_1_score !== triggerScore && player_2_score !== triggerScore) {
+      game.messageFields[1]?.setText("");
+    }
     return;
   }
-  
+    
   if (player_1_score === triggerScore) {
     game.walls.forEach(wall => {
       if (wall.getName().includes("Right")) {

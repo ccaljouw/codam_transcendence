@@ -80,7 +80,7 @@ export function setVerticalWalls (walls: Wall[], config: string) {
 		));
 	
 
-	//decativate the vertical walls
+	//decativate the vertical walls bydefault
 	walls.forEach(wall => {
 		if (wall.getType() === 1) {
 			wall.deactivate();
@@ -131,7 +131,6 @@ export function keyListenerInitializer (game: Game) {
 	}
 	game.keyListener.addKeyCallback(" ", () => {
 		console.log("Space pressed. No function added yet");
-		//startKeyPressed(game, game.config);
 	});
 	game.keyListener.addKeyCallback("Escape", () => {
 		console.log("Escape key pressed, aborting game")
@@ -142,7 +141,7 @@ export function keyListenerInitializer (game: Game) {
 
 export function messageFieldInitializer (messageFields: TextComponent[], config: string) {
 	messageFields.push(new TextComponent("left",
-		"LEFT MESSAGE",
+		"Get Ready",
 		CON.BASE_FONT,
 		CON.BASE_COLOR,
 		CON.ALIGN, CON.BASELINE,
@@ -150,7 +149,7 @@ export function messageFieldInitializer (messageFields: TextComponent[], config:
 		CON.config[config].bottomMessageOffset_X,
 		CON.config[config].screenHeight - CON.config[config].wallWidth -	CON.config[config].bottomMessageOffset_Y));
 	messageFields.push(new TextComponent("right",
-		"Get Ready",
+		"",
 		CON.BASE_FONT,
 		CON.BASE_COLOR,
 		CON.ALIGN,
@@ -176,4 +175,9 @@ export function playerInitializer (players: PlayerComponent[], config: string, g
 		player2 = user2.userName!;
 		players.push(new PlayerComponent(player2, 1, config));
 	}
+
+	//set the allignment of the player names
+	players.forEach(player => {
+		player.nameField?.setAlign("left");
+	});
 }

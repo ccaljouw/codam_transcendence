@@ -22,10 +22,10 @@
     "rightScoreFieldSize": "60",
     "bottomLeftTextColor": "#4CBB17",
     "bottomLeftTextFont": "Arial",
-    "bottomLeftTextSize": "25",
+    "bottomLeftTextSize": "30",
     "bottomRightTextColor": "#4CBB17",
     "bottomRightTextFont": "Arial",
-    "bottomRightTextSize": "25"
+    "bottomRightTextSize": "30"
   },
   
   "blackAndWhite": {
@@ -50,10 +50,10 @@
     "rightScoreFiledSize": "60",
     "bottomLeftTextColor": "white",
     "bottomLeftTextFont": "Arial",
-    "bottomLeftTextSize": "25",
+    "bottomLeftTextSize": "30",
     "bottomRightTextColor": "white",
     "bottomRightTextFont": "Arial",
-    "bottomRightTextSize": "25"
+    "bottomRightTextSize": "30"
   },
   
   "neon": {
@@ -78,9 +78,9 @@
     "rightScoreFiledSize": "60",
     "bottomLeftTextColor": "#00D0FF",
     "bottomLeftTextFont": "Helvetica",
-    "bottomLeftTextSize": "25",
+    "bottomLeftTextSize": "30",
     "bottomRightTextColor": "#FF5F1F",
     "bottomRightTextFont": "Helvetica",
-    "bottomRightTextSize": "25"
+    "bottomRightTextSize": "30"
   }
 }
