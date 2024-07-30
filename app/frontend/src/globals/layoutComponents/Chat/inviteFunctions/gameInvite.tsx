@@ -2,7 +2,6 @@ import { ChatMessageToRoomDto, InviteSocketMessageDto } from "@ft_dto/chat"
 import { UserProfileDto } from "@ft_dto/users"
 import { inviteCallbackProps } from "./inviteFunctions"
 import { InviteStatus } from "@prisma/client";
-import { useRouter } from "next/navigation";
 
 export const gameResponseReceivedHandler = ( // This function triggers the actions that need to be taken when a game response is received.
 	inviteSocketMessage: InviteSocketMessageDto

@@ -86,6 +86,7 @@ export class GameService {
       const game = await this.db.game.findFirst({
         where: {
           state: 'WAITING',
+          inviteId: null,
         },
         include: { GameUsers: { include: { user: true } } },
       });
@@ -154,7 +155,7 @@ export class GameService {
     try {
       const game = await this.db.game.update({
         where: { inviteId: id },
-        data: { state: 'ABORTED' },
+        data: { state: 'REJECTED' },
         include: { GameUsers: { include: { user: true } } },
       });
       return game;

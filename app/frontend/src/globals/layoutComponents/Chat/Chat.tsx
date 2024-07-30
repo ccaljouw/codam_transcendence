@@ -41,20 +41,16 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 	// THIS IS THE DATABASE FETCHER FOR GAME INVITES, IT MIGHT NEED A DIFFERENT RETURN TYPE
 	const { data: gameInvite, isLoading: gameInviteLoading, error: gameInviteError, fetcher: gameInviteFetcher } = useFetch<null, UpdateInviteDto>();
   const {data: gameData, isLoading: loadingGame, error: errorGame, fetcher: rejectGame} = useFetch<null, UpdateGameDto>();
-  const [payloadGameState, setPayload] = useState<UpdateGameStateDto>();
+  // const [payloadGameState, setPayload] = useState<UpdateGameStateDto>();
   
   
 	// THIS USEEFFECT TRIGGERS WHEN THE GAME INVITE IS ACCEPTED OR DENIED, AND HANDLES THE RESPONSE BY THE ONE WHO WAS INVITED AND JUST ACCEPTED OR DENIED
   useEffect(() => {
-    gameSocket.emit("game/updateGameState", payloadGameState);
-    console.log("Game state update emitted: ", payloadGameState);
-  }, [payloadGameState]);
-
-  useEffect(() => {
     if (gameData !== null) {
-      console.log("Game data received: ", gameData.state);
-      setPayload({id: gameData.id, state: gameData.state});
-    }
+      console.log('Sending gameStateUpdate after rejected invite');
+      gameSocket.emit("game/updateGameState", {id: gameData.id, state: gameData.state});
+    } else
+      console.log('Error, no gameData');
   }, [gameData]);
 
   useEffect(() => {

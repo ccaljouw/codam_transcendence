@@ -42,11 +42,12 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
   }; 
   
   const handleGameStateUpdate = (payload: UpdateGameStateDto) => {
-    console.log(`Game: received game state update`, payload.id, payload.state);
-    if (payload.state === GameState.ABORTED) {
+    console.log(`Game: received game state update in handle gameState`, payload.id, payload.state);
+    console.log('Game: current game:', game);
+    if (payload.state === GameState.REJECTED) {
       //TODO: add message somewhere that game was aborted?
       router.push(`/play`);
-    }
+    } else return;
     //TODO: add message for finishing game?
   };
   
