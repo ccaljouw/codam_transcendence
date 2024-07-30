@@ -214,6 +214,7 @@ enum GameState {
 	STARTED
 	FINISHED
 	ABORTED
+  REJECTED
 }
 
 enum InviteType {
