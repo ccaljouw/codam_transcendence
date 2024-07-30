@@ -11,9 +11,7 @@ export function updateObjects(game: Game, deltaTime: number) {
   if (game.gameState !== GameState.STARTED) {
     return;
   }
-
   game.elapasedTimeSincceLastUpdate += deltaTime;
-
   updatePaddles(game, deltaTime);
   updateBall(game, deltaTime);
   // game.messageFields.forEach(message => message.update());

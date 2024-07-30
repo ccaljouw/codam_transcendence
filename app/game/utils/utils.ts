@@ -7,7 +7,6 @@ import { drawGameObjects } from './objectController'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { GameState } from '@prisma/client'
 import { UpdateGameStateDto } from '@ft_dto/game'
-import { updateWalls } from './updateObjects'
 
 export function drawGameObject(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, color: string) {
 	ctx.fillStyle = color;
@@ -36,15 +35,6 @@ function clearMessageFields(messageFields: TextComponent[]) {
 	}
 }
 
-// export function startKeyPressed(game: Game) {
-// 	if (game.gameState == `FINISHED`) {
-// 		game.resetMatch();
-// 	} else if (game.gameState == `WAITING`){
-// 		game.gameState = `STARTED`;
-// 		countdown(game);
-// 	}
-// }
-
 export function escapeKeyPressed(game: Game) {
 	const gameSocket = transcendenceSocket;
 	const payload : UpdateGameStateDto  = {id: game.roomId, state: GameState.ABORTED};
@@ -68,7 +58,6 @@ export function countdown(game: Game) {
 		}
 	}, 1000);
 }
-
 
 export function checkWinCondition(game: Game) {
 	let winningScore = CON.config[game.config].winningScore;
