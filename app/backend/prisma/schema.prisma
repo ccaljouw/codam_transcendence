@@ -40,7 +40,7 @@ model User {
 
   twoFactEnabled  Boolean      @default(false)
   // avatarId        Int          @default(1)
-  avatarUrl       String?      @default("/favicon.ico")
+  avatarUrl       String?      @default("http://localhost:3001/avatar/favicon.ico")
   theme           Int          @default(0)
   online          OnlineStatus @default(OFFLINE)
 
