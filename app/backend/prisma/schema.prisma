@@ -32,14 +32,13 @@ model User {
 	loginName String @unique
 
   userName        String? @unique //if no userName is provided loginName is used
-  email           String? @unique
+  email           String? //changed to not uni1que by carien
   firstName       String?
   lastName        String?
   auth            Auth?
   token           Tokens[]
 
   twoFactEnabled  Boolean      @default(false)
-  // avatarId        Int          @default(1)
   avatarUrl       String?      @default("http://localhost:3001/avatar/favicon.ico")
   theme           Int          @default(0)
   online          OnlineStatus @default(OFFLINE)

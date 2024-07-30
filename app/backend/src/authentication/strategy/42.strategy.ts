@@ -3,8 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import Strategy from 'passport-42';
 import { UsersService } from 'src/users/users.service';
-import { UpdateUserDto, UserProfileDto } from '@ft_dto/users';
+import { CreateUserDto, UpdateUserDto, UserProfileDto } from '@ft_dto/users';
 import { AuthService } from '../services/authentication.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
@@ -22,6 +23,26 @@ export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
     });
   }
 
+  async createNewUserFromProfile(
+    profile: any,
+    changeUserName: boolean,
+  ): Promise<UserProfileDto> {
+    const userData: CreateUserDto = {
+      loginName: profile._json.login,
+      userName: profile._json.login,
+      firstName: profile._json.first_name,
+      lastName: profile._json.last_name,
+      email: profile._json.email,
+      avatarUrl: profile._json.image.link,
+    };
+    if (changeUserName == true) {
+      userData.userName = `${profile._json.login}${uuidv4()}`;
+    }
+    // Default password for 42 users is set to strongpong
+    console.log('Creating new user', userData);
+    const user = await this.authService.createUser(userData, 'strongpong');
+    return user;
+  }
   async validate(
     accessToken: string,
     refreshToken: string,
@@ -50,20 +71,17 @@ export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
       console.log(`error in validate: ${error.message}`);
       if (!user) {
         console.log('creating new user');
-        user = await this.authService.createUser(
-          {
-            loginName: profile._json.login,
-            userName: profile._json.username,
-            firstName: profile._json.first_name,
-            lastName: profile._json.last_name,
-            email: profile._json.email,
-            avatarUrl: profile._json.image.link,
-          },
-          null,
-        );
-        return user;
+        try {
+          user = await this.createNewUserFromProfile(profile, false);
+          return user;
+        } catch (error) {
+          if (error.code == 'P2002') {
+            console.log('Username already exists');
+            return this.createNewUserFromProfile(profile, true);
+          }
+        }
       } else {
-        console.log('error validating 42user');
+        console.log(`error validating 42user`, error.message);
         throw error;
       }
     }
