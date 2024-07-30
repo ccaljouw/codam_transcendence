@@ -28,6 +28,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       if (!user)
         throw new UnauthorizedException('Invallid user-password combination');
     } catch (error) {
+      console.log('Error validating login for user:', error.message);
       throw error;
     }
     return user;

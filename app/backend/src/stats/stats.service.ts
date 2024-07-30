@@ -1,32 +1,18 @@
 import { UpdateGameStateDto } from '@ft_dto/game';
 import { GameResultDto, StatsDto } from '@ft_dto/stats';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import {
-  PrismaClientKnownRequestError,
-  PrismaClientUnknownRequestError,
-  PrismaClientValidationError,
-} from '@prisma/client/runtime/library';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class StatsService {
   constructor(private db: PrismaService) {}
 
-  private throwError(error: any, message: string): any {
-    if (
-      error instanceof PrismaClientKnownRequestError ||
-      PrismaClientValidationError ||
-      PrismaClientUnknownRequestError
-    )
-      return error;
-    return new Error(`${message}: ${error.message}`);
-  }
-
   async create(userId: number): Promise<StatsDto> {
     try {
       return await this.db.stats.create({ data: { userId } });
     } catch (error) {
-      this.throwError(error, `Error creating stats for user with id ${userId}`);
+      console.log('Error creating stats:', error);
+      throw error;
     }
   }
 
@@ -36,7 +22,8 @@ export class StatsService {
         orderBy: [{ wins: 'desc' }, { winLossRatio: 'desc' }],
       });
     } catch (error) {
-      this.throwError(error, 'Error getting all stats');
+      console.log('Error getting all stats:', error);
+      throw error;
     }
   }
 
@@ -54,7 +41,8 @@ export class StatsService {
       stats.last10Games = await this.getLast10Games(userId);
       return stats;
     } catch (error) {
-      this.throwError(error, `Error getting stats for user with id ${userId}`);
+      console.log('Error getting stats:', error);
+      throw error;
     }
   }
 
@@ -105,7 +93,8 @@ export class StatsService {
         },
       });
     } catch (error) {
-      this.throwError(error, `Error updating stats for user with id ${userId}`);
+      console.log('Error updating stats:', error);
+      throw error;
     }
   }
 
@@ -113,7 +102,8 @@ export class StatsService {
     try {
       return await this.db.stats.delete({ where: { userId } });
     } catch (error) {
-      this.throwError(error, `Error deleting stats for user with id ${userId}`);
+      console.log('Error removing stats:', error);
+      throw error;
     }
   }
 
@@ -125,7 +115,8 @@ export class StatsService {
         throw new NotFoundException(`No stats found for ${userId}`);
       return allStats.findIndex((stats) => stats.userId === userId) + 1;
     } catch (error) {
-      this.throwError(error, `Error getting rank for user with id ${userId}`);
+      console.log('Error getting rank:', error);
+      throw error;
     }
   }
 
@@ -143,7 +134,8 @@ export class StatsService {
       if (!top10) throw new Error(`Error getting top10 games.`);
       return top10.map((stat) => stat.user.userName);
     } catch (error) {
-      this.throwError(error, 'Error getting top 10 players');
+      console.log('Error getting top10:', error);
+      throw error;
     }
   }
 
@@ -158,10 +150,8 @@ export class StatsService {
       }
       return friendCount.friends.length;
     } catch (error) {
-      this.throwError(
-        error,
-        `Error getting friend count for user with id ${userId}`,
-      );
+      console.log('Error getting friend count:', error);
+      throw error;
     }
   }
 
@@ -200,10 +190,8 @@ export class StatsService {
 
       return gameResults;
     } catch (error) {
-      this.throwError(
-        error,
-        `Error getting last 10 games for user with id ${userId}`,
-      );
+      console.log('Error getting last 10 games:', error);
+      throw error;
     }
   }
 
@@ -356,10 +344,8 @@ export class StatsService {
       }
       return currentUser.achievements;
     } catch (error) {
-      this.throwError(
-        error,
-        `Error updating achievements for user with id ${userId}`,
-      );
+      console.log('Error updating achievements:', error);
+      throw error;
     }
   }
 

@@ -17,7 +17,7 @@ export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
       authorizationURL: `https://api.intra.42.fr/oauth/authorize`,
       tokenURL: 'https://api.intra.42.fr/oauth/token',
       clientID: configService.get('CLIENT_ID'),
-      clientSecret: configService.get('SECRET'),
+      clientSecret: process.env.SECRET,
       callbackURL: `${configService.get('BACKEND_URL')}/auth/42/callback`,
     });
   }
@@ -63,6 +63,7 @@ export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
         );
         return user;
       } else {
+        console.log('error validating 42user');
         throw error;
       }
     }

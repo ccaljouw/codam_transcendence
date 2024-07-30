@@ -2,26 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto, UserProfileDto } from '@ft_dto/users';
 import { PrismaService } from '../database/prisma.service';
 import { InviteStatus } from '@prisma/client';
-import {
-  PrismaClientKnownRequestError,
-  PrismaClientUnknownRequestError,
-  PrismaClientValidationError,
-} from '@prisma/client/runtime/library';
 
 @Injectable()
 export class UsersService {
   constructor(private db: PrismaService) {}
-
-  // Utils
-  private throwError(error: any, message: string): any {
-    if (
-      error instanceof PrismaClientKnownRequestError ||
-      PrismaClientValidationError ||
-      PrismaClientUnknownRequestError
-    )
-      return error;
-    return new Error(`${message}: ${error.message}`);
-  }
 
   async update(
     id: number,
@@ -39,7 +23,8 @@ export class UsersService {
       });
       return user;
     } catch (error) {
-      throw this.throwError(error, `Error updating user with id ${id}`);
+      console.log('error updating user', error);
+      throw error;
     }
   }
 
@@ -52,7 +37,8 @@ export class UsersService {
       });
       return users;
     } catch (error) {
-      throw this.throwError(error, `Error getting users`);
+      console.log('error getting all users', error);
+      throw error;
     }
   }
 
@@ -66,7 +52,8 @@ export class UsersService {
         throw new NotFoundException(`User with id ${id} not found.`);
       return friends;
     } catch (error) {
-      throw this.throwError(error, `Error getting friends`);
+      console.log('error getting friends', error);
+      throw error;
     }
   }
 
@@ -77,7 +64,8 @@ export class UsersService {
       });
       return users;
     } catch (error) {
-      throw this.throwError(error, `Error getting users`);
+      console.log('error getting all users', error);
+      throw error;
     }
   }
 
@@ -91,11 +79,11 @@ export class UsersService {
         },
       });
       if (!user) throw new NotFoundException(`User with id ${id} not found.`);
-      // user.friends = this.sortFriends(user.friends);
       console.log(user);
       return user;
     } catch (error) {
-      throw this.throwError(error, `Error getting user with id: ${id}`);
+      console.log('error getting user', error);
+      throw error;
     }
   }
 
@@ -109,10 +97,10 @@ export class UsersService {
         },
       });
       if (!user) throw new NotFoundException(`User ${userName} not found.`);
-      // user.friends = this.sortFriends(user.friends);
       return user;
     } catch (error) {
-      throw this.throwError(error, `Error getting ${userName}`);
+      console.log('error getting user by username', error);
+      throw error;
     }
   }
 
@@ -127,10 +115,10 @@ export class UsersService {
         },
       });
       if (!user) throw new NotFoundException(`User ${loginName} not found.`);
-      // user.friends = this.sortFriends(user.friends);
       return user;
     } catch (error) {
-      throw this.throwError(error, `Error getting ${loginName}`);
+      console.log('error getting user by login', error);
+      throw error;
     }
   }
 
@@ -147,7 +135,8 @@ export class UsersService {
       }
       return friendCount.friends.length;
     } catch (error) {
-      throw this.throwError(error, `Error getting friends for ${userId}`);
+      console.log('error getting friend count', error);
+      throw error;
     }
   }
 
@@ -169,7 +158,8 @@ export class UsersService {
         });
       }
     } catch (error) {
-      throw this.throwError(error, `Error expiring invites`);
+      console.log('Error expiring invites:', error);
+      throw error;
     }
   }
 
@@ -191,7 +181,8 @@ export class UsersService {
         });
       }
     } catch (error) {
-      throw this.throwError(error, `Error rejecting invites`);
+      console.log('Error rejecting invites:', error);
+      throw error;
     }
   }
 
@@ -210,7 +201,6 @@ export class UsersService {
         },
       });
       if (!user) throw new NotFoundException(`User ${id} not found.`);
-      // user.friends = this.sortFriends(user.friends);
 
       await this.expireInvites(id, blockId);
       await this.rejectInvites(id, blockId);
@@ -219,7 +209,8 @@ export class UsersService {
 
       return user;
     } catch (error) {
-      throw this.throwError(error, `Error blocking user ${blockId}`);
+      console.log('error blocking user', error);
+      throw error;
     }
   }
 
@@ -246,10 +237,10 @@ export class UsersService {
         },
       });
       if (!user) throw new NotFoundException(`User ${id} not found.`);
-      // user.friends = this.sortFriends(user.friends);
       return user;
     } catch (error) {
-      throw this.throwError(error, `Error unfriending: ${friendId}`);
+      console.log('error unfriending user', error);
+      throw error;
     }
   }
 
@@ -271,7 +262,8 @@ export class UsersService {
       // user.friends = this.sortFriends(user.friends);
       return user;
     } catch (error) {
-      throw this.throwError(error, `Error unblocking: ${unBlockId}`);
+      console.log('error unblocking user', error);
+      throw error;
     }
   }
 }

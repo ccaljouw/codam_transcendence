@@ -36,6 +36,7 @@ export class TwoFAService {
         return { res: qr };
       }
     } catch (error) {
+      console.error('Error enabling 2FA:', error);
       throw error;
     }
   }
@@ -52,6 +53,7 @@ export class TwoFAService {
       });
       return true;
     } catch (error) {
+      console.log('Error disabling 2FA:', error);
       throw error;
     }
   }
@@ -61,6 +63,7 @@ export class TwoFAService {
       const qr = await QRCode.toDataURL(otpauthUrl);
       return qr;
     } catch (error) {
+      console.log('Error generating QR code:', error);
       throw error;
     }
   }
@@ -72,6 +75,7 @@ export class TwoFAService {
         data: { twoFactSecret: secret },
       });
     } catch (error) {
+      console.log('Error storing 2FA secret:', error);
       throw error;
     }
   }
@@ -99,7 +103,7 @@ export class TwoFAService {
       console.log('Verification Result:', verified);
       return verified;
     } catch (error) {
-      console.error('Error during 2FA verification:', error);
+      console.log('Error during 2FA verification:', error);
       throw error;
     }
   }
@@ -121,7 +125,7 @@ export class TwoFAService {
       });
       return true;
     } catch (error) {
-      console.error('Error during 2FA initial token verification:', error);
+      console.log('Error during 2FA initial token verification:', error);
     }
 
     return true;

@@ -26,6 +26,7 @@ export class AvatarService {
         avatarUrl: `${this.configService.get('BACKEND_URL')}/avatar/${filename}`,
       };
     } catch (error) {
+      console.log('Error uploading file:', error.message);
       throw error;
     }
   }
