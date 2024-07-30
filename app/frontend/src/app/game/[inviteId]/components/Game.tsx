@@ -9,7 +9,7 @@ import { constants } from '@ft_global/constants.globalvar.tsx'
 import useFetch from 'src/globals/functionComponents/useFetch.tsx'
 import styles from '../styles.module.css';
 import { useRouter } from 'next/navigation';
-// import { emit } from 'process'
+
 
 // GameComponent is a functional component that renders the game canvas and handles game logic
 export default function GameComponent({inviteId}: {inviteId: number}) {
@@ -23,14 +23,21 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 	const {data: fetchedGameData, isLoading: loadingGame, error: errorGame, fetcher: gameFetcher} = useFetch<GetGameDto | null, UpdateGameDto>();
 	const router = useRouter();
 
+
+  function disconnectSocket() {
+    console.log("Game: disconnecting socket");
+    gameSocket.off(`game/message`, handleMessage);
+    gameSocket.off(`game/updateGameState`, handleGameStateUpdate);
+    gameSocket.emit("game/leaveRoom", roomId);
+  }
+
   function handleClick() {
     if (game?.gameState !== GameState.ABORTED && game?.gameState !== GameState.FINISHED) {
       const payload: UpdateGameStateDto = {id: roomId, state: GameState.ABORTED};
       gameSocket.emit("game/updateGameState", payload);
     }
     console.log("Game: leaving game");
-    gameSocket.off(`game/message`, handleMessage);
-    gameSocket.off(`game/updateGameState`, handleGameStateUpdate);
+    disconnectSocket();
     router.push('/play');
   }
 

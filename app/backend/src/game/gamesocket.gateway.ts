@@ -55,7 +55,6 @@ export class GamesocketGateway {
       .emit('game/updateGameObjects', payload);
   }
 
-  // todo add code based on tracked game id's. here or in game service
   @SubscribeMessage('disconnect')
   async handleDisconnect(client: Socket) {
     const gameId = await this.gamesocketService.findGameForClientId(client.id);
