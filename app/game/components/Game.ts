@@ -9,7 +9,7 @@ import { KeyListenerComponent } from './KeyListenerComponent'
 import { PlayerComponent } from './PlayerComponent'
 import { TextComponent } from './TextComponent'
 import * as CON from '../utils/constants'
-import { setSocketListeners } from '../utils/gameSocketListners'
+import { disconnectSocket, setSocketListeners } from '../utils/gameSocketListners'
 import { updateObjects, checkForGoals } from '../utils/updateObjects'
 import { countdown, setTheme } from '../utils/utils'
 import { initializeGameObjects, drawGameObjects, resetGameObjects } from '../utils/objectController'
@@ -51,7 +51,7 @@ export class Game {
 		initializeGameObjects(this);
 		setTheme(this);
 		setSocketListeners(this);
-		console.log("script: instance type: ", this.instanceType);
+		console.log("GameScript: instance type: ", this.instanceType);
 	}
 	
 
@@ -97,9 +97,7 @@ export class Game {
 		cancelAnimationFrame(this.currentAnimationFrame);
 		this.ball?.resetBothRallies();
 		console.log("player: ", this.winner?.getSide(), this.winner?.getName(), " won the match");
-		//todo: do we need this below?
-		// this.gameSocket.off(`game/updateGameObjects`);
-		// this.gameSocket.off(`game/updateGameState`);
+		disconnectSocket(this);
 	}
 
 	abortGame(n: number) {
@@ -113,7 +111,7 @@ export class Game {
 		}
 		this.gameState = GameState.FINISHED;
 		cancelAnimationFrame(this.currentAnimationFrame);
-		console.log("script: game aborted");
+		console.log("GameScript: game aborted");
 	}
 
 	resetGame() {
@@ -121,7 +119,7 @@ export class Game {
 			return;
 		}
 		this.ball?.resetRally();
-		console.log("script: resetGame called");
+		console.log("GameScript: resetGame called");
 		resetGameObjects(this);
 		this.messageFields[0]?.setText("GOAL!");
 		countdown(this);

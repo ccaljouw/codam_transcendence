@@ -43,7 +43,7 @@ export function escapeKeyPressed(game: Game) {
 }
 
 export function countdown(game: Game) {
-	console.log("Script: countdown started");
+	console.log("GameScript: countdown started");
 	let count = CON.config[game.config].countdownTime;
 	let interval = setInterval(() => {
 		game.messageFields[0]?.setText(count.toString());

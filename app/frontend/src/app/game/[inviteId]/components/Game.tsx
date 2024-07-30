@@ -9,8 +9,9 @@ import { constants } from '@ft_global/constants.globalvar.tsx'
 import useFetch from 'src/globals/functionComponents/useFetch.tsx'
 import styles from '../styles.module.css';
 import { useRouter } from 'next/navigation';
+// import { emit } from 'process'
 
-// Update to select random or invite game: added inviteId to GameComponent and included inviteId in endpoint gameFetcher
+// GameComponent is a functional component that renders the game canvas and handles game logic
 export default function GameComponent({inviteId}: {inviteId: number}) {
 	const gameSocket = transcendenceSocket;
 	const canvasRef = useRef< HTMLCanvasElement | null >(null);
@@ -28,10 +29,11 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
       gameSocket.emit("game/updateGameState", payload);
     }
     console.log("Game: leaving game");
+    gameSocket.off(`game/message`, handleMessage);
+    gameSocket.off(`game/updateGameState`, handleGameStateUpdate);
     router.push('/play');
   }
 
-  // TODO: sounds like a gameState update check, why is this a different message?
   const handleMessage = (msg: string) => {
     console.log(`Game: got game/message ${msg}`);
     if (fetchedGameData?.state === GameState.WAITING && fetchedGameData.id) {
@@ -45,10 +47,8 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     console.log(`Game: received game state update in handle gameState`, payload.id, payload.state);
     console.log('Game: current game:', game);
     if (payload.state === GameState.REJECTED) {
-      //TODO: add message somewhere that game was aborted?
       router.push(`/play`);
     } else return;
-    //TODO: add message for finishing game?
   };
   
   // handle incomming game messages

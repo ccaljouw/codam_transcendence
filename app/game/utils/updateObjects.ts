@@ -94,7 +94,7 @@ export function checkForGoals(game: Game) {
   
   let winningSide: number = checkWinCondition(game) ?? -1;
   if (winningSide !== -1) {
-    console.log(`Script: game finished, longest rally: ${game.ball?.getLongestRally()}`);
+    console.log(`GameScript: game finished, longest rally: ${game.ball?.getLongestRally()}`);
     const payload : UpdateGameStateDto  = {id: game.roomId, state: GameState.FINISHED, winnerId: winningSide, score1: game.players[0].getScore(), score2: game.players[1].getScore(), longestRally: game.ball?.getLongestRally()};
     gameSocket.emit("game/updateGameState", payload);
     game.finishGame(winningSide);
