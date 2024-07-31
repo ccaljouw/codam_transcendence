@@ -73,7 +73,10 @@ export class constants {
   static API_CHECK2FATOKEN = this.BACKEND_BASEURL + '/auth/2FA/check/';
   
   static API_STATS = this.BACKEND_BASEURL + '/stats/';
-  static API_TOP_10 = this.API_STATS + 'top10/';
+  static API_RANK_TOP_10 = this.API_STATS + 'rank/top10/';
+  static API_LADDER_TOP_10 = this.API_STATS + 'ladder/top10/';
   static API_LAST_10 = this.API_STATS + 'last10Games/';
   static API_RANK = this.API_STATS + 'rank';
+  static API_LADDER_POS = this.API_STATS + 'ladderPos';
+  static API_LADDER = this.API_STATS + 'ladder';
 }

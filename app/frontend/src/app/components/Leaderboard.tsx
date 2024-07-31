@@ -13,7 +13,7 @@ export default function Leaderboard() : JSX.Element {
 	}, []);
 
 	async function fetchLeaderboard(){
-		await leaderboardFetcher({url:constants.API_TOP_10});
+		await leaderboardFetcher({url:constants.API_RANK_TOP_10});
 	}
 
 	return (

@@ -30,6 +30,7 @@ async function addDummyUsers() {
     update: {},
     create: {
       userId: 1,
+      ladderPosition: [1],
     },
   });
 
@@ -59,6 +60,7 @@ async function addDummyUsers() {
     update: {},
     create: {
       userId: 2,
+      ladderPosition: [2],
     },
   });
 
@@ -88,6 +90,7 @@ async function addDummyUsers() {
     update: {},
     create: {
       userId: 3,
+      ladderPosition: [3],
     },
   });
 
@@ -117,6 +120,7 @@ async function addDummyUsers() {
     update: {},
     create: {
       userId: 4,
+      ladderPosition: [4],
     },
   });
 
@@ -146,6 +150,7 @@ async function addDummyUsers() {
     update: {},
     create: {
       userId: 5,
+      ladderPosition: [5],
     },
   });
 

@@ -178,6 +178,7 @@ model Stats {
   winLossRatio       Float @default(1)
   consecutiveWins    Int @default(0)
   maxConsecutiveWins Int @default(0)
+  ladderPosition     Int[]
   achievements       Int[]
 
   createdAt DateTime @default(now())

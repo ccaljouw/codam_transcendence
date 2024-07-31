@@ -232,6 +232,7 @@ export class GameService {
     console.log(
       `backend - game: updating game state to : ${updateGameStateDto.state} for game: ${updateGameStateDto.id}`,
     );
+    console.log('update data', updateGameStateDto);
     try {
       const newGameData: UpdateGameStateDto = {
         id: updateGameStateDto.id,
@@ -264,8 +265,6 @@ export class GameService {
           data: { score: updateGameStateDto.score2 },
           select: { userId: true, id: true },
         });
-        console.log(player1);
-        console.log(player2);
         if (updateGameStateDto.winnerId === 0)
           newGameData.winnerId = player1.userId;
         else newGameData.winnerId = player2.userId;

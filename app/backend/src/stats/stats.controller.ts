@@ -26,7 +26,7 @@ export class StatsController {
     return this.statsService.findAll();
   }
 
-  @Get('top10')
+  @Get('rank/top10')
   @ApiOperation({
     summary:
       'Returns top 10 players (usernames) sorted by wins and win/loss ratio',
@@ -34,6 +34,32 @@ export class StatsController {
   @ApiOkResponse({ type: [String] })
   findRankTop10(): Promise<string[]> {
     return this.statsService.findRankTop10();
+  }
+
+  @Get('ladder/top10')
+  @ApiOperation({ summary: 'Returns top 10 players on the ladder' })
+  @ApiOkResponse({ type: [String] })
+  findLadderTop10(): Promise<string[]> {
+    return this.statsService.findLadderTop10();
+  }
+
+  @Get('ladderPos/:userId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Returns the current ladderposition of player' })
+  @ApiOkResponse({ type: Number })
+  async getLadderPos(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<number> {
+    const ladder: number[] = await this.statsService.getLadder(userId);
+    return ladder[0];
+  }
+
+  @Get('ladder/:userId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Returns the ladder history of player' })
+  @ApiOkResponse({ type: Number })
+  getLadder(@Param('userId', ParseIntPipe) userId: number): Promise<number[]> {
+    return this.statsService.getLadder(userId);
   }
 
   @Get('rank/:userId')
