@@ -189,14 +189,13 @@ export class InviteController {
     );
   }
 
-  //TODO: Carien, shoudl return game
   @Get('respondToGameRequest/:id/:accept')
   @ApiOperation({ summary: 'Returns updated invite' })
   @ApiOkResponse({ type: UpdateInviteDto })
   respondToGameInvite(
     @Param('id', ParseIntPipe) id: number,
     @Param('accept') accept: string,
-  ) {
+  ): Promise<UpdateInviteDto> {
     return this.inviteService.updateIvite({
       id,
       state: accept === 'true' ? InviteStatus.ACCEPTED : InviteStatus.REJECTED,

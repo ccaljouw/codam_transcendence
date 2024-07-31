@@ -70,16 +70,6 @@ export class GameController {
     return this.gameService.findOne(id);
   }
 
-  @Get(':clientId')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Returns gameId of game that contains clientId' })
-  @ApiNotFoundResponse({
-    description: `No games with this clientId in the database`,
-  })
-  findMany(@Param('clientId') clientId: string) {
-    return this.gameService.findGameForClientId(clientId);
-  }
-
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Updates user with specified id' })

@@ -172,7 +172,6 @@ export class StatsService {
     }
   }
 
-  //TODO: carien, check this function
   async getRank(userId: number): Promise<number> {
     try {
       const allStats: StatsDto[] = await this.findAll();
