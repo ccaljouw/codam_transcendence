@@ -52,15 +52,6 @@ export class GameController {
       );
   }
 
-  @Patch('rejectInvite/:id')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Returns game with specified id' })
-  @ApiOkResponse({ type: UpdateGameDto })
-  @ApiNotFoundResponse({ description: 'Game with #${id} does not exist' })
-  rejectInviteGame(@Param('id', ParseIntPipe) id: number) {
-    return this.gameService.rejectInvite(id);
-  }
-
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Returns game with specified id' })
@@ -68,6 +59,15 @@ export class GameController {
   @ApiNotFoundResponse({ description: 'Game with #${id} does not exist' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.gameService.findOne(id);
+  }
+
+  @Get('invite/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Returns gameId for specified inviteId' })
+  @ApiOkResponse({ type: Number })
+  @ApiNotFoundResponse({ description: 'Game with #${id} does not exist' })
+  findInviteGameId(@Param('id', ParseIntPipe) id: number) {
+    return this.gameService.findInviteGameId(id);
   }
 
   @Patch(':id')

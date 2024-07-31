@@ -52,7 +52,7 @@ export class constants {
   
 	static API_GAME = this.BACKEND_BASEURL + '/game/'
   static API_GETGAME = this.BACKEND_BASEURL + '/game/getGame';
-  static API_REJCETGAME = this.BACKEND_BASEURL + '/game/rejectInvite';
+  static API_GET_INVITE_GAME_ID = this.BACKEND_BASEURL + '/game/invite/';
   
 	static API_TEST = this.BACKEND_BASEURL + '/test/';
 	static API_TEST_BACKEND = this.API_TEST + 'backend';

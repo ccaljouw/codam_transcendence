@@ -92,6 +92,24 @@ export class GameService {
     }
   }
 
+  async findInviteGameId(inviteId: number): Promise<number> {
+    try {
+      const game = await this.db.game.findUnique({
+        where: { inviteId },
+        select: { id: true },
+      });
+      if (!game) {
+        throw new NotFoundException(
+          `Game with inviteId ${inviteId} does not exist.`,
+        );
+      }
+      return game.id;
+    } catch (error) {
+      console.log('Error finding invite game:', error);
+      throw error;
+    }
+  }
+
   async findRandomGame(
     userId: number,
     clientId: string,
@@ -182,22 +200,6 @@ export class GameService {
     }
   }
 
-  async rejectInvite(id: number): Promise<UpdateGameDto> {
-    try {
-      const game = await this.db.game.update({
-        where: { inviteId: id },
-        data: { state: 'REJECTED' },
-        include: { GameUsers: { include: { user: true } } },
-      });
-      if (!game) {
-        throw new NotFoundException(`Game with inviteId ${id} does not exist.`);
-      }
-      return game;
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async remove(id: number) {
     try {
       return await this.db.game.delete({ where: { id } });
@@ -256,11 +258,6 @@ export class GameService {
         if (!player1 || !player2)
           throw new NotFoundException('Error updating gameUsers');
 
-        // update user stats
-        await Promise.all([
-          this.statsService.update(player1.userId, 1, updateGameStateDto),
-          this.statsService.update(player2.userId, 2, updateGameStateDto),
-        ]);
         newGameData.winnerId =
           updateGameStateDto.score1 > updateGameStateDto.score2
             ? player1.userId
@@ -275,6 +272,13 @@ export class GameService {
         include: { GameUsers: { select: { userId: true, player: true } } },
       });
       if (game) {
+        if (game.state === GameState.FINISHED) {
+          // update user stats
+          await Promise.all([
+            this.statsService.update(player1.userId, 1, updateGameStateDto),
+            this.statsService.update(player2.userId, 2, updateGameStateDto),
+          ]);
+        }
         console.log(`backend - game: Game: game state updated`);
         return true;
       } else {

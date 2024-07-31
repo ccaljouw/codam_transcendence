@@ -5,7 +5,7 @@ import { UserProfileDto } from '@ft_dto/users';
 import { constants } from '@ft_global/constants.globalvar';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import { transcendenceSocket } from '@ft_global/socket.globalvar';
-import { ChatType, ChatUsers, InviteStatus, InviteType, OnlineStatus } from '@prisma/client';
+import { ChatType, ChatUsers, GameState, InviteStatus, InviteType, OnlineStatus } from '@prisma/client';
 import useFetch from '@ft_global/functionComponents/useFetch';
 import DataFetcher from '@ft_global/functionComponents/DataFetcher';
 import { FontBangers } from '../Font';
@@ -40,7 +40,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
   
 	// THIS IS THE DATABASE FETCHER FOR GAME INVITES, IT MIGHT NEED A DIFFERENT RETURN TYPE
 	const { data: gameInvite, isLoading: gameInviteLoading, error: gameInviteError, fetcher: gameInviteFetcher } = useFetch<null, UpdateInviteDto>();
-  const {data: gameData, isLoading: loadingGame, error: errorGame, fetcher: rejectGame} = useFetch<null, UpdateGameDto>();
+  const {data: gameData, isLoading: loadingGame, error: errorGame, fetcher: getIviteGameID} = useFetch<null, number>();
   // const [payloadGameState, setPayload] = useState<UpdateGameStateDto>();
   
   
@@ -48,7 +48,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
   useEffect(() => {
     if (gameData !== null) {
       console.log('Sending gameStateUpdate after rejected invite');
-      gameSocket.emit("game/updateGameState", {id: gameData.id, state: gameData.state});
+      gameSocket.emit("game/updateGameState", {id: gameData, state: GameState.REJECTED});
     } else
       console.log('Error, no gameData');
   }, [gameData]);
@@ -71,7 +71,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
       console.log("Starting game");
       router.push(`/game/${gameInvite.id}`);
 		} else {
-      rejectGame({url: `${constants.API_REJCETGAME}/${gameInvite.id}`, fetchMethod: 'PATCH'});
+      getIviteGameID({url: `${constants.API_GET_INVITE_GAME_ID}${gameInvite.id}`});
       console.log("Game invite was denied");
     }
 		fetchMessages(currentChatRoom, chatMessagesFetcher, currentUser.id);

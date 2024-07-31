@@ -39,8 +39,9 @@ export class GamesocketGateway {
   updateGameState(client: Socket, payload: UpdateGameStateDto) {
     console.log('Game Socket Server: received game state: ', payload.state);
     this.game_io
-      //TODO: Carlo, wat doet deze .to? (ik heb bij de handleDisconnect de .to weggehaald.
-      //Volgens mij ging daar niks van stuk, maar misschien moet die weer terug?)
+      //TODO: Carlo, wat doet deze .to?
+      //(ik heb bij de handleDisconnect de .to weggehaald. Volgens mij ging daar niks van stuk,
+      // maar misschien moet die weer terug?)
       .to(payload.id.toString())
       .emit('game/updateGameState', payload);
     // TODO: Carlo, dit wordt nu meerdere keren getriggert (omdat de berichten vaker dan 1x over de socket gaan??)
