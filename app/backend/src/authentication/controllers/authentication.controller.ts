@@ -16,6 +16,7 @@ import { AuthService } from '../services/authentication.service';
 import { LocalAuthGuard } from '../guard/login-auth.guard';
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
+import { AuthGuard42 } from '../guard/42-auth.guard';
 import { UpdatePwdDto } from '@ft_dto/authentication';
 import { ConfigService } from '@nestjs/config';
 
@@ -32,7 +33,7 @@ export class AuthController {
   async fortyTwoAuth() {}
 
   @Get('42/callback')
-  @UseGuards(AuthGuard('42'))
+  @UseGuards(AuthGuard42)
   async fortyTwoAuthRedirect(@Req() req: Request | any, @Res() res: Response) {
     try {
       const user: UserProfileDto = req.user;
@@ -41,16 +42,7 @@ export class AuthController {
       console.log(`Auth callback for ${user.id}`);
       res.redirect(`${this.configService.get('FRONTEND_URL')}?user=${user.id}`);
     } catch (error) {
-      // if (
-      //   res.statusCode === 500 &&
-      //   process.env.SECRET !== process.env.NEXTSECRET
-      // ) {
-      //   process.env.SECRET = process.env.NEXTSECRET;
-      //   this.fortyTwoAuth();
-      // } else {
-      //   throw error;
-      // }
-      console.log('Error in 42 callback:', error);
+      console.log('Error in 42 callback:', error.message);
       throw error;
     }
   }
