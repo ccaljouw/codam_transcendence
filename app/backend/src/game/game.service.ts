@@ -275,8 +275,8 @@ export class GameService {
         if (game.state === GameState.FINISHED) {
           // update user stats
           await Promise.all([
-            this.statsService.update(player1.userId, 1, updateGameStateDto),
-            this.statsService.update(player2.userId, 2, updateGameStateDto),
+            this.statsService.update(player1.userId, 1, game),
+            this.statsService.update(player2.userId, 2, game),
           ]);
         }
         console.log(`backend - game: Game: game state updated`);

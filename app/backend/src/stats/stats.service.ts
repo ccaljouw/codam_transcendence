@@ -57,7 +57,7 @@ export class StatsService {
     try {
       let userStats: StatsDto;
       const victory: boolean =
-        player - 1 === updateGameStateDto.winnerId ? true : false;
+        userId === updateGameStateDto.winnerId ? true : false;
 
       console.log('updating stats for player: ', player);
       console.log('victory: ', victory);
@@ -128,10 +128,14 @@ export class StatsService {
               user: { select: { stats: { select: { ladderPosition: true } } } },
             },
           },
+          inviteId: true,
         },
       });
       if (!game)
         throw new NotFoundException(`No game found with id ${lastGameId}`);
+
+      // do not update ladder if game is not played with invite
+      if (!game.inviteId) return;
 
       // determine current ladder positions
       const ladder1: number[] = [
@@ -311,6 +315,7 @@ export class StatsService {
         },
       });
       if (!lastGame) throw new Error(`No game found with id ${lastGameId}`);
+      console.log('Updating stats for:', lastGame);
       const opponentId: number = lastGame.GameUsers[0].userId
         ? lastGame.GameUsers[1].userId
         : lastGame.GameUsers[0].userId;
@@ -345,7 +350,7 @@ export class StatsService {
                 currentUser.achievements.push(i);
               break;
             case 4:
-              // won last game with margin of one point
+              // won game with margin of one point
               if (
                 currentUser.wonLastGame &&
                 Math.abs(
@@ -384,7 +389,6 @@ export class StatsService {
                 currentUser.achievements.push(i);
               break;
             case 10:
-              //todo: Jorien & Carien: figure out why this is not working
               if (
                 this.durationLongerThen(
                   lastGame.gameStartedAt,
