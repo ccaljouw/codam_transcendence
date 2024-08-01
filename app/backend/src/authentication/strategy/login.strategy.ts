@@ -26,7 +26,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       console.log(`In login strategy: ${loginName}`);
       user = await this.authService.validateUser(loginName, password, token);
       if (!user)
-        throw new UnauthorizedException('Invallid user-password combination');
+        throw new UnauthorizedException('Invalid user-password combination');
     } catch (error) {
       console.log('Error validating login for user:', error.message);
       throw error;
