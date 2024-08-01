@@ -84,7 +84,7 @@ export class AuthService {
         return user;
       } else {
         console.log('incorrect password');
-        throw new UnauthorizedException('Invallid user-password combination');
+        throw new UnauthorizedException('Invalid user-password combination');
       }
     } catch (error) {
       console.log('Error validating user:', error.message);
