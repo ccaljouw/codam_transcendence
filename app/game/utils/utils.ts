@@ -43,7 +43,8 @@ export function escapeKeyPressed(game: Game) {
 }
 
 export function countdown(game: Game) {
-	console.log("GameScript: countdown started");
+	log("GameScript: countdown started");
+
 	let count = CON.config[game.config].countdownTime;
 	let interval = setInterval(() => {
 		game.messageFields[0]?.setText(count.toString());
@@ -150,4 +151,11 @@ export function	setTheme(game: Game) {
 	game.ball?.setColor(CON.themes[game.theme].ballColor);
 	game.ctx.clearRect(0, 0, game.canvas!.width, game.canvas!.height);
 	drawGameObjects(game);
+}
+
+//toggle all logs in the game	script here
+export function log(message: string) {
+	if (CON.logging) {
+		console.log("GameScript: ", message);
+	}
 }

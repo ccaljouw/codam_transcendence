@@ -1,5 +1,6 @@
 {
   "standard": {
+
     "screenWidth": "1000",
     "screenHeight": "666",
 
@@ -47,6 +48,7 @@
   },
   
   "test": {
+
     "screenWidth": "1000",
     "screenHeight": "666",
 
@@ -94,6 +96,7 @@
   },
 
   "strongPong": {
+
     "screenWidth": "1000",
     "screenHeight": "666",
 

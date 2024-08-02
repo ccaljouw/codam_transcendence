@@ -2,7 +2,7 @@ import { Game } from '../components/Game'
 import * as CON from './constants'
 import { Ball } from '../gameObjects/Ball'
 import { detectCollision } from './collisionDetection'
-import { detectScore, checkWinCondition, setWallTheme } from './utils'
+import { detectScore, checkWinCondition, setWallTheme, log } from './utils'
 import { GameState } from '@prisma/client'
 import { UpdateGameStateDto } from '@ft_dto/game'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
@@ -93,7 +93,7 @@ export function checkForGoals(game: Game) {
   
   let winningSide: number = checkWinCondition(game) ?? -1;
   if (winningSide !== -1) {
-    console.log(`GameScript: game finished, longest rally: ${game.ball?.getLongestRally()}`);
+    log(`GameScript: game finished, longest rally: ${game.ball?.getLongestRally()}`);
     const payload : UpdateGameStateDto  = {id: game.roomId, state: GameState.FINISHED, winnerId: winningSide, score1: game.players[0].getScore(), score2: game.players[1].getScore(), longestRally: game.ball?.getLongestRally()};
     gameSocket.emit("game/updateGameState", payload);
     game.finishGame(winningSide);

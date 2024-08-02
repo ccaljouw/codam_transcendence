@@ -11,7 +11,7 @@ import { TextComponent } from './TextComponent'
 import * as CON from '../utils/constants'
 import { disconnectSocket, setSocketListeners } from '../utils/gameSocketListners'
 import { updateObjects, checkForGoals } from '../utils/updateObjects'
-import { countdown, setTheme } from '../utils/utils'
+import { countdown, setTheme, log } from '../utils/utils'
 import { initializeGameObjects, drawGameObjects, resetGameObjects } from '../utils/objectController'
 
 export class Game {
@@ -51,7 +51,7 @@ export class Game {
 		initializeGameObjects(this);
 		setTheme(this);
 		setSocketListeners(this);
-		console.log("GameScript: instance type: ", this.instanceType);
+		log(`GameScript: instance type: ${this.instanceType}`);
 	}
 	
 
@@ -98,7 +98,7 @@ export class Game {
 		}
 		cancelAnimationFrame(this.currentAnimationFrame);
 		this.ball?.resetBothRallies();
-		console.log("player: ", this.winner?.getSide(), this.winner?.getName(), " won the match");
+		log(`GameScript: player: ${this.winner?.getSide()} ${this.winner?.getName()} won the match`);
 		disconnectSocket(this);
 	}
 
@@ -113,7 +113,7 @@ export class Game {
 		}
 		this.gameState = GameState.FINISHED;
 		cancelAnimationFrame(this.currentAnimationFrame);
-		console.log("GameScript: game aborted");
+		log("GameScript: game aborted");
 	}
 
 	resetGame() {
@@ -121,7 +121,7 @@ export class Game {
 			return;
 		}
 		this.ball?.resetRally();
-		console.log("GameScript: resetGame called");
+		log("GameScript: resetGame called");
 		resetGameObjects(this);
 		this.messageFields[0]?.setText("GOAL!");
 		countdown(this);

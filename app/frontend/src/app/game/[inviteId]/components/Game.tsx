@@ -26,7 +26,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 
 
   function disconnectSocket() {
-    console.log("Game: disconnecting socket");
+    console.log("GameComponent: disconnecting socket");
     gameSocket.off(`game/message`, handleMessage);
     gameSocket.off(`game/updateGameState`, handleGameStateUpdate);
     gameSocket.emit("game/leaveRoom", roomId);
@@ -37,17 +37,16 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
       const payload: UpdateGameStateDto = {id: roomId, state: GameState.ABORTED};
       gameSocket.emit("game/updateGameState", payload);
     }
-    console.log("Game: leaving game");
+    console.log("GameComponent: leaving game");
     disconnectSocket();
     router.push('/play');
   }
 
   const handleMessage = (msg: string) => {
-    console.log(`Game: got game/message ${msg}`);
+    console.log(`GameComponent: received message: "${msg}"`);
     if (fetchedGameData?.state === GameState.WAITING && fetchedGameData.id) {
-      console.log("Game: less than two players in game, refreshing game data, gameid:", fetchedGameData.id);
+      console.log("GameComponent: less than two players in game, refreshing game data, gameid:", fetchedGameData.id);
       gameFetcher({url: `${constants.API_GAME}${fetchedGameData.id}`});
-      console.log("Game: refreshed game data");
     }
   }; 
 
@@ -56,16 +55,16 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
       return;
     }
 
-    console.log(`Game: received game state update in handle gameState`, payload.id, payload.state);
-    console.log('Game: current game:', game);
+    console.log(`GameComponent: received game state update in handle gameState`, payload.id, payload.state);
+    // console.log('GameComponent: current game:', game);
 
     if (payload.state === GameState.FINISHED || payload.state === GameState.ABORTED) {
-      console.log("Game: game finished");      
+      console.log("GameComponent: game finished");      
       disconnectSocket();
       return;
     } 
     if (payload.state === GameState.REJECTED) {
-      console.log("Game: game rejected");
+      console.log("GameComponent: game rejected");
       disconnectSocket();
       router.push(`/play`);
     } else return;
@@ -75,7 +74,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
   useEffect(() => {
     gameSocket.on(`game/message`, handleMessage);
     gameSocket.on(`game/updateGameState`, handleGameStateUpdate);
-
+    
     return () => {
       disconnectSocket();
     };
@@ -90,7 +89,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
       console.log("transendance socket id: ", gameSocket.id);
       
       if(inviteId == 0) console.log("Game: fetching random game");
-      else console.log("Game: fetching invite game");
+      else console.log("GameComponent: fetching invite game");
       
       const payloadGetGame : GetGameDto = {userId: parseInt(userId), clientId: gameSocket.id, inviteId: inviteId};
       gameFetcher({url: `${constants.API_GETGAME}`, fetchMethod: 'PATCH', payload: payloadGetGame});
@@ -100,7 +99,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
   // join room
   useEffect(() => {
     if (roomId !== 0) {
-      console.log("Game: joining room:", roomId);
+      console.log("GameComponent: joining room:", roomId);
       gameSocket.emit("game/joinRoom", roomId);
     };
   }, [roomId]);
@@ -110,7 +109,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
   useEffect(() => {
     if (!fetchedGameData) return;
     if (fetchedGameData.state === GameState.READY_TO_START && roomId !== 0 && canvasRef.current) {
-      console.log("Game: starting game");
+      console.log("GameComponent: starting game");
       canvasRef.current.focus();
       const payload: UpdateGameStateDto = {id: roomId, state: GameState.STARTED};
       gameSocket.emit("game/updateGameState", payload);
@@ -119,7 +118,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     if (roomId === 0) {
       setRoomId(fetchedGameData.id);
     } else {
-      console.log("Game: waiting for second player to join in get/update game data");
+      console.log("GameComponent: waiting for second player to join in get/update game data");
     }
     if(fetchedGameData.state === GameState.READY_TO_START)
       setWaitingForPlayers(false);
@@ -137,7 +136,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 	// create game instance when canvas is available and there are two players
 	useEffect(() => {
 		if (!game && canvasRef.current && instanceType !== InstanceTypes.notSet) {
-			console.log("Game: creating game instance of type: ", instanceType);
+			console.log("GameComponent: creating game instance of type: ", instanceType);
 
 			//set required configuration in constants
 			const newGame = new Game(canvasRef.current, instanceType, fetchedGameData!, constants.configuration, constants.themes[fetchedGameData?.GameUsers?.[instanceType].user.theme]);

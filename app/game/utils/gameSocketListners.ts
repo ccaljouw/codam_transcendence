@@ -3,6 +3,7 @@ import { GameState } from '@prisma/client'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { UpdateGameObjectsDto, UpdateGameStateDto, UpdateGameDto } from '@ft_dto/game'
 import { updateWalls } from './updateObjects';
+import { log } from './utils';
 
 
 export function setSocketListeners(game: Game) {
@@ -11,14 +12,15 @@ export function setSocketListeners(game: Game) {
   let gamerunning = false;
 
   gameSocket.emit("game/joinRoom", roomId);
-  console.log("GameScript: joined room");
+  log("GameScript: joined room");
     
   gameSocket.on(`game/updateGameObjects`, (payload: UpdateGameObjectsDto) => {
     if (game.gameState === GameState.FINISHED) {
       return;
     }
     
-    // console.log(`Script (${game.gameData!.id}) received game objects update`, payload);
+    // turn off or remove this log
+    //log(`GameScript ${game.gameData!.id} received game objects update ${payload}`);
 
     if (payload.roomId !== undefined) {
       game.receivedUpdatedGameObjects = {
@@ -47,9 +49,8 @@ export function setSocketListeners(game: Game) {
     if (game.gameState === GameState.FINISHED) {
       return;
     }
+    log(`GameScript: received game state update in handle gameState, gameid: ${payload.id}, state: ${payload.state}`);
     
-    console.log(`GameScript: received game state update from server`, payload.id, payload.state, payload.winnerId);
-
     if (payload.state === GameState.FINISHED) {
       game.finishGame(payload.winnerId!);
       return;
@@ -93,5 +94,5 @@ export function disconnectSocket(game: Game) {
   gameSocket.off(`game/updateGameObjects`);
   gameSocket.off(`game/updateGameState`);
   gameSocket.emit("game/leaveRoom", game.gameData!.id);
-  console.log("GameScript: left room");
+  log("GameScript: leaving room");
 }

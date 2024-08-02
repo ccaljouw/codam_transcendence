@@ -3,20 +3,17 @@ import { Wall } from '../gameObjects/Wall'
 import { GameObject } from '../gameObjects/GameObject'
 import { PlayerComponent } from '../components/PlayerComponent'
 import { Game } from '../components/Game'
-import { KeyListenerComponent } from '../components/KeyListenerComponent'
 import { TextComponent } from '../components/TextComponent'
-// import { startKeyPressed } from './utils'
 import { escapeKeyPressed } from './utils'
 import { UpdateUserDto } from '@ft_dto/users'
 import * as CON from './constants'
 import { UpdateGameUserDto } from '@ft_dto/game'
-
+import { log } from './utils'
 
 export function canvasInitializer (game: Game ) {
 	game.canvas!.width = CON.config[game.config].screenWidth;
 	game.canvas!.height = CON.config[game.config].screenHeight;
 }
-
 
 export function paddleInitializer (game: Game ) {
 	const paddleHeight = CON.config[game.config].screenHeight * CON.config[game.config].paddleHeightFactor;
@@ -79,7 +76,6 @@ export function setVerticalWalls (walls: Wall[], config: string) {
 			CON.BASE_COLOR
 		));
 	
-
 	//decativate the vertical walls bydefault
 	walls.forEach(wall => {
 		if (wall.getType() === 1) {
@@ -130,10 +126,10 @@ export function keyListenerInitializer (game: Game) {
 		return;
 	}
 	game.keyListener.addKeyCallback(" ", () => {
-		console.log("Space pressed. No function added yet");
+		log("Space pressed. No function added yet");
 	});
 	game.keyListener.addKeyCallback("Escape", () => {
-		console.log("Escape key pressed, aborting game")
+		log("Escape key pressed, aborting game")
 		escapeKeyPressed(game)
 	});
 }
@@ -165,13 +161,13 @@ export function playerInitializer (players: PlayerComponent[], config: string, g
 	var player2 : string = "placehoder name 2";
 	
 	const user1 = gameUsers[0]!.user! as UpdateUserDto;
-	console.log("Player: user1 = ", user1.userName!);	
+	log(`GameScript: player 1 = ${user1.userName!}`);	
 	player1 = user1.userName!;
 	players.push(new PlayerComponent(player1, 0, config));
 	
 	if (gameUsers[1]) {
 		const user2 = gameUsers[1].user as UpdateUserDto;
-		console.log("Player: user2 = ", user2.userName!);
+		log(`GameScript: player 2 = ${user2.userName!}`);
 		player2 = user2.userName!;
 		players.push(new PlayerComponent(player2, 1, config));
 	}

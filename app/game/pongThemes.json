@@ -63,7 +63,7 @@
     "backgroundColor": "black",
     "lineColor": "#39FF14",
     "wallColor": "#39FF14",
-    "backWallColor": "#FF5F1F",
+    "backWallColor": "#39FF14",
     "leftPlayerColor": "#FF1493",
     "rightPlayerColor": "#FF1493",
     "leftPlayerFont": "Arial",
@@ -79,7 +79,7 @@
     "bottomLeftTextColor": "#00D0FF",
     "bottomLeftTextFont": "Helvetica",
     "bottomLeftTextSize": "30",
-    "bottomRightTextColor": "#FF5F1F",
+    "bottomRightTextColor": "#39FF14",
     "bottomRightTextFont": "Helvetica",
     "bottomRightTextSize": "30"
   }
