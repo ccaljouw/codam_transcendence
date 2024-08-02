@@ -134,7 +134,7 @@ export class GameService {
   }
 
   async disconnect(client: Socket) {
-    console.log('Backend Game!!!: disconnect service called');
+    console.log('Backend Game: disconnect service called');
     console.log('My token is:', client.id);
   }
 

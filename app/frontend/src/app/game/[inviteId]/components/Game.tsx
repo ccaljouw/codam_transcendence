@@ -9,6 +9,7 @@ import { constants } from '@ft_global/constants.globalvar.tsx'
 import useFetch from 'src/globals/functionComponents/useFetch.tsx'
 import styles from '../styles.module.css';
 import { useRouter } from 'next/navigation';
+import { use } from 'passport'
 
 
 // GameComponent is a functional component that renders the game canvas and handles game logic
@@ -49,18 +50,37 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
       console.log("Game: refreshed game data");
     }
   }; 
-  
+
   const handleGameStateUpdate = (payload: UpdateGameStateDto) => {
+    if (!game) {
+      return;
+    }
+
     console.log(`Game: received game state update in handle gameState`, payload.id, payload.state);
     console.log('Game: current game:', game);
+
+    if (payload.state === GameState.FINISHED || payload.state === GameState.ABORTED) {
+      console.log("Game: game finished");      
+      disconnectSocket();
+      return;
+    } 
     if (payload.state === GameState.REJECTED) {
+      console.log("Game: game rejected");
+      disconnectSocket();
       router.push(`/play`);
     } else return;
   };
   
-  // handle incomming game messages
-  gameSocket.on(`game/message`, handleMessage);
-  gameSocket.on(`game/updateGameState`, handleGameStateUpdate);
+  // handle socket events
+  useEffect(() => {
+    gameSocket.on(`game/message`, handleMessage);
+    gameSocket.on(`game/updateGameState`, handleGameStateUpdate);
+
+    return () => {
+      disconnectSocket();
+    };
+  }, [game, roomId]);
+
 
 	// fetch game data
 	useEffect(() => {
@@ -85,6 +105,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     };
   }, [roomId]);
   
+
   // update game data
   useEffect(() => {
     if (!fetchedGameData) return;
@@ -93,11 +114,12 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
       canvasRef.current.focus();
       const payload: UpdateGameStateDto = {id: roomId, state: GameState.STARTED};
       gameSocket.emit("game/updateGameState", payload);
+      return;
     }
     if (roomId === 0) {
       setRoomId(fetchedGameData.id);
     } else {
-      console.log("Game: waiting for second player to join  in get/update game data");
+      console.log("Game: waiting for second player to join in get/update game data");
     }
     if(fetchedGameData.state === GameState.READY_TO_START)
       setWaitingForPlayers(false);
