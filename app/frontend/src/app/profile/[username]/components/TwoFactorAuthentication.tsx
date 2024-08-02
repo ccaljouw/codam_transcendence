@@ -37,14 +37,14 @@ export default function TwoFactorAuthentication(): JSX.Element {
 		}
 	}, [disable2FA]);
 
-  const enable2FA =  () => {
+  const enable2FA =  async () => {
     if (!currentUser.twoFactEnabled) {
       console.log('enabeling 2FA');
-      fetch2FA({url: constants.API_ENABLE2FA + currentUser.id, fetchMethod: 'PATCH'});
+      await fetch2FA({url: constants.API_ENABLE2FA + currentUser.id, fetchMethod: 'PATCH'});
     }
     else {
       console.log("disable 2FA");
-      fetchDisable2FA({ url: constants.API_DISABLE2FA + currentUser.id, fetchMethod: 'PATCH'});
+      await fetchDisable2FA({ url: constants.API_DISABLE2FA + currentUser.id, fetchMethod: 'PATCH'});
     }
 	}
 
@@ -54,7 +54,7 @@ export default function TwoFactorAuthentication(): JSX.Element {
     if (token) {
       console.log(`got token from form: ${token}`)
       try {
-        fetchFAValid({
+        await fetchFAValid({
           url: constants.API_CHECK2FATOKEN,
           fetchMethod: 'POST',
           payload: {  userId: currentUser.id, token}
