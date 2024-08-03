@@ -28,10 +28,12 @@ export default function UserContextMenu({ user }:
 	const router = useRouter();
 
 	const sendInvite = (payload?: ChatMessageToRoomDto) => {
+		console.log('sendInvite()')
 		if (!payload && socketPayload) // if no payload, use socketPayload
 				payload = socketPayload;
 		if (!payload) // if no payload and no socketPayload, return
 			return;
+		console.log('sending invite over socket');
 		transcendenceSocket.emit('chat/msgToRoom', payload);
 		setSocketPayload(null); // reset payload so it doesn't send again
 		newChatMessageFetcher({ url: constants.CHAT_MESSAGE_TO_DB, fetchMethod: 'POST', payload: payload });

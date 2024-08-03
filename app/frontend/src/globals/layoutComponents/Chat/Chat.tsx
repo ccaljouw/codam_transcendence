@@ -22,7 +22,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 	const [message, setMessage] = useState('');
 	const [otherUserForDm, setOtherUserForDm] = useState<number>(-1);
 	const [chat, setChat] = useState<JSX.Element[]>([]);
-	const firstRender = useRef(true);
+	// const firstRender = useRef(true);
 	const { currentUser, someUserUpdatedTheirStatus, currentChatRoom, setCurrentChatRoom, setCurrentUser, newChatRoom, setNewChatRoom, switchToChannelCounter, setSwitchToChannelCounter } = useContext(TranscendenceContext);
 	const messageBox = useRef<HTMLDivElement>(null);
 	const { data: chatFromDb, isLoading: chatLoading, error: chatError, fetcher: chatFetcher } = useFetch<CreateDMDto, FetchChatDto>();
@@ -85,7 +85,13 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		chatSocket.emit('invite/inviteResponse', chatAcceptPayload);
 		// Refresh the chat messages to update the invite displayed.
 			// fetchMessages(currentChatRoom, chatMessagesFetcher, currentUser.id);
-		setNewChatRoom({ room: chatInvite.chatId? chatInvite.chatId : -1, count: newChatRoom.count + 1 });
+		if (chatInvite.chatId && currentChatRoom.id != chatInvite.chatId)
+		{
+			// setOtherUserForDm(-1);
+			// leaveRoom(currentUser.id, currentChatRoom, currentUser, setCurrentChatRoom);
+			// fetchChat(chatFetcher, chatInvite.chatId, currentUser.id);
+			setNewChatRoom({ room: chatInvite.chatId, count: newChatRoom.count + 1 });
+		}
 	}, [chatInvite]);
 	
 	const changeRoomStatusCallBack = (userId: number, onlineStatus: boolean) => {
@@ -172,9 +178,10 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		// If we don't have a user2 or a chatID, we can't create a chat.
 		if (!user2 && (!chatId || chatId === -1))
 			return;
-		if (firstRender.current) // This is to ensure that the chat is only created once.
-		{
-			firstRender.current = false;
+		console.log("Chat")
+		// if (firstRender.current) // This is to ensure that the chat is only created once.
+		// {
+			// firstRender.current = false;
 			if (user2 && user2 !== -1) // If we have a user2, we need to create a DM chat.
 			{
 				setOtherUserForDm(user2);
@@ -204,14 +211,14 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 				}
 
 			});
-		}
+		// }
 		return () => {
 			chatSocket.off('chat/messageFromRoom');
 			chatSocket.off('invite/inviteResponse')
 			chatSocket.off('chat/patch');
 			setCurrentChatRoom({ id: -1, name: '', visibility: ChatType.PUBLIC, users: [], ownerId: 0 });
 		};
-	}, [chatId, user2, firstRender.current]);
+	}, [chatId, user2]);
 
 	// This effect is used to update the chat when a user changes their status.
 	useEffect(() => {
@@ -251,12 +258,13 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		}
 	}, [newUserForChannel]);
 
-	// This effect is used to leave the room and reset the chat when the user2 changes.
+	// This effect is used to leave the room when the chatId or user2 changes.
 	useEffect(() => {
-		if (chatFromDb?.id)
-			leaveRoom(currentUser.id, chatFromDb, currentUser, setCurrentChatRoom);
-		if (!firstRender.current)
-			firstRender.current = true;
+		console.log("User2/chatId changed: ", user2, chatId, chatFromDb);
+		// if (chatFromDb?.id)
+			leaveRoom(currentUser.id, currentChatRoom, currentUser, setCurrentChatRoom);
+		// if (!firstRender.current)
+		// 	firstRender.current = true;
 	}, [user2, chatId]);
 
 	// This effect is used to scroll to the bottom of the chat when the chat changes.

@@ -16,6 +16,8 @@ export const chatResponseReceivedHandler = ( // This function triggers the actio
 ) => {
 	// CHAT INVITE RESPONSE HANDLER FOR THE ONE WHO SENT THE INVITE
 	setSwitchToChannelCounter({ channel: -1, count: 0, invite: -1 });
+
+	// Should we switch to the channel that we just invited the user to?
 	if (inviteSocketMessage.accept && inviteSocketMessage.channelId != currentChatRoomId) {
 		setNewChatRoom({ room: inviteSocketMessage.channelId, count: newChatRoom.count + 1 });
 	}

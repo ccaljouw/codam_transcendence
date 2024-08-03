@@ -113,7 +113,6 @@ export class UsersService {
 		console.log("Friends from database: " + friends);
 		if (!friends)
 			throw new NotFoundException(`No friends in the database.`);
-		for (const element of friends)
 		return friends;
 	}
 
