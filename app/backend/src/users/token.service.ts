@@ -83,6 +83,19 @@ export class TokenService {
 	
 	}
 
+	async getTokenEntry(token: string): Promise<CreateTokenDto | null> {
+		try {
+			const tokenUser = await this.db.tokens.findUnique({
+				where: {
+					token: token,
+				},
+			});
+			return tokenUser || null;
+		} catch (error) {
+			console.error('Error getting token entry:', error);
+		}
+	}
+
 	async findChatIdByToken(token: string): Promise<number | null> {
 		try {
 			const user = await this.db.tokens.findUnique({

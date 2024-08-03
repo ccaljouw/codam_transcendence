@@ -51,10 +51,24 @@ export class ChatSocketService {
 
 	async changeChatUserStatus(data: { token: string, userId: number, chatId: number, isInChatRoom: boolean }): Promise<UpdateChatUserDto | null> {
 
-
+		const currentToken = await this.tokenService.getTokenEntry(data.token);
+		if (currentToken && currentToken.chatId && currentToken.chatId !== data.chatId && currentToken.chatId !== 0) {
+			await this.db.chatUsers.update({
+				where: {
+					chatId_userId: {
+						chatId: currentToken.chatId,
+						userId: data.userId
+					}
+				},
+				data: {
+					isInChatRoom: false
+				}
+			});
+		}
 		await this.tokenService.updateToken({ userId: data.userId, chatId: data.isInChatRoom ? data.chatId : 0, token: data.token }); // update token with chatId if user is in chatroom, else set chatId to 0
 		const userStillInChat = await this.isUserInChatRoom(data.chatId, data.userId);
 		if (!userStillInChat || data.isInChatRoom) { // if user is not in any chatroom, set isInChatRoom to false
+			console.log("User is not in chatroom, setting isInChatRoom to false", data);
 			const updatedUser = await this.db.chatUsers.update({
 				where: {
 					chatId_userId: {

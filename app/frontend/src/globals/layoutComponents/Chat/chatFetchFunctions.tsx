@@ -20,6 +20,7 @@ export const fetchDM = async (
 ) => {
 	if (!user1 || !user2)
 		return;
+	console.log('Fetching DM:', user1, user2);
 	const payload: CreateDMDto = { user1Id: user1, user2Id: user2 };
 	await chatFetcher({ url: constants.CHAT_CREATE_DM, fetchMethod: "POST", payload })
 }

@@ -88,8 +88,10 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		if (chatInvite.chatId && currentChatRoom.id != chatInvite.chatId)
 		{
 			// setOtherUserForDm(-1);
+			// console.log("Leaving room: ", currentChatRoom);
 			// leaveRoom(currentUser.id, currentChatRoom, currentUser, setCurrentChatRoom);
 			// fetchChat(chatFetcher, chatInvite.chatId, currentUser.id);
+			console.log("Joining room: ", chatInvite.chatId);
 			setNewChatRoom({ room: chatInvite.chatId, count: newChatRoom.count + 1 });
 		}
 	}, [chatInvite]);
@@ -230,6 +232,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 
 	// This effect is used to join the room when the chatId changes.
 	useEffect(() => {
+		console.log("Chat from db: ", chatFromDb);
 		if (!chatFromDb)
 			return;
 		if (chatId && chatId !== -1) {

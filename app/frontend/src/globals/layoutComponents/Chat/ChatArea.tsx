@@ -34,7 +34,7 @@ export default function ChatArea() {
 
 	useEffect(() => { // Reset secondUser when a new chat room is created to avoid the Chat component fetching the wrong room
 		console.log('newChatRoom: chatarea', newChatRoom);
-		setSecondUser(0);
+		setSecondUser(-1);
 	}, [newChatRoom]);
 
 
@@ -72,6 +72,17 @@ export default function ChatArea() {
 		else
 			setUserListType(UserListType.AllUsers);
 	}, [currentUser]);
+
+
+	useEffect(() => {
+		if (currentChatRoom.visibility == ChatType.DM) {
+			if (HasFriends(currentUser)) {
+				setUserListType(UserListType.Friends);
+			}
+			else
+				setUserListType(UserListType.AllUsers);
+		}
+	}, [currentChatRoom]);
 
 	useEffect(() => {
 		if (allUsersUnreadCounter == 0) {
