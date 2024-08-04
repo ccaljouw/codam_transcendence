@@ -17,6 +17,8 @@ export function canvasInitializer (game: Game ) {
 
 export function paddleInitializer (game: Game ) {
 	const paddleHeight = CON.config[game.config].screenHeight * CON.config[game.config].paddleHeightFactor;
+	const rightPaddleName: string = game.aiGame ? "AI": "right";
+	
 	const leftPaddle = new Paddle(
 		"left",
 		CON.config[game.config].paddleOffset_X,
@@ -26,7 +28,7 @@ export function paddleInitializer (game: Game ) {
 		CON.BASE_COLOR
 	);
 	const rightPaddle = new Paddle(
-		"right",
+		rightPaddleName,
 		CON.config[game.config].screenWidth - CON.config[game.config].paddleOffset_X - CON.config[game.config].paddleWidth,
 		CON.config[game.config].screenHeight / 2 - paddleHeight / 2,
 		CON.config[game.config].paddleWidth,

@@ -20,6 +20,7 @@ export class Game {
 	gameData: UpdateGameDto | null = null;
 	theme: string;
 	config: string;
+	aiGame: Boolean = false;
 	instanceType: CON.InstanceTypes = CON.InstanceTypes.notSet;
 	gameState: GameState = GameState.WAITING;
 	keyListener: KeyListenerComponent = new KeyListenerComponent();
@@ -39,7 +40,7 @@ export class Game {
 	lastFrameTime: number = 0;
 	currentAnimationFrame: number = 0;
 
-	constructor(newCanvas: HTMLCanvasElement | undefined, instanceType: CON.InstanceTypes, data: UpdateGameDto, givenConfig: string, givenTheme: string) {
+	constructor(newCanvas: HTMLCanvasElement | undefined, instanceType: CON.InstanceTypes, data: UpdateGameDto, givenConfig: string, givenTheme: string, givenVolume: number, AIGame: Boolean) {
 		this.config = givenConfig;
 		this.theme = givenTheme;
 		this.gameData = data;
@@ -48,6 +49,8 @@ export class Game {
 		this.canvas = newCanvas? newCanvas : undefined;
 		this.ctx = this.canvas?.getContext("2d") as CanvasRenderingContext2D;
 		this.gameUsers = this.gameData.GameUsers as UpdateGameUserDto [];
+		this.soundFX.setVolume(givenConfig, givenVolume);
+		this.aiGame = AIGame;
 		initializeGameObjects(this);
 		setTheme(this);
 		setSocketListeners(this);
@@ -131,5 +134,9 @@ export class Game {
 		this.gameState = GameState.STARTED;
 		countdown(this);
 		this.gameLoop(1);
+	}
+
+	setAILevel(level: number) {
+		CON.config[this.config].AILevel = level;
 	}
 }

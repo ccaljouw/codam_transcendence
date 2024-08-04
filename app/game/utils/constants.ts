@@ -1,7 +1,6 @@
 import myThemes from '../pongThemes.json'
 import myConfig from '../pongConfig.json'
 
-
 //turn on or of console logging for the game script here
 export const logging = true;
 
@@ -107,6 +106,7 @@ type Config = {
 	paddleOffset_X: number;
 	paddleHeightFactor: number;
 	paddleGap: number;
+	defaultVolume: number;
 	AILevel: number;
 	helpAtEnd: boolean;
 };
@@ -149,6 +149,7 @@ function parseConfig(jsonConfig: any): Record<string, Config> {
 			paddleOffset_X: parseInt(value.paddleOffset_X, 10),
 			paddleHeightFactor: parseFloat(value.paddleHeightFactor),
 			paddleGap: parseInt(value.paddleGap, 10),
+			defaultVolume: parseFloat(value.defaultVolume),
 			AILevel: parseFloat(value.AILevel),
 			helpAtEnd: value.helpAtEnd === "true",
 		};

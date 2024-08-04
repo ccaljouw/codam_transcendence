@@ -9,7 +9,6 @@ import { constants } from '@ft_global/constants.globalvar.tsx'
 import useFetch from 'src/globals/functionComponents/useFetch.tsx'
 import styles from '../styles.module.css';
 import { useRouter } from 'next/navigation';
-import { use } from 'passport'
 
 
 // GameComponent is a functional component that renders the game canvas and handles game logic
@@ -138,8 +137,18 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 		if (!game && canvasRef.current && instanceType !== InstanceTypes.notSet) {
 			console.log("GameComponent: creating game instance of type: ", instanceType);
 
-			//set required configuration in constants
-			const newGame = new Game(canvasRef.current, instanceType, fetchedGameData!, constants.configuration, constants.themes[fetchedGameData?.GameUsers?.[instanceType].user.theme]);
+			// set required configuration in constants
+      // added 0.5 as defauult volume to be congigured from player profile
+      // added false as AI game to be implemented in future
+			const newGame = new Game(
+        canvasRef.current,
+        instanceType,
+        fetchedGameData!,
+        constants.configuration, // config
+        constants.themes[fetchedGameData?.GameUsers?.[instanceType].user.theme], // theme
+        -0.5, // volume
+        false // AI game
+      );
 			setGame(newGame);
 			canvasRef.current.focus();
 		}

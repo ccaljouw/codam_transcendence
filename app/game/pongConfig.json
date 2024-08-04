@@ -20,29 +20,30 @@
     "leftPaddleDownKey": "ArrowDown",
     "rightPaddleUpKey": "ArrowUp",
     "rightPaddleDownKey": "ArrowDown",
-
+    
     "backWallGap": "200",
-
+    
     "startMessage": "Waiting for other player",
     "winMessage": "Press SPACE to start a new match",
-
+    
     "scoreFieldOffset_X": "50",
     "scoreFieldOffset_Y": "150",
-
+    
     "bottomMessageOffset_X": "50",
     "bottomMessageOffset_Y": "30",
-
+    
     "playerNameOffset_X": "50",
     "playerNameOffset_Y": "50",
-
+    
     "lineWidth": "6",
     "wallWidth": "20",
-
+    
     "paddleWidth": "20",
     "paddleOffset_X": "20",
     "paddleHeightFactor": ".25",
     "paddleGap": "2",
-
+    
+    "defaultVolume": "0.5",
     "AILevel": "0.7",
     "helpAtEnd": "false"
   },
@@ -91,6 +92,7 @@
     "paddleHeightFactor": ".25",
     "paddleGap": "2",
 
+    "defaultVolume": "0.5",
     "AILevel": "0.7",
     "helpAtEnd": "true"
   },
@@ -139,6 +141,7 @@
     "paddleHeightFactor": ".25",
     "paddleGap": "2",
 
+    "defaultVolume": "0.5",
     "AILevel": "0.7",
     "helpAtEnd": "true"
   }

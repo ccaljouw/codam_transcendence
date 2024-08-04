@@ -1,10 +1,15 @@
+import { log } from "../utils/utils";
+import * as CON from '../utils/constants'
+
+
 export class SoundFX {
   private audioContext: AudioContext;
+  private gainValue: number;
 
   constructor() {
-      this.audioContext = new AudioContext();
+    this.audioContext = new AudioContext();
+    this.gainValue = 0.5;
   }
-
 
   async play(frequency: number, duration: number) {
     if (this.audioContext.state === 'suspended') {
@@ -18,11 +23,20 @@ export class SoundFX {
     gainNode.connect(this.audioContext.destination);
 
     oscillator.frequency.value = frequency;
-    gainNode.gain.value = 0.5;
+    gainNode.gain.value = this.gainValue;
     oscillator.type = "square";
     
     oscillator.start(this.audioContext.currentTime);
     oscillator.stop(this.audioContext.currentTime + duration);
+  }
+
+  setVolume(config: string, volume: number) {
+    if (volume < 0 || volume > 1) {
+      log(`GameScript: "SoundFX: volume set to default. set value must be between 0 and 1`);
+      this.gainValue = CON.config[config].defaultVolume;
+    } else {
+      this.gainValue = volume;
+    }
   }
 
   playPaddleHit() {
@@ -48,7 +62,6 @@ export class SoundFX {
   playGoal() {
     this.play(440, 0.1);
   }
-
   
   reinitialize() {
     this.audioContext.close();
