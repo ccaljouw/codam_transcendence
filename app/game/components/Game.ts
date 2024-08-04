@@ -93,7 +93,7 @@ export class Game {
 		}
 		
 		if (winningSide === this.instanceType) {
-				this.soundFX.playWin();
+			this.soundFX.playWin();
 		} else {
 			this.soundFX.playLose();
 		}
@@ -101,7 +101,11 @@ export class Game {
 		this.gameState = GameState.FINISHED;
 		this.winner = this.players[winningSide];
 		if (this.canvas) {
-			this.messageFields[0]?.setText(this.winner?.getName() + " won the match!");
+			if (winningSide === this.instanceType) {
+				this.messageFields[0]?.setText("You WIN! :-)");
+			} else {
+				this.messageFields[0]?.setText("You LOSE! :-(");
+			}
 			this.messageFields[0]?.setAlign("left");
 			this.messageFields[0]?.setX(50);
 			this.redrawGameObjects();
@@ -130,12 +134,12 @@ export class Game {
 		if (this.gameState === GameState.FINISHED) {
 			return;
 		}
-		this.soundFX.playGoal();
 		this.ball?.resetRally();
 		log("GameScript: resetGame called");
 		resetGameObjects(this);
 		this.messageFields[0]?.setText("GOAL!");
 		countdown(this);
+		this.soundFX.playGoal();
 	}
  
 	startGame() {

@@ -52,7 +52,7 @@
     "screenWidth": "1000",
     "screenHeight": "666",
 
-    "countdownTime": "3",
+    "countdownTime": "1",
     "winningScore": "3",
     "collisionCooldown": "500",
     "ballWidth": "20",

@@ -65,13 +65,13 @@ export class SoundFX {
   playWin() {
     this.play(500, 0.3);
     this.play(600, 0.3, 0.3);
-    this.play(700, 0.3, 0.6);
+    this.play(700, 0.4, 0.6);
   }
 
   playLose() {
-    this.play(700, 0.3);
-    this.play(600, 0.3, 0.3);
-    this.play(500, 0.3, 0.6);
+    this.play(300, 0.3);
+    this.play(250, 0.3, 0.3);
+    this.play(200, 0.4, 0.6);
   }
 
   reinitialize() {
