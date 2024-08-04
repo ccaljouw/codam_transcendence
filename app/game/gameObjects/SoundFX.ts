@@ -1,6 +1,5 @@
+import { waitForDebugger } from "inspector";
 import { log } from "../utils/utils";
-import * as CON from '../utils/constants'
-
 
 export class SoundFX {
   private audioContext: AudioContext;
@@ -8,10 +7,10 @@ export class SoundFX {
 
   constructor() {
     this.audioContext = new AudioContext();
-    this.gainValue = 0.5;
+    this.gainValue = 0.5; // default volume
   }
 
-  async play(frequency: number, duration: number) {
+  async play(frequency: number, duration: number, delay: number = 0) {
     if (this.audioContext.state === 'suspended') {
       await this.audioContext.resume();
     }
@@ -26,14 +25,13 @@ export class SoundFX {
     gainNode.gain.value = this.gainValue;
     oscillator.type = "square";
     
-    oscillator.start(this.audioContext.currentTime);
-    oscillator.stop(this.audioContext.currentTime + duration);
+    oscillator.start(this.audioContext.currentTime + delay);
+    oscillator.stop(this.audioContext.currentTime + delay + duration);
   }
 
   setVolume(config: string, volume: number) {
     if (volume < 0 || volume > 1) {
       log(`GameScript: "SoundFX: volume set to default. set value must be between 0 and 1`);
-      this.gainValue = CON.config[config].defaultVolume;
     } else {
       this.gainValue = volume;
     }
@@ -48,7 +46,7 @@ export class SoundFX {
   }
 
   playCountdown2() {
-    this.play(300, 0.1);
+    this.play(250, 0.1);
   }
   
   playCountdown1() {
@@ -56,13 +54,21 @@ export class SoundFX {
   }
   
   playStart() {
-    this.play(500, 0.3);
+    this.play(450, 0.2);
   }
-  
+
   playGoal() {
     this.play(440, 0.1);
+    this.play(460, 0.1, 0.1);
+    this.play(480, 0.1, 0.2);
   }
-  
+
+  playGoalReverse() {
+    this.play(480, 0.1);
+    this.play(460, 0.1, 0.1);
+    this.play(440, 0.1, 0.2);
+  }
+
   reinitialize() {
     this.audioContext.close();
     this.audioContext = new AudioContext();

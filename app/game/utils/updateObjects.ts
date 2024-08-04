@@ -90,6 +90,7 @@ export function checkForGoals(game: Game) {
       return;
     }
   }
+
   
   let winningSide: number = checkWinCondition(game) ?? -1;
   if (winningSide !== -1) {

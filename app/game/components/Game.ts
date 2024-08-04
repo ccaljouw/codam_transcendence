@@ -127,6 +127,7 @@ export class Game {
 		log("GameScript: resetGame called");
 		resetGameObjects(this);
 		this.messageFields[0]?.setText("GOAL!");
+		this.soundFX.playGoal();
 		countdown(this);
 	}
  
@@ -134,9 +135,5 @@ export class Game {
 		this.gameState = GameState.STARTED;
 		countdown(this);
 		this.gameLoop(1);
-	}
-
-	setAILevel(level: number) {
-		CON.config[this.config].AILevel = level;
 	}
 }

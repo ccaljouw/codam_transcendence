@@ -51,12 +51,13 @@ export function countdown(game: Game) {
 		count--;
 		
 		if (count == -1) {
+			game.soundFX.playStart();
 			clearMessageFields(game.messageFields);
 			clearInterval(interval);
 			if (game.instanceType === 0 && game.ball?.movementComponent.getSpeed() === 0) {
 				game.ball?.getStartValues(game.config, game);
 			}
-		}
+		} else { game.soundFX.playCountdown2(); }
 	}, 1000);
 }
 
@@ -153,7 +154,10 @@ export function	setTheme(game: Game) {
 	drawGameObjects(game);
 }
 
-//toggle all logs in the game	script here
+export function setAILevel(game: Game, level: number) {
+	CON.config[game.config].AILevel = level;
+}
+
 export function log(message: string) {
 	if (CON.logging) {
 		console.log("GameScript: ", message);

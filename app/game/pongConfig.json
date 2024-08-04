@@ -43,7 +43,6 @@
     "paddleHeightFactor": ".25",
     "paddleGap": "2",
     
-    "defaultVolume": "0.5",
     "AILevel": "0.7",
     "helpAtEnd": "false"
   },
@@ -53,7 +52,7 @@
     "screenWidth": "1000",
     "screenHeight": "666",
 
-    "countdownTime": "1",
+    "countdownTime": "3",
     "winningScore": "3",
     "collisionCooldown": "500",
     "ballWidth": "20",
@@ -92,7 +91,6 @@
     "paddleHeightFactor": ".25",
     "paddleGap": "2",
 
-    "defaultVolume": "0.5",
     "AILevel": "0.7",
     "helpAtEnd": "true"
   },
@@ -141,7 +139,6 @@
     "paddleHeightFactor": ".25",
     "paddleGap": "2",
 
-    "defaultVolume": "0.5",
     "AILevel": "0.7",
     "helpAtEnd": "true"
   }
