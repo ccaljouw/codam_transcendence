@@ -138,16 +138,14 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 			console.log("GameComponent: creating game instance of type: ", instanceType);
 
 			// set required configuration in constants
-      // added 0.5 as defauult volume to be congigured from player profile
-      // added false as AI game to be implemented in future
 			const newGame = new Game(
         canvasRef.current,
         instanceType,
         fetchedGameData!,
         constants.configuration, // config
         constants.themes[fetchedGameData?.GameUsers?.[instanceType].user.theme], // theme
-        -0.5, // volume
-        false // AI game
+        -0.5, // volume > todo: set in player profile. negative numbers are igored in soundFX
+        0 // AI level > todo: implement AI level button and backend. 0 = not an ai game 0.1 > 1 is level
       );
 			setGame(newGame);
 			canvasRef.current.focus();

@@ -20,7 +20,7 @@ export class Game {
 	gameData: UpdateGameDto | null = null;
 	theme: string;
 	config: string;
-	aiGame: Boolean = false;
+	aiLevel: number = 0; // case 0 then not an AI game
 	instanceType: CON.InstanceTypes = CON.InstanceTypes.notSet;
 	gameState: GameState = GameState.WAITING;
 	keyListener: KeyListenerComponent = new KeyListenerComponent();
@@ -40,7 +40,7 @@ export class Game {
 	lastFrameTime: number = 0;
 	currentAnimationFrame: number = 0;
 
-	constructor(newCanvas: HTMLCanvasElement | undefined, instanceType: CON.InstanceTypes, data: UpdateGameDto, givenConfig: string, givenTheme: string, givenVolume: number, AIGame: Boolean) {
+	constructor(newCanvas: HTMLCanvasElement | undefined, instanceType: CON.InstanceTypes, data: UpdateGameDto, givenConfig: string, givenTheme: string, givenVolume: number, aiLevel: number) {
 		this.config = givenConfig;
 		this.theme = givenTheme;
 		this.gameData = data;
@@ -50,7 +50,7 @@ export class Game {
 		this.ctx = this.canvas?.getContext("2d") as CanvasRenderingContext2D;
 		this.gameUsers = this.gameData.GameUsers as UpdateGameUserDto [];
 		this.soundFX.setVolume(givenConfig, givenVolume);
-		this.aiGame = AIGame;
+		this.aiLevel = aiLevel;
 		initializeGameObjects(this);
 		setTheme(this);
 		setSocketListeners(this);
@@ -91,6 +91,13 @@ export class Game {
 		if (this.gameState === GameState.FINISHED) {
 			return;
 		}
+		
+		if (winningSide === this.instanceType) {
+				this.soundFX.playWin();
+		} else {
+			this.soundFX.playLose();
+		}
+		
 		this.gameState = GameState.FINISHED;
 		this.winner = this.players[winningSide];
 		if (this.canvas) {
@@ -123,11 +130,11 @@ export class Game {
 		if (this.gameState === GameState.FINISHED) {
 			return;
 		}
+		this.soundFX.playGoal();
 		this.ball?.resetRally();
 		log("GameScript: resetGame called");
 		resetGameObjects(this);
 		this.messageFields[0]?.setText("GOAL!");
-		this.soundFX.playGoal();
 		countdown(this);
 	}
  

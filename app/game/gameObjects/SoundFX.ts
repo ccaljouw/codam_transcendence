@@ -1,4 +1,3 @@
-import { waitForDebugger } from "inspector";
 import { log } from "../utils/utils";
 
 export class SoundFX {
@@ -63,10 +62,16 @@ export class SoundFX {
     this.play(480, 0.1, 0.2);
   }
 
-  playGoalReverse() {
-    this.play(480, 0.1);
-    this.play(460, 0.1, 0.1);
-    this.play(440, 0.1, 0.2);
+  playWin() {
+    this.play(500, 0.3);
+    this.play(600, 0.3, 0.3);
+    this.play(700, 0.3, 0.6);
+  }
+
+  playLose() {
+    this.play(700, 0.3);
+    this.play(600, 0.3, 0.3);
+    this.play(500, 0.3, 0.6);
   }
 
   reinitialize() {

@@ -9,11 +9,13 @@ import { log } from '../utils/utils'
 export class Paddle extends GameObject {
 	public	movementComponent: MovementComponent;
 	public	keyListener: KeyListenerComponent;
+	public	AIlevel: number = 0;
 
-	constructor(name: string, x: number, y: number, width: number, height: number, color: string) {
+	constructor(aiLevel:number, name: string, x: number, y: number, width: number, height: number, color: string) {
 		super(name, x, y, width, height, color);
 		this.movementComponent = new MovementComponent(0, 0, x, y);
 		this.keyListener = new KeyListenerComponent();
+		this.AIlevel = aiLevel;
 	}
 
 	
@@ -113,7 +115,7 @@ export class Paddle extends GameObject {
 			return false;
 		}
 
-		if (this.name == `AI`) {
+		if (this.AIlevel > 0) {
 			return this.updateAiPaddle(deltaTime, config, ball as Ball);
 		}
 
@@ -134,5 +136,9 @@ export class Paddle extends GameObject {
 			hasMoved = Math.abs(this.y - initialY) > margin;
 		}
 		return hasMoved;
+	}
+
+	public setAIlevel(level: number) {
+		this.AIlevel = level;
 	}
 }
