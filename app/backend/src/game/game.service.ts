@@ -250,7 +250,7 @@ export class GameService {
   }
 
   async update(updateGameStateDto: UpdateGameStateDto): Promise<boolean> {
-    console.log(`backend - game: updating game: `, updateGameStateDto);
+    console.log(`@@@@@@@@@@@@@@@@backend - game: updating game: `, updateGameStateDto);
     try {
       const newGameData: UpdateGameStateDto = {
         id: updateGameStateDto.id,

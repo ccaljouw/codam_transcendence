@@ -74,10 +74,6 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
   useEffect(() => {
     gameSocket.on(`game/message`, handleMessage);
     gameSocket.on(`game/updateGameState`, handleGameStateUpdate);
-    
-    // return () => {
-    //   disconnectSocket();
-    // };
   }, [game, roomId]);
 
 
@@ -123,7 +119,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     } else {
       console.log("GameComponent: waiting for second player to join in get/update game data");
     }
-    if(fetchedGameData.state === GameState.READY_TO_START && !game)
+    if(fetchedGameData.state === GameState.READY_TO_START)
       setWaitingForPlayers(false);
   }, [fetchedGameData]);
 

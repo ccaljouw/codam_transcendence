@@ -12,7 +12,7 @@ export class Ball extends GameObject {
 	private _lastCollisionWithPaddle: number = 0;
 	private _lastcollisionType: string = "";
 	private _longestRally: number = 0;
-	private _rally: number = 0;
+	private _rally: number = 1;
 
 	constructor(config: keyof typeof CON.config, theme: keyof typeof CON.themes) {
 		super("Ball",
