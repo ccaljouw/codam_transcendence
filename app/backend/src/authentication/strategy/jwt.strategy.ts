@@ -25,8 +25,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any): Promise<UserProfileDto> {
-    console.log('payload');
-    console.log(payload);
     try {
       const user: UserProfileDto = await this.userService.findUserLogin(
         payload.loginName,

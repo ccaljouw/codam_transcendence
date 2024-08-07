@@ -3,7 +3,6 @@ import UserInfo from "./UserInfo.tsx";
 import Stats from "./Stats.tsx";
 import MatchHistory from "./MatchHistory.tsx";
 import GameSettings from "./GameSettings.tsx";
-import Blocked from "./Blocked.tsx";
 import { H3 } from '@ft_global/layoutComponents/Font';
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -21,10 +20,6 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 	
 	useEffect(() => {
 		console.log(pathname);
-		// if (pathname != `/profile/${userName}`)
-		// {
-		// 	router.push(`/profile/${userName}`);
-		// }
 	}, []);
 
 	useEffect(() => {
@@ -40,7 +35,7 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 	}, [data]);
 
 	const fetchUser = async () => {
-		fetcher({url: `${constants.API_USERS}username/${userName}`});
+		await fetcher({url: `${constants.API_USERS}username/${userName}`});
 	};
 
 	return (

@@ -14,7 +14,7 @@ import { GameState } from '@prisma/client';
 })
 export class GamesocketGateway {
   constructor(
-    private readonly gamesocketService: GameService,
+    private readonly gameService: GameService,
     private readonly commonServer: SocketServerProvider,
   ) {}
 
@@ -37,15 +37,15 @@ export class GamesocketGateway {
 
   @SubscribeMessage('game/updateGameState')
   updateGameState(client: Socket, payload: UpdateGameStateDto) {
-    console.log(
-      'Game Socket Server: received game state update from client: ',
-      payload.state,
-    );
+    console.log('Game Socket Server: received game state: ', payload.state);
     this.game_io
+      //TODO: Carlo, wat doet deze .to?
+      //(ik heb bij de handleDisconnect de .to weggehaald. Volgens mij ging daar niks van stuk,
+      // maar misschien moet die weer terug?)
       .to(payload.id.toString())
       .emit('game/updateGameState', payload);
-
-    this.gamesocketService.update(payload);
+    // TODO: Carlo, dit wordt nu meerdere keren getriggert (omdat de berichten vaker dan 1x over de socket gaan??)
+    this.gameService.update(payload);
   }
 
   @SubscribeMessage('game/updateGameObjects')
@@ -57,23 +57,19 @@ export class GamesocketGateway {
 
   @SubscribeMessage('disconnect')
   async handleDisconnect(client: Socket) {
-    const gameId = await this.gamesocketService.findGameForClientId(client.id);
-    console.log('Game Socket Server: gameId: ', gameId, ' disconnected');
-
-    if (gameId) {
-      const payload: UpdateGameStateDto = {
-        id: gameId,
-        state: GameState.ABORTED,
-      };
-      this.gamesocketService.update(payload);
-
-      this.game_io
-        .to(payload.id.toString())
-        .emit('game/updateGameState', payload);
-
-      this.gamesocketService.disconnect(client);
-    } else {
+    // gameservice.disconnect sets status to ABORTED for all open (everything except for FINISHED) games that the client is in
+    // and returns the ids of the games that were disconnected
+    const disconnectedGames: number[] = await this.gameService.disconnect(
+      client.id,
+    );
+    if (!disconnectedGames || disconnectedGames.length === 0) {
       console.log('Game Socket Server: client not in any game');
+      for (const disconnectedGame of disconnectedGames) {
+        this.game_io.emit('game/updateGameState', {
+          id: disconnectedGame,
+          state: GameState.ABORTED,
+        });
+      }
     }
   }
 }

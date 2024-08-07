@@ -11,15 +11,8 @@ export class LoggerMiddleware implements NestMiddleware {
     try {
       // Log incoming request
       this.logger.log(
-        `*Incoming request ${method} ${url},route: ${JSON.stringify(params)}, query: ${JSON.stringify(query)}*`, //from ${userAgent}
+        `${method} ${url},route: ${JSON.stringify(params)}, body: ${JSON.stringify(body)}, query: ${JSON.stringify(query)}`,
       );
-      this.logger.debug(`Request body: ${JSON.stringify(body)}`);
-
-      // Log outgoing response
-      res.on('finish', () => {
-        const { statusCode } = res;
-        this.logger.log(`Outgoing response ${method} ${url} ${statusCode}`);
-      });
     } catch (error) {
       this.logger.error(`Logger error: ${error.message}`, error.stack);
     }

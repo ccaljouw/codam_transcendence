@@ -119,7 +119,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     } else {
       console.log("GameComponent: waiting for second player to join in get/update game data");
     }
-    if(fetchedGameData.state === GameState.READY_TO_START)
+    if(fetchedGameData.state === GameState.READY_TO_START && !game)
       setWaitingForPlayers(false);
   }, [fetchedGameData]);
 

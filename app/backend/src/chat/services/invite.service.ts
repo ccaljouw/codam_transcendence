@@ -51,7 +51,7 @@ export class InviteService {
       return invites;
     } catch (error) {
       throw new NotFoundException(
-        `No invites with state ${inviteState} does not exist.`,
+        `There is no invites with state ${inviteState}.`,
       );
     }
   }
@@ -62,7 +62,7 @@ export class InviteService {
       return invites;
     } catch (error) {
       throw new NotFoundException(
-        `No invites with state ${type} does not exist.`,
+        `There is no invites with type ${type}.`,
       );
     }
   }
@@ -78,7 +78,7 @@ export class InviteService {
       return invites;
     } catch (error) {
       throw new NotFoundException(
-        `No invites with id ${senderId} and  state ${state} does not exist.`,
+        `There is no invites with id ${senderId} and state ${state}.`,
       );
     }
   }
@@ -94,7 +94,7 @@ export class InviteService {
       return invites;
     } catch (error) {
       throw new NotFoundException(
-        `No invites with id ${senderId} and  state ${type} does not exist.`,
+        `There is no invites with id ${senderId} and state ${type}.`,
       );
     }
   }
@@ -110,7 +110,7 @@ export class InviteService {
       return invites;
     } catch (error) {
       throw new NotFoundException(
-        `No invites with id ${recipientId} and  state ${state} does not exist.`,
+        `There is no invites with id ${recipientId} and state ${state}.`,
       );
     }
   }
@@ -126,7 +126,7 @@ export class InviteService {
       return invites;
     } catch (error) {
       throw new NotFoundException(
-        `No invites with id ${recipientId} and  state ${type} does not exist.`,
+        `There is no invites with id ${recipientId} and state ${type}.`,
       );
     }
   }

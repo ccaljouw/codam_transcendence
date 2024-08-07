@@ -106,7 +106,6 @@ export class UsersService {
 
   async findUserLogin(loginName: string): Promise<UserProfileDto> {
     try {
-      console.log(`In findUserLogin, looking for: ${loginName}`);
       const user = await this.db.user.findUnique({
         where: { loginName: loginName },
         include: {

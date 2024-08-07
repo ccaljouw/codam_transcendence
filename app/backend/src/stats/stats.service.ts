@@ -9,7 +9,9 @@ export class StatsService {
 
   async create(userId: number): Promise<StatsDto> {
     try {
-      return await this.db.stats.create({ data: { userId } });
+      return await this.db.stats.create({
+        data: { userId, ladderPosition: [userId] },
+      });
     } catch (error) {
       console.log('Error creating stats:', error);
       throw error;
@@ -32,10 +34,11 @@ export class StatsService {
       const stats: StatsDto = await this.db.stats.findUnique({
         where: { userId },
       });
-      if (!stats)
+      if (!stats) {
         throw new NotFoundException(
           `User with id ${userId} does not have stats.`,
         );
+      }
       stats.rank = await this.getRank(userId);
       stats.friends = await this.getFriendCount(userId);
       stats.last10Games = await this.getLast10Games(userId);
@@ -54,11 +57,14 @@ export class StatsService {
     try {
       let userStats: StatsDto;
       const victory: boolean =
-        player - 1 === updateGameStateDto.winnerId ? true : false;
+        userId === updateGameStateDto.winnerId ? true : false;
+
+      console.log('updating stats for player: ', player);
+      console.log('victory: ', victory);
 
       userStats = await this.db.stats.findUnique({ where: { userId } });
       if (!userStats) {
-        userStats = await this.create(userId);
+        throw new Error(`Error updating stats for id ${userId}.`);
       }
 
       userStats = await this.db.stats.update({
@@ -73,6 +79,8 @@ export class StatsService {
       if (!userStats) {
         throw new Error(`Error updating stats for id ${userId}.`);
       }
+
+      if (player === 1) await this.updateLadder(updateGameStateDto.id);
 
       const achievements = await this.updateAchievements(
         userId,
@@ -107,7 +115,67 @@ export class StatsService {
     }
   }
 
-  //TODO: carien, check this function
+  async updateLadder(lastGameId: number): Promise<void> {
+    try {
+      // get game data
+      const game = await this.db.game.findUnique({
+        where: { id: lastGameId },
+        select: {
+          GameUsers: {
+            select: {
+              userId: true,
+              score: true,
+              user: { select: { stats: { select: { ladderPosition: true } } } },
+            },
+          },
+          inviteId: true,
+        },
+      });
+      if (!game)
+        throw new NotFoundException(`No game found with id ${lastGameId}`);
+
+      // do not update ladder if game is not played with invite
+      if (!game.inviteId) return;
+
+      // determine current ladder positions
+      const ladder1: number[] = [
+        ...game.GameUsers[0].user.stats.ladderPosition,
+      ];
+      const ladder2: number[] = [
+        ...game.GameUsers[1].user.stats.ladderPosition,
+      ];
+
+      // check for swap and add relevant ladder positions
+      if (
+        (ladder1[0] > ladder2[0] &&
+          game.GameUsers[0].score < game.GameUsers[1].score) ||
+        (ladder1[0] < ladder2[0] &&
+          game.GameUsers[0].score > game.GameUsers[1].score)
+      ) {
+        console.log('swapping ladder positions');
+        ladder1.unshift(game.GameUsers[1].user.stats.ladderPosition[0]);
+        ladder2.unshift(game.GameUsers[0].user.stats.ladderPosition[0]);
+      } else {
+        console.log('not swapping ladder positions');
+        ladder1.unshift(game.GameUsers[0].user.stats.ladderPosition[0]);
+        ladder2.unshift(game.GameUsers[1].user.stats.ladderPosition[0]);
+      }
+
+      // update ladder positions
+      await this.db.stats.update({
+        where: { userId: game.GameUsers[0].userId },
+        data: { ladderPosition: ladder1 },
+      });
+      await this.db.stats.update({
+        where: { userId: game.GameUsers[1].userId },
+        data: { ladderPosition: ladder2 },
+      });
+    } catch (error) {
+      console.log('Error updating ladder:', error);
+      throw error;
+    }
+  }
+
   async getRank(userId: number): Promise<number> {
     try {
       const allStats: StatsDto[] = await this.findAll();
@@ -118,6 +186,16 @@ export class StatsService {
       console.log('Error getting rank:', error);
       throw error;
     }
+  }
+
+  async getLadder(userId: number): Promise<number[]> {
+    const ladderPosition = await this.db.stats.findUnique({
+      where: { userId },
+      select: { ladderPosition: true },
+    });
+    if (!ladderPosition)
+      throw new NotFoundException(`No ladder position found.`);
+    return ladderPosition.ladderPosition;
   }
 
   async findRankTop10(): Promise<string[]> {
@@ -135,6 +213,27 @@ export class StatsService {
       return top10.map((stat) => stat.user.userName);
     } catch (error) {
       console.log('Error getting top10:', error);
+      throw error;
+    }
+  }
+
+  async findLadderTop10(): Promise<string[]> {
+    try {
+      const ladder = await this.db.stats.findMany({
+        select: {
+          ladderPosition: true,
+          user: {
+            select: { userName: true },
+          },
+        },
+      });
+      if (!ladder) throw new Error(`Error getting top10 games for ladder.`);
+      console.log('ladder:', ladder);
+      const top10 = ladder.sort(
+        (a, b) => a.ladderPosition[0] - b.ladderPosition[0],
+      );
+      return top10.slice(0, 10).map((stat) => stat.user.userName);
+    } catch (error) {
       throw error;
     }
   }
@@ -216,6 +315,7 @@ export class StatsService {
         },
       });
       if (!lastGame) throw new Error(`No game found with id ${lastGameId}`);
+      console.log('Updating stats for:', lastGame);
       const opponentId: number = lastGame.GameUsers[0].userId
         ? lastGame.GameUsers[1].userId
         : lastGame.GameUsers[0].userId;
@@ -250,7 +350,7 @@ export class StatsService {
                 currentUser.achievements.push(i);
               break;
             case 4:
-              // won last game with margin of one point
+              // won game with margin of one point
               if (
                 currentUser.wonLastGame &&
                 Math.abs(
@@ -289,7 +389,6 @@ export class StatsService {
                 currentUser.achievements.push(i);
               break;
             case 10:
-              //todo: Jorien & Carien: figure out why this is not working
               if (
                 this.durationLongerThen(
                   lastGame.gameStartedAt,
