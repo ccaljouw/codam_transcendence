@@ -75,9 +75,9 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     gameSocket.on(`game/message`, handleMessage);
     gameSocket.on(`game/updateGameState`, handleGameStateUpdate);
     
-    return () => {
-      disconnectSocket();
-    };
+    // return () => {
+    //   disconnectSocket();
+    // };
   }, [game, roomId]);
 
 
