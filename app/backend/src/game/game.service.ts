@@ -226,6 +226,7 @@ export class GameService {
       const newGameData: UpdateGameStateDto = {
         id: updateGameStateDto.id,
         state: updateGameStateDto.state,
+        longestRally: updateGameStateDto.longestRally,
         ...(updateGameStateDto.state === 'STARTED' && {
           gameStartedAt: new Date(),
         }),

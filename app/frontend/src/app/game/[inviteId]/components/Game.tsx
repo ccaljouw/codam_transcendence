@@ -22,6 +22,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 	const [instanceType, setInstanceType] = useState<InstanceTypes>(InstanceTypes.notSet) // 0 for player 1, 1 for player 2
 	const {data: fetchedGameData, isLoading: loadingGame, error: errorGame, fetcher: gameFetcher} = useFetch<GetGameDto | null, UpdateGameDto>();
 	const router = useRouter();
+  const [aiLevel, setAiLevel] = useState<number>(0);
 
 
   function disconnectSocket() {
@@ -82,6 +83,9 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 
 	// fetch game data
 	useEffect(() => {
+    if (inviteId === -1 ) {
+      setAiLevel(0.5);
+    }
     console.log("InviteId: ", inviteId);
     console.log("InviteId type: ", typeof inviteId);
     if (userId && gameSocket.id && game === null) {
@@ -145,7 +149,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
         constants.configuration, // config
         constants.themes[fetchedGameData?.GameUsers?.[instanceType].user.theme], // theme
         -0.5, // volume > todo: set in player profile. negative numbers are igored in soundFX
-        0 // AI level > todo: implement AI level button and backend. 0 = not an ai game 0.1 > 1 is level
+        aiLevel // AI level > todo: implement AI level button and backend. 0 = not an ai game 0.1 > 1 is level
       );
 			setGame(newGame);
 			canvasRef.current.focus();
