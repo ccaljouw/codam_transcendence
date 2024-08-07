@@ -5,6 +5,18 @@ const prisma = new PrismaClient();
 
 async function addDummyUsers() {
   //   // create dummy users
+  const user0 = await prisma.user.upsert({
+    where: { loginName: 'AI' },
+    update: {},
+    create: {
+      userName: 'AwesomeBot',
+      loginName: 'AI',
+      email: 'aibot@student.codam.nl',
+      firstName: 'AI',
+      lastName: 'Bot',
+    },
+  });
+
   const user1 = await prisma.user.upsert({
     where: { loginName: 'Carien' },
     update: {},
@@ -198,6 +210,7 @@ async function addDummyUsers() {
     },
   });
   console.log({
+    user0,
     user1,
     user2,
     user3,

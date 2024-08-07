@@ -47,6 +47,35 @@ export class GameService {
     }
   }
 
+  // creates a new game for the user requesting the game and adds a second player if there is a \
+  // user in the database with loginName: AI
+  async createAiGame(userId: number, clientId: string) {
+    try {
+      const game = await this.db.game.create({
+        data: {
+          state: GameState.READY_TO_START,
+          inviteId: null,
+          GameUsers: {
+            create: [
+              {
+                userId,
+                clientId,
+                player: 1,
+              },
+            ],
+          },
+        },
+      });
+      if (!game) throw new NotFoundException('Error, creating new game');
+      const AI = await this.db.user.findUnique({ where: { loginName: 'AI' } });
+      if (!AI) throw new NotFoundException(`User AI not found.`);
+      return this.addSecondPlayer(game.id, AI.id, 'random_string');
+    } catch (error) {
+      console.log('Error creating AI game:', error);
+      throw error;
+    }
+  }
+
   private async addSecondPlayer(
     gameId: number,
     userId: number,
