@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { HttpModule } from '@nestjs/axios'
+import { HttpModule } from '@nestjs/axios';
 import { AuthService } from './services/authentication.service';
 import { AuthController } from './controllers/authentication.controller';
 import { UsersService } from 'src/users/users.service';
@@ -16,17 +16,31 @@ import { TwoFAService } from './services/2FA.service';
 import { TwoFAController } from './controllers/2FA.controllers';
 
 @Module({
-  imports: [UsersModule, PassportModule, DatabaseModule, HttpModule, JwtModule.registerAsync({
-    imports: [ConfigModule],
-    inject: [ConfigService],
-    useFactory: (configService: ConfigService) => ({
-      secret: configService.get('JWT_SECRET'),
-      //TODO: determine validity
-      signOptions: {expiresIn: '60m'},
-    })
-  })],
+  imports: [
+    UsersModule,
+    PassportModule,
+    DatabaseModule,
+    HttpModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get('JWT_SECRET'),
+        //TODO: determine validity
+        signOptions: { expiresIn: '60m' },
+      }),
+    }),
+  ],
   controllers: [AuthController, TwoFAController],
-  providers: [AuthService, TwoFAService, UsersService, StrategyFortyTwo, JwtStrategy, LocalStrategy, StatsService],
-  exports: [AuthService]
+  providers: [
+    AuthService,
+    TwoFAService,
+    UsersService,
+    StrategyFortyTwo,
+    JwtStrategy,
+    LocalStrategy,
+    StatsService,
+  ],
+  exports: [AuthService],
 })
 export class AuthenticationModule {}

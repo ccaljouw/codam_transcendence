@@ -15,6 +15,7 @@ function MenuLink({href, title}:{href:string, title:string}){
 
 export default function MenuBar(): JSX.Element {
 	const { currentUser } = useContext(TranscendenceContext);
+  const awsomeNames = ['cwesseli', 'jaberkro', 'avan-and', 'ccaljouw'];
 
 	return (
 		<>
@@ -39,7 +40,7 @@ export default function MenuBar(): JSX.Element {
 								</div>
 								<div className={"navbar-nav"}>
 									{ /* todo: JMA: limit access on the pages itself as well */ }
-									{currentUser.id  < 4 && 
+									{awsomeNames.includes(currentUser.loginName) && 
 										<>
 											<li className="nav-item dropdown">
 												<a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">

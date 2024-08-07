@@ -19,11 +19,11 @@ services:
       timeout: 5s
       retries: 5
     # added to limit resourse use
-    deploy:
-     resources:
-        limits:
-          # cpus: '0.5'
-          memory: 512M
+    # deploy:
+    #  resources:
+    #     limits:
+    #       # cpus: '0.5'
+    #       memory: 512M
 
 
   backend: 
@@ -33,9 +33,7 @@ services:
     container_name: backend
     restart: always
     ports: 
-    # port for api
-      - '3001:3000'
-    # port for prisma
+      - '3001:3001'
       - '5555:5555'
     volumes:
       - ./app:/app

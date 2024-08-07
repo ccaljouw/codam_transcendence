@@ -3,7 +3,6 @@ import UserInfo from "./UserInfo.tsx";
 import Stats from "./Stats.tsx";
 import MatchHistory from "./MatchHistory.tsx";
 import GameSettings from "./GameSettings.tsx";
-import Blocked from "./Blocked.tsx";
 import { H3 } from '@ft_global/layoutComponents/Font';
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -21,14 +20,10 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 	
 	useEffect(() => {
 		console.log(pathname);
-		// if (pathname != `/profile/${userName}`)
-		// {
-		// 	router.push(`/profile/${userName}`);
-		// }
 	}, []);
 
 	useEffect(() => {
-		if(userName == currentUser.userName)
+		if(userName == currentUser.userName) 
 			setUser(currentUser);
 		else
 			fetchUser();
@@ -55,7 +50,6 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 				<>
 					<div className="white-box">
 						<H3 text={`Profile page of ${user.userName}`} />
-            {/* <img src={user.avatarUrl} alt={user.avatarUrl} width="100" height="100"></img> */}
 					</div>
 					<div className="row">
 						<div className="col col-lg-6 col-md-12 white-box">

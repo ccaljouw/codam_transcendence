@@ -17,9 +17,7 @@ export default function TwoFactorAuthentication(): JSX.Element {
   useEffect(() => {
     if (FAValid == true )
 		{
-      // TODO: Albert: make setTwoFactorEnabled in transcendence context?
-      let user = currentUser;
-      user.twoFactEnabled = true;
+      const user = { ...currentUser, twoFactEnabled: true };
       setTwoFactorEnabled("Disable2FA");
       setCurrentUser(user);
       console.log("reload page from userInfo");
@@ -32,23 +30,21 @@ export default function TwoFactorAuthentication(): JSX.Element {
   useEffect(() => {
     if (disable2FA == true )
 		{
-      // TODO: Albert: make setTwoFactorEnabled in transcendence context?
-      let user = currentUser;
-      user.twoFactEnabled = false;
+      const user = { ...currentUser, twoFactEnabled: false };
       setTwoFactorEnabled("Enable2FA");
       setCurrentUser(user);
       console.log("reload page from userInfo");
 		}
 	}, [disable2FA]);
 
-  const enable2FA =  () => {
+  const enable2FA =  async () => {
     if (!currentUser.twoFactEnabled) {
       console.log('enabeling 2FA');
-      fetch2FA({url: constants.API_ENABLE2FA + currentUser.id, fetchMethod: 'PATCH'});
+      await fetch2FA({url: constants.API_ENABLE2FA + currentUser.id, fetchMethod: 'PATCH'});
     }
     else {
       console.log("disable 2FA");
-      fetchDisable2FA({ url: constants.API_DISABLE2FA + currentUser.id, fetchMethod: 'PATCH'});
+      await fetchDisable2FA({ url: constants.API_DISABLE2FA + currentUser.id, fetchMethod: 'PATCH'});
     }
 	}
 
@@ -91,7 +87,11 @@ export default function TwoFactorAuthentication(): JSX.Element {
         <p>Two factor authentication already enabled</p>
       }
       {error2FA != null && <p>Error enabeling 2FA: {error2FA.message}</p>}
+
+      {FAValid == true && <p>2FA enabled</p>}
       {errorFAValid != null && <p>Error checking token: {errorFAValid.message}</p>}
+
+      {disable2FA == true &&  <p>2FA disabled</p>}
       {errorDisable2FA != null && <p>Error disabeling 2FA</p>}
 		</>
 	);

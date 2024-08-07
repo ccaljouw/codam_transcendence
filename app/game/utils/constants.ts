@@ -88,8 +88,6 @@ type Config = {
 	leftPaddleDownKey: string;
 	rightPaddleUpKey: string;
 	rightPaddleDownKey: string;
-	leftBackWall: boolean;
-	rightBackWall: boolean;
 	backWallGap: number;
 	startMessage: string;
 	winMessage: string;
@@ -106,6 +104,7 @@ type Config = {
 	paddleHeightFactor: number;
 	paddleGap: number;
 	AILevel: number;
+	helpAtEnd: boolean;
 };
 
 
@@ -131,8 +130,6 @@ function parseConfig(jsonConfig: any): Record<string, Config> {
 			leftPaddleDownKey: value.leftPaddleDownKey,
 			rightPaddleUpKey: value.rightPaddleUpKey,
 			rightPaddleDownKey: value.rightPaddleDownKey,
-			leftBackWall: value.leftBackWall === "true",
-			rightBackWall: value.rightBackWall === "true",
 			backWallGap: parseInt(value.backWallGap, 10),
 			startMessage: value.startMessage,
 			winMessage: value.winMessage,
@@ -149,6 +146,8 @@ function parseConfig(jsonConfig: any): Record<string, Config> {
 			paddleHeightFactor: parseFloat(value.paddleHeightFactor),
 			paddleGap: parseInt(value.paddleGap, 10),
 			AILevel: parseFloat(value.AILevel),
+			helpAtEnd: value.helpAtEnd === "true",
+
 		};
 	}
 	return config;

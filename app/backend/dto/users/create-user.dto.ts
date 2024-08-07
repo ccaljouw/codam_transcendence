@@ -3,6 +3,7 @@ import { OnlineStatus } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsEmail,
+  IsEnum,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -11,50 +12,53 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class CreateUserDto {
+// using class-validator and validationPipe to validate input data
+// Everthing starting with @Api fills the api documetation. It does not enforce
+// the format specified or update automatically when validation rules are changed
 
-  // using class-validator and validationPipe to validate input data
-  // Everthing starting with @Api fills the api documetation. It does not enforce
-  // the format specified or update automatically when validation rules are changed 
+//TODO: define min and max lenth for all strings
+export class CreateUserDto {
+  @ApiProperty({ required: true, uniqueItems: true })
   @IsNotEmpty()
-  @MinLength(3)                       //todo: define min length
-  @MaxLength(30)                      //todo: define max legth  
-  @ApiProperty({ uniqueItems: true, nullable: false, minLength: 3, maxLength:30 })
+  @IsString()
+  @MinLength(3)
+  @MaxLength(15)
   loginName: string;
-  
+
+  @ApiProperty({ required: true, uniqueItems: true })
   @IsOptional()
-  @ApiProperty({ required: false })
+  @MinLength(3)
+  @MaxLength(15)
   userName?: string;
 
+  @ApiProperty({ required: true, uniqueItems: true })
   @IsEmail()
   @IsOptional()
-  @ApiProperty({ required: false, format: 'email' })
   email?: string;
-  
+
+  @ApiProperty({ required: false })
   @IsString()
-  @MaxLength(30)                      //todo: define max legth   
+  @MinLength(1)
+  @MaxLength(15)
   @IsOptional()
-  @ApiProperty({ required: false, maxLength: 30 })
   firstName?: string;
 
+  @ApiProperty({ required: false })
   @IsString()
-  @MaxLength(30)                      //todo: define max legth  
+  @MinLength(1)
+  @MaxLength(15)
   @IsOptional()
-  @ApiProperty({ required: false, maxLength: 30 })
   lastName?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  avatarId?: number;
-
-  @IsOptional()
-  @ApiProperty({ required: false })
+  @IsString()
+  @MaxLength(255)
   avatarUrl?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
+  @IsEnum(OnlineStatus)
   online?: OnlineStatus;
 
   @ApiProperty({ required: false })

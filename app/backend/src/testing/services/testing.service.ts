@@ -5,9 +5,8 @@ import { exec } from 'child_process';
 export class TestingService {
   async runAllTests(): Promise<string> {
     const command: string = 'npm run test:all';
-    
+
     return new Promise<string>((resolve, reject) => {
-      
       const jestProcess = exec(command, (error, stdout) => {
         if (error) {
           console.error(`${error.message}`);
@@ -18,7 +17,7 @@ export class TestingService {
           resolve(outputMessage);
         }
       });
-      
+
       jestProcess.stdin?.end();
 
       jestProcess.stdout.pipe(process.stdout);
@@ -28,9 +27,8 @@ export class TestingService {
 
   async runBackendTests(): Promise<string> {
     const command: string = 'npm run test:backend';
-    
+
     return new Promise<string>((resolve, reject) => {
-      
       const jestProcess = exec(command, (error, stdout) => {
         if (error) {
           console.error(`${error.message}`);
@@ -41,7 +39,7 @@ export class TestingService {
           resolve(outputMessage);
         }
       });
-      
+
       jestProcess.stdin?.end();
 
       jestProcess.stdout.pipe(process.stdout);
@@ -50,11 +48,9 @@ export class TestingService {
   }
 
   async runFrontendTests(): Promise<string> {
-    
     const command: string = 'npm run test:frontend';
 
     return new Promise<string>((resolve, reject) => {
-      
       const jestProcess = exec(command, (error, stdout) => {
         if (error) {
           console.error(`${error.message}`);
@@ -65,12 +61,11 @@ export class TestingService {
           resolve(outputMessage);
         }
       });
-      
+
       jestProcess.stdin?.end();
 
       jestProcess.stdout.pipe(process.stdout);
       jestProcess.stderr.pipe(process.stderr);
-      
     });
   }
 }

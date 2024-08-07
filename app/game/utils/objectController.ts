@@ -36,8 +36,9 @@ export function drawGameObjects(game: Game) {
   game.players.forEach(player => player.nameField?.draw(game.ctx));
   game.messageFields.forEach(message => message.draw(game.ctx));
   game.ball?.draw(game.ctx);
-  game.walls.forEach(wall => wall.draw(game.ctx));
-}
+  game.walls.forEach(wall => {  if (wall.getActive()) { wall.draw(game.ctx);}});
+ }
+
 
 export function resetGameObjects(game: Game) {
   game.soundFX.reinitialize();

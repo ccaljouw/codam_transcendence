@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UpdateChatMessageDto, CreateDMDto, CreateChatMessageDto, FetchChatMessageDto, UpdateInviteDto, UpdateChatDto } from '@ft_dto/chat';
+import { UpdateChatMessageDto, CreateDMDto, CreateChatMessageDto, FetchChatMessageDto, UpdateInviteDto, FetchChatDto, ChatMessageToRoomDto, UpdateChatDto, UpdateChatUserDto } from '@ft_dto/chat';
 import { ChatMessageService } from '../services/chat-messages.service';
 import { ChatService } from '../services/chat.service';
 import { ChatSocketService } from '../services/chatsocket.service';
@@ -40,7 +40,7 @@ export class ChatMessagesController {
   @UseGuards(JwtAuthGuard)
 
 	@ApiOperation({ summary: 'Returns new channel' })
-	@ApiOkResponse({ type: UpdateChatDto })
+	@ApiOkResponse({ type: FetchChatDto })
 	@ApiNotFoundResponse({ description: 'No new channel for user #${userId}' })
 	async newChannel(@Param('userId', ParseIntPipe) userId: number) {
 		const channel = await this.chatService.createChannel(userId);
@@ -51,7 +51,7 @@ export class ChatMessagesController {
   @UseGuards(JwtAuthGuard)
 
 	@ApiOperation({ summary: 'Returns channels for user' })
-	@ApiOkResponse({ type: [UpdateChatDto] })
+	@ApiOkResponse({ type: [FetchChatDto] })
 	@ApiNotFoundResponse({ description: 'No channels for user #${userId}' })
 	async getChannelsForUser(@Param('userId', ParseIntPipe) userId: number) {
 		const channels = await this.chatService.getChannelsForUser(userId);
@@ -60,7 +60,7 @@ export class ChatMessagesController {
 
 	@Get('channelWithUser/:channelId/:userId')
 	@ApiOperation({ summary: 'Returns channel with user' })
-	@ApiOkResponse({ type: UpdateChatDto })
+	@ApiOkResponse({ type: FetchChatDto })
 	@ApiNotFoundResponse({ description: 'No channel with #${channelId} and #${userId}' })
 	async getChannelWithUser(@Param('channelId', ParseIntPipe) channelId: number, @Param('userId', ParseIntPipe) userId: number) {
 		const channel = await this.chatService.getSingleChannelForUser(userId, channelId);
@@ -79,12 +79,22 @@ export class ChatMessagesController {
 
 	@Get('chatUser/:chatId/:userId')
 	@ApiOperation({ summary: 'Returns chat user' })
-	@ApiOkResponse({ type: UpdateChatDto })
+	@ApiOkResponse({ type: UpdateChatUserDto })
 	@ApiNotFoundResponse({ description: 'No chat user with #${chatId}' })
 	async getChatUser(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number) {
 		const chatUser = await this.chatService.getChatUser(chatId, userId);
 		return chatUser;
 	}
+
+	@Delete('chatUser/:chatId/:userId')
+	@ApiOperation({ summary: 'Deletes chat user' })
+	@ApiOkResponse({ type: Boolean })
+	@ApiNotFoundResponse({ description: 'No chat user with #${chatId}' })
+	async deleteChatUser(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number) {
+		const chatUserResult = await this.chatService.deleteChatUser(chatId, userId);
+		return chatUserResult;
+	}
+
 
 	@Get('unreadMessagesFromFriends/:userId')
   @UseGuards(JwtAuthGuard)
@@ -144,16 +154,34 @@ export class ChatMessagesController {
 	@Post('messageToDB')
 	@ApiOperation({ summary: 'Returns id of message that is has added to the database' })
 	@ApiOkResponse({ type: Number })
-	messageToDB(@Body() createChatMessageDto: CreateChatMessageDto) {
-		return this.chatMessageService.messageToDB(createChatMessageDto);
+	messageToDB(@Body() payload: ChatMessageToRoomDto) {
+		console.log("Sending message to db");
+		return this.chatMessageService.messageToDB({ chatId: parseInt(payload.room), userId: payload.userId, content: payload.message, inviteId: payload.inviteId }); //replace with api call in frontend?
+	}
+
+	@Patch(':id')
+	@ApiOperation({ summary: 'Updates chat with specified id' })
+	@UseGuards(JwtAuthGuard)
+	@ApiOkResponse({ type: FetchChatDto })
+	@ApiNotFoundResponse({ description: 'Chat with #${id} does not exist' })
+	async update(@Param('id', ParseIntPipe) id: number, @Body() updateChatDto: UpdateChatDto) {
+		console.log("Updating chat");
+		const chat = await this.chatService.update(id, updateChatDto);
+		return chat;
 	}
 
 	@Get(':id')
 	@ApiOperation({ summary: 'Returns chat with specified id' })
 	@ApiOkResponse({ type: UpdateInviteDto })
 	@ApiNotFoundResponse({ description: 'Chat with #${id} does not exist' })
-	async findOne(@Param('id', ParseIntPipe) id: number): Promise<UpdateChatDto> {
+	async findOne(@Param('id', ParseIntPipe) id: number): Promise<FetchChatDto> {
 		const chat = await this.chatService.findOne(id);
 		return chat;
 	}
+
+
+
+	//todo: Albert: Create patch and delete method for UpdateChatDto. Return boolean if it worked or not
+	// @Patch(':id')
+	// @Delete(':id')
 }

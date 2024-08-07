@@ -1,14 +1,26 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsInt, IsNotEmpty, IsOptional } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
+//TODO: define min and max length for pwd
 export class CreateAuthDto {
-
-  @IsNotEmpty()
-  @IsInt()
   @ApiProperty({ required: true, type: Number })
+  @IsNotEmpty()
+  @Type(() => Number)
+  @IsInt()
   userId: number;
 
-  @IsOptional()
   @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  @MinLength(3)
+  @MaxLength(20)
   pwd?: string;
 }

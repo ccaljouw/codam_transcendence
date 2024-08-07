@@ -7,9 +7,8 @@ import { GameController } from './game.controller';
 import { StatsService } from 'src/stats/stats.service';
 
 @Module({
-
   imports: [SocketServerModule],
-	providers: [GamesocketGateway, GameService, PrismaService, StatsService],
-	controllers: [GameController],
+  providers: [GamesocketGateway, GameService, PrismaService, StatsService],
+  controllers: [GameController],
 })
 export class GameModule {}

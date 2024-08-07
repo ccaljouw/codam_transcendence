@@ -1,4 +1,4 @@
-import { ChatMessageToRoomDto, UpdateChatDto } from "@ft_dto/chat";
+import { ChatMessageToRoomDto, FetchChatDto } from "@ft_dto/chat";
 import { UserProfileDto } from "@ft_dto/users";
 import { Socket } from "socket.io-client";
 import { fetchProps } from "src/globals/functionComponents/useFetch";
@@ -9,11 +9,13 @@ import { constants } from "src/globals/constants.globalvar";
 export const sendMessage = (
 	currentUserId: number,
 	otherUserForDm: number,
-	currentChat: UpdateChatDto,
+	currentChat: FetchChatDto,
 	currentUser: UserProfileDto,
 	message: string,
 	chatSocket: Socket,
-	setMessage: Function
+	setMessage: Function,
+	sendMessageToDb: Function,
+
 ) => {
 	if (!currentUserId || !otherUserForDm || !currentChat)
 		return;
@@ -21,18 +23,23 @@ export const sendMessage = (
 		userId: currentUserId,
 		userName: currentUser.userName,
 		room: currentChat.id.toString(),
-		message: message, action: false
+		message: message, action: false,
+		chatType: currentChat.visibility,
 	};
+	// this function sends the message to the socket
 	chatSocket.emit("chat/msgToRoom", payload);
 	setMessage('');
+
+	// this function sends the message to the database
+	sendMessageToDb({ url: constants.CHAT_MESSAGE_TO_DB, fetchMethod: "POST", payload });
 };
 
 // This function is used to join the room.
 export const joinRoom = (
 	currentUserId: number,
-	chatToJoin: UpdateChatDto,
+	chatToJoin: FetchChatDto,
 	currentUser: UserProfileDto,
-	currentChatRoom: UpdateChatDto,
+	currentChatRoom: FetchChatDto,
 	chatRoomFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>,
 	inviteResponseHandler: Function,
 ) => {
@@ -54,7 +61,7 @@ export const joinRoom = (
 
 export const leaveRoom = (
 	currentUserId: number,
-	currentChat: UpdateChatDto,
+	currentChat: FetchChatDto,
 	currentUser: UserProfileDto,
 	setCurrentChatRoom: Function,
 ) => {
@@ -67,7 +74,7 @@ export const leaveRoom = (
 		message: `<< ${currentUser.userName} has left the chat >>`,
 		action: true
 	};
-	setCurrentChatRoom({ id: -1 } as UpdateChatDto);
+	setCurrentChatRoom({ id: -1 } as FetchChatDto);
 	transcendenceSocket.emit('chat/leaveRoom', leaveMessage);
 	transcendenceSocket.off('chat/messageFromRoom');
 }

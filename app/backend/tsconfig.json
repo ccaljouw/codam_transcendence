@@ -18,11 +18,6 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "esModuleInterop": true,
-	"paths":
-	{
-		"@ft_dto/*": ["./dto/*"],
-		// "@ft_dto/users/*": ["./dto/users*"],
-		// "@ft_dto/chat/*": ["./dto/chat*"],
-	}
+	"paths":{ "@ft_dto/*": ["./dto/*"] }
   },
 }

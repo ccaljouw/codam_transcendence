@@ -20,8 +20,6 @@
     "rightPaddleUpKey": "ArrowUp",
     "rightPaddleDownKey": "ArrowDown",
 
-    "leftBackWall": "false",
-    "rightBackWall": "false",
     "backWallGap": "200",
 
     "startMessage": "Waiting for other player",
@@ -44,7 +42,8 @@
     "paddleHeightFactor": ".25",
     "paddleGap": "2",
 
-    "AILevel": "0.7"
+    "AILevel": "0.7",
+    "helpAtEnd": "false"
   },
   
   "test": {
@@ -68,15 +67,13 @@
     "rightPaddleUpKey": "ArrowUp",
     "rightPaddleDownKey": "ArrowDown",
     
-    "leftBackWall": "false",
-    "rightBackWall": "false",
-    "backWallGap": "100",
+    "backWallGap": "200",
 
     "startMessage": "Waiting for other player",
     "winMessage": "Press SPACE to start a new match",
 
     "scoreFieldOffset_X": "50",
-    "scoreFieldOffset_Y": "150",
+    "scoreFieldOffset_Y": "200",
 
     "bottomMessageOffset_X": "300",
     "bottomMessageOffset_Y": "30",
@@ -92,7 +89,8 @@
     "paddleHeightFactor": ".25",
     "paddleGap": "2",
 
-    "AILevel": "0.7"
+    "AILevel": "0.7",
+    "helpAtEnd": "true"
   },
 
   "strongPong": {
@@ -116,8 +114,6 @@
     "rightPaddleUpKey": "ArrowUp",
     "rightPaddleDownKey": "ArrowDown",
 
-    "leftBackWall": "false",
-    "rightBackWall": "false",
     "backWallGap": "200",
 
     "startMessage": "Waiting for other player",
@@ -140,6 +136,7 @@
     "paddleHeightFactor": ".25",
     "paddleGap": "2",
 
-    "AILevel": "0.7"
+    "AILevel": "0.7",
+    "helpAtEnd": "true"
   }
 }

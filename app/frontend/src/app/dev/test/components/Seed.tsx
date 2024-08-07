@@ -16,7 +16,7 @@ export default function Seed() {
     }, []);
 
     const seedDatabase = async () => {
-        await fetcher({url: constants.BACKEND_BASEURL + 'seed'});
+        await fetcher({url: constants.BACKEND_BASEURL + '/seed'});
     }
 
   return (

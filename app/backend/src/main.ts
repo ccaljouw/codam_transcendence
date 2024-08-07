@@ -1,12 +1,15 @@
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { PrismaClientExceptionFilter } from './errorHandling/prisma-client-exception.filter';
 import { HttpErrorFilter } from './errorHandling/exception.filter';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.use(cookieParser());
 
   const config = new DocumentBuilder()
     .setTitle('Transcendence')
@@ -17,10 +20,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(
-    new PrismaClientExceptionFilter(), 
-    new HttpErrorFilter()
+    new PrismaClientExceptionFilter(),
+    new HttpErrorFilter(),
   );
 
   // use pipes to validate requests (as defined in DTOs,
@@ -30,11 +32,14 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true })); //forbidNonWhitelisted: true
 
   app.enableCors({
-    origin: 'http://localhost:3000', //TODO: change host?
+    origin: [
+      `${process.env.FRONTEND_URL_LOCAL}`,
+      `${process.env.FRONTEND_URL}`,
+    ],
     methods: 'GET,PATCH,POST,DELETE, ',
-    allowedHeaders: 'Content-Type, Authorization', // TODO: use authorization headers
-    credentials: true, // Enable credentials (cookies, authorization headers)
+    allowedHeaders: 'Content-Type',
+    credentials: true,
   });
-  await app.listen(3000);
-};
+  await app.listen(3001);
+}
 bootstrap();

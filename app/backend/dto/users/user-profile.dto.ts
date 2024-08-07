@@ -1,51 +1,105 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Auth, OnlineStatus, User } from "@prisma/client";
+import { ApiProperty } from '@nestjs/swagger';
+import { OnlineStatus, User } from '@prisma/client';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsDate,
+  IsEmail,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
+  MinLength,
+} from 'class-validator';
 
+//TODO: Carien, define min and max length
+//TODO: Jorien, make enum for theme
 export class UserProfileDto implements User {
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @Type(() => Number)
+  @IsInt()
+  id: number;
 
-	@ApiProperty({ required: false })
-	id: number;
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(15)
+  loginName: string;
 
-	@ApiProperty({ required: false })
-	loginName: string;
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(15)
+  userName: string;
 
-	@ApiProperty({ required: false })
-	userName: string;
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
 
-	@ApiProperty({ required: false })
-	email: string;
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(15)
+  firstName: string;
 
-	@ApiProperty({ required: false })
-	firstName: string;
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(15)
+  lastName: string;
 
-	@ApiProperty({ required: false })
-	lastName: string;
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsBoolean()
+  twoFactEnabled: boolean;
 
-  @ApiProperty({ required: false })
-	twoFactEnabled: boolean;
-
-	// @ApiProperty({ required: false })
-	// avatarId: number;
-
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(255)
   avatarUrl: string;
 
-	@ApiProperty({ required: false })
-	theme: number;
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  @Max(2)
+  theme: number;
 
-	@ApiProperty({ required: false })
-	online: OnlineStatus;
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsEnum(OnlineStatus)
+  online: OnlineStatus;
 
-	@ApiProperty({ required: false })
-	createdAt: Date;
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsDate()
+  createdAt: Date;
 
-	@ApiProperty({ required: false })
-	updatedAt: Date;
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsDate()
+  updatedAt: Date;
 
-  // dmId: number;
-	@ApiProperty({ required: false })
-	friends?: UserProfileDto[];
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsArray()
+  friends?: UserProfileDto[];
 
-	@ApiProperty({ required: false })
-	blocked?: UserProfileDto[];
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsArray()
+  blocked?: UserProfileDto[];
 }
