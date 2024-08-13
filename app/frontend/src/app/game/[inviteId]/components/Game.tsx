@@ -25,6 +25,13 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
   const [aiLevel, setAiLevel] = useState<number>(0);
 
 
+  function startGame() {
+    console.log("GameComponent: starting game");
+    canvasRef.current!.focus();
+    const payload: UpdateGameStateDto = {id: roomId, state: GameState.STARTED};
+    gameSocket.emit("game/updateGameState", payload);
+  }
+
   function disconnectSocket() {
     console.log("GameComponent: disconnecting socket");
     gameSocket.off(`game/message`, handleMessage);
@@ -54,10 +61,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     if (!game) {
       return;
     }
-
     console.log(`GameComponent: received game state update in handle gameState`, payload.id, payload.state);
-    // console.log('GameComponent: current game:', game);
-
     if (payload.state === GameState.FINISHED || payload.state === GameState.ABORTED) {
       console.log("GameComponent: game finished");      
       disconnectSocket();
@@ -72,10 +76,10 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
   
   // handle socket events
   useEffect(() => {
+    // console.log("GameComponent: setting up socket events");
     gameSocket.on(`game/message`, handleMessage);
     gameSocket.on(`game/updateGameState`, handleGameStateUpdate);
   }, [game, roomId]);
-
 
 	// fetch game data
 	useEffect(() => {
@@ -103,15 +107,11 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     };
   }, [roomId]);
   
-
   // update game data
   useEffect(() => {
     if (!fetchedGameData) return;
     if (fetchedGameData.state === GameState.READY_TO_START && roomId !== 0 && canvasRef.current) {
-      console.log("GameComponent: starting game");
-      canvasRef.current.focus();
-      const payload: UpdateGameStateDto = {id: roomId, state: GameState.STARTED};
-      gameSocket.emit("game/updateGameState", payload);
+      startGame();
       return;
     }
     if (roomId === 0) {
@@ -119,8 +119,9 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     } else {
       console.log("GameComponent: waiting for second player to join in get/update game data");
     }
-    if(fetchedGameData.state === GameState.READY_TO_START)
+    if(fetchedGameData.state === GameState.READY_TO_START || inviteId === -1) {
       setWaitingForPlayers(false);
+    }
   }, [fetchedGameData]);
 
 	// set instance type
@@ -137,7 +138,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 		if (!game && canvasRef.current && instanceType !== InstanceTypes.notSet) {
 			console.log("GameComponent: creating game instance of type: ", instanceType);
 
-			// set required configuration in constants
+      // set required configuration in constants
 			const newGame = new Game(
         canvasRef.current,
         instanceType,
@@ -148,10 +149,13 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
         aiLevel // AI level > todo: implement AI level button and backend. 0 = not an ai game 0.1 > 1 is level
       );
 			setGame(newGame);
+      if (inviteId === -1) {
+        startGame();
+      }
 			canvasRef.current.focus();
 		}
 }, [instanceType]);
-  
+
 
 	return (
 		<>

@@ -10,6 +10,9 @@ export default function RandomMatchButton() : JSX.Element {
 				<H3 text="play a match"/>
 				<br/>
 				<Link className="btn btn-dark" href="/game/0">Random Match</Link>
+				<br/>
+				<H3 text="or"/>
+				<Link className="btn btn-dark" href="/game/-1">Practise Game</Link>
 			</div>
 		</>
 	);
