@@ -1,6 +1,7 @@
 all: run
 
 run:
+	mkdir -p app/postgres_db
 	docker compose up
 
 backend:
@@ -14,7 +15,6 @@ rebuild: clean
 
 clean:
 	docker compose down
-	rm -rf app/backend/prisma/migrations
 
 fclean: clean
 	- docker rmi transcendence-backend
@@ -23,6 +23,7 @@ fclean: clean
 	- rm -r app/frontend/.next
 	- rm -r app/node_modules
 	- rm -r app/coverage
+	- rm -r app/postgres_db
 
 prune: fclean
 	docker system prune -af

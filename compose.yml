@@ -8,24 +8,16 @@ services:
       - POSTGRES_USER=me
       - POSTGRES_PASSWORD=pwd
       - POSTGRES_DB=postgres
-    # volumes:
-    #   - ./postgres_db:/var/lib/postgresql/data
+    volumes:
+      - database_files:/var/lib/postgresql/data
     networks:
       - transcendence
-    # added to check if the servise is ready to receive comms
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U me -d postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
-    # added to limit resourse use
-    # deploy:
-    #  resources:
-    #     limits:
-    #       # cpus: '0.5'
-    #       memory: 512M
-
-
+  
   backend: 
     build: 
       context: ./app/backend
@@ -36,11 +28,13 @@ services:
       - '3001:3001'
       - '5555:5555'
     volumes:
-      - ./app:/app
+      - app:/app
     depends_on:
       - db
     networks:
       - transcendence
+    command: ["setup:dev"]
+    # command: ["deploy"]
     
   frontend:
     depends_on:
@@ -51,12 +45,29 @@ services:
     container_name: frontend
     restart: always
     ports:
-    # port for website
       - '3000:3000'
     volumes:
-      - ./app:/app
+      - app:/app
     networks:
       - transcendence
+    command: ["dev"]
+    # TODO: fix frontend deploy command
+    # command: ["deploy"]
 
 networks:
   transcendence:
+
+volumes:
+  database_files:
+    driver: local
+    driver_opts:
+      device: ./app/postgres_db
+      o: bind
+      type: none
+  
+  app:
+    driver: local
+    driver_opts:
+      device: ./app
+      o: bind
+      type: none
