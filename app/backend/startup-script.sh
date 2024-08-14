@@ -10,4 +10,5 @@ echo "Starting the application..."
 
 # Execute the CMD arguments
 cd backend
-exec npm run "$@"
+
+exec npx prisma studio & npm run "$@"
