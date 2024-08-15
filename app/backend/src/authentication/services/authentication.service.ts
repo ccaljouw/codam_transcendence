@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -10,6 +11,8 @@ import { JwtService } from '@nestjs/jwt';
 import { TwoFAService } from './2FA.service';
 import { StatsService } from 'src/stats/stats.service';
 import * as bcrypt from 'bcrypt';
+import { FetchChatDto } from '@ft_dto/chat';
+import { ChatType } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -42,10 +45,6 @@ export class AuthService {
       console.log('Error creating user:', error.message);
       throw error;
     }
-  }
-  async generateJwt(user: UserProfileDto): Promise<string> {
-    const payload = { loginName: user.loginName, id: user.id };
-    return this.jwtService.sign(payload);
   }
 
   async validateUser(
@@ -92,6 +91,26 @@ export class AuthService {
     }
   }
 
+  async validateChatLogin(id: number, password: string) : Promise<FetchChatDto> {
+    const chat = await this.db.chat.findUnique({ 
+      where: { id },
+      include: { users: true, chatAuth: true }
+    });
+    if (!chat)
+      throw new UnauthorizedException("chat not found");
+    if (chat.visibility == ChatType.PROTECTED) {
+      if (!chat.chatAuth)
+        throw new UnauthorizedException("No password found for protected chat")
+      const validPwd = await bcrypt.compare(password, chat.chatAuth?.pwd);
+      if (!validPwd)
+        throw new UnauthorizedException("Incorrect password")
+    } else {
+      throw new BadRequestException("Trying to login to unprotected chat");
+    }
+    delete chat.chatAuth;
+    return chat;
+  }
+
   async registerUser(
     createUser: CreateUserDto,
     pwd: string,
@@ -107,6 +126,23 @@ export class AuthService {
       return user;
     } catch (error) {
       console.log('Error registering user:', error.message);
+      throw error;
+    }
+  }
+
+  async setChatPassword(chatId: number, password: string): Promise<boolean> {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(password, salt);
+      await this.db.chatAuth.create({data: {chatId, pwd: hash}});
+      await this.db.chat.update({
+        where: { id: chatId },
+        include: { users: true },
+        data: { visibility: ChatType.PROTECTED },
+      })
+      return true;
+    } catch (error) {
+      console.log('Error setting chat password:', error.message);
       throw error;
     }
   }
@@ -137,6 +173,16 @@ export class AuthService {
     }
   }
 
+  async generateJwt(user: UserProfileDto): Promise<string> {
+    const payload = { loginName: user.loginName, id: user.id };
+    return this.jwtService.sign(payload);
+  }
+
+  async generateChatToken(chat: FetchChatDto): Promise<string> {
+    const payload = { id: chat.id, visibility: chat.visibility };
+    return this.jwtService.sign(payload);
+  }
+
   async setJwtCookie(user: UserProfileDto, req: Request): Promise<void> {
     try {
       const jwt: string = await this.generateJwt(user);
@@ -148,6 +194,21 @@ export class AuthService {
       });
     } catch (error) {
       console.log('Error setting jwt cookie:', error.message);
+      throw error;
+    }
+  }
+
+  async setChatCookie(chat: FetchChatDto, req: Request): Promise<void> {
+    try {
+      const token: string = await this.generateChatToken(chat);
+      (req.res as Response).cookie(`chatToken_${chat.id}`, token, {
+        httpOnly: true,
+        //TODO: determine validity
+        maxAge: 3600000, // expires in 1 hour
+        sameSite: 'strict',
+      });
+    } catch (error) {
+      console.log('Error setting chat cookie:', error.message);
       throw error;
     }
   }
