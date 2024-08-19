@@ -32,54 +32,58 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     gameSocket.emit("game/updateGameState", payload);
   }
 
-  function disconnectSocket() {
-    console.log("GameComponent: disconnecting socket");
-    gameSocket.off(`game/message`, handleMessage);
-    gameSocket.off(`game/updateGameState`, handleGameStateUpdate);
-    gameSocket.emit("game/leaveRoom", roomId);
-  }
-
-  function handleClick() {
+  function abortGame() {
+    console.log("GameComponent: aborting game");
     if (game?.gameState !== GameState.ABORTED && game?.gameState !== GameState.FINISHED) {
       const payload: UpdateGameStateDto = {id: roomId, state: GameState.ABORTED};
       gameSocket.emit("game/updateGameState", payload);
     }
+  }
+
+  function handleClick() {
     console.log("GameComponent: leaving game");
-    disconnectSocket();
+    game?.cleanCanvas();
+    abortGame();
     router.push('/play');
   }
 
-  const handleMessage = (msg: string) => {
-    console.log(`GameComponent: received message: "${msg}"`);
-    if (fetchedGameData?.state === GameState.WAITING && fetchedGameData.id) {
-      console.log("GameComponent: less than two players in game, refreshing game data, gameid:", fetchedGameData.id);
-      gameFetcher({url: `${constants.API_GAME}${fetchedGameData.id}`});
-    }
-  }; 
-
-  const handleGameStateUpdate = (payload: UpdateGameStateDto) => {
-    if (!game) {
-      return;
-    }
-    console.log(`GameComponent: received game state update in handle gameState`, payload.id, payload.state);
-    if (payload.state === GameState.FINISHED || payload.state === GameState.ABORTED) {
-      console.log("GameComponent: game finished");      
-      disconnectSocket();
-      return;
-    } 
-    if (payload.state === GameState.REJECTED) {
-      console.log("GameComponent: game rejected");
-      disconnectSocket();
-      router.push(`/play`);
-    } else return;
-  };
   
   // handle socket events
   useEffect(() => {
-    // console.log("GameComponent: setting up socket events");
+    const handleMessage = (msg: string) => {
+      console.log(`GameComponent: received message: "${msg}"`);
+      if (fetchedGameData?.state === GameState.WAITING && fetchedGameData.id) {
+        console.log("GameComponent: less than two players in game, refreshing game data, gameid:", fetchedGameData.id);
+        gameFetcher({url: `${constants.API_GAME}${fetchedGameData.id}`});
+      }
+    }; 
+  
+    const handleGameStateUpdate = (payload: UpdateGameStateDto) => {
+      if (!game) {
+        return;
+      }
+      console.log(`GameComponent: received game state update in handle gameState`, payload.id, payload.state);
+      if (payload.state === GameState.FINISHED || payload.state === GameState.ABORTED) {
+        console.log("GameComponent: game finished");      
+        return;
+      } 
+      if (payload.state === GameState.REJECTED) {
+        console.log("GameComponent: game rejected");
+        router.push(`/play`);
+      } else return;
+    };
+
     gameSocket.on(`game/message`, handleMessage);
     gameSocket.on(`game/updateGameState`, handleGameStateUpdate);
-  }, [game, roomId]);
+
+    return () => {
+      console.log("GameComponent: disconnecting socket");
+      gameSocket.off(`game/message`, handleMessage);
+      gameSocket.off(`game/updateGameState`, handleGameStateUpdate);
+      gameSocket.emit("game/leaveRoom", roomId);
+    };
+
+  }, [roomId]);
 
 	// fetch game data
 	useEffect(() => {

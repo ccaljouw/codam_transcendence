@@ -126,7 +126,7 @@ export class Game {
 			this.redrawGameObjects();
 		}
 		this.gameState = GameState.FINISHED;
-		cancelAnimationFrame(this.currentAnimationFrame);
+		this.cleanup
 		log("GameScript: game aborted");
 	}
 
@@ -146,5 +146,39 @@ export class Game {
 		this.gameState = GameState.STARTED;
 		countdown(this);
 		this.gameLoop(1);
+	}
+
+	cleanCanvas() {
+		log("GameScript: cleaning canvas");
+		if (this.canvas) {
+			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+			this.canvas = undefined;
+			this.ctx = null as any
+		}
+	}
+
+	cleanup() {
+		log("GameScript: cleaning up game");
+		cancelAnimationFrame(this.currentAnimationFrame);
+		this.soundFX.stopAll();
+		this.ball = null;
+		this.players = [];
+		this.paddels = [];
+		this.lines = [];
+		this.walls = [];
+		this.messageFields = [];
+		this.backgroundFill = null;
+		this.gameData = null;
+		this.gameUsers = [];
+		this.receivedUpdatedGameObjects = {roomId: -1, ballX: -1, ballY: -1, ballDirection: -1, ballSpeed: 0, ballDX: -1, ballDY: -1, paddle1Y: -1, paddle2Y: -1, score1: -1, score2: -1, resetGame: -1, resetMatch: -1, winner: -1};
+		this.winner = null;
+		this.roomId = 0;
+		this.elapasedTimeSincceLastUpdate = 0;
+		this.lastFrameTime = 0;
+		this.currentAnimationFrame = 0;
+		this.instanceType = CON.InstanceTypes.notSet;
+		this.config = "";
+		this.theme = "";
+		disconnectSocket(this);
 	}
 }

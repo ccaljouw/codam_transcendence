@@ -78,4 +78,8 @@ export class SoundFX {
     this.audioContext.close();
     this.audioContext = new AudioContext();
   }
+
+  stopAll() {
+    this.audioContext.close();
+  }
 }
