@@ -5,13 +5,14 @@ import * as CON from '../utils/constants'
 import { Game } from '../components/Game'
 import { GameState } from '@prisma/client'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
+import { log } from '../utils/utils'
 
 export class Ball extends GameObject {
 	public	movementComponent: MovementComponent;
 	private _lastCollisionWithWall: number = 0;
 	private _lastCollisionWithPaddle: number = 0;
 	private _lastcollisionType: string = "";
-	private _longestRally: number = 0;
+	private _longestRally: number = 1;
 	private _rally: number = 1;
 
 	constructor(config: keyof typeof CON.config, theme: keyof typeof CON.themes) {
@@ -154,16 +155,19 @@ export class Ball extends GameObject {
 
 	public incrementRally() {
 		this._rally++;
+		log(`GameScript: rally incrmented`);	
 		if (this._rally > this._longestRally) {
 			this.setLongestRally(this._rally);
 		}
 	}
 
 	public resetRally() {
+		log(`GameScript: Rally reset`);
 		this._rally = 0;
 	}
 
 	public setLongestRally(rally: number) {
+		log(`GameScript: longest rally set`);
 		this._longestRally = rally;
 	}
 
@@ -172,6 +176,7 @@ export class Ball extends GameObject {
 	}
 	
 	public resetLongestRally() {
+		log(`GameScript: longest rally reset`);
 		this._longestRally = 0;
 	}
 
