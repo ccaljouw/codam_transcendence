@@ -1,17 +1,15 @@
 "use client";
 import { createContext, useEffect, useRef, useState } from "react";
-import { ChatType, OnlineStatus } from "@prisma/client";
+import { OnlineStatus } from "@prisma/client";
 import { UserProfileDto, UpdateUserDto } from "@ft_dto/users";
 import { ChatMessageToRoomDto, FetchChatDto } from "@ft_dto/chat";
 import { WebsocketStatusChangeDto, CreateTokenDto } from '@ft_dto/socket'
 import { constants } from "@ft_global/constants.globalvar";
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
-import MenuBar from "./layoutComponents/MenuBar";
-import LoginScreen from "./layoutComponents/Login/LoginScreen";
 import useFetch from "./functionComponents/useFetch";
 import useAuthentication from "./functionComponents/useAuthentication";
 import { IsBlocked, IsFriend } from "./functionComponents/FriendOrBlocked";
-
+import { usePathname } from "next/navigation";
 
 // Context for the entire app
 interface TranscendenceContextVars {
@@ -57,6 +55,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	const [currentUser, setCurrentUser] = useState<UserProfileDto>({} as UserProfileDto);
 	const currentUserRef = useRef<UserProfileDto>(currentUser);
 	const { user } = useAuthentication();
+	const pathname = usePathname();
 	const [allUsersUnreadCounter, setAllUsersUnreadCounter] = useState<number>(0);
 	const [friendsUnreadCounter, setFriendsUnreadCounter] = useState(0);
 	const { data: userPatch, isLoading: userPatchLoading, error: userPatchError, fetcher: patchUserFetcher } = useFetch<UpdateUserDto, UserProfileDto>();
@@ -191,7 +190,6 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		addTokenFetcher({ url: constants.API_ADD_TOKEN, fetchMethod: 'POST', payload: addTokenData });
 	};
 
-	//todo: JMA: find out why this is needed, because it is also placed in useAuthentication
 	useEffect(() => {
 		if (user != null) {
 			setCurrentUser(user);
@@ -201,8 +199,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	return (
 		<>
 			<TranscendenceContext.Provider value={contextValues}>
-				<MenuBar />
-				{currentUser.id ? <>{children}</> : <LoginScreen />}
+				{(currentUser.id != null || pathname == '/login' || pathname == '/signup')? <>{children}</> : <p>Authenticating...</p>}
 			</TranscendenceContext.Provider>
 		</>
 	)

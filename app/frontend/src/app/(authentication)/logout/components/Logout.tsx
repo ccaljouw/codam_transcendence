@@ -5,22 +5,22 @@ import { UserProfileDto } from "@ft_dto/users";
 import { TranscendenceContext } from "@ft_global/contextprovider.globalvar";
 import { transcendenceSocket } from "@ft_global/socket.globalvar"
 
-export default function Logout(): JSX.Element {
-    const { setCurrentUser } = useContext(TranscendenceContext);
-    const router = useRouter();
+export default function Logout() : JSX.Element {
+	const { setCurrentUser } = useContext(TranscendenceContext);
+	const router = useRouter();
 
-    useEffect(() => {
-        console.log("Logging out now");
-        sessionStorage.clear();
+	useEffect(() => {
+		console.log("Logging out now");
+		sessionStorage.clear();
 		setCurrentUser({} as UserProfileDto);
 		transcendenceSocket.disconnect();
-    router.push('/');
+		router.push('/login');
 		transcendenceSocket.connect();
-    },[]);
+	},[]);
 
-    return (
-        <>	
-            <p>Logging out...</p>
-        </>
-    );
+	return (
+		<>	
+			<p>Logging out...</p>
+		</>
+	);
 }
