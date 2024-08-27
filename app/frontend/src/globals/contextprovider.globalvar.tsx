@@ -98,6 +98,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	// Update the user's status to online when the user logs in
 	useEffect(() => {
 		if (transcendenceSocket.id && transcendenceSocket.id != '0' && currentUser && currentUser.id !== undefined && currentUser.id != 0) {
+			console.log(`updating user status to online in currentuser.id useEffect in contextprovider`);
 			setUserStatusToOnline();
 
 			unreadMessageCountFetcher({ url: constants.CHAT_MESSAGES_UNREAD_FOR_USER + currentUser.id });
@@ -158,10 +159,11 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 
 	useEffect(() => {
 		if (addToken) {
+			console.log(`updating usertoken in addToken useEffect in contextprovider`);
 			const statusUpdate: WebsocketStatusChangeDto = {
 				userId: currentUser.id,
 				userName: currentUser.userName,
-				token: (transcendenceSocket.id ? transcendenceSocket.id : ''),
+				token: (transcendenceSocket.id ? transcendenceSocket.id : ''), //Albert: Can the transcendenceSocket.id change while the addTokenFetcher is updating the token in the backend? Should the backend give back a WebsocketStatusChangeDto? - Jorien
 				status: OnlineStatus.ONLINE
 			}
 			transcendenceSocket.emit('socket/statusChange', statusUpdate); // Emit the status change to the socket
@@ -180,6 +182,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	// Function to update the user's online status
 	const setUserStatusToOnline = async () => {
 		if (!currentUser.id) return;
+		console.log(`updating user status to online in setUserStatusToOnline function in contextprovider`);
 		const patchUserData: UpdateUserDto = {
 			online: OnlineStatus.ONLINE,
 		}
@@ -188,7 +191,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 			userId: currentUser.id
 		}
 		patchUserFetcher({ url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: patchUserData });
-		addTokenFetcher({ url: constants.API_ADD_TOKEN, fetchMethod: 'POST', payload: addTokenData });
+		addTokenFetcher({ url: constants.API_ADD_TOKEN, fetchMethod: 'POST', payload: addTokenData }); //Albert: Can the transcendenceSocket.id change while the addTokenFetcher is updating the token in the backend? Should the backend give back a WebsocketStatusChangeDto? - Jorien
 	};
 
 	useEffect(() => {
