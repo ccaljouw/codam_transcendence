@@ -151,6 +151,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 
 	useEffect(() => {
 		if (userPatch) {
+			console.log(`userPatch will be saved as currentUser with id: ${userPatch.id}`);
 			setCurrentUser(userPatch);
 		}
 	}, [userPatch]);
@@ -192,6 +193,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 
 	useEffect(() => {
 		if (user != null) {
+			console.log(`user changed in useAuthentication. new id: ${user.id}`);
 			setCurrentUser(user);
 		}
 	}, [user]);
@@ -199,7 +201,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	return (
 		<>
 			<TranscendenceContext.Provider value={contextValues}>
-				{(currentUser.id != null || pathname == '/login' || pathname == '/signup')? <>{children}</> : <p>Authenticating...</p>}
+				{(currentUser.id != null || pathname == '/login' || pathname == '/signup' || pathname == '/auth')? <>{children}</> : <p>Authenticating...</p>}
 			</TranscendenceContext.Provider>
 		</>
 	)

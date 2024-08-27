@@ -34,7 +34,7 @@ export default function useAuthentication() : authenticationOutput {
 		}
 		else
 		{
-			if (pathname != '/login' && pathname != '/signup')
+			if (pathname != '/login' && pathname != '/signup' && pathname != '/auth')
 				router.push('/login');
 		}
 	}, []);
@@ -56,8 +56,8 @@ export default function useAuthentication() : authenticationOutput {
 		if (error != null)
 		{
 			console.log(`Error authenticating in useAuthentication: ${error.name}: ${error.message}`);
-			// sessionStorage.clear();
-			router.push('/login');
+			if (pathname != '/login' && pathname != '/signup' && pathname != '/auth')
+				router.push('/login');
 		}
 	}, [error]);
 
