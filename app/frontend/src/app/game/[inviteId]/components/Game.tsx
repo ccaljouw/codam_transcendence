@@ -1,4 +1,5 @@
 "use client"
+
 import { useRef, useEffect, useState } from 'react'
 import { GameState } from '@prisma/client'
 import { GetGameDto, UpdateGameDto, UpdateGameStateDto } from '@ft_dto/game'
@@ -46,7 +47,10 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     router.push('/play');
   }
 
-  
+
+  //todo: add path changdetection to trigger handle click OR add a api to search for an existing game for player and join it
+
+ 
   // handle socket events
   useEffect(() => {
    
@@ -101,6 +105,13 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
       const payloadGetGame : GetGameDto = {userId: parseInt(userId), clientId: gameSocket.id, inviteId: inviteId};
       gameFetcher({url: `${constants.API_GETGAME}`, fetchMethod: 'PATCH', payload: payloadGetGame});
 		}
+
+
+    // return () => {
+    //   console.log("GameComponent: Aborting");
+    //   abortGame();
+    // };
+
 	}, [userId, inviteId]);
   
   // join room
@@ -147,8 +158,8 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
         canvasRef.current,
         instanceType,
         fetchedGameData!,
-        constants.configuration, // config
-        constants.themes[fetchedGameData?.GameUsers?.[instanceType].user.theme], // theme
+        constants.CONFIG, // config
+        constants.THEMES[fetchedGameData?.GameUsers?.[instanceType].user.theme], // theme
         -0.5, // volume > todo: set in player profile. negative numbers are igored in soundFX
         aiLevel // AI level > todo: implement AI level button and backend. 0 = not an ai game 0.1 > 1 is level
       );
