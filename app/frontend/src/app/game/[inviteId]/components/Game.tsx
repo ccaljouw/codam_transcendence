@@ -14,16 +14,16 @@ import { useRouter } from 'next/navigation';
 
 // GameComponent is a functional component that renders the game canvas and handles game logic
 export default function GameComponent({inviteId}: {inviteId: number}) {
+  const gameSocket = transcendenceSocket;
+	const canvasRef = useRef< HTMLCanvasElement | null >(null);
+  const userId  = sessionStorage.getItem('userId');
+	const router = useRouter();
 	const {data: fetchedGameData, isLoading: loadingGame, error: errorGame, fetcher: gameFetcher} = useFetch<GetGameDto | null, UpdateGameDto>();
 	const [game, setGame] = useState< Game | null >(null);
 	const [roomId, setRoomId] = useState<number>(0);
 	const [waitingForPlayers, setWaitingForPlayers] = useState<boolean>(true);
 	const [instanceType, setInstanceType] = useState<InstanceTypes>(InstanceTypes.notSet) // 0 for player 1, 1 for player 2
   const [aiLevel, setAiLevel] = useState<number>(0);
-  const userId  = sessionStorage.getItem('userId');
-	const canvasRef = useRef< HTMLCanvasElement | null >(null);
-	const gameSocket = transcendenceSocket;
-	const router = useRouter();
 
   function startGame() {
     console.log("GameComponent: starting game");
@@ -47,16 +47,12 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     router.push('/play');
   }
 
-
-  //todo: add path changdetection to trigger handle click OR add a api to search for an existing game for player and join it
-
- 
   // handle socket events
   useEffect(() => {
    
     const handleMessage = (msg: string) => {
       console.log(`GameComponent: received message: "${msg}"`);
-      if (fetchedGameData?.state === GameState.WAITING && fetchedGameData.id) {
+      if (fetchedGameData?.state === GameState.WAITING && fetchedGameData?.id) {
         console.log("GameComponent: less than two players in game, refreshing game data, gameid:", fetchedGameData.id);
         gameFetcher({url: `${constants.API_GAME}${fetchedGameData.id}`});
       }
@@ -105,13 +101,6 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
       const payloadGetGame : GetGameDto = {userId: parseInt(userId), clientId: gameSocket.id, inviteId: inviteId};
       gameFetcher({url: `${constants.API_GETGAME}`, fetchMethod: 'PATCH', payload: payloadGetGame});
 		}
-
-
-    // return () => {
-    //   console.log("GameComponent: Aborting");
-    //   abortGame();
-    // };
-
 	}, [userId, inviteId]);
   
   // join room
