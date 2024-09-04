@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -111,7 +112,14 @@ export class AuthService {
     }
   }
 
-  async changePwd(id: number, oldPwd: string, newPwd: string): Promise<void> {
+  async changePwd(
+    id: number,
+    oldPwd: string,
+    newPwd: string,
+  ): Promise<boolean> {
+    if (!id || !oldPwd || !newPwd) {
+      throw new BadRequestException('Missing data');
+    }
     console.log(`Trying to update pwd: ${id}, ${oldPwd}, ${newPwd}`);
     try {
       const user = await this.db.user.findUnique({
@@ -123,11 +131,14 @@ export class AuthService {
       }
       const validPwd = await bcrypt.compare(oldPwd, user.auth?.pwd);
       if (validPwd) {
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(newPwd, salt);
         await this.db.auth.update({
           where: { id },
-          data: { pwd: newPwd },
+          data: { pwd: hash },
         });
         console.log('Pwd updated');
+        return true;
       } else {
         throw new UnauthorizedException('Incorrect password');
       }
