@@ -11,18 +11,18 @@ export default function Page() : JSX.Element {
 	const [auth42Error, setAuth42Error] = useState<String | null>(null);
 
 	useEffect(() => {
-		if (auth42Status != null) {
+		console.log(`status: ${auth42Status}`)
+		if (auth42Status)
+		{
 			setAuth42Error(`${auth42Status}: ${auth42Message}`);
 			router.push(pathname);
 		}
-		else
-			router.push('/');
 	}, [auth42Status]);
 
 	return (
 		<>
 			<div className="white-box">
-				{auth42Error != null ? 
+				{auth42Error != null ?
 					<p>Error logging in with Auth42: {auth42Error}</p>
 					:
 					<p>Logging in with Auth42 successful</p>

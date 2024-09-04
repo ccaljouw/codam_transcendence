@@ -47,8 +47,6 @@ export default function useAuthentication() : authenticationOutput {
 		if (fetchedUser != null)
 		{
 			storeUser(fetchedUser);
-			if (userFromUrl)
-				router.push(pathname);
 		}
 	}, [fetchedUser]);
 
@@ -73,8 +71,11 @@ export default function useAuthentication() : authenticationOutput {
 		setUser(loggedInUser);
 		setCurrentUser(loggedInUser);
 		setSessionStorage(loggedInUser);
-		if (pathname == '/login')
+		if (pathname == '/login' || pathname == '/signup' || pathname == '/auth' || (userFromUrl && fetchedUser))
+		{
+			console.log(`pushing to '/' from useAuthentication`);
 			router.push('/');
+		}
 	}
 
 	return ({ user, storeUser });

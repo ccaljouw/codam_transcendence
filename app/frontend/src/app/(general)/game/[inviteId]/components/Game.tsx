@@ -15,7 +15,8 @@ import { TranscendenceContext } from 'src/globals/contextprovider.globalvar'
 export default function GameComponent({inviteId}: {inviteId: number}) {
 	const gameSocket = transcendenceSocket;
 	const canvasRef = useRef< HTMLCanvasElement | null >(null);
-	const {currentUser, setCurrentUser} = useContext(TranscendenceContext);
+  const {currentUser} = useContext(TranscendenceContext);
+	const userId  = (currentUser.id).toString();
 	const [game, setGame] = useState< Game | null >(null);
 	const [roomId, setRoomId] = useState<number>(0);
 	const [waitingForPlayers, setWaitingForPlayers] = useState<boolean>(true);
@@ -29,7 +30,6 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
       gameSocket.emit("game/updateGameState", payload);
     }
     console.log("Game: leaving game");
-    //todo: Carlo / Albert: Set user.online to ONLINE
     router.push('/play');
   }
 
@@ -61,16 +61,16 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 	useEffect(() => {
     console.log("InviteId: ", inviteId);
     console.log("InviteId type: ", typeof inviteId);
-    if (currentUser.id && gameSocket.id && game === null) {
+    if (userId && gameSocket.id && game === null) {
       console.log("transendance socket id: ", gameSocket.id);
       
       if(inviteId == 0) console.log("Game: fetching random game");
       else console.log("Game: fetching invite game");
       
-      const payloadGetGame : GetGameDto = {userId: currentUser.id, clientId: gameSocket.id, inviteId: inviteId};
+      const payloadGetGame : GetGameDto = {userId: parseInt(userId), clientId: gameSocket.id, inviteId: inviteId};
       gameFetcher({url: `${constants.API_GETGAME}`, fetchMethod: 'PATCH', payload: payloadGetGame});
 		}
-	}, [currentUser.id, inviteId]);
+	}, [userId, inviteId]);
   
   // join room
   useEffect(() => {
@@ -88,7 +88,6 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
       canvasRef.current.focus();
       const payload: UpdateGameStateDto = {id: roomId, state: GameState.STARTED};
       gameSocket.emit("game/updateGameState", payload);
-      //todo: Carlo / Albert: Set user.online to IN_GAME
     }
     if (roomId === 0) {
       setRoomId(fetchedGameData.id);
@@ -101,8 +100,8 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 
 	// set instance type
 	useEffect(() => {
-		if (waitingForPlayers === false && fetchedGameData && currentUser.id) {
-				const userIdNum = currentUser.id;
+		if (waitingForPlayers === false && fetchedGameData && userId) {
+				const userIdNum = parseInt(userId || '0');
 				const firstUserId = fetchedGameData?.GameUsers?.[0]?.user.id || 0;
 				setInstanceType(userIdNum === firstUserId ? InstanceTypes.left : InstanceTypes.right);
 		}
