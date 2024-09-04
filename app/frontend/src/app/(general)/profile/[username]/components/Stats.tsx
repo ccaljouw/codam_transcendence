@@ -23,7 +23,7 @@ export default function Stats({user} : {user: UserProfileDto}) : JSX.Element {
 			<H3 text="statistics"/>
 			<StaticDataField name="Rank" data={stats?.rank}/>
 			<StaticDataField name="Win/Loss Ratio " data={stats?.winLossRatio} />
-			<StaticDataField name="Ladder position" data={stats?.ladderPosition? stats.ladderPosition[0] : "No ladder position"}/>
+			<StaticDataField name="Ladder position" data={stats?.ladderPosition[0]}/>
 			{user.friends != null &&
 				<StaticDataField name="Friends" data={stats?.friends} />
 			}

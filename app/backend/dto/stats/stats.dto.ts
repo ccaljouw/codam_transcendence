@@ -68,7 +68,7 @@ export class StatsDto {
   @IsOptional()
   @Type(() => Number)
   @IsInt({ each: true })
-  ladderPosition?: number[];
+  ladderPosition: number[];
 
   @ApiProperty({ required: false, type: Number })
   @IsOptional()
