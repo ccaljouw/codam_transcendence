@@ -147,9 +147,9 @@ export class StatsService {
 
       // check for swap and add relevant ladder positions
       if (
-        (ladder1[0] > ladder2[0] &&
-          game.GameUsers[0].score < game.GameUsers[1].score) ||
         (ladder1[0] < ladder2[0] &&
+          game.GameUsers[0].score < game.GameUsers[1].score) ||
+        (ladder1[0] > ladder2[0] &&
           game.GameUsers[0].score > game.GameUsers[1].score)
       ) {
         console.log('swapping ladder positions');
@@ -405,8 +405,6 @@ export class StatsService {
               //Awarded for using the strongpong controller. (no data yet)
               break;
             case 13:
-              //TODO: Jorien, this changed to sending more then 100 messages (so not to a specific user).
-              // the number of sent messages is checked each time a user finishes a game.
               //Awarded for sending more then 100 messages to someone. (??)
               const messageCount = await this.db.chatMessages.count({
                 where: {

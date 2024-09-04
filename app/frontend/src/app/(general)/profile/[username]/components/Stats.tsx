@@ -8,26 +8,28 @@ import { constants } from "@ft_global/constants.globalvar";
 import { StatsDto } from "@ft_dto/stats";
 
 export default function Stats({user} : {user: UserProfileDto}) : JSX.Element {
-    const {data: stats, isLoading, error, fetcher} = useFetch<null, StatsDto>();
+	const {data: stats, error, fetcher} = useFetch<null, StatsDto>();
 
-    useEffect(() => {
-        fetchStats();
-    }, []);
+	useEffect(() => {
+		fetchStats();
+	}, []);
 
-    const fetchStats = async () => {
+	const fetchStats = async () => {
 		await fetcher({url: constants.API_STATS + user.id});
 	};
 
-    return (
-        <>
-            <H3 text="statistics"/>
-            <StaticDataField name="Rank" data={stats?.rank}/>
-            <StaticDataField name="Win/Loss Ratio " data={stats?.winLossRatio} />
-            {user.friends != null &&
-                <StaticDataField name="Friends" data={stats?.friends} />
-            }
-            <hr></hr>
-            <Achievements achievements={stats?.achievements}/>
-        </>
-    );
+	return (
+		<>
+			<H3 text="statistics"/>
+			<StaticDataField name="Rank" data={stats?.rank}/>
+			<StaticDataField name="Win/Loss Ratio " data={stats?.winLossRatio} />
+			<StaticDataField name="Ladder position" data={stats?.ladderPosition? stats.ladderPosition[0] : "No ladder position"}/>
+			{user.friends != null &&
+				<StaticDataField name="Friends" data={stats?.friends} />
+			}
+			<hr></hr>
+			<Achievements achievements={stats?.achievements}/>
+			{error && `Error: ${error}`}
+		</>
+	);
 }

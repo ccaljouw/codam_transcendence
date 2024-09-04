@@ -67,6 +67,12 @@ export class StatsDto {
   @ApiProperty({ required: false, type: Number })
   @IsOptional()
   @Type(() => Number)
+  @IsInt({ each: true })
+  ladderPosition?: number[];
+
+  @ApiProperty({ required: false, type: Number })
+  @IsOptional()
+  @Type(() => Number)
   @IsInt()
   friends?: number;
 
