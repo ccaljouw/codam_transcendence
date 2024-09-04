@@ -4,9 +4,7 @@ import { UserProfileDto } from '@ft_dto/users';
 import { constants } from '@ft_global/constants.globalvar'
 import { H3 } from 'src/globals/layoutComponents/Font';
 import useFetch from 'src/globals/functionComponents/useFetch';
-import { useRouter } from 'next/navigation';
 import useAuthentication from 'src/globals/functionComponents/useAuthentication';
-import Seed from 'src/app/(general)/dev/test/components/Seed';
 
 type LoginCredentials = {
 	loginName: string,
@@ -17,21 +15,6 @@ type LoginCredentials = {
 export default function Login() : JSX.Element {
 	const {data: loggedUser, isLoading, error, fetcher} = useFetch<LoginCredentials, UserProfileDto>();
 	const {storeUser} = useAuthentication();
-    const { data: users, isLoading: usersLoading, error: usersError, fetcher: usersFetcher } = useFetch<null, UserProfileDto[]>(); //todo: remove later
-
-	//todo: remove
-	useEffect (() => {
-		if (users == null)
-			fetchUsers();
-		else if (users.length == 0)
-            console.log("No users in database, seed should be triggered");
-	}, [users]);
-
-	//todo: remove
-	const fetchUsers = async () => {
-		console.log("fetching users in Login");
-		await usersFetcher({url: constants.API_ALL_USERS});
-	}
 
 	useEffect(() => {
 		if (loggedUser != null) {
@@ -68,7 +51,6 @@ export default function Login() : JSX.Element {
 				</form>
 				{error && <p>Login error: {error.message}</p>}
 			</div>			
-            {/* {(users != null && users.length == 0) && <div className="white-box"><Seed/></div>} */}
 		</>
 	);
 }
