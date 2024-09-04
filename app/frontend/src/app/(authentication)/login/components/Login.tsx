@@ -68,7 +68,7 @@ export default function Login() : JSX.Element {
 				</form>
 				{error && <p>Login error: {error.message}</p>}
 			</div>			
-            {(users != null && users.length == 0) && <div className="white-box"><Seed/></div>}
+            {/* {(users != null && users.length == 0) && <div className="white-box"><Seed/></div>} */}
 		</>
 	);
 }
