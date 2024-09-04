@@ -36,13 +36,15 @@ export function MenuBarLogin() : JSX.Element {
 						<span className="navbar-toggler-icon"></span>
 					</button>
 				</FontBangers>
-				<div className="collapse navbar-collapse" id="navbarNav">
-					<div className="navbar-nav">
-						<MenuLink href="/login" title="Login" />
-						<MenuLink href="/signup" title="Signup" />
-						<MenuLink href={constants.API_AUTH42} title="Login with auth42" />
+				{/* <FontPopArt> */}
+					<div className="collapse navbar-collapse" id="navbarNav">
+						<div className="navbar-nav">
+							<MenuLink href="/login" title="Login" />
+							<MenuLink href="/signup" title="Signup" />
+							<MenuLink href={constants.API_AUTH42} title="Login with auth42" />
+						</div>
 					</div>
-				</div>
+				{/* </FontPopArt> */}
 			</nav>
 		</>
 	);
@@ -56,7 +58,7 @@ export function MenuBar() : JSX.Element {
 		<>
 			{/* In theory the lines below will disable the menubar when you are in a game. 
 			(at this moment it seems like a user never gets the status IN_GAME) */}
-			{currentUser.online == 'IN_GAME'?
+			{currentUser.online === 'IN_GAME'?
 				<MenuBarGame />
 			:	
 				<nav className="navbar navbar-expand-md white-box index-fill">
