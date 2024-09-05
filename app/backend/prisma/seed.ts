@@ -21,7 +21,7 @@ async function addDummyUsers() {
     update: {},
     create: {
       userId: 1,
-      pwd: '$2b$10$Mc2nHj2xn9c9Wh/mzjoGje74wb0mew06PyTEaZRKoNMaZXVSKFAJG',
+      pwd: '$2b$10$J.OTIHejy8gRLnIugPSNrOM3gNX9u0pY4MRwLfwbu2z/Igw/JvMO6',
     },
   });
 
@@ -51,7 +51,7 @@ async function addDummyUsers() {
     update: {},
     create: {
       userId: 2,
-      pwd: '$2b$10$Mc2nHj2xn9c9Wh/mzjoGje74wb0mew06PyTEaZRKoNMaZXVSKFAJG',
+      pwd: '$2b$10$J.OTIHejy8gRLnIugPSNrOM3gNX9u0pY4MRwLfwbu2z/Igw/JvMO6',
     },
   });
 
@@ -81,7 +81,7 @@ async function addDummyUsers() {
     update: {},
     create: {
       userId: 3,
-      pwd: '$2b$10$Mc2nHj2xn9c9Wh/mzjoGje74wb0mew06PyTEaZRKoNMaZXVSKFAJG',
+      pwd: '$2b$10$J.OTIHejy8gRLnIugPSNrOM3gNX9u0pY4MRwLfwbu2z/Igw/JvMO6',
     },
   });
 
@@ -111,7 +111,7 @@ async function addDummyUsers() {
     update: {},
     create: {
       userId: 4,
-      pwd: '$2b$10$Mc2nHj2xn9c9Wh/mzjoGje74wb0mew06PyTEaZRKoNMaZXVSKFAJG',
+      pwd: '$2b$10$J.OTIHejy8gRLnIugPSNrOM3gNX9u0pY4MRwLfwbu2z/Igw/JvMO6',
     },
   });
 
@@ -141,7 +141,7 @@ async function addDummyUsers() {
     update: {},
     create: {
       userId: 5,
-      pwd: '$2b$10$Mc2nHj2xn9c9Wh/mzjoGje74wb0mew06PyTEaZRKoNMaZXVSKFAJG',
+      pwd: '$2b$10$J.OTIHejy8gRLnIugPSNrOM3gNX9u0pY4MRwLfwbu2z/Igw/JvMO6',
     },
   });
 
@@ -171,7 +171,16 @@ async function addDummyUsers() {
     update: {},
     create: {
       userId: 6,
-      pwd: '$2b$10$Mc2nHj2xn9c9Wh/mzjoGje74wb0mew06PyTEaZRKoNMaZXVSKFAJG',
+      pwd: '$2b$10$J.OTIHejy8gRLnIugPSNrOM3gNX9u0pY4MRwLfwbu2z/Igw/JvMO6',
+    },
+  });
+
+  const stats6 = await prisma.stats.upsert({
+    where: { userId: 6 },
+    update: {},
+    create: {
+      userId: 6,
+      ladderPosition: [6],
     },
   });
 
@@ -215,6 +224,7 @@ async function addDummyUsers() {
     stats3,
     stats4,
     stats5,
+    stats6,
   });
 }
 

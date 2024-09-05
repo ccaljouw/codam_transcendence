@@ -62,7 +62,6 @@ export default function useAuthentication() : authenticationOutput {
 	const setSessionStorage = (user: UserProfileDto) : void  => {
 		if (user != null && (idFromStorage == null || +idFromStorage != user.id))
 		{
-			console.log("updating sessionStorage from useAuthentication")
 			sessionStorage.setItem('userId', JSON.stringify(user.id));
 		}
 	};
@@ -73,7 +72,6 @@ export default function useAuthentication() : authenticationOutput {
 		setSessionStorage(loggedInUser);
 		if (pathname == '/login' || pathname == '/signup' || pathname == '/auth' || (userFromUrl && fetchedUser))
 		{
-			console.log(`pushing to '/' from useAuthentication`);
 			router.push('/');
 		}
 	}

@@ -1,21 +1,17 @@
 import { useEffect, useState } from "react";
 import EditButton from "./EditButton";
 
-export type optionalAttributes = {
-  type: string,
-	name: string,
-	required?: boolean,
-	autoComplete?: string,
-	minLength?: number,
-	maxLength?: number,
-}
-
-export default function EditableDataField({name, data, attributes} : {name:string, data:string, attributes:optionalAttributes}): JSX.Element {
+export default function ({name, data, close, editText, saveText, children} : {name: string, data: string, close?: boolean, editText?: string, saveText? : string, children?: React.ReactNode}) : JSX.Element {
 	const [editMode, setEditMode] = useState<boolean>(false);
 
 	useEffect(() => {
 		setEditMode(false);
 	}, [data]);
+
+	useEffect(() => {
+		if (close == true)
+			setEditMode(false);
+	}, [close]);
 
 	return (
 		<>
@@ -26,15 +22,17 @@ export default function EditableDataField({name, data, attributes} : {name:strin
 				{editMode == false?
 					<b>{data? data : "Loading data..."}</b>
 					:
-					<input className="form-control form-control-sm" placeholder={data} {... attributes}></input>
+					<>
+						{children}
+					</>
 				}
 			</div>
-			<div className="col col-3 align-self-end">
+			<div className="col col-3 px-2 align-content-end">
 				{editMode == false?
-					<EditButton onClick={() => setEditMode(true)}/>
+					<EditButton editText={editText} onClick={() => setEditMode(true)}/>
 					:
 					<>
-						<button className="btn btn-outline-dark btn-sm" type="submit">Save</button>
+						<button className={`btn enabled btn-outline-dark btn-sm`} type="submit">{saveText? saveText : "Save"}</button>
 						<button className="btn btn-dark btn-sm" onClick={() => setEditMode(false)}>Cancel</button>
 					</>
 				}

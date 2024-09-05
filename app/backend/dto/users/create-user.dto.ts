@@ -21,13 +21,13 @@ export class CreateUserDto {
   @ApiProperty({ required: true, uniqueItems: true })
   @IsNotEmpty()
   @IsString()
-  @MinLength(3)
+  @MinLength(4)
   @MaxLength(15)
   loginName: string;
 
   @ApiProperty({ required: true, uniqueItems: true })
   @IsOptional()
-  @MinLength(3)
+  @MinLength(4)
   @MaxLength(15)
   userName?: string;
 

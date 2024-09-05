@@ -1,13 +1,12 @@
 import { FetchChatDto, UpdateChatDto } from "@ft_dto/chat";
 import { FormEvent, useEffect, useState } from "react";
-import EditableDataField, { optionalAttributes } from "src/app/(general)/profile/[username]/components/utils/EditableDataField";
+import EditableDataField from "src/app/(general)/profile/[username]/components/utils/EditableDataField";
 import { constants } from "src/globals/constants.globalvar";
 import FormToUpdateChatDto from "src/globals/functionComponents/form/FormToUpdateChatDto";
 import useFetch from "src/globals/functionComponents/useFetch";
 import { transcendenceSocket } from "src/globals/socket.globalvar";
 
 export default function ChannelSettings({room} : {room: FetchChatDto}) {
-	const nameAttributes: optionalAttributes={type:"text", name:"name", required:false, autoComplete:"off", minLength:6, maxLength:30}; //todo: JMA: finetune min and max
 	const { data: chatPatched, error: patchError, isLoading: patchIsLoading, fetcher: chatPatcher } = useFetch<UpdateChatDto, FetchChatDto>();
 	const { data: chatDeleted, error: deleteError, isLoading: deleteIsLoading, fetcher: chatDeleter } = useFetch<Partial<FetchChatDto>, boolean>();
 	// const { data: chatPatched, error: patchError, isLoading: patchIsLoading, fetcher: chatPatcher } = useFetch<Partial<UpdateChatDto>, boolean>();
@@ -48,7 +47,9 @@ export default function ChannelSettings({room} : {room: FetchChatDto}) {
 			</form>
 			<br />&emsp;&emsp; [with set/change password option]<br />
 			<form onSubmit={handleSubmit} acceptCharset='utf-8' className="row">
-				<EditableDataField name="Channel name" data={room.name!.toString()} attributes={nameAttributes}/>
+				<EditableDataField name="Channel name" data={room.name}>
+					<input className="form-control form-control-sm" placeholder={room.name} type="text" name="name" required={false} autoComplete="off" minLength={6} maxLength={30}></input> {/* //todo: JMA: finetune min and max */}
+				</EditableDataField>
 			</form>
 			{/* todo: albert: trigger reload when chat patch worked */}
 			{/* {chatPatched && setCurrentChatRoom} */}
