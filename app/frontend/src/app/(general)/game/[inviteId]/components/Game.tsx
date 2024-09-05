@@ -11,93 +11,132 @@ import styles from '../styles.module.css';
 import { useRouter } from 'next/navigation';
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar'
 
-// Update to select random or invite game: added inviteId to GameComponent and included inviteId in endpoint gameFetcher
+
+// GameComponent is a functional component that renders the game canvas and handles game logic
 export default function GameComponent({inviteId}: {inviteId: number}) {
-	const gameSocket = transcendenceSocket;
+  const gameSocket = transcendenceSocket;
 	const canvasRef = useRef< HTMLCanvasElement | null >(null);
+	const router = useRouter();
+	const {data: fetchedGameData, isLoading: loadingGame, error: errorGame, fetcher: gameFetcher} = useFetch<GetGameDto | null, UpdateGameDto>();
   const {currentUser} = useContext(TranscendenceContext);
 	const userId  = (currentUser.id).toString();
 	const [game, setGame] = useState< Game | null >(null);
 	const [roomId, setRoomId] = useState<number>(0);
 	const [waitingForPlayers, setWaitingForPlayers] = useState<boolean>(true);
 	const [instanceType, setInstanceType] = useState<InstanceTypes>(InstanceTypes.notSet) // 0 for player 1, 1 for player 2
-	const {data: fetchedGameData, isLoading: loadingGame, error: errorGame, fetcher: gameFetcher} = useFetch<GetGameDto | null, UpdateGameDto>();
-	const router = useRouter();
+  const [aiLevel, setAiLevel] = useState<number>(0);
 
-  function handleClick() {
+  function startGame() {
+    console.log("GameComponent: starting game");
+    canvasRef.current!.focus();
+    const payload: UpdateGameStateDto = {id: roomId, state: GameState.STARTED};
+    gameSocket.emit("game/updateGameState", payload);
+  }
+  
+  function abortGame() {
+    console.log("GameComponent: aborting game");
     if (game?.gameState !== GameState.ABORTED && game?.gameState !== GameState.FINISHED) {
       const payload: UpdateGameStateDto = {id: roomId, state: GameState.ABORTED};
       gameSocket.emit("game/updateGameState", payload);
     }
-    console.log("Game: leaving game");
+  }
+  
+  function handleClick() {
+    console.log("GameComponent: leaving game");
+    game?.cleanCanvas();
+    abortGame();
     router.push('/play');
   }
-
-  // TODO: sounds like a gameState update check, why is this a different message?
-  const handleMessage = (msg: string) => {
-    console.log(`Game: got game/message ${msg}`);
-    if (fetchedGameData?.state === GameState.WAITING && fetchedGameData.id) {
-      console.log("Game: less than two players in game, refreshing game data, gameid:", fetchedGameData.id);
-      gameFetcher({url: `${constants.API_GAME}${fetchedGameData.id}`});
-      console.log("Game: refreshed game data");
+  
+  // fetch game data
+  useEffect(() => {
+    if (inviteId === -1 ) {
+      setAiLevel(0.5);
     }
-  }; 
-  
-  const handleGameStateUpdate = (payload: UpdateGameStateDto) => {
-    console.log(`Game: received game state update in handle gameState`, payload.id, payload.state);
-    console.log('Game: current game:', game);
-    if (payload.state === GameState.REJECTED) {
-      //TODO: add message somewhere that game was aborted?
-      router.push(`/play`);
-    } else return;
-    //TODO: add message for finishing game?
-  };
-  
-  // handle incomming game messages
-  gameSocket.on(`game/message`, handleMessage);
-  gameSocket.on(`game/updateGameState`, handleGameStateUpdate);
-
-	// fetch game data
-	useEffect(() => {
-    console.log("InviteId: ", inviteId);
-    console.log("InviteId type: ", typeof inviteId);
+    console.log("GameComponent: InviteId: ", inviteId);
     if (userId && gameSocket.id && game === null) {
-      console.log("transendance socket id: ", gameSocket.id);
-      
-      if(inviteId == 0) console.log("Game: fetching random game");
-      else console.log("Game: fetching invite game");
+      console.log("GameComponent: transendance socket id: ", gameSocket.id);
+      if(inviteId == 0) console.log("GameComponent: fetching random game");
+      else console.log("GameComponent: fetching invite game");
       
       const payloadGetGame : GetGameDto = {userId: parseInt(userId), clientId: gameSocket.id, inviteId: inviteId};
       gameFetcher({url: `${constants.API_GETGAME}`, fetchMethod: 'PATCH', payload: payloadGetGame});
-		}
-	}, [userId, inviteId]);
+    }
+
+    // return () => {
+    //   console.log("GameComponent: cleaning up");
+    //   if (game) {
+    //     abortGame();
+    //   }
+    // };
+  }, [inviteId]);
   
-  // join room
-  useEffect(() => {
-    if (roomId !== 0) {
-      console.log("Game: joining room:", roomId);
-      gameSocket.emit("game/joinRoom", roomId);
-    };
-  }, [roomId]);
-  
+
   // update game data
   useEffect(() => {
     if (!fetchedGameData) return;
     if (fetchedGameData.state === GameState.READY_TO_START && roomId !== 0 && canvasRef.current) {
-      console.log("Game: starting game");
-      canvasRef.current.focus();
-      const payload: UpdateGameStateDto = {id: roomId, state: GameState.STARTED};
-      gameSocket.emit("game/updateGameState", payload);
+      startGame();
+      return;
     }
     if (roomId === 0) {
       setRoomId(fetchedGameData.id);
     } else {
-      console.log("Game: waiting for second player to join  in get/update game data");
+      console.log("GameComponent: waiting for second player to join in get/update game data");
     }
-    if(fetchedGameData.state === GameState.READY_TO_START && !game)
+    if(fetchedGameData.state === GameState.READY_TO_START || inviteId === -1) {
       setWaitingForPlayers(false);
+    }
   }, [fetchedGameData]);
+  
 
+  // join room
+  useEffect(() => {
+    if (roomId !== 0) {
+      console.log("GameComponent: joining room:", roomId);
+      gameSocket.emit("game/joinRoom", roomId);
+    };
+  }, [roomId]);
+  
+  
+  // handle socket events
+  useEffect(() => {
+    
+    const handleMessage = (msg: string) => {
+      console.log(`GameComponent: received message: "${msg}"`);
+      if (fetchedGameData?.state === GameState.WAITING && fetchedGameData?.id) {
+        console.log("GameComponent: less than two players in game, refreshing game data, gameid:", fetchedGameData.id);
+        gameFetcher({url: `${constants.API_GAME}${fetchedGameData.id}`});
+      }
+    }; 
+    
+    const handleGameStateUpdate = (payload: UpdateGameStateDto) => {
+      if (!game) {
+        return;
+      }
+      console.log(`GameComponent: received game state update in handle gameState`, payload.id, payload.state);
+      if (payload.state === GameState.FINISHED || payload.state === GameState.ABORTED) {
+        console.log("GameComponent: game finished");      
+        return;
+      } 
+      if (payload.state === GameState.REJECTED) {
+        console.log("GameComponent: game rejected");
+        router.push(`/play`);
+      } else return;
+    };
+
+    gameSocket.on(`game/message`, handleMessage);
+    gameSocket.on(`game/updateGameState`, handleGameStateUpdate);
+
+    return () => {
+      console.log("GameComponent: disconnecting socket");
+      gameSocket.off(`game/message`, handleMessage);
+      gameSocket.off(`game/updateGameState`, handleGameStateUpdate);
+      gameSocket.emit("game/leaveRoom", roomId);
+    };
+  }, [roomId]);
+
+  
 	// set instance type
 	useEffect(() => {
 		if (waitingForPlayers === false && fetchedGameData && userId) {
@@ -107,18 +146,30 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 		}
 	}, [waitingForPlayers]);
 	
-	// create game instance when canvas is available and there are two players
+	
+  // create game instance when canvas is available and there are two players
 	useEffect(() => {
 		if (!game && canvasRef.current && instanceType !== InstanceTypes.notSet) {
-			console.log("Game: creating game instance of type: ", instanceType);
+			console.log("GameComponent: creating game instance of type: ", instanceType);
 
-			//set required configuration in constants
-			const newGame = new Game(canvasRef.current, instanceType, fetchedGameData!, constants.configuration, constants.themes[fetchedGameData?.GameUsers?.[instanceType].user.theme]);
+      // set required configuration in constants
+			const newGame = new Game(
+        canvasRef.current,
+        instanceType,
+        fetchedGameData!,
+        constants.config, // config
+        constants.themes[fetchedGameData?.GameUsers?.[instanceType].user.theme], // theme
+        -0.5, // volume > todo: set in player profile. negative numbers are igored in soundFX
+        aiLevel // AI level > todo: implement AI level button and backend. 0 = not an ai game 0.1 > 1 is level
+      );
 			setGame(newGame);
+      if (inviteId === -1) {
+        startGame();
+      }
 			canvasRef.current.focus();
 		}
 }, [instanceType]);
-  
+
 
 	return (
 		<>
