@@ -62,13 +62,6 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
       const payloadGetGame : GetGameDto = {userId: parseInt(userId), clientId: gameSocket.id, inviteId: inviteId};
       gameFetcher({url: `${constants.API_GETGAME}`, fetchMethod: 'PATCH', payload: payloadGetGame});
     }
-
-    // return () => {
-    //   console.log("GameComponent: cleaning up");
-    //   if (game) {
-    //     abortGame();
-    //   }
-    // };
   }, [inviteId]);
   
 
