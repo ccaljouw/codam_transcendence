@@ -156,8 +156,8 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
         canvasRef.current,
         instanceType,
         fetchedGameData!,
-        constants.CONFIG, // config
-        constants.THEMES[fetchedGameData?.GameUsers?.[instanceType].user.theme], // theme
+        constants.config, // config
+        constants.themes[fetchedGameData?.GameUsers?.[instanceType].user.theme], // theme
         -0.5, // volume > todo: set in player profile. negative numbers are igored in soundFX
         aiLevel // AI level > todo: implement AI level button and backend. 0 = not an ai game 0.1 > 1 is level
       );
