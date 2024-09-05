@@ -136,7 +136,7 @@ export default function ChatArea() {
 
 	return (
 		<>
-			{secondUser || newChatRoom.room != -1 ?
+			{(secondUser && secondUser != -1) || newChatRoom.room != -1 ?
 				<Chat key={newChatRoom.count} user2={secondUser} chatID={newChatRoom.room} />
 				: <div className="white-box"><h3>Hello {currentUser.userName}, Who do you want to chat with?</h3></div>
 			}
