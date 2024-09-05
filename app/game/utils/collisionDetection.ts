@@ -3,6 +3,7 @@ import { Paddle } from '../gameObjects/Paddle'
 import { Ball } from '../gameObjects/Ball'
 import { SoundFX } from '../gameObjects/SoundFX'
 import * as CON from './constants'
+import { log } from './utils'
 
 
 function detectWallCollisions(ball: Ball, walls: Wall[], soundFX: SoundFX, config: keyof typeof CON.config) {
@@ -21,11 +22,13 @@ function detectWallCollisions(ball: Ball, walls: Wall[], soundFX: SoundFX, confi
 				if (wall.getType() === 0 && wall.getActive()) {
 					ball.setLastCollisionWithHorizontalWall();
 					ball.hitHorizontalWall();
+					log(`GameScript: ball hit horizontal wall`);
 					return true;
 				}
 				else if (wall.getType() === 1 && wall.getActive()) {
 					ball.setLastCollisionWithVerticalWall();
 					ball.hitVerticalWall();
+					log(`GameScript: ball hit vertical wall`);
 					return true;
 				}
 			}
@@ -48,6 +51,7 @@ function detectPaddleCollisions(ball: Ball, paddles: Paddle[], soundFX: SoundFX,
 				soundFX.playPaddleHit();
 				ball.setLastCollisionWithPaddle();
 				ball.hitPaddle(paddle, config);
+				log(`GameScript: ball hit paddle`);
 				return true;
 			}
 		}

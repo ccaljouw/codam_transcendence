@@ -18,12 +18,10 @@ export class Wall extends GameObject {
 
 	activate() {
 		this._active = true;
-		console.log("Wall activated");
 	}
 
 	deactivate() {
 		this._active = false;
-		console.log("Wall deactivated");
 	}
 
 	getActive() {

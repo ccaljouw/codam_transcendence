@@ -7,7 +7,6 @@ import { drawGameObjects } from './objectController'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { GameState } from '@prisma/client'
 import { UpdateGameStateDto } from '@ft_dto/game'
-import { updateWalls } from './updateObjects'
 
 export function drawGameObject(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, color: string) {
 	ctx.fillStyle = color;
@@ -36,15 +35,6 @@ function clearMessageFields(messageFields: TextComponent[]) {
 	}
 }
 
-// export function startKeyPressed(game: Game) {
-// 	if (game.gameState == `FINISHED`) {
-// 		game.resetMatch();
-// 	} else if (game.gameState == `WAITING`){
-// 		game.gameState = `STARTED`;
-// 		countdown(game);
-// 	}
-// }
-
 export function escapeKeyPressed(game: Game) {
 	const gameSocket = transcendenceSocket;
 	const payload : UpdateGameStateDto  = {id: game.roomId, state: GameState.ABORTED};
@@ -53,22 +43,23 @@ export function escapeKeyPressed(game: Game) {
 }
 
 export function countdown(game: Game) {
-	console.log("Script: countdown started");
+	log("GameScript: countdown started");
+
 	let count = CON.config[game.config].countdownTime;
 	let interval = setInterval(() => {
 		game.messageFields[0]?.setText(count.toString());
 		count--;
 		
 		if (count == -1) {
+			game.soundFX.playStart();
 			clearMessageFields(game.messageFields);
 			clearInterval(interval);
 			if (game.instanceType === 0 && game.ball?.movementComponent.getSpeed() === 0) {
 				game.ball?.getStartValues(game.config, game);
 			}
-		}
+		} else { game.soundFX.playCountdown2(); }
 	}, 1000);
 }
-
 
 export function checkWinCondition(game: Game) {
 	let winningScore = CON.config[game.config].winningScore;
@@ -161,4 +152,14 @@ export function	setTheme(game: Game) {
 	game.ball?.setColor(CON.themes[game.theme].ballColor);
 	game.ctx.clearRect(0, 0, game.canvas!.width, game.canvas!.height);
 	drawGameObjects(game);
+}
+
+export function setAILevel(game: Game, level: number) {
+	CON.config[game.config].AILevel = level;
+}
+
+export function log(message: string) {
+	if (CON.logging) {
+		console.log("GameScript: ", message);
+	}
 }

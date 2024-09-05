@@ -1,5 +1,6 @@
 {
   "standard": {
+
     "screenWidth": "1000",
     "screenHeight": "666",
 
@@ -19,34 +20,35 @@
     "leftPaddleDownKey": "ArrowDown",
     "rightPaddleUpKey": "ArrowUp",
     "rightPaddleDownKey": "ArrowDown",
-
+    
     "backWallGap": "200",
-
+    
     "startMessage": "Waiting for other player",
     "winMessage": "Press SPACE to start a new match",
-
+    
     "scoreFieldOffset_X": "50",
     "scoreFieldOffset_Y": "150",
-
-    "bottomMessageOffset_X": "300",
+    
+    "bottomMessageOffset_X": "50",
     "bottomMessageOffset_Y": "30",
-
-    "playerNameOffset_X": "200",
+    
+    "playerNameOffset_X": "50",
     "playerNameOffset_Y": "50",
-
+    
     "lineWidth": "6",
     "wallWidth": "20",
-
+    
     "paddleWidth": "20",
     "paddleOffset_X": "20",
     "paddleHeightFactor": ".25",
     "paddleGap": "2",
-
+    
     "AILevel": "0.7",
     "helpAtEnd": "false"
   },
   
   "test": {
+
     "screenWidth": "1000",
     "screenHeight": "666",
 
@@ -73,12 +75,12 @@
     "winMessage": "Press SPACE to start a new match",
 
     "scoreFieldOffset_X": "50",
-    "scoreFieldOffset_Y": "200",
+    "scoreFieldOffset_Y": "150",
 
-    "bottomMessageOffset_X": "300",
-    "bottomMessageOffset_Y": "30",
+    "bottomMessageOffset_X": "275",
+    "bottomMessageOffset_Y": "50",
 
-    "playerNameOffset_X": "200",
+    "playerNameOffset_X": "50",
     "playerNameOffset_Y": "50",
 
     "lineWidth": "6",
@@ -94,6 +96,7 @@
   },
 
   "strongPong": {
+
     "screenWidth": "1000",
     "screenHeight": "666",
 
@@ -125,7 +128,7 @@
     "bottomMessageOffset_X": "300",
     "bottomMessageOffset_Y": "30",
 
-    "playerNameOffset_X": "200",
+    "playerNameOffset_X": "50",
     "playerNameOffset_Y": "50",
 
     "lineWidth": "6",

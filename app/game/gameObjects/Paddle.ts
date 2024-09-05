@@ -3,16 +3,19 @@ import { MovementComponent } from '../components/MovementComponent'
 import { Ball } from './Ball'
 import { KeyListenerComponent } from '../components/KeyListenerComponent'
 import * as CON from '../utils/constants'
+import { log } from '../utils/utils'
 
 
 export class Paddle extends GameObject {
 	public	movementComponent: MovementComponent;
 	public	keyListener: KeyListenerComponent;
+	public	AIlevel: number = 0;
 
-	constructor(name: string, x: number, y: number, width: number, height: number, color: string) {
+	constructor(aiLevel:number, name: string, x: number, y: number, width: number, height: number, color: string) {
 		super(name, x, y, width, height, color);
 		this.movementComponent = new MovementComponent(0, 0, x, y);
 		this.keyListener = new KeyListenerComponent();
+		this.AIlevel = aiLevel;
 	}
 
 	
@@ -86,41 +89,25 @@ export class Paddle extends GameObject {
     return hasMoved;
 	}
 
-	private AnalogupdatePaddle(deltaTime: number, config: keyof typeof CON.config): boolean {
-		const margin = 3;
-		// let hasMoved = false;
+	// private AnalogupdatePaddle(deltaTime: number, config: keyof typeof CON.config): boolean {
+	// 	const margin = 3;
+	// 	// let hasMoved = false;
 		
-		//todo: get sensor input
-		let sensorInputValue = 0; //-1 to 1
+	// 	//todo: get sensor input
+	// 	let sensorInputValue = 0; //-1 to 1
 
-		//todo: do not calculate here
-		const paddleMinY = CON.config[config].wallWidth + CON.config[config].paddleGap;
-		const paddleMaxY = CON.config[config].screenHeight - this.height - CON.config[config].wallWidth - CON.config[config].paddleGap;
-		const paddleRange = paddleMaxY - paddleMinY;
+	// 	const paddleMinY = CON.config[config].wallWidth + CON.config[config].paddleGap;
+	// 	const paddleMaxY = CON.config[config].screenHeight - this.height - CON.config[config].wallWidth - CON.config[config].paddleGap;
+	// 	const paddleRange = paddleMaxY - paddleMinY;
 
-		//simply set nuew position
-		const requiredPaddlePosition = paddleRange * sensorInputValue + paddleMinY;
-		if (requiredPaddlePosition - this.y < margin) {
-			return false;
-		}
-		this.y = requiredPaddlePosition;
-		return true
-		
-		
-		// calculate useing speed and delta time
-		// const currentY = this.movementComponent.getY();
-		// const requiredMovement = requiredPaddlePosition - currentY;
-		// if (Math.abs(requiredMovement) > margin) {
-		// 	const speed = Math.min(CON.config[config].paddleBaseSpeed, Math.abs(requiredMovement));
-		// 	this.movementComponent.setSpeed(speed);
-		// 	this.movementComponent.setDirection(requiredMovement > 0 ? 0.5 * Math.PI : 1.5 * Math.PI);
-		// 	this.movementComponent.update(deltaTime);
-		// 	this.y = this.movementComponent.getY();
-		// 	this.checkBounds(config);
-		// 	hasMoved = true;
-		// }
-		// return hasMoved;
-	}
+	// 	//simply set new position
+	// 	const requiredPaddlePosition = paddleRange * sensorInputValue + paddleMinY;
+	// 	if (requiredPaddlePosition - this.y < margin) {
+	// 		return false;
+	// 	}
+	// 	this.y = requiredPaddlePosition;
+	// 	return true
+	// }
 
 
 	public updatePaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball | null): boolean {
@@ -128,14 +115,15 @@ export class Paddle extends GameObject {
 			return false;
 		}
 
-		if (this.name == `AI`) {
+		if (this.AIlevel > 0) {
 			return this.updateAiPaddle(deltaTime, config, ball as Ball);
 		}
 
 		if (CON.config[config].sensorInput === true) {
-			return this.AnalogupdatePaddle(deltaTime, config);
+			log(`gameScript: sensor input not implemented in this version`);
+			// return this.AnalogupdatePaddle(deltaTime, config);
 		}
-		
+
 		let hasMoved = false;
 		const margin = .5;
 
@@ -148,5 +136,9 @@ export class Paddle extends GameObject {
 			hasMoved = Math.abs(this.y - initialY) > margin;
 		}
 		return hasMoved;
+	}
+
+	public setAIlevel(level: number) {
+		this.AIlevel = level;
 	}
 }

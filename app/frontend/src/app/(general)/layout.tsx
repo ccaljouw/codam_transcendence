@@ -5,7 +5,7 @@ export default function Layout({children} : {children: React.ReactNode}) : JSX.E
 	return (
 		<>
 			<MenuBar/>
-			<div className="content-area row">
+			<div className="content-area">
 				<div className="page index-left">
 					{children}
 				</div>
