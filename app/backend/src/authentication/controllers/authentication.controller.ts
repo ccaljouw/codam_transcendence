@@ -40,7 +40,7 @@ export class AuthController {
       if (!user) throw new UnauthorizedException();
       await this.authService.setJwtCookie(user, req);
       console.log(`Auth callback for ${user.id}`);
-      res.redirect(`${this.configService.get('FRONTEND_URL')}?user=${user.id}`);
+      res.redirect(`${this.configService.get('FRONTEND_URL')}/auth?user=${user.id}`);
     } catch (error) {
       console.log('Error in 42 callback:', error.message);
       throw error;
@@ -86,11 +86,20 @@ export class AuthController {
 
   @Patch('change_pwd')
   @UseGuards(JwtAuthGuard)
-  async changePwd(@Body() updatePwdDto: UpdatePwdDto): Promise<void> {
+  async changePwd(@Body() updatePwdDto: UpdatePwdDto): Promise<boolean> {
     return this.authService.changePwd(
       updatePwdDto.userId,
       updatePwdDto.oldPwd,
       updatePwdDto.newPwd,
     );
+  }
+
+  @Get('check_id/:id')
+  @UseGuards(JwtAuthGuard)
+  async checkId(@Req() req: Request | any): Promise<UserProfileDto> {
+    const user: UserProfileDto = req.user;
+    const valid: boolean = user.id === parseInt(req.params.id);
+    if (valid) return user;
+    throw new UnauthorizedException();
   }
 }

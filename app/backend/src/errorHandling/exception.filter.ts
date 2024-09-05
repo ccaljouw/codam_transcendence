@@ -16,14 +16,13 @@ export class HttpErrorFilter implements ExceptionFilter {
     const message = exception.message;
 
     console.log(
-      `In http error filter. Status: ${status}, Message: ${message}, response: ${response}`,
+      `In http error filter. Status: ${status}, Message: ${message}`,
     );
-    console.log('ctx:', ctx);
     if (status === HttpStatus.INTERNAL_SERVER_ERROR) {
-      //TODO: Implement redirect to error page here? Handle other status codes?
       const redirectUrl = new URL(
-        `${process.env.FRONTEND_URL}/error/${status}`,
+        `${process.env.FRONTEND_URL}/auth`,
       );
+      redirectUrl.searchParams.append('status', status.toString());
       redirectUrl.searchParams.append('message', message);
 
       response.redirect(`${redirectUrl}`);
