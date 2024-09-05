@@ -12,7 +12,7 @@ export default function RandomMatchButton() : JSX.Element {
 				<Link className="btn btn-dark" href="/game/0">Random Match</Link>
 				<br/>
 				<H3 text="or"/>
-				<Link className="btn btn-dark" href="/game/-1">Practise Game</Link>
+				<Link className="btn btn-dark" href="/game/-1">Practice Game</Link>
 			</div>
 		</>
 	);
