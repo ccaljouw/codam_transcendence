@@ -10,6 +10,7 @@ import useFetch from 'src/globals/functionComponents/useFetch.tsx'
 import styles from '../styles.module.css';
 import { useRouter } from 'next/navigation';
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar'
+import { H3 } from 'src/globals/layoutComponents/Font'
 
 // Update to select random or invite game: added inviteId to GameComponent and included inviteId in endpoint gameFetcher
 export default function GameComponent({inviteId}: {inviteId: number}) {
@@ -123,17 +124,20 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 	return (
 		<>
 			{waitingForPlayers ? (
-				<div>
-					<p>Waiting for second player to join...</p>
-				</div>
-			) : (
-				<div className={`${styles.game}`}>
-					<div className={`row`}>
-						<button className="btn btn-dark text-center" onClick={handleClick}>Leave Game</button>
-					</div>
-					<canvas ref={canvasRef} tabIndex={0} />
-				</div>
-			)}
+        <div className={`${styles.game}`}>
+          <div className={`text-center`}>
+            <img src={`${constants.API_AVATAR}waitingForOtherPlayers.jpg`}/>
+            <p>Are you stronger than your opponent? <br></br>How many squats can you do while waiting?</p>
+          </div>
+        </div>
+			) : ( <>
+          <div className={`${styles.game}`}>
+            <div className={`row`}>
+              <button className="btn btn-dark text-center" onClick={handleClick}>Leave Game</button>
+            </div>
+            <canvas ref={canvasRef} tabIndex={0} />
+				  </div>
+        </>)}
 		</>
 	);
 }
