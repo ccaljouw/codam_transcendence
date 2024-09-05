@@ -99,6 +99,21 @@ export class UsersService {
 		}
 	}
 
+  async findAll(): Promise<UserProfileDto[]> {
+		try {
+			const users = await this.db.user.findMany({
+				orderBy: { userName: 'asc' },
+			});
+			return users;
+		}
+		catch (error) {
+      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
+        throw error;
+      }
+  		throw error;
+		}
+	}
+
 	async findFriendsFrom(id: number): Promise<UserProfileDto[]> {
 		const friends = await this.db.user.findUnique({ where: { id } }).friends();
 		console.log("Friends from database: " + friends);

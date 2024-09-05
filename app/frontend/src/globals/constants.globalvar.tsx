@@ -44,7 +44,7 @@ export class constants {
 	static CHAT_GET_CHAT_NAME = this.API_CHAT + 'name/';
 	
 
-	static API_INVITE = this.BACKEND_BASEURL + 'invite/';
+	static API_INVITE = this.BACKEND_BASEURL + '/invite/';
 	static INVITE_RESPOND_TO_FRIEND_REQUEST = this.API_INVITE + 'respondToFriendRequest/';
 	static INVITE_RESPOND_TO_GAME_REQUEST = this.API_INVITE + 'respondToGameRequest/';
 	static INVITE_RESPOND_TO_CHAT_REQUEST = this.API_INVITE + 'respondToChatRequest/';

@@ -74,7 +74,7 @@ export default function UserContextMenu({ user }:
 			type: type,
 			state: "SENT"
 		}
-		inviteFetcher({ url: constants.BACKEND_BASEURL + "invite/create", fetchMethod: 'POST', payload: inviteMessage });
+		inviteFetcher({ url: constants.API_INVITE + "create", fetchMethod: 'POST', payload: inviteMessage });
 		if (type == InviteType.GAME) {
 			// should probably navigate to game page here
 			router.push('/game');
