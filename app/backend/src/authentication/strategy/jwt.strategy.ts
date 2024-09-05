@@ -2,6 +2,7 @@ import { UserProfileDto } from '@ft_dto/users';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
+import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UsersService } from 'src/users/users.service';
 
@@ -13,21 +14,25 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private userService: UsersService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req: Request) => {
+          return req.cookies['jwt'] || null;
+        },
+      ]),
       ignoreExpiration: false,
       secretOrKey: configService.get('JWT_SECRET'),
     });
   }
 
-  async validate(payload: any) {
-    let user: UserProfileDto;
-    console.log('payload');
-    console.log(payload);
+  async validate(payload: any): Promise<UserProfileDto> {
     try {
-      user = await this.userService.findUserLogin(payload.loginName);
+      const user: UserProfileDto = await this.userService.findUserLogin(
+        payload.loginName,
+      );
+      return user;
     } catch (error) {
-      throw new UnauthorizedException();
-    } 
-    return user;
+      console.log('Error validating jwt for user:', error.message);
+      throw new UnauthorizedException('Not passed jwt guard');
+    }
   }
 }

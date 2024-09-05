@@ -10,6 +10,7 @@ import { constants } from 'src/globals/constants.globalvar';
 import { IsBlocked, IsFriend } from 'src/globals/functionComponents/FriendOrBlocked';
 import { ChatType, InviteType } from '@prisma/client';
 import { useRouter } from 'next/navigation';
+import { UpdateGameDto } from '@ft_dto/game';
 
 export default function UserContextMenu({ user }:
 	{
@@ -104,6 +105,7 @@ export default function UserContextMenu({ user }:
 
 	useEffect(() => {
 		if (invite) {
+      console.log('Invite', invite);
 			if (!chat) {
 				const payload: CreateDMDto = {
 					user1Id: currentUser.id,
@@ -114,6 +116,10 @@ export default function UserContextMenu({ user }:
 			else if (chat.id != currentChatRoom.id) {
 				setNewChatRoom({ room: chat.id, count: newChatRoom.count++ }); // set new chat room, count to trigger useEffect
 			}
+      if (invite.type == InviteType.GAME) {
+        console.log(`Invite this user to a game: ${user.userName}`);
+        router.push(`/game/${invite.id}`);
+      }
 		}
 	}, [invite]);
 

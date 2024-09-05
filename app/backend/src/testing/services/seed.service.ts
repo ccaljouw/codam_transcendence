@@ -8,7 +8,7 @@ export class SeedService {
 
   async runSeed(): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      const child = exec('npx prisma db seed', (error, stdout, stderr) => {
+      exec('npx prisma db seed', (error, stdout) => {
         if (error) {
           console.error(`${error.message}`);
           reject(`${error.message}\n\n`);
@@ -17,7 +17,7 @@ export class SeedService {
           console.log(stdout);
           resolve(outputMessage);
         }
-      })
-    })
+      });
+    });
   }
 }

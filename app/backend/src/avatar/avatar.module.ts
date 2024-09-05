@@ -11,6 +11,6 @@ import { MulterModule } from '@nestjs/platform-express';
   ],
   controllers: [AvatarController],
   providers: [AvatarService],
-  exports: [AvatarService]
+  exports: [AvatarService],
 })
 export class AvatarModule {}

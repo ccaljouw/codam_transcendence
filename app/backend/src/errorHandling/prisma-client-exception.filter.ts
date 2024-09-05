@@ -1,11 +1,5 @@
 import { BaseExceptionFilter } from '@nestjs/core';
-import {
-  ArgumentsHost,
-  Catch,
-  HttpServer,
-  HttpStatus,
-  Logger,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, HttpServer, HttpStatus } from '@nestjs/common';
 import {
   PrismaClientKnownRequestError,
   PrismaClientUnknownRequestError,
@@ -18,8 +12,6 @@ import {
   PrismaClientValidationError,
 )
 export class PrismaClientExceptionFilter extends BaseExceptionFilter {
-  private readonly logger = new Logger(PrismaClientExceptionFilter.name);
-
   constructor(applicationRef?: HttpServer) {
     super(applicationRef);
   }
@@ -61,15 +53,12 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
       message = `Record not found`;
     }
 
-    this.logger.error(`Known Request Error - Code: ${exception.code}, Status: ${status}, Message: ${message}`);
-
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
       message,
     });
-
   }
 
   private catchClientUnknownRequestError(
@@ -79,11 +68,9 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request = ctx.getRequest();
-  
+
     const status = HttpStatus.NOT_FOUND;
     const message = exception.message;
-   
-    this.logger.error(`Validation Error - Exception: ${exception}, Status: ${status}, Message: ${message}`);
 
     response.status(status).json({
       statusCode: status,
@@ -103,8 +90,6 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
 
     const status = HttpStatus.BAD_REQUEST;
     const message = `Validation error: ${this.extractValidationErrorMessage(exception)}`;
-   
-    this.logger.error(`Validation Error - Exception: ${exception}, Status: ${status}, Message: ${message}`);
 
     response.status(status).json({
       statusCode: status,
@@ -114,21 +99,24 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
     });
   }
 
-  private extractValidationErrorMessage(exception: PrismaClientValidationError): string {
+  private extractValidationErrorMessage(
+    exception: PrismaClientValidationError,
+  ): string {
     let errorMessage: string;
     let match: RegExpMatchArray;
 
     // Extract the part of the error message containing the field and expected type
-    match = exception.message.match(/Invalid value for argument `([^`]+)`.+?Expected (.+?)\./);
+    match = exception.message.match(
+      /Invalid value for argument `([^`]+)`.+?Expected (.+?)\./,
+    );
     if (match && match[1] && match[2]) {
-        errorMessage = `'${match[1]}'. Expected ${match[2]}.`;
+      errorMessage = `'${match[1]}'. Expected ${match[2]}.`;
     } else {
       match = exception.message.match(/Argument `([^`]+)`.+?Expected (.+?)\./);
       if (match && match[1] && match[2]) {
         errorMessage = `'${match[1]}'. Expected ${match[2]}.`;
       }
     }
-
     return errorMessage;
   }
 }

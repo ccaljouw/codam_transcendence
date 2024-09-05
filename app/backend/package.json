@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "setup:dev": "cd .. && npm install && cd backend && npx prisma migrate dev --name init && nest start --watch",
+    "setup:dev": "cd .. && npm install && cd backend && npx prisma migrate dev --name init && npx prisma db seed && nest start --watch",
     "restart:dev": "npx prisma migrate deploy && nest start --watch",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

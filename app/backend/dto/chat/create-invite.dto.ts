@@ -8,7 +8,7 @@ export class CreateInviteDto {
   @IsOptional()
   @ApiProperty({ required: true, type: Number })
   chatId: number;
-  
+
   @IsNotEmpty()
   @IsInt()
   @ApiProperty({ required: true, type: Number })
@@ -18,15 +18,19 @@ export class CreateInviteDto {
   @IsInt()
   @ApiProperty({ required: true, type: Number })
   recipientId: number;
-  
+
   @IsNotEmpty()
   @IsEnum(InviteType)
   @ApiProperty({ required: true, enum: InviteType })
-  type:     InviteType;
+  type: InviteType;
 
   @IsEnum(InviteStatus)
-  @ApiProperty({ required: false, enum: InviteStatus, default: InviteStatus.SENT })
-  state?: InviteStatus
+  @ApiProperty({
+    required: false,
+    enum: InviteStatus,
+    default: InviteStatus.SENT,
+  })
+  state?: InviteStatus;
 
   @ApiProperty({ required: false, type: Date })
   expiredAt?: Date;

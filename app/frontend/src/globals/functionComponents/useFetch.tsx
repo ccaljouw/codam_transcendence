@@ -25,24 +25,35 @@ export default function useFetch<T, U>(): fetchOutput<T, U> {
     } : fetchProps<T> ) : Promise<void> => {
         setIsLoading(true);
         try {
-            const headers: HeadersInit = { 'Content-Type': 'application/json' };
-
-            const jwtToken = sessionStorage.getItem('jwt');
-            if (jwtToken) {
-                headers['Authorization'] = `Bearer ${jwtToken}`;
+            let requestContent: any = null;
+            const headers: HeadersInit = {};
+            if (!(payload instanceof FormData)) {
+              headers['Content-Type'] = 'application/json';
+              requestContent = JSON.stringify(payload);
             } else {
-              console.log('No jwt token in session storage');
+              requestContent = payload;
             }
+
             const response = await fetch(url, {
                 method: fetchMethod,
                 headers,
-                body: JSON.stringify(payload),
+                credentials: 'include',
+                body: requestContent,
             });
             if (!response.ok) {
-                throw new Error("Response not ok: " + response.status + ": " + response.statusText);
+              let errorMessage = `Response not ok: ${response.status} - ${response.statusText}`;
+              try {
+                const errorResponse = await response.json();
+                if (errorResponse.message) {
+                  errorMessage = `${response.status} - ${errorResponse.message}`;
+                }
+              } catch (jsonError) {
+                console.log('Error parsing JSON response', jsonError);
+              }
+              throw new Error(errorMessage);
             }
             setData(await response.json() as U);
-        } catch (e: any) { //todo: add type
+        } catch (e: any) {
             console.log("useFetch error: ", e);
             setError(e);
         } finally {
@@ -52,4 +63,4 @@ export default function useFetch<T, U>(): fetchOutput<T, U> {
     return ({data, isLoading, error, fetcher});
 };
 
-//todo: check if fetchProps and fetchOutput should be types or interfaces
+//TODO: Jorien, check if fetchProps and fetchOutput should be types or interfaces

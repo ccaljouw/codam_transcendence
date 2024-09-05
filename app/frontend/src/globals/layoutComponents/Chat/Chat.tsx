@@ -5,7 +5,7 @@ import { UserProfileDto } from '@ft_dto/users';
 import { constants } from '@ft_global/constants.globalvar';
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import { transcendenceSocket } from '@ft_global/socket.globalvar';
-import { ChatType, ChatUsers, InviteStatus, InviteType, OnlineStatus } from '@prisma/client';
+import { ChatType, ChatUsers, GameState, InviteStatus, InviteType, OnlineStatus } from '@prisma/client';
 import useFetch from '@ft_global/functionComponents/useFetch';
 import DataFetcher from '@ft_global/functionComponents/DataFetcher';
 import { FontBangers } from '../Font';
@@ -15,8 +15,10 @@ import { messageParser, parserProps } from './chatMessageParser';
 import { InviteSocketMessageDto } from '@ft_dto/chat';
 import { useRouter } from 'next/navigation';
 import { inviteCallback, inviteResponseHandler } from './inviteFunctions/inviteFunctions';
+import { GetGameDto, UpdateGameDto, UpdateGameStateDto } from '@ft_dto/game';
 
 const chatSocket = transcendenceSocket;
+const gameSocket = transcendenceSocket;
 
 export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID?: number }) {
 	const [message, setMessage] = useState('');
@@ -33,40 +35,46 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 	const { data: newMessage, isLoading: newMessageLoading, error: newMessageError, fetcher: newMessageFetcher } = useFetch<CreateChatMessageDto, number>();
 	const { data: newUserForChannel, isLoading: newUserForChannelLoading, error: newUserForChannelError, fetcher: newUserForChannelFetcher } = useFetch<null, UpdateChatUserDto>();
 	const router = useRouter();
-
+  
 	// ****************************************** THIS IS STUFF YOU MIGHT WANT TO ALTER, CARLOS ****************************************** //
-
+  
 	// THIS IS THE DATABASE FETCHER FOR GAME INVITES, IT MIGHT NEED A DIFFERENT RETURN TYPE
 	const { data: gameInvite, isLoading: gameInviteLoading, error: gameInviteError, fetcher: gameInviteFetcher } = useFetch<null, UpdateInviteDto>();
-
-
+  const {data: gameData, isLoading: loadingGame, error: errorGame, fetcher: getIviteGameID} = useFetch<null, number>();
+  // const [payloadGameState, setPayload] = useState<UpdateGameStateDto>();
+  
+  
 	// THIS USEEFFECT TRIGGERS WHEN THE GAME INVITE IS ACCEPTED OR DENIED, AND HANDLES THE RESPONSE BY THE ONE WHO WAS INVITED AND JUST ACCEPTED OR DENIED
-	useEffect(() => { // UseEffect is used to handle the GAME invite response from the invitee.
-		if (!gameInvite)
-			return;
-		console.log("Game invite: ", gameInvite);
+  useEffect(() => {
+    if (gameData !== null) {
+      console.log('Sending gameStateUpdate after rejected invite');
+      gameSocket.emit("game/updateGameState", {id: gameData, state: GameState.REJECTED});
+    } else
+      console.log('Error, no gameData');
+  }, [gameData]);
 
-		// CODE IF THE INVITE WAS ACCEPTED
-		if (gameInvite.state == InviteStatus.ACCEPTED) {
-			const gameAcceptPayload: InviteSocketMessageDto = {
-				userId: currentUser.id,
+  useEffect(() => {
+    if (!gameInvite)
+			return;
+    console.log("Game invite received: ", gameInvite);
+		if (gameInvite.state == InviteStatus.ACCEPTED && chatSocket.id) {
+      const gameAcceptPayload: InviteSocketMessageDto = {
+        userId: currentUser.id,
 				senderId: gameInvite.senderId ? gameInvite.senderId : 0,
 				accept: true,
 				type: InviteType.GAME,
 				directMessageId: currentChatRoom.id
 			}
 			chatSocket.emit('invite/inviteResponse', gameAcceptPayload);
-			// This is where we would start the game.
-			router.push('/game');
-			console.log("Starting game");
-		}
-
-		// CODE IF THE INVITE WAS DENIED (we probably don't need to do anything here, the socket message is sent elsewhere)
-		else {
-			console.log("Game invite was denied");
-		}
-		// Refresh the chat messages to update the invite displayed.
-			fetchMessages(currentChatRoom, chatMessagesFetcher, currentUser.id);
+      const payloadGetGame : GetGameDto = {userId: currentUser.id, clientId: chatSocket.id, inviteId: gameInvite.id};
+      console.log("Game invite was accepted");
+      console.log("Starting game");
+      router.push(`/game/${gameInvite.id}`);
+		} else {
+      getIviteGameID({url: `${constants.API_GET_INVITE_GAME_ID}${gameInvite.id}`});
+      console.log("Game invite was denied");
+    }
+		fetchMessages(currentChatRoom, chatMessagesFetcher, currentUser.id);
 	}, [gameInvite]);
 
 	// ****************************************** END OF STUFF YOU MIGHT WANT TO ALTER, BEGINNING OF STUFF YOU MIGHT WANNA LEAVE BE ****************************************** //

@@ -32,15 +32,14 @@ model User {
 	loginName String @unique
 
   userName        String? @unique //if no userName is provided loginName is used
-  email           String? @unique
+  email           String? //changed to not uni1que by carien
   firstName       String?
   lastName        String?
   auth            Auth?
   token           Tokens[]
 
   twoFactEnabled  Boolean      @default(false)
-  // avatarId        Int          @default(1)
-  avatarUrl       String?      @default("/favicon.ico")
+  avatarUrl       String?      @default("http://localhost:3001/avatar/favicon.ico")
   theme           Int          @default(0)
   online          OnlineStatus @default(OFFLINE)
 
@@ -130,6 +129,7 @@ model Game {
   GameUsers       GameUser[]
   longestRally    Int      @default(0)
   winnerId        Int?
+  inviteId        Int?     @unique @default(0)
   
   gameStartedAt   DateTime?
   gameFinishedAt  DateTime?
@@ -178,6 +178,7 @@ model Stats {
   winLossRatio       Float @default(1)
   consecutiveWins    Int @default(0)
   maxConsecutiveWins Int @default(0)
+  ladderPosition     Int[]
   achievements       Int[]
 
   createdAt DateTime @default(now())
@@ -213,6 +214,7 @@ enum GameState {
 	STARTED
 	FINISHED
 	ABORTED
+  REJECTED
 }
 
 enum InviteType {

@@ -1,11 +1,12 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { CreateUserDto } from './create-user.dto';
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsInt, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
-    @IsString()
-    @MaxLength(20)                      //todo: define max legth  
-    @IsOptional()
-    @ApiProperty({ required: false, maxLength: 30 })
-    pwd?: string;
-	}
+  @ApiProperty({ required: true })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  id?: number;
+}
