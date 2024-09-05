@@ -1,17 +1,15 @@
 "use client";
 import { createContext, useEffect, useRef, useState } from "react";
-import { ChatType, OnlineStatus } from "@prisma/client";
+import { OnlineStatus } from "@prisma/client";
 import { UserProfileDto, UpdateUserDto } from "@ft_dto/users";
 import { ChatMessageToRoomDto, FetchChatDto } from "@ft_dto/chat";
 import { WebsocketStatusChangeDto, CreateTokenDto } from '@ft_dto/socket'
 import { constants } from "@ft_global/constants.globalvar";
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
-import MenuBar from "./layoutComponents/MenuBar";
-import LoginScreen from "./layoutComponents/Login/LoginScreen";
 import useFetch from "./functionComponents/useFetch";
 import useAuthentication from "./functionComponents/useAuthentication";
 import { IsBlocked, IsFriend } from "./functionComponents/FriendOrBlocked";
-
+import { usePathname } from "next/navigation";
 
 // Context for the entire app
 interface TranscendenceContextVars {
@@ -57,6 +55,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	const [currentUser, setCurrentUser] = useState<UserProfileDto>({} as UserProfileDto);
 	const currentUserRef = useRef<UserProfileDto>(currentUser);
 	const { user } = useAuthentication();
+	const pathname = usePathname();
 	const [allUsersUnreadCounter, setAllUsersUnreadCounter] = useState<number>(0);
 	const [friendsUnreadCounter, setFriendsUnreadCounter] = useState(0);
 	const { data: userPatch, isLoading: userPatchLoading, error: userPatchError, fetcher: patchUserFetcher } = useFetch<UpdateUserDto, UserProfileDto>();
@@ -99,6 +98,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	// Update the user's status to online when the user logs in
 	useEffect(() => {
 		if (transcendenceSocket.id && transcendenceSocket.id != '0' && currentUser && currentUser.id !== undefined && currentUser.id != 0) {
+			console.log(`updating user status to online in currentuser.id useEffect in contextprovider`);
 			setUserStatusToOnline();
 
 			unreadMessageCountFetcher({ url: constants.CHAT_MESSAGES_UNREAD_FOR_USER + currentUser.id });
@@ -152,16 +152,18 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 
 	useEffect(() => {
 		if (userPatch) {
+			console.log(`userPatch will be saved as currentUser with id: ${userPatch.id}`);
 			setCurrentUser(userPatch);
 		}
 	}, [userPatch]);
 
 	useEffect(() => {
 		if (addToken) {
+			console.log(`updating usertoken in addToken useEffect in contextprovider`);
 			const statusUpdate: WebsocketStatusChangeDto = {
 				userId: currentUser.id,
 				userName: currentUser.userName,
-				token: (transcendenceSocket.id ? transcendenceSocket.id : ''),
+				token: (transcendenceSocket.id ? transcendenceSocket.id : ''), //Albert: Can the transcendenceSocket.id change while the addTokenFetcher is updating the token in the backend? Should the backend give back a WebsocketStatusChangeDto? - Jorien
 				status: OnlineStatus.ONLINE
 			}
 			transcendenceSocket.emit('socket/statusChange', statusUpdate); // Emit the status change to the socket
@@ -180,6 +182,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	// Function to update the user's online status
 	const setUserStatusToOnline = async () => {
 		if (!currentUser.id) return;
+		console.log(`updating user status to online in setUserStatusToOnline function in contextprovider`);
 		const patchUserData: UpdateUserDto = {
 			online: OnlineStatus.ONLINE,
 		}
@@ -188,12 +191,12 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 			userId: currentUser.id
 		}
 		patchUserFetcher({ url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: patchUserData });
-		addTokenFetcher({ url: constants.API_ADD_TOKEN, fetchMethod: 'POST', payload: addTokenData });
+		addTokenFetcher({ url: constants.API_ADD_TOKEN, fetchMethod: 'POST', payload: addTokenData }); //Albert: Can the transcendenceSocket.id change while the addTokenFetcher is updating the token in the backend? Should the backend give back a WebsocketStatusChangeDto? - Jorien
 	};
 
-	//todo: JMA: find out why this is needed, because it is also placed in useAuthentication
 	useEffect(() => {
 		if (user != null) {
+			console.log(`user changed in useAuthentication. new id: ${user.id}`);
 			setCurrentUser(user);
 		}
 	}, [user]);
@@ -201,8 +204,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	return (
 		<>
 			<TranscendenceContext.Provider value={contextValues}>
-				<MenuBar />
-				{currentUser.id ? <>{children}</> : <LoginScreen />}
+				{(currentUser.id != null || pathname == '/login' || pathname == '/signup' || pathname == '/auth')? <>{children}</> : <p>Authenticating...</p>}
 			</TranscendenceContext.Provider>
 		</>
 	)

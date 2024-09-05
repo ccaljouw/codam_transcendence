@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { constants } from '@ft_global/constants.globalvar';
-import EditButton from "src/app/profile/[username]/components/utils/EditButton";
+import EditButton from "src/app/(general)/profile/[username]/components/utils/EditButton";
 import useFetch from "src/globals/functionComponents/useFetch";
 import { TranscendenceContext } from "src/globals/contextprovider.globalvar";
 import { UpdateUserDto, UserProfileDto } from "@ft_dto/users";

@@ -1,6 +1,6 @@
 import { UserProfileDto } from "@ft_dto/users";
 import { H3 } from '@ft_global/layoutComponents/Font';
-import StaticDataField from "src/app/profile/[username]/components/utils/StaticDataField";
+import StaticDataField from "src/app/(general)/profile/[username]/components/utils/StaticDataField";
 import Achievements from "./Achievements";
 import { useEffect } from "react";
 import useFetch from "@ft_global/functionComponents/useFetch";

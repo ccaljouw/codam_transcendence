@@ -4,7 +4,7 @@ import { TranscendenceContext } from '@ft_global/contextprovider.globalvar';
 import { UpdatePwdDto } from '@ft_dto/authentication'
 import { constants } from '@ft_global/constants.globalvar';
 import useFetch from 'src/globals/functionComponents/useFetch';
-import { optionalAttributes } from 'src/app/profile/[username]/components/utils/EditableDataField';
+import { optionalAttributes } from 'src/app/(general)/profile/[username]/components/utils/EditableDataField';
 
 export default function ChangePassword(): JSX.Element {
 	const {currentUser, setCurrentUser} = useContext(TranscendenceContext);

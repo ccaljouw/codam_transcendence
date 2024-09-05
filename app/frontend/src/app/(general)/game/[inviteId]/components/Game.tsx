@@ -1,5 +1,5 @@
 "use client"
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useContext } from 'react'
 import { GameState } from '@prisma/client'
 import { GetGameDto, UpdateGameDto, UpdateGameStateDto } from '@ft_dto/game'
 import { Game } from '@ft_game/components/Game.ts'
@@ -9,12 +9,14 @@ import { constants } from '@ft_global/constants.globalvar.tsx'
 import useFetch from 'src/globals/functionComponents/useFetch.tsx'
 import styles from '../styles.module.css';
 import { useRouter } from 'next/navigation';
+import { TranscendenceContext } from 'src/globals/contextprovider.globalvar'
 
 // Update to select random or invite game: added inviteId to GameComponent and included inviteId in endpoint gameFetcher
 export default function GameComponent({inviteId}: {inviteId: number}) {
 	const gameSocket = transcendenceSocket;
 	const canvasRef = useRef< HTMLCanvasElement | null >(null);
-	const userId  = sessionStorage.getItem('userId');
+  const {currentUser} = useContext(TranscendenceContext);
+	const userId  = (currentUser.id).toString();
 	const [game, setGame] = useState< Game | null >(null);
 	const [roomId, setRoomId] = useState<number>(0);
 	const [waitingForPlayers, setWaitingForPlayers] = useState<boolean>(true);
