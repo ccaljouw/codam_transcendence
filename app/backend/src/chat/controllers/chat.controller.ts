@@ -6,6 +6,7 @@ import { ChatService } from '../services/chat.service';
 import { ChatSocketService } from '../services/chatsocket.service';
 import { UserProfileDto } from '@ft_dto/users';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
+import { JwtChatGuard } from 'src/authentication/guard/chat.guard';
 
 
 @Controller('chat')
@@ -183,6 +184,7 @@ export class ChatMessagesController {
 	@ApiOperation({ summary: 'Returns chat with specified id' })
 	@ApiOkResponse({ type: UpdateInviteDto })
 	@ApiNotFoundResponse({ description: 'Chat with #${id} does not exist' })
+	@UseGuards(JwtChatGuard)
 	async findOne(@Param('id', ParseIntPipe) id: number): Promise<FetchChatDto> {
 		const chat = await this.chatService.findOne(id);
 		return chat;

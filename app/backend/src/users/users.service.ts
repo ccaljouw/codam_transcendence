@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto, UserProfileDto } from '@ft_dto/users';
 import { PrismaService } from '../database/prisma.service';
 import { InviteStatus } from '@prisma/client';
-import { PrismaClientKnownRequestError, PrismaClientUnknownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class UsersService {
@@ -24,103 +23,51 @@ export class UsersService {
       });
       return user;
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
-        throw error;
-      }
-      throw new Error(`Error creating user: ${error.message}`);
+      console.log('error updating user', error);
+      throw error;
     }
-	}
+  }
 
-	// async update(id: number, updateUserDto: UpdateUserDto): Promise<UserProfileDto> {
-	// 	try {
-	// 		const user = await this.db.user.update({
-	// 		where: { id },	
-	// 			data: updateUserDto,
-	// 			include: {
-	// 				friends: true,
-	// 				blocked: true,
-	// 			}
-	// 		});
+  async findAllButMe(id: number): Promise<UserProfileDto[]> {
+    console.log('In findAllButMe');
+    try {
+      const users = await this.db.user.findMany({
+        where: { id: { not: id } },
+        orderBy: [{ online: 'desc' }, { userName: 'asc' }],
+      });
+      return users;
+    } catch (error) {
+      console.log('error getting all users', error);
+      throw error;
+    }
+  }
 
-	// 		user.friends.sort((a, b) => {
-	// 			if (a.online !== b.online)
-	// 				return b.online > a.online ? 1 : -1;
-	// 			return a.userName.localeCompare(b.userName)
-	// 		});
-	// 		for (const friend of user.friends as UserProfileDto[]) {
-	// 			delete friend.friends;
-	// 			delete friend.blocked;
-	// 		}
-	// 		for (const blocked of user.blocked as UserProfileDto[]) {
-	// 			delete blocked.friends;
-	// 			delete blocked.blocked;
-	// 		}
-	// 		return user;
-	// 	} catch (error) {
-  //     if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
-  //     throw error;
-  //   }
-  // }
-
-  // async findAllButMe(id: number): Promise<UserProfileDto[]> {
-  //   console.log('In findAllButMe');
-  //   try {
-  //     const users = await this.db.user.findMany({
-  //       where: { id: { not: id } },
-  //       orderBy: [{ online: 'desc' }, { userName: 'asc' }],
-  //     });
-  //     return users;
-  //   } catch (error) {
-  //     console.log('error getting all users', error);
-  //     throw error;
-  //   }
-  // }
-
-	// USER QUERY OPERATIONS
-	async findAllButMe(id: number): Promise<UserProfileDto[]> {
-		try {
-			const users = await this.db.user.findMany(
-				{
-					where: { id: { not: id } },
-					orderBy: [
-						{ online: 'desc' },
-						{ userName: 'asc' },
-					]
-				}
-			);
-			// for (const element of users) // 
-			return users;
-		}
-		catch (error) {
-      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
-        throw error;
-      }
-			throw new NotFoundException(`No other users in the database.`);
-		}
-	}
+  async findFriendsFrom(id: number): Promise<UserProfileDto[]> {
+    try {
+      const friends = await this.db.user
+        .findUnique({ where: { id } })
+        .friends();
+      console.log('Friends from database: ' + friends);
+      if (!friends)
+        throw new NotFoundException(`User with id ${id} not found.`);
+      return friends;
+    } catch (error) {
+      console.log('error getting friends', error);
+      throw error;
+    }
+  }
 
   async findAll(): Promise<UserProfileDto[]> {
-		try {
-			const users = await this.db.user.findMany({
-				orderBy: { userName: 'asc' },
-			});
-			return users;
-		}
-		catch (error) {
-      if (error instanceof PrismaClientKnownRequestError || PrismaClientValidationError || PrismaClientUnknownRequestError) {
-        throw error;
-      }
-  		throw error;
-		}
-	}
-
-	async findFriendsFrom(id: number): Promise<UserProfileDto[]> {
-		const friends = await this.db.user.findUnique({ where: { id } }).friends();
-		console.log("Friends from database: " + friends);
-		if (!friends)
-			throw new NotFoundException(`No friends in the database.`);
-		return friends;
-	}
+    try {
+      const users = await this.db.user.findMany({
+        orderBy: { userName: 'asc' },
+      });
+      return users;
+    } catch (error) {
+      console.log('error getting all users', error);
+      throw error;
+    }
+  }
 
   async findOne(id: number): Promise<UserProfileDto> {
     try {
