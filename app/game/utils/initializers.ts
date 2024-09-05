@@ -3,24 +3,23 @@ import { Wall } from '../gameObjects/Wall'
 import { GameObject } from '../gameObjects/GameObject'
 import { PlayerComponent } from '../components/PlayerComponent'
 import { Game } from '../components/Game'
-import { KeyListenerComponent } from '../components/KeyListenerComponent'
 import { TextComponent } from '../components/TextComponent'
-// import { startKeyPressed } from './utils'
 import { escapeKeyPressed } from './utils'
 import { UpdateUserDto } from '@ft_dto/users'
 import * as CON from './constants'
 import { UpdateGameUserDto } from '@ft_dto/game'
-
+import { log } from './utils'
 
 export function canvasInitializer (game: Game ) {
 	game.canvas!.width = CON.config[game.config].screenWidth;
 	game.canvas!.height = CON.config[game.config].screenHeight;
 }
 
-
 export function paddleInitializer (game: Game ) {
 	const paddleHeight = CON.config[game.config].screenHeight * CON.config[game.config].paddleHeightFactor;
+
 	const leftPaddle = new Paddle(
+		0,
 		"left",
 		CON.config[game.config].paddleOffset_X,
 		CON.config[game.config].screenHeight / 2 - paddleHeight / 2,
@@ -29,6 +28,7 @@ export function paddleInitializer (game: Game ) {
 		CON.BASE_COLOR
 	);
 	const rightPaddle = new Paddle(
+		game.aiLevel,
 		"right",
 		CON.config[game.config].screenWidth - CON.config[game.config].paddleOffset_X - CON.config[game.config].paddleWidth,
 		CON.config[game.config].screenHeight / 2 - paddleHeight / 2,
@@ -79,8 +79,7 @@ export function setVerticalWalls (walls: Wall[], config: string) {
 			CON.BASE_COLOR
 		));
 	
-
-	//decativate the vertical walls
+	//decativate the vertical walls bydefault
 	walls.forEach(wall => {
 		if (wall.getType() === 1) {
 			wall.deactivate();
@@ -130,11 +129,10 @@ export function keyListenerInitializer (game: Game) {
 		return;
 	}
 	game.keyListener.addKeyCallback(" ", () => {
-		console.log("Space pressed. No function added yet");
-		//startKeyPressed(game, game.config);
+		log("Space pressed. No function added yet");
 	});
 	game.keyListener.addKeyCallback("Escape", () => {
-		console.log("Escape key pressed, aborting game")
+		log("Escape key pressed, aborting game")
 		escapeKeyPressed(game)
 	});
 }
@@ -142,7 +140,7 @@ export function keyListenerInitializer (game: Game) {
 
 export function messageFieldInitializer (messageFields: TextComponent[], config: string) {
 	messageFields.push(new TextComponent("left",
-		"LEFT MESSAGE",
+		"Get Ready",
 		CON.BASE_FONT,
 		CON.BASE_COLOR,
 		CON.ALIGN, CON.BASELINE,
@@ -150,7 +148,7 @@ export function messageFieldInitializer (messageFields: TextComponent[], config:
 		CON.config[config].bottomMessageOffset_X,
 		CON.config[config].screenHeight - CON.config[config].wallWidth -	CON.config[config].bottomMessageOffset_Y));
 	messageFields.push(new TextComponent("right",
-		"Get Ready",
+		"",
 		CON.BASE_FONT,
 		CON.BASE_COLOR,
 		CON.ALIGN,
@@ -166,14 +164,19 @@ export function playerInitializer (players: PlayerComponent[], config: string, g
 	var player2 : string = "placehoder name 2";
 	
 	const user1 = gameUsers[0]!.user! as UpdateUserDto;
-	console.log("Player: user1 = ", user1.userName!);	
+	log(`GameScript: player 1 = ${user1.userName!}`);	
 	player1 = user1.userName!;
 	players.push(new PlayerComponent(player1, 0, config));
 	
 	if (gameUsers[1]) {
 		const user2 = gameUsers[1].user as UpdateUserDto;
-		console.log("Player: user2 = ", user2.userName!);
+		log(`GameScript: player 2 = ${user2.userName!}`);
 		player2 = user2.userName!;
 		players.push(new PlayerComponent(player2, 1, config));
 	}
+
+	//set the allignment of the player names
+	players.forEach(player => {
+		player.nameField?.setAlign("left");
+	});
 }

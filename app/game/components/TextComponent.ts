@@ -26,10 +26,6 @@ export class TextComponent extends GameObject {
 		ctx.fillText(this.text, this.x, this.y);
 	}
 
-	update() {
-	//todo: implement message changes here based on state	
-	}
-
 	public setText(text: string) {
 		this.text = text;
 	}
@@ -48,6 +44,14 @@ export class TextComponent extends GameObject {
 
 	public setBaseline(baseline: string) {
 		this.baseline = baseline;
+	}
+
+	public setX(x: number) {
+		this.x = x;
+	}
+
+	public setY(y: number) {
+		this.y = y;
 	}
 
 	public setSize(size: number) {

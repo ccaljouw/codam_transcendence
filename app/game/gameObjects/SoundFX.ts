@@ -1,12 +1,15 @@
+import { log } from "../utils/utils";
+
 export class SoundFX {
   private audioContext: AudioContext;
+  private gainValue: number;
 
   constructor() {
-      this.audioContext = new AudioContext();
+    this.audioContext = new AudioContext();
+    this.gainValue = 0.5; // default volume
   }
 
-
-  async play(frequency: number, duration: number) {
+  async play(frequency: number, duration: number, delay: number = 0) {
     if (this.audioContext.state === 'suspended') {
       await this.audioContext.resume();
     }
@@ -18,11 +21,19 @@ export class SoundFX {
     gainNode.connect(this.audioContext.destination);
 
     oscillator.frequency.value = frequency;
-    gainNode.gain.value = 0.5;
+    gainNode.gain.value = this.gainValue;
     oscillator.type = "square";
     
-    oscillator.start(this.audioContext.currentTime);
-    oscillator.stop(this.audioContext.currentTime + duration);
+    oscillator.start(this.audioContext.currentTime + delay);
+    oscillator.stop(this.audioContext.currentTime + delay + duration);
+  }
+
+  setVolume(config: string, volume: number) {
+    if (volume < 0 || volume > 1) {
+      log(`GameScript: "SoundFX: volume set to default. set value must be between 0 and 1`);
+    } else {
+      this.gainValue = volume;
+    }
   }
 
   playPaddleHit() {
@@ -34,7 +45,7 @@ export class SoundFX {
   }
 
   playCountdown2() {
-    this.play(300, 0.1);
+    this.play(250, 0.1);
   }
   
   playCountdown1() {
@@ -42,16 +53,33 @@ export class SoundFX {
   }
   
   playStart() {
-    this.play(500, 0.3);
-  }
-  
-  playGoal() {
-    this.play(440, 0.1);
+    this.play(450, 0.2);
   }
 
-  
+  playGoal() {
+    this.play(440, 0.1);
+    this.play(460, 0.1, 0.1);
+    this.play(480, 0.1, 0.2);
+  }
+
+  playWin() {
+    this.play(500, 0.3);
+    this.play(600, 0.3, 0.3);
+    this.play(700, 0.4, 0.6);
+  }
+
+  playLose() {
+    this.play(300, 0.3);
+    this.play(250, 0.3, 0.3);
+    this.play(200, 0.4, 0.6);
+  }
+
   reinitialize() {
     this.audioContext.close();
     this.audioContext = new AudioContext();
+  }
+
+  stopAll() {
+    this.audioContext.close();
   }
 }

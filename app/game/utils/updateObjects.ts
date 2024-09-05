@@ -2,7 +2,7 @@ import { Game } from '../components/Game'
 import * as CON from './constants'
 import { Ball } from '../gameObjects/Ball'
 import { detectCollision } from './collisionDetection'
-import { detectScore, checkWinCondition, setWallTheme } from './utils'
+import { detectScore, checkWinCondition, setWallTheme, log } from './utils'
 import { GameState } from '@prisma/client'
 import { UpdateGameStateDto } from '@ft_dto/game'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
@@ -11,12 +11,9 @@ export function updateObjects(game: Game, deltaTime: number) {
   if (game.gameState !== GameState.STARTED) {
     return;
   }
-
   game.elapasedTimeSincceLastUpdate += deltaTime;
-
   updatePaddles(game, deltaTime);
   updateBall(game, deltaTime);
-  // game.messageFields.forEach(message => message.update());
 }
 
 function updatePaddles(game: Game, deltaTime: number) {
@@ -93,10 +90,11 @@ export function checkForGoals(game: Game) {
       return;
     }
   }
+
   
   let winningSide: number = checkWinCondition(game) ?? -1;
   if (winningSide !== -1) {
-    console.log(`Script: game finished, longest rally: ${game.ball?.getLongestRally()}`);
+    log(`GameScript: game finished, longest rally: ${game.ball?.getLongestRally()}`);
     const payload : UpdateGameStateDto  = {id: game.roomId, state: GameState.FINISHED, winnerId: winningSide, score1: game.players[0].getScore(), score2: game.players[1].getScore(), longestRally: game.ball?.getLongestRally()};
     gameSocket.emit("game/updateGameState", payload);
     game.finishGame(winningSide);
@@ -124,13 +122,14 @@ export function updateWalls(game: Game) {
     game.walls.forEach(wall => {
       if (wall.getName().includes("Back")) {
         wall.deactivate();
-        game.messageFields[1]?.setText("");
-
       }
     });
+    if (player_1_score !== triggerScore && player_2_score !== triggerScore) {
+      game.messageFields[1]?.setText("");
+    }
     return;
   }
-  
+    
   if (player_1_score === triggerScore) {
     game.walls.forEach(wall => {
       if (wall.getName().includes("Right")) {

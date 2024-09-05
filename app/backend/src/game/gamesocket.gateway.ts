@@ -44,7 +44,6 @@ export class GamesocketGateway {
       // maar misschien moet die weer terug?)
       .to(payload.id.toString())
       .emit('game/updateGameState', payload);
-    // TODO: Carlo, dit wordt nu meerdere keren getriggert (omdat de berichten vaker dan 1x over de socket gaan??)
     this.gameService.update(payload);
   }
 

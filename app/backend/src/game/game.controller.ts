@@ -44,6 +44,11 @@ export class GameController {
         getGameDto.userId,
         getGameDto.clientId,
       );
+    else if (getGameDto.inviteId === -1)
+      return this.gameService.createAiGame(
+        getGameDto.userId,
+        getGameDto.clientId,
+      );
     else
       return this.gameService.findInviteGame(
         getGameDto.inviteId,

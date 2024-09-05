@@ -32,7 +32,7 @@ export class UsersService {
     console.log('In findAllButMe');
     try {
       const users = await this.db.user.findMany({
-        where: { id: { not: id } },
+        where: { id: { not: id }, loginName: { not: 'AI' } },
         orderBy: [{ online: 'desc' }, { userName: 'asc' }],
       });
       return users;
@@ -60,6 +60,7 @@ export class UsersService {
   async findAll(): Promise<UserProfileDto[]> {
     try {
       const users = await this.db.user.findMany({
+        where: { loginName: { not: 'AI' } },
         orderBy: { userName: 'asc' },
       });
       return users;
@@ -258,7 +259,6 @@ export class UsersService {
         },
       });
       if (!user) throw new NotFoundException(`User ${id} not found.`);
-      // user.friends = this.sortFriends(user.friends);
       return user;
     } catch (error) {
       console.log('error unblocking user', error);
