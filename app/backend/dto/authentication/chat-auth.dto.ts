@@ -11,7 +11,7 @@ export class ChatAuthDto {
 
 	@ApiProperty({ required: false, type: String })
 	@IsString()
-	@MinLength(3)
+	// @MinLength(3)
 	@MaxLength(20)
 	pwd: string;
 }	

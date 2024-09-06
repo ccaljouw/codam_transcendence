@@ -23,7 +23,10 @@ export default function useFetch<T, U>(): fetchOutput<T, U> {
         fetchMethod,
         payload,
     } : fetchProps<T> ) : Promise<void> => {
-        setIsLoading(true);
+        // (re)set states to default values to prevent old data from being displayed
+		setIsLoading(true);
+		setError(null) ;
+		setData(null);
         try {
             let requestContent: any = null;
             const headers: HeadersInit = {};

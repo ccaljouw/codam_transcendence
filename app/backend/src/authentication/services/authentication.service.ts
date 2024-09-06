@@ -176,7 +176,7 @@ export class AuthService {
 			(req.res as Response).cookie(`chatToken_${chat.id}`, token, {
 				httpOnly: true,
 				//TODO: determine validity
-				maxAge: 3600000, // expires in 1 hour
+				// maxAge: 3600000, // expires in 1 hour
 				sameSite: 'strict',
 			});
 		} catch (error) {
@@ -211,11 +211,6 @@ export class AuthService {
 		  const salt = await bcrypt.genSalt(10);
 		  const hash = await bcrypt.hash(password, salt);
 		  await this.db.chatAuth.create({data: {chatId, pwd: hash}});
-		  await this.db.chat.update({
-			where: { id: chatId },
-			include: { users: true },
-			data: { visibility: ChatType.PROTECTED },
-		  })
 		  return true;
 		} catch (error) {
 		  console.log('Error setting chat password:', error.message);

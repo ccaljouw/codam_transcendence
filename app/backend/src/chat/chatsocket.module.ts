@@ -10,10 +10,13 @@ import { TokenService } from 'src/users/token.service';
 import { InviteService } from './services/invite.service';
 import { InviteController } from './controllers/invite.controller';
 import { JwtService } from '@nestjs/jwt';
+import { AuthService } from 'src/authentication/services/authentication.service';
+import { TwoFAService } from 'src/authentication/services/2FA.service';
+import { StatsService } from 'src/stats/stats.service';
 
 @Module({
   imports: [SocketServerModule],
-	providers: [ChatSocketGateway, ChatSocketService, ChatMessageService, ChatService, InviteService, PrismaService, TokenService, JwtService],
+	providers: [ChatSocketGateway, ChatSocketService, ChatMessageService, ChatService, InviteService, PrismaService, TokenService, JwtService, AuthService, TwoFAService, StatsService],
 	controllers: [ChatMessagesController, InviteController],
 })
 export class ChatSocketModule {}

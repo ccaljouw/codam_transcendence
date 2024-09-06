@@ -44,6 +44,7 @@ export default function ChannelSettings({room} : {room: FetchChatDto}) {
 						<option key="Private" value="PRIVATE" id="visibility">Private</option>
 						<option key="Password" value="PROTECTED" id="visibility">Password</option>
 					</select>
+					{chatPatched ? chatPatched.visibility : room.visibility}
 				</div>
 			</form>
 			<br />&emsp;&emsp; [with set/change password option]<br />

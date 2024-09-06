@@ -107,6 +107,7 @@ export class AuthController {
 
   @Post('loginChat')
   async loginChat(@Req() req: Request, @Body() chatAuthDto: ChatAuthDto): Promise<FetchChatDto> {
+	console.log(`Logging in for ${chatAuthDto.chatId}`);
     try {
       const chat: FetchChatDto = await this.authService.validateChatLogin(chatAuthDto.chatId, chatAuthDto.pwd);
       console.log(`Logged in for ${chat.id}`);
@@ -120,5 +121,33 @@ export class AuthController {
   @Post('setChatPwd')
   async setChatPassword(@Body()chatAuth: ChatAuthDto) : Promise<boolean> {
     return await this.authService.setChatPassword(chatAuth.chatId, chatAuth.pwd);
+  }
+
+  // This route deletes all authentication-related cookies, might be useful for logging out
+  @Get('resetAuthCookies')
+  async resetAuthCookies(@Req() req: Request, @Res() res: Response) {
+	try {
+	  // Get all cookies from the request
+	  const cookies = req.cookies;
+  
+	  // Loop through each cookie and delete those containing 'jwt' or 'chatToken'
+	  Object.keys(cookies).forEach((cookieName) => {
+		if (cookieName.includes('jwt') || cookieName.includes('chatToken')) {
+		  // Clear the cookie by setting it to expire in the past
+		  res.clearCookie(cookieName, {
+			httpOnly: true,
+			sameSite: 'strict',
+			path: '/', // Make sure this matches the path used when the cookie was set
+		  });
+		  console.log(`Cleared cookie: ${cookieName}`);
+		}
+	  });
+  
+	  // Return a success message
+	  return res.status(200).json({ message: 'Authentication-related cookies cleared' });
+	} catch (error) {
+	  console.log('Error clearing cookies:', error.message);
+	  return res.status(500).json({ message: 'Failed to clear cookies' });
+	}
   }
 }
