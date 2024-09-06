@@ -17,9 +17,9 @@ import { LocalAuthGuard } from '../guard/login-auth.guard';
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { AuthGuard42 } from '../guard/42-auth.guard';
-import { ChatAuthDto, UpdatePwdDto } from '@ft_dto/authentication';
 import { ConfigService } from '@nestjs/config';
 import { FetchChatDto } from '@ft_dto/chat';
+import { ChatAuthDto, UpdatePwdDto } from '@ft_dto/authentication';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -41,7 +41,7 @@ export class AuthController {
       if (!user) throw new UnauthorizedException();
       await this.authService.setJwtCookie(user, req);
       console.log(`Auth callback for ${user.id}`);
-      res.redirect(`${this.configService.get('FRONTEND_URL')}?user=${user.id}`);
+      res.redirect(`${this.configService.get('FRONTEND_URL')}/auth?user=${user.id}`);
     } catch (error) {
       console.log('Error in 42 callback:', error.message);
       throw error;
@@ -85,6 +85,25 @@ export class AuthController {
     }
   }
 
+  @Patch('change_pwd')
+  @UseGuards(JwtAuthGuard)
+  async changePwd(@Body() updatePwdDto: UpdatePwdDto): Promise<boolean> {
+    return this.authService.changePwd(
+      updatePwdDto.userId,
+      updatePwdDto.oldPwd,
+      updatePwdDto.newPwd,
+    );
+  }
+
+  @Get('check_id/:id')
+  @UseGuards(JwtAuthGuard)
+  async checkId(@Req() req: Request | any): Promise<UserProfileDto> {
+    const user: UserProfileDto = req.user;
+    const valid: boolean = user.id === parseInt(req.params.id);
+    if (valid) return user;
+    throw new UnauthorizedException();
+  }
+
   @Post('loginChat')
   async loginChat(@Req() req: Request, @Body() chatAuthDto: ChatAuthDto): Promise<FetchChatDto> {
     try {
@@ -100,15 +119,5 @@ export class AuthController {
   @Post('setChatPwd')
   async setChatPassword(@Body()chatAuth: ChatAuthDto) : Promise<boolean> {
     return await this.authService.setChatPassword(chatAuth.chatId, chatAuth.pwd);
-  }
-
-  @Patch('change_pwd')
-  @UseGuards(JwtAuthGuard)
-  async changePwd(@Body() updatePwdDto: UpdatePwdDto): Promise<void> {
-    return this.authService.changePwd(
-      updatePwdDto.userId,
-      updatePwdDto.oldPwd,
-      updatePwdDto.newPwd,
-    );
   }
 }

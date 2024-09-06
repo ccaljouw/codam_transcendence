@@ -33,7 +33,8 @@ export default function ChatArea() {
 	const { data: chatUser, error: chatUserError, isLoading: chatUserLoading, fetcher: chatUserFetcher } = useFetch<null, UpdateChatUserDto>();
 
 	useEffect(() => { // Reset secondUser when a new chat room is created to avoid the Chat component fetching the wrong room
-		setSecondUser(0);
+		console.log('newChatRoom: chatarea', newChatRoom);
+		setSecondUser(-1);
 	}, [newChatRoom]);
 
 
@@ -46,9 +47,9 @@ export default function ChatArea() {
 		if (currentChatRoom.id != -1) {
 			chatUserFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + currentUser.id });
 		}
-		if (currentChatRoom.id == -1 ) {
-			setUserListType(UserListType.AllUsers);
-		}
+		// if (currentChatRoom.id == -1 ) {
+		// 	setUserListType(UserListType.AllUsers);
+		// }
 	}, [currentChatRoom, currentChatRoom.users?.length]);
 
 	useEffect(() => {
@@ -72,6 +73,17 @@ export default function ChatArea() {
 			setUserListType(UserListType.AllUsers);
 	}, [currentUser]);
 
+
+	useEffect(() => {
+		if (currentChatRoom.visibility == ChatType.DM) {
+			if (HasFriends(currentUser)) {
+				setUserListType(UserListType.Friends);
+			}
+			else
+				setUserListType(UserListType.AllUsers);
+		}
+	}, [currentChatRoom]);
+
 	useEffect(() => {
 		if (allUsersUnreadCounter == 0) {
 			window.document.title = "STRONGPONG";
@@ -89,11 +101,6 @@ export default function ChatArea() {
 				:
 				<>
 					<li key={user.id}>
-						{/* <StatusIndicator
-							userId={user.id}
-							status={user.online}
-							statusChangeCallback={statusChangeCallback}
-							indexInUserList={indexInUserList} /> */}
 						<ChannelStatusIndicator userId={user.id} onlineStatus={user.online} />
 						&nbsp;&nbsp;
 						<span className={IsBlocked(user.id, currentUser) ? 'blocked' : ''} onClick={() => { !IsBlocked(user.id, currentUser) ? setSecondUser(user.id) : setNewChatRoom({ room: -1, count: newChatRoom.count++ }) }}>{user.userName}</span>
@@ -129,7 +136,7 @@ export default function ChatArea() {
 
 	return (
 		<>
-			{secondUser || newChatRoom.room != -1 ?
+			{(secondUser && secondUser != -1) || newChatRoom.room != -1 ?
 				<Chat key={newChatRoom.count} user2={secondUser} chatID={newChatRoom.room} />
 				: <div className="white-box"><h3>Hello {currentUser.userName}, Who do you want to chat with?</h3></div>
 			}

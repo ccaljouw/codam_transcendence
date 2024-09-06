@@ -144,6 +144,15 @@ export class ChatMessagesController {
 		return -1;
 	}
 
+	@Get('name/:chatId')
+	@ApiOperation({ summary: 'Returns chat name' })
+	@ApiOkResponse({ type: Object })
+	@ApiNotFoundResponse({ description: 'No chat with #${chatId}' })
+	async getChatName(@Param('chatId', ParseIntPipe) chatId: number) {
+		const chat = await this.chatService.findOne(chatId);
+		return {name: chat.name};
+	}
+
 	@Post('createDM')
 	@ApiOperation({ summary: 'Returns chat id of created of existing chat' })
 	@ApiOkResponse({ type: Number })
@@ -176,6 +185,7 @@ export class ChatMessagesController {
 	@ApiOperation({ summary: 'Returns chat with specified id' })
 	@ApiOkResponse({ type: UpdateInviteDto })
 	@ApiNotFoundResponse({ description: 'Chat with #${id} does not exist' })
+	@UseGuards(JwtChatGuard)
 	async findOne(@Param('id', ParseIntPipe) id: number): Promise<FetchChatDto> {
 		const chat = await this.chatService.findOne(id);
 		return chat;

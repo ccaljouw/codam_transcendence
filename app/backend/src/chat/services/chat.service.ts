@@ -113,7 +113,7 @@ export class ChatService {
 		console.log("Creating new channel for user ", userId);
 		const newChat = await this.db.chat.create({
 			data: {
-				visibility: ChatType.PUBLIC,
+				visibility: ChatType.PRIVATE,
 				ownerId: userId,
 				name: "New Channel " + Math.floor(Math.random() * 1000)
 			},

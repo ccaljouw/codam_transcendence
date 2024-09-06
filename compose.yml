@@ -33,9 +33,9 @@ services:
       - db
     networks:
       - transcendence
-    # command: ["setup:dev"]
+    command: ["setup:dev"]
     # command: ["deploy"]
-    command: ["restart:dev"]
+    # command: ["restart:dev"]
     
   frontend:
     depends_on:
@@ -52,7 +52,6 @@ services:
     networks:
       - transcendence
     command: ["dev"]
-    # TODO: fix frontend deploy command
     # command: ["deploy"]
 
 networks:

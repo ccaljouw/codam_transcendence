@@ -19,14 +19,14 @@ export class UpdatePwdDto {
   @ApiProperty({ required: true, type: String })
   @IsNotEmpty()
   @IsString()
-  @MinLength(3)
-  @MaxLength(20)
+  @MinLength(10)
+  @MaxLength(50)
   oldPwd: string;
 
   @ApiProperty({ required: true, type: String })
   @IsNotEmpty()
   @IsString()
-  @MinLength(3)
-  @MaxLength(20)
+  @MinLength(10)
+  @MaxLength(50)
   newPwd: string;
 }
