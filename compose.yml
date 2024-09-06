@@ -33,9 +33,8 @@ services:
       - db
     networks:
       - transcendence
-    command: ["setup:dev"]
+    command: ["dev:start"]
     # command: ["deploy"]
-    # command: ["restart:dev"]
     
   frontend:
     depends_on:
@@ -56,15 +55,11 @@ services:
 
 networks:
   transcendence:
+    name: transcendence 
 
 volumes:
   database_files:
-    driver: local
-    driver_opts:
-      device: ./app/postgres_db
-      o: bind
-      type: none
-  
+
   app:
     driver: local
     driver_opts:

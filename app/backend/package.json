@@ -7,8 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "setup:dev": "npx prisma migrate dev --name init && nest start --watch",
-    "restart:dev": "npx prisma migrate deploy && nest start --watch",
-    "deploy": "npx prisma migrate deploy && nest start",
+    "dev:start": "npx prisma migrate dev --name init && nest start --watch",
+    "deploy": "npx prisma migrate dev --name init && nest start",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",

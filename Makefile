@@ -15,13 +15,9 @@ endef
 all: run
 
 run: clean
-	@echo -e "$(COLOR_BLUE) **** CREATE FOLDERS AND DOCKER_COMPOSE UP ****$(COLOR_RESET)"
-	$(call color_output, mkdir -p ./app/postgres_db)
 	docker compose up
 
 re: fclean
-	@echo -e "$(COLOR_BLUE) **** CREATE FOLDERS AND DOCKER_COMPOSE UP ****$(COLOR_RESET)"
-	$(call color_output, mkdir -p ./app/postgres_db)
 	docker compose up --build
 
 start:
@@ -38,18 +34,16 @@ clean:
 	$(call color_output, rm -rf ./app/frontend/.next)
 
 fclean: clean
-	@echo -e "$(COLOR_BLUE) **** REMOVING DOCKER IMAGES****$(COLOR_RESET)"
-	@$(call color_output, docker rmi rmi transcendence-backend)
-	@$(call color_output, docker rmi rmi transcendence-frontend)
+	@echo -e "$(COLOR_BLUE) **** REMOVING DOCKER IMAGES FRONTEND AND BACKEND****$(COLOR_RESET)"
+	$(call color_output, docker rmi codam-transcendence-frontend)
+	$(call color_output, docker rmi codam-transcendence-backend)
 	@echo -e "$(COLOR_BLUE) **** REMOVING NODE MODULES AND TEST COVERAGE****$(COLOR_RESET)"
 	$(call color_output, rm -rf ./app/node_modules)
 	$(call color_output, rm -rf ./app/coverage)
 
-prune: fclean
-	@echo -e "$(COLOR_BLUE) **** DOCKER SYSTEM PRUNE REMOVING ALL CONTAINERS IMAGES AND VOLUMES ****$(COLOR_RESET)"
-	docker system prune -af
-	docker volume prune -af
-	@echo -e "$(COLOR_BLUE) **** REMOVE DATABASE DATA ****$(COLOR_RESET)"
-	$(call color_output, rm -rf ./app/postgres_db)
+clearvolumes: clean
+	@echo -e "$(COLOR_BLUE) **** REMOVE DOCKER VOLUMES ****$(COLOR_RESET)"
+	$(call color_output, docker volume rm codam-transcendence_app)
+	$(call color_output, docker volume rm codam-transcendence_database_files)
 
-.PHONY:	all run re start stop clean fclean prune backend
+.PHONY:	all run re start stop clean fclean clearvolumes backend
