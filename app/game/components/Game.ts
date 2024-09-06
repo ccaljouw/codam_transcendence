@@ -9,9 +9,9 @@ import { KeyListenerComponent } from './KeyListenerComponent'
 import { PlayerComponent } from './PlayerComponent'
 import { TextComponent } from './TextComponent'
 import * as CON from '../utils/constants'
-import { setSocketListeners } from '../utils/gameSocketListners'
+import { disconnectSocket, setSocketListeners } from '../utils/gameSocketListners'
 import { updateObjects, checkForGoals } from '../utils/updateObjects'
-import { countdown, setTheme } from '../utils/utils'
+import { countdown, setTheme, log } from '../utils/utils'
 import { initializeGameObjects, drawGameObjects, resetGameObjects } from '../utils/objectController'
 
 export class Game {
@@ -20,6 +20,7 @@ export class Game {
 	gameData: UpdateGameDto | null = null;
 	theme: string;
 	config: string;
+	aiLevel: number = 0; // case 0 then not an AI game
 	instanceType: CON.InstanceTypes = CON.InstanceTypes.notSet;
 	gameState: GameState = GameState.WAITING;
 	keyListener: KeyListenerComponent = new KeyListenerComponent();
@@ -39,7 +40,7 @@ export class Game {
 	lastFrameTime: number = 0;
 	currentAnimationFrame: number = 0;
 
-	constructor(newCanvas: HTMLCanvasElement | undefined, instanceType: CON.InstanceTypes, data: UpdateGameDto, givenConfig: string, givenTheme: string) {
+	constructor(newCanvas: HTMLCanvasElement | undefined, instanceType: CON.InstanceTypes, data: UpdateGameDto, givenConfig: string, givenTheme: string, givenVolume: number, aiLevel: number) {
 		this.config = givenConfig;
 		this.theme = givenTheme;
 		this.gameData = data;
@@ -48,10 +49,12 @@ export class Game {
 		this.canvas = newCanvas? newCanvas : undefined;
 		this.ctx = this.canvas?.getContext("2d") as CanvasRenderingContext2D;
 		this.gameUsers = this.gameData.GameUsers as UpdateGameUserDto [];
+		this.soundFX.setVolume(givenConfig, givenVolume);
+		this.aiLevel = aiLevel;
 		initializeGameObjects(this);
 		setTheme(this);
 		setSocketListeners(this);
-		console.log("script: instance type: ", this.instanceType);
+		log(`GameScript: instance type: ${this.instanceType}`);
 	}
 	
 
@@ -88,18 +91,29 @@ export class Game {
 		if (this.gameState === GameState.FINISHED) {
 			return;
 		}
+		
+		if (winningSide === this.instanceType) {
+			this.soundFX.playWin();
+		} else {
+			this.soundFX.playLose();
+		}
+		
 		this.gameState = GameState.FINISHED;
 		this.winner = this.players[winningSide];
 		if (this.canvas) {
-			this.messageFields[0]?.setText(this.winner?.getName() + " won the match!");
+			if (winningSide === this.instanceType) {
+				this.messageFields[0]?.setText("You WIN! :-)");
+			} else {
+				this.messageFields[0]?.setText("You LOSE! :-(");
+			}
+			this.messageFields[0]?.setAlign("left");
+			this.messageFields[0]?.setX(50);
 			this.redrawGameObjects();
 		}
 		cancelAnimationFrame(this.currentAnimationFrame);
 		this.ball?.resetBothRallies();
-		console.log("player: ", this.winner?.getSide(), this.winner?.getName(), " won the match");
-		//todo: do we need this below?
-		// this.gameSocket.off(`game/updateGameObjects`);
-		// this.gameSocket.off(`game/updateGameState`);
+		log(`GameScript: player: ${this.winner?.getSide()} ${this.winner?.getName()} won the match`);
+		disconnectSocket(this);
 	}
 
 	abortGame(n: number) {
@@ -112,8 +126,8 @@ export class Game {
 			this.redrawGameObjects();
 		}
 		this.gameState = GameState.FINISHED;
-		cancelAnimationFrame(this.currentAnimationFrame);
-		console.log("script: game aborted");
+		this.cleanup
+		log("GameScript: game aborted");
 	}
 
 	resetGame() {
@@ -121,15 +135,50 @@ export class Game {
 			return;
 		}
 		this.ball?.resetRally();
-		console.log("script: resetGame called");
+		log("GameScript: resetGame called");
 		resetGameObjects(this);
 		this.messageFields[0]?.setText("GOAL!");
 		countdown(this);
+		this.soundFX.playGoal();
 	}
  
 	startGame() {
 		this.gameState = GameState.STARTED;
 		countdown(this);
 		this.gameLoop(1);
+	}
+
+	cleanCanvas() {
+		log("GameScript: cleaning canvas");
+		if (this.canvas) {
+			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+			this.canvas = undefined;
+			this.ctx = null as any
+		}
+	}
+
+	cleanup() {
+		log("GameScript: cleaning up game");
+		cancelAnimationFrame(this.currentAnimationFrame);
+		this.soundFX.stopAll();
+		this.ball = null;
+		this.players = [];
+		this.paddels = [];
+		this.lines = [];
+		this.walls = [];
+		this.messageFields = [];
+		this.backgroundFill = null;
+		this.gameData = null;
+		this.gameUsers = [];
+		this.receivedUpdatedGameObjects = {roomId: -1, ballX: -1, ballY: -1, ballDirection: -1, ballSpeed: 0, ballDX: -1, ballDY: -1, paddle1Y: -1, paddle2Y: -1, score1: -1, score2: -1, resetGame: -1, resetMatch: -1, winner: -1};
+		this.winner = null;
+		this.roomId = 0;
+		this.elapasedTimeSincceLastUpdate = 0;
+		this.lastFrameTime = 0;
+		this.currentAnimationFrame = 0;
+		this.instanceType = CON.InstanceTypes.notSet;
+		this.config = "";
+		this.theme = "";
+		disconnectSocket(this);
 	}
 }

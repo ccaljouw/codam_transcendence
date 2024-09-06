@@ -6,7 +6,6 @@ import { InviteStatus } from "@prisma/client";
 export const gameResponseReceivedHandler = ( // This function triggers the actions that need to be taken when a game response is received.
 	inviteSocketMessage: InviteSocketMessageDto
 ) => {
-	// ********** CARLO YOU WANT TO HANDLE THE GAME RESPONSE BY THE ONE WHO SENT THE INVITE HERE **********
 
 	console.log(`Got invite response from ${inviteSocketMessage.userId} to ${inviteSocketMessage.senderId} -> ${inviteSocketMessage.accept} for chat ${inviteSocketMessage.directMessageId}`);
 	console.log("HANDLE GAME RESPONSE BY THE ONE WHO SENT THE INVITE HERE");
