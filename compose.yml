@@ -31,12 +31,13 @@ services:
       - '5555:5555'
     volumes:
       - app:/app
+      - ./app/backend:/app/backend
     depends_on:
       - db
     networks:
       - transcendence
     # Default command will run "start", uncommend below to run "start:watch" for development 
-    # command: npm run start:dev
+    command: npm run start:dev
     
   frontend:
     depends_on:
