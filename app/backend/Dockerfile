@@ -1,11 +1,31 @@
-FROM node:21.6
+# Base Image
+FROM node:18-alpine
 
-ENV PATH /app/node_modules/.bin:$PATH 
-
+# Create app directory
 WORKDIR /app
 
-COPY ./startup-script.sh /startup-script.sh
-RUN chmod +x /startup-script.sh
+# Copy the project and install dependencies
+COPY . /app
+RUN npm install -g npm@latest && npm install
 
-ENTRYPOINT ["/startup-script.sh"]
+# Set the path to the node_modules
+ENV PATH /app/node_modules/.bin:$PATH
 
+# Set the working directory to backend
+WORKDIR /app/backend
+
+# Generate Prisma Client
+RUN npx prisma generate
+
+# Build the application
+RUN npm run build
+
+# Expose ports (backend and prisma studio)
+EXPOSE 3001
+EXPOSE 5555
+
+# Startup
+RUN chmod +x /app/backend/startup-script.sh
+
+ENTRYPOINT ["/app/backend/startup-script.sh"]
+CMD npm run start

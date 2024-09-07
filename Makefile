@@ -35,15 +35,15 @@ clean:
 
 fclean: clean
 	@echo -e "$(COLOR_BLUE) **** REMOVING DOCKER IMAGES FRONTEND AND BACKEND****$(COLOR_RESET)"
-	$(call color_output, docker rmi codam-transcendence-frontend)
-	$(call color_output, docker rmi codam-transcendence-backend)
+	$(call color_output, docker rmi frontend)
+	$(call color_output, docker rmi backend)
 	@echo -e "$(COLOR_BLUE) **** REMOVING NODE MODULES AND TEST COVERAGE****$(COLOR_RESET)"
 	$(call color_output, rm -rf ./app/node_modules)
 	$(call color_output, rm -rf ./app/coverage)
 
 clearvolumes: clean
 	@echo -e "$(COLOR_BLUE) **** REMOVE DOCKER VOLUMES ****$(COLOR_RESET)"
-	$(call color_output, docker volume rm codam-transcendence_app)
-	$(call color_output, docker volume rm codam-transcendence_database_files)
+	$(call color_output, docker volume rm transcendence_app)
+	$(call color_output, docker volume rm transcendence_database_files)
 
 .PHONY:	all run re start stop clean fclean clearvolumes backend

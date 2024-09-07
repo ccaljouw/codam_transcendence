@@ -20,8 +20,10 @@ services:
   
   backend: 
     build: 
-      context: ./app/backend
-      dockerfile: Dockerfile
+      context: ./app
+      dockerfile: ./backend/Dockerfile
+    image: backend
+    pull_policy: never
     container_name: backend
     restart: always
     ports: 
@@ -33,8 +35,8 @@ services:
       - db
     networks:
       - transcendence
-    command: ["dev:start"]
-    # command: ["deploy"]
+    # Default command will run "start", uncommend below to run "start:watch" for development 
+    # command: npm run start:dev
     
   frontend:
     depends_on:
@@ -42,6 +44,8 @@ services:
     build: 
       context: ./app/frontend
       dockerfile: Dockerfile
+    image: frontend
+    pull_policy: never
     container_name: frontend
     restart: always
     ports:
@@ -51,7 +55,7 @@ services:
     networks:
       - transcendence
     command: ["dev"]
-    # command: ["deploy"]
+  #   # command: ["deploy"]
 
 networks:
   transcendence:
@@ -59,10 +63,5 @@ networks:
 
 volumes:
   database_files:
-
   app:
-    driver: local
-    driver_opts:
-      device: ./app
-      o: bind
-      type: none
+

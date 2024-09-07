@@ -6,7 +6,6 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "setup:dev": "npx prisma migrate dev --name init && nest start --watch",
     "dev:start": "npx prisma migrate dev --name init && nest start --watch",
     "deploy": "npx prisma migrate dev --name init && nest start",
     "build": "nest build",
@@ -24,7 +23,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts",
+    "generate": "PRISMA_SCHEMA_PATH=prisma/prisma.schema npx prisma generate"
   },
   "jest": {
     "testFailureExitCode": 0,

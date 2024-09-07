@@ -24,4 +24,5 @@ until [ "$backend_status" -eq "200" ]; do
         break
     fi
 done
+
 exec npm run "$@"
