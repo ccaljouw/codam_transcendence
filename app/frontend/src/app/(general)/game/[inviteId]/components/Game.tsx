@@ -47,7 +47,20 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     abortGame();
     router.push('/play');
   }
-  
+
+  //on unmount
+  useEffect(() => {
+    return () => {
+      console.log("GameComponent unmounting. Cleaning up game");
+      if (game && [GameState.WAITING, GameState.READY_TO_START, GameState.STARTED].includes(game.gameState)) {
+        game.cleanCanvas();
+        const payload: UpdateGameStateDto = {id: roomId, state: GameState.ABORTED};
+        gameSocket.emit("game/updateGameState", payload);
+      }
+    }
+  }, [game]);
+
+
   // fetch game data
   useEffect(() => {
     if (inviteId === -1 ) {
