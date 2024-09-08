@@ -93,6 +93,10 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     if(fetchedGameData.state === GameState.READY_TO_START || inviteId === -1) {
       setWaitingForPlayers(false);
     }
+    if(fetchedGameData.state === GameState.REJECTED || fetchedGameData.state === GameState.ABORTED || fetchedGameData.state === GameState.FINISHED) {
+      console.log("GameComponent: fetched game was rejected or aborted");
+      router.push(`/play`);
+    }
   }, [fetchedGameData]);
   
 
