@@ -188,13 +188,13 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 
 	// Function to update the user's online status
 	const setUserStatusToOnline = async () => {
-		if (!currentUser.id) return;
+		if (!currentUser.id || transcendenceSocket.id == undefined) return;
 		console.log(`updating user status to online in setUserStatusToOnline function in contextprovider`);
 		const patchUserData: UpdateUserDto = {
 			online: OnlineStatus.ONLINE,
 		}
 		const addTokenData: CreateTokenDto = {
-			token: transcendenceSocket.id ? transcendenceSocket.id : '',
+			token: transcendenceSocket.id,
 			userId: currentUser.id
 		}
 		patchUserFetcher({ url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: patchUserData });
