@@ -40,7 +40,7 @@ export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {
     }
     // Default password for 42 users is set to strongpong
     console.log('Creating new user', userData);
-    const user = await this.authService.createUser(userData, 'strongpong');
+    const user = await this.authService.createUser(userData, null);
     return user;
   }
   async validate(

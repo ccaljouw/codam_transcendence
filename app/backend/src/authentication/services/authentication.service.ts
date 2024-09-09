@@ -207,19 +207,34 @@ export class AuthService {
 	  }
 
 	  async setChatPassword(chatId: number, password: string): Promise<boolean> {
-		try {
-		  const salt = await bcrypt.genSalt(10);
-		  const hash = await bcrypt.hash(password, salt);
-		  await this.db.chatAuth.create({data: {chatId, pwd: hash}});
-		  await this.db.chat.update({
-			where: { id: chatId },
-			include: { users: true },
-			data: { visibility: ChatType.PROTECTED },
-		  })
-		  return true;
-		} catch (error) {
-		  console.log('Error setting chat password:', error.message);
-		  throw error;
-		}
+      try {
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, salt);
+        await this.db.chatAuth.create({data: {chatId, pwd: hash}});
+        await this.db.chat.update({
+        where: { id: chatId },
+        include: { users: true },
+        data: { visibility: ChatType.PROTECTED },
+        })
+        return true;
+      } catch (error) {
+        console.log('Error setting chat password:', error.message);
+        throw error;
+      }
 	  }
+
+    async checkAuth(userId: number) : Promise<boolean> {
+      const user = await this.db.user.findUnique({
+        where: { id: userId },
+        include: { auth: true },
+      });
+      if (!user) {
+        throw new NotFoundException(`User with id ${userId} not found`);
+      }
+      console.log(user.auth);
+      if (!user.auth?.pwd) {
+        return true;
+      }
+      return false;
+    }
 }

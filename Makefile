@@ -52,7 +52,7 @@ cleandatabase: clean
 	@echo -e "$(COLOR_BLUE) **** REMOVE DATABASE VOLUMES ****$(COLOR_RESET)"
 	$(call color_output, docker volume rm transcendence_database_files)
 
-# cleans only the database volume
+# cleans also the database volume
 cleanvolumes: clean
 	@echo -e "$(COLOR_BLUE) **** REMOVE DOCKER VOLUMES ****$(COLOR_RESET)"
 	$(call color_output, docker volume rm transcendence_app)

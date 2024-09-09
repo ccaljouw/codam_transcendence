@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  Param,
+  ParseIntPipe,
   Patch,
   Post,
   Req,
@@ -104,6 +106,12 @@ export class AuthController {
     throw new UnauthorizedException();
   }
 
+  @Get('42User/:id')
+  // @UseGuards(JwtAuthGuard)
+  async checkAuth(@Param('id', ParseIntPipe) id: number) {
+    return await this.authService.checkAuth(id);
+  }
+
   @Post('loginChat')
   async loginChat(@Req() req: Request, @Body() chatAuthDto: ChatAuthDto): Promise<FetchChatDto> {
     try {
@@ -120,4 +128,5 @@ export class AuthController {
   async setChatPassword(@Body()chatAuth: ChatAuthDto) : Promise<boolean> {
     return await this.authService.setChatPassword(chatAuth.chatId, chatAuth.pwd);
   }
+
 }
