@@ -35,10 +35,9 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
   
   function abortGame() {
     console.log("GameComponent: aborting game");
-    if (game?.gameState !== GameState.ABORTED && game?.gameState !== GameState.FINISHED) {
       const payload: UpdateGameStateDto = {id: roomId, state: GameState.ABORTED};
       gameSocket.emit("game/updateGameState", payload);
-    }
+    
   }
   
   function handleClick() {

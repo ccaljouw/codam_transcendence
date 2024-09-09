@@ -19,6 +19,8 @@ import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { AuthGuard42 } from '../guard/42-auth.guard';
 import { UpdatePwdDto } from '@ft_dto/authentication';
 import { ConfigService } from '@nestjs/config';
+import { FetchChatDto } from '@ft_dto/chat';
+import { ChatAuthDto } from '@ft_dto/authentication/chat-auth.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -101,5 +103,22 @@ export class AuthController {
     const valid: boolean = user.id === parseInt(req.params.id);
     if (valid) return user;
     throw new UnauthorizedException();
+  }
+
+  @Post('loginChat')
+  async loginChat(@Req() req: Request, @Body() chatAuthDto: ChatAuthDto): Promise<FetchChatDto> {
+    try {
+      const chat: FetchChatDto = await this.authService.validateChatLogin(chatAuthDto.chatId, chatAuthDto.pwd);
+      console.log(`Logged in for ${chat.id}`);
+      await this.authService.setChatCookie(chat, req);
+      return chat;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Post('setChatPwd')
+  async setChatPassword(@Body()chatAuth: ChatAuthDto) : Promise<boolean> {
+    return await this.authService.setChatPassword(chatAuth.chatId, chatAuth.pwd);
   }
 }

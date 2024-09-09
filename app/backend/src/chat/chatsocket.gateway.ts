@@ -87,11 +87,13 @@ export class ChatSocketGateway {
 	@SubscribeMessage('chat/leaveRoom')
 	async leaveRoom(client: Socket, payload: ChatMessageToRoomDto) {
 		console.log("Socket: leave room", payload);
+		if (parseInt(payload.room) === -1) return;
 		// this.chat_io
 		await this.chatSocketService.changeChatUserStatus({ token: client.id, userId: payload.userId, chatId: parseInt(payload.room), isInChatRoom: false });
 		const userStillInChatRoom = await this.chatSocketService.isUserInChatRoom(parseInt(payload.room), payload.userId);
 		if (!userStillInChatRoom) // if all tokens for the user have left the chatroom, emit status change message
 		{
+			console.log("Socket: leave room, user not in chatroom", payload.userName, " (", payload.userId, ") :", payload.room);
 			const statusChangeMessage: ChatMessageToRoomDto = {
 				userId: payload.userId,
 				userName: payload.userName,

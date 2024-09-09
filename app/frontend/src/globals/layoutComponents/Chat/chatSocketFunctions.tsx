@@ -46,6 +46,10 @@ export const joinRoom = (
 	if (currentChatRoom.id == chatToJoin?.id || !chatToJoin) { //To avoid double joins, especially in strict mode. 
 		return;
 	}
+	if (currentChatRoom.id != -1) {
+		leaveRoom(currentUserId, currentChatRoom, currentUser, () => { });
+	}
+	console.log("Joining room", chatToJoin);
 	const statusChangeMsg: ChatMessageToRoomDto = {
 		userId: currentUserId,
 		userName: currentUser.userName,
@@ -65,6 +69,7 @@ export const leaveRoom = (
 	currentUser: UserProfileDto,
 	setCurrentChatRoom: Function,
 ) => {
+	console.log("Leaving room", currentChat);
 	if (!currentChat?.id)
 		return;
 	const leaveMessage: ChatMessageToRoomDto = {
