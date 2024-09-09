@@ -6,4 +6,5 @@ export class InviteSocketMessageDto {
 	accept: boolean = false;
 	type?: InviteType = InviteType.FRIEND;
 	directMessageId: number = 0;
+	channelId?: number = 0;
 }

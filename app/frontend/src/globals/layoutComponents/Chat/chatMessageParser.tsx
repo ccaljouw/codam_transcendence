@@ -7,6 +7,7 @@ import { IsBlocked } from "src/globals/functionComponents/FriendOrBlocked";
 import { gameInviteParser } from "./inviteFunctions/gameInvite";
 import { inviteCallbackProps } from "./inviteFunctions/inviteFunctions";
 import { friendInviteParser } from "./inviteFunctions/friendInvite";
+import { chatInviteParser } from "./inviteFunctions/chatInvite";
 
 
 export interface parserProps {
@@ -28,18 +29,19 @@ export const messageParser = (
 		return <></>
 	console.log(message);
 	if (message.action) {
-		if (message.userId == currentUser.id) // If the user is the current user, we don't want to show the message.	
-			return <></>
-		switch (message.message) {
-			case "JOIN":
-				changeRoomStatusCallback(message.userId, true);
-				return <>{'<<'} {message.userName} has joined the chat {'>>'}</>
-			case "LEAVE":
-				changeRoomStatusCallback(message.userId, false);
-				return <>{'<<'} {message.userName} has left the chat {'>>'}</>
-			default:
-				if (!message.inviteId)
-					return <>{message.message}</>
+		if (message.userId != currentUser.id) // Don't show own actions
+		{
+			switch (message.message) { // 
+				case "JOIN":
+					changeRoomStatusCallback(message.userId, true);
+					return <>{'<<'} {message.userName} has joined the chat {'>>'}</>
+				case "LEAVE":
+					changeRoomStatusCallback(message.userId, false);
+					return <>{'<<'} {message.userName} has left the chat {'>>'}</>
+				default:
+					if (!message.inviteId)
+						return <>{message.message}</>
+			}
 		}
 	}
 	if (message.inviteId) {
@@ -77,14 +79,14 @@ const inviteParser = (
 		gameInviteFetcher: gameInviteFetcher,
 		chatInviteFetcher: chatInviteFetcher
 	}
-
+	console.log("Parsing invite");
 	switch (message.invite.type) {
 		case "FRIEND":
 			return friendInviteParser(message, currentUser, inviteCallback, inviteCallbackProps);
 		case "GAME":
 			return gameInviteParser(message, currentUser, inviteCallback, inviteCallbackProps);
-		// case "CHAT":
-			// return chatInviteParser(message, currentUser, inviteCallback, inviteCallbackProps);;
+		case "CHAT":
+			return chatInviteParser(message, currentUser, inviteCallback, inviteCallbackProps);;
 	}
 	return <>Error parsing invite</>;
 }

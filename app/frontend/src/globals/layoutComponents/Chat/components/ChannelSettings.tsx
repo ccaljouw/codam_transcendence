@@ -1,7 +1,8 @@
 import { FetchChatDto, UpdateChatDto } from "@ft_dto/chat";
-import { FormEvent, useEffect, useState } from "react";
-import EditableDataField from "src/app/(general)/profile/[username]/components/utils/EditableDataField";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import { constants } from "src/globals/constants.globalvar";
+import { TranscendenceContext } from "src/globals/contextprovider.globalvar";
+import EditableDataField from "src/app/(general)/profile/[username]/components/utils/EditableDataField";
 import FormToUpdateChatDto from "src/globals/functionComponents/form/FormToUpdateChatDto";
 import useFetch from "src/globals/functionComponents/useFetch";
 import { transcendenceSocket } from "src/globals/socket.globalvar";

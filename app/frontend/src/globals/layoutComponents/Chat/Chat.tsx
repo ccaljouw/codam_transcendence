@@ -24,14 +24,14 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 	const [message, setMessage] = useState('');
 	const [otherUserForDm, setOtherUserForDm] = useState<number>(-1);
 	const [chat, setChat] = useState<JSX.Element[]>([]);
-	const firstRender = useRef(true);
-	const { currentUser, someUserUpdatedTheirStatus, currentChatRoom, setCurrentChatRoom, setCurrentUser, newChatRoom, setNewChatRoom } = useContext(TranscendenceContext);
+	// const firstRender = useRef(true);
+	const { currentUser, someUserUpdatedTheirStatus, currentChatRoom, setCurrentChatRoom, setCurrentUser, newChatRoom, setNewChatRoom, switchToChannelCounter, setSwitchToChannelCounter } = useContext(TranscendenceContext);
 	const messageBox = useRef<HTMLDivElement>(null);
 	const { data: chatFromDb, isLoading: chatLoading, error: chatError, fetcher: chatFetcher } = useFetch<CreateDMDto, FetchChatDto>();
 	const { data: updatedChat, isLoading: updatedChatLoading, error: updatedChatError, fetcher: updatedChatFetcher } = useFetch<null, number>();
 	const { data: chatMessages, isLoading: chatMessagesLoading, error: chatMessagesError, fetcher: chatMessagesFetcher } = useFetch<null, FetchChatMessageDto[]>();
 	const { data: friendInvite, isLoading: friendInviteLoading, error: friendInviteError, fetcher: friendInviteFetcher } = useFetch<null, UserProfileDto>();
-	const { data: chatInvite, isLoading: chatInviteLoading, error: chatInviteError, fetcher: chatInviteFetcher } = useFetch<null, FetchChatDto>();
+	const { data: chatInvite, isLoading: chatInviteLoading, error: chatInviteError, fetcher: chatInviteFetcher } = useFetch<null, UpdateInviteDto>();
 	const { data: newMessage, isLoading: newMessageLoading, error: newMessageError, fetcher: newMessageFetcher } = useFetch<CreateChatMessageDto, number>();
 	const { data: newUserForChannel, isLoading: newUserForChannelLoading, error: newUserForChannelError, fetcher: newUserForChannelFetcher } = useFetch<null, UpdateChatUserDto>();
 	const router = useRouter();
@@ -75,7 +75,33 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		fetchMessages(currentChatRoom, chatMessagesFetcher, currentUser.id);
 	}, [gameInvite]);
 
+	// ****************************************** END OF STUFF YOU MIGHT WANT TO ALTER, BEGINNING OF STUFF YOU MIGHT WANNA LEAVE BE ****************************************** //
 
+	useEffect(() => { // UseEffect is used to handle the CHAT invite response from the invitee.
+		if (!chatInvite)
+			return;
+		const chatAcceptPayload: InviteSocketMessageDto = {
+			userId: currentUser.id,
+			senderId: chatInvite.senderId ? chatInvite.senderId : 0,
+			accept: true,
+			type: InviteType.CHAT,
+			directMessageId: currentChatRoom.id,
+			channelId: chatInvite.chatId
+		}
+		chatSocket.emit('invite/inviteResponse', chatAcceptPayload);
+		// Refresh the chat messages to update the invite displayed.
+			// fetchMessages(currentChatRoom, chatMessagesFetcher, currentUser.id);
+		if (chatInvite.chatId && currentChatRoom.id != chatInvite.chatId)
+		{
+			// setOtherUserForDm(-1);
+			// console.log("Leaving room: ", currentChatRoom);
+			// leaveRoom(currentUser.id, currentChatRoom, currentUser, setCurrentChatRoom);
+			// fetchChat(chatFetcher, chatInvite.chatId, currentUser.id);
+			console.log("Joining room: ", chatInvite.chatId);
+			setNewChatRoom({ room: chatInvite.chatId, count: newChatRoom.count + 1 });
+		}
+	}, [chatInvite]);
+	
 	const changeRoomStatusCallBack = (userId: number, onlineStatus: boolean) => {
 		console.log("User status changed: ", userId, onlineStatus);
 
@@ -92,11 +118,8 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 			});
 			setCurrentChatRoom({ ...currentChatRoom, users: updatedUserArray });
 		}else{
-			// newUserForChannelFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + userId });
 			console.log("User not found in chat room: ", userId);
 			newUserForChannelFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + userId });
-			// fetchChat(chatFetcher, currentChatRoom.id, currentUser.id);
-			// fetchMessages
 		}
 	};
 
@@ -112,7 +135,8 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 	}), [currentChatRoom, currentUser]);
 
 	const handleMessageFromRoom = (payload: ChatMessageToRoomDto) => {
-		console.log("Message from room: ", payload);
+		console.log("Message from room: ", payload, );
+		console.log("Current chat room: (msg) ", currentChatRoom);
 		const message = messageParser(payload, messageParserProps)
 		if (message) {
 			setChat(prevChat => [...prevChat, message]);
@@ -122,14 +146,16 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 	useEffect(() => {
 			console.log("Current chat room: ", currentChatRoom);
 		if (currentChatRoom.id != -1) {
+			setSwitchToChannelCounter({ channel: -1, count: 0, invite: -1 });
 			chatSocket.off('chat/messageFromRoom');
 			chatSocket.off('invite/inviteResponse');
 			chatSocket.on('chat/messageFromRoom', handleMessageFromRoom);
-			chatSocket.on('invite/inviteResponse', (payload: InviteSocketMessageDto) => { inviteResponseHandler(payload, currentUser, currentChatRoom, chatMessagesFetcher, friendInviteFetcher) });
+			chatSocket.on('invite/inviteResponse', (payload: InviteSocketMessageDto) => { inviteResponseHandler(payload, currentUser, currentChatRoom, chatMessagesFetcher, friendInviteFetcher, newChatRoom, setNewChatRoom, switchToChannelCounter, setSwitchToChannelCounter ) });
 		}
 	}, [currentChatRoom])
 
-	useEffect(() => {
+	
+	useEffect(() => { // UseEffect is used to handle the FRIEND invite response from the invitee.
 		if (friendInvite && Object.keys(friendInvite).length > 0) { // If the friend invite is not empty, we need to update the user's friends list.
 			setCurrentUser(friendInvite);
 			const newFriend = friendInvite.friends?.find(friend => !currentUser.friends?.some(existingFriend => existingFriend.id === friend.id)); // We need to find the new friend in order to send the invite response.
@@ -160,10 +186,12 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		// If we don't have a user2 or a chatID, we can't create a chat.
 		if (!user2 && (!chatId || chatId === -1))
 			return;
-		if (firstRender.current) // This is to ensure that the chat is only created once.
-		{
-			firstRender.current = false;
-			if (user2 && user2 != otherUserForDm) {
+		console.log("Chat")
+		// if (firstRender.current) // This is to ensure that the chat is only created once.
+		// {
+			// firstRender.current = false;
+			if (user2 && user2 !== -1) // If we have a user2, we need to create a DM chat.
+			{
 				setOtherUserForDm(user2);
 				fetchDM(chatFetcher, currentUser.id, user2) // This will set the chatID.
 			}
@@ -173,7 +201,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 
 			}
 			chatSocket.on('chat/messageFromRoom', handleMessageFromRoom);
-			chatSocket.on('invite/inviteResponse', (payload: InviteSocketMessageDto) => { inviteResponseHandler(payload, currentUser, currentChatRoom, chatMessagesFetcher, friendInviteFetcher) });
+			chatSocket.on('invite/inviteResponse', (payload: InviteSocketMessageDto) => { inviteResponseHandler(payload, currentUser, currentChatRoom, chatMessagesFetcher, friendInviteFetcher, newChatRoom, setNewChatRoom, switchToChannelCounter, setSwitchToChannelCounter) });
 			chatSocket.on('chat/patch', (payload: FetchChatDto) => {
 				console.log("Chat patched (socket): ", payload);
 				console.log("Id (socket)", payload.id);
@@ -191,14 +219,14 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 				}
 
 			});
-		}
+		// }
 		return () => {
 			chatSocket.off('chat/messageFromRoom');
 			chatSocket.off('invite/inviteResponse')
 			chatSocket.off('chat/patch');
 			setCurrentChatRoom({ id: -1, name: '', visibility: ChatType.PUBLIC, users: [], ownerId: 0 });
 		};
-	}, [chatId, user2, firstRender.current]);
+	}, [chatId, user2]);
 
 	// This effect is used to update the chat when a user changes their status.
 	useEffect(() => {
@@ -210,6 +238,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 
 	// This effect is used to join the room when the chatId changes.
 	useEffect(() => {
+		console.log("Chat from db: ", chatFromDb);
 		if (!chatFromDb)
 			return;
 		if (chatId && chatId !== -1) {
@@ -238,12 +267,13 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		}
 	}, [newUserForChannel]);
 
-	// This effect is used to leave the room and reset the chat when the user2 changes.
+	// This effect is used to leave the room when the chatId or user2 changes.
 	useEffect(() => {
-		if (chatFromDb?.id)
-			leaveRoom(currentUser.id, chatFromDb, currentUser, setCurrentChatRoom);
-		if (!firstRender.current)
-			firstRender.current = true;
+		console.log("User2/chatId changed: ", user2, chatId, chatFromDb);
+		// if (chatFromDb?.id)
+			leaveRoom(currentUser.id, currentChatRoom, currentUser, setCurrentChatRoom);
+		// if (!firstRender.current)
+		// 	firstRender.current = true;
 	}, [user2, chatId]);
 
 	// This effect is used to scroll to the bottom of the chat when the chat changes.
