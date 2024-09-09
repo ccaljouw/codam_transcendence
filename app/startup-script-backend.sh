@@ -8,5 +8,6 @@ COLOR_BLUE=\033[34m
 # Run the application
 echo "Starting the application from script..."
 npx prisma migrate deploy
+npx prisma db push
 npx prisma db seed
 exec npx prisma studio & npm run ${1}
