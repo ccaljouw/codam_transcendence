@@ -29,7 +29,8 @@ export default function ChatArea() {
 	}
 	const [secondUser, setSecondUser] = useState(0);
 	const { currentUser, newChatRoom, currentChatRoom, allUsersUnreadCounter, setAllUsersUnreadCounter, friendsUnreadCounter, setFriendsUnreadCounter, setNewChatRoom } = useContext(TranscendenceContext)
-	const [userListType, setUserListType] = useState<UserListType>(HasFriends(currentUser) ? UserListType.Friends : UserListType.AllUsers);
+	const [selectedTab, setSelectedTab] = useState<UserListType | null>(null);
+	const [userListType, setUserListType] = useState<UserListType>(selectedTab ? selectedTab : (HasFriends(currentUser) ? UserListType.Friends : UserListType.AllUsers));
 	const { data: chatUser, error: chatUserError, isLoading: chatUserLoading, fetcher: chatUserFetcher } = useFetch<null, UpdateChatUserDto>();
 
 	useEffect(() => { // Reset secondUser when a new chat room is created to avoid the Chat component fetching the wrong room
@@ -55,6 +56,7 @@ export default function ChatArea() {
 	useEffect(() => {
 		if (newChatRoom.room === currentChatRoom.id && currentChatRoom.visibility !== ChatType.DM) {
 			setUserListType(UserListType.Channel);
+			setSelectedTab(UserListType.Channel);
 		}
 	}, [newChatRoom]);
 
@@ -65,24 +67,24 @@ export default function ChatArea() {
 		}
 	}, []);
 
-	useEffect(() => {
-		if (HasFriends(currentUser)) {
-			setUserListType(UserListType.Friends);
-		}
-		else
-			setUserListType(UserListType.AllUsers);
-	}, [currentUser]);
+	// useEffect(() => {
+	// 	if (HasFriends(currentUser)) {
+	// 		setUserListType(UserListType.Friends);
+	// 	}
+	// 	else
+	// 		setUserListType(UserListType.AllUsers);
+	// }, [currentUser]);
 
 
-	useEffect(() => {
-		if (currentChatRoom.visibility == ChatType.DM) {
-			if (HasFriends(currentUser)) {
-				setUserListType(UserListType.Friends);
-			}
-			else
-				setUserListType(UserListType.AllUsers);
-		}
-	}, [currentChatRoom]);
+	// useEffect(() => {
+	// 	if (currentChatRoom.visibility == ChatType.DM) {
+	// 		if (HasFriends(currentUser)) {
+	// 			setUserListType(UserListType.Friends);
+	// 		}
+	// 		else
+	// 			setUserListType(UserListType.AllUsers);
+	// 	}
+	// }, [currentChatRoom]);
 
 	useEffect(() => {
 		if (allUsersUnreadCounter == 0) {
@@ -144,15 +146,15 @@ export default function ChatArea() {
 				<div className='chat-userTypeSelect'>
 					{userListType == UserListType.Friends ?
 						<><span className='chat-selectedUserListType'>Friends {friendsUnreadCounter ? "(" + friendsUnreadCounter + ")" : ""}</span></>
-						: <span className='chat-userListType' onClick={() => setUserListType(UserListType.Friends)}>Friends {friendsUnreadCounter ? "(" + friendsUnreadCounter + ")" : ""}</span>
+						: <span className='chat-userListType' onClick={() => {setUserListType(UserListType.Friends); setSelectedTab(UserListType.Friends)}}>Friends {friendsUnreadCounter ? "(" + friendsUnreadCounter + ")" : ""}</span>
 					} |
 					{userListType == UserListType.Chats ?
 						<><span className='chat-selectedUserListType'> Chats </span></>
-						: <span className='chat-userListType' onClick={() => setUserListType(UserListType.Chats)}> Chats </span>}
+						: <span className='chat-userListType' onClick={() => {setUserListType(UserListType.Chats); setSelectedTab(UserListType.Chats)}}> Chats </span>}
 					|
 					{userListType == UserListType.AllUsers ?
 						<span className='chat-selectedUserListType'> All Users {allUsersUnreadCounter ? "(" + allUsersUnreadCounter + ")" : ""}</span>
-						: <span className='chat-userListType' onClick={() => setUserListType(UserListType.AllUsers)}> All Users {allUsersUnreadCounter ? "(" + allUsersUnreadCounter + ")" : ""}</span>}
+						: <span className='chat-userListType' onClick={() => {setUserListType(UserListType.AllUsers); setSelectedTab(UserListType.AllUsers)}}> All Users {allUsersUnreadCounter ? "(" + allUsersUnreadCounter + ")" : ""}</span>}
 					{(currentChatRoom.id !== -1 && currentChatRoom.visibility != ChatType.DM) &&
 						<> |&nbsp;
 							{
