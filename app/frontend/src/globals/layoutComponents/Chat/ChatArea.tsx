@@ -54,7 +54,7 @@ export default function ChatArea() {
 	}, [currentChatRoom, currentChatRoom.users?.length]);
 
 	useEffect(() => {
-		if (newChatRoom.room === currentChatRoom.id && currentChatRoom.visibility !== ChatType.DM) {
+		if (newChatRoom.room === currentChatRoom.id && currentChatRoom.visibility !== ChatType.DM && currentChatRoom.id !== -1) {
 			setUserListType(UserListType.Channel);
 			setSelectedTab(UserListType.Channel);
 		}
