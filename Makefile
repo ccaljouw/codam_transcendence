@@ -17,7 +17,9 @@ all: run
 run: clean
 	docker compose up
 
-re: fclean
+re: down
+	@echo -e "$(COLOR_BLUE) **** REMOVE APP VOLUMES ****$(COLOR_RESET)"
+	$(call color_output, docker volume rm transcendence_app)
 	docker compose up --build
 
 start:
@@ -26,24 +28,29 @@ start:
 stop:
 	docker compose stop
 
-clean: 
+down:
 	@echo -e "$(COLOR_BLUE) **** REMOVING DOCKER CONTAINERS****$(COLOR_RESET)"
 	docker compose down
+
+clean: down
 	@echo -e "$(COLOR_BLUE) **** CLEANING BUILD FILES ****$(COLOR_RESET)"
 	$(call color_output, rm -rf ./app/backend/dist)
 	$(call color_output, rm -rf ./app/frontend/.next)
 
-fclean: clean
+fclean: cleanvolumes
 	@echo -e "$(COLOR_BLUE) **** REMOVING DOCKER IMAGES FRONTEND AND BACKEND****$(COLOR_RESET)"
 	$(call color_output, docker rmi frontend)
 	$(call color_output, docker rmi backend)
-	@echo -e "$(COLOR_BLUE) **** REMOVING NODE MODULES AND TEST COVERAGE****$(COLOR_RESET)"
-	$(call color_output, rm -rf ./app/node_modules)
+	@echo -e "$(COLOR_BLUE) **** REMOVING TEST COVERAGE****$(COLOR_RESET)"
 	$(call color_output, rm -rf ./app/coverage)
 
-clearvolumes: clean
+cleandatabase: clean
+	@echo -e "$(COLOR_BLUE) **** REMOVE DATABASE VOLUMES ****$(COLOR_RESET)"
+	$(call color_output, docker volume rm transcendence_database_files)
+
+cleanvolumes: clean
 	@echo -e "$(COLOR_BLUE) **** REMOVE DOCKER VOLUMES ****$(COLOR_RESET)"
 	$(call color_output, docker volume rm transcendence_app)
 	$(call color_output, docker volume rm transcendence_database_files)
 
-.PHONY:	all run re start stop clean fclean clearvolumes backend
+.PHONY:	all run re start stop down clean fclean cleandatabase cleanvolumes backend

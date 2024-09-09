@@ -27,4 +27,4 @@ EXPOSE 5555
 # Startup
 RUN chmod +x /app/startup-script-backend.sh
 ENTRYPOINT ["/app/startup-script-backend.sh"]
-CMD npm run start
+CMD ["start"]

@@ -7,13 +7,13 @@ services:
     environment:
       - POSTGRES_USER=me
       - POSTGRES_PASSWORD=pwd
-      - POSTGRES_DB=postgres
+      - POSTGRES_DB=transcendence
     volumes:
       - database_files:/var/lib/postgresql/data
     networks:
       - transcendence
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U me -d postgres"]
+      test: ["CMD-SHELL", "pg_isready -U me -d transcendence"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -37,26 +37,26 @@ services:
     networks:
       - transcendence
     # Default command will run "start", uncommend below to run "start:watch" for development 
-    command: npm run start:dev
+    command: start:dev
     
-  frontend:
-    depends_on:
-      - backend
-    build: 
-      context: ./app/frontend
-      dockerfile: Dockerfile
-    image: frontend
-    pull_policy: never
-    container_name: frontend
-    restart: always
-    ports:
-      - '3000:3000'
-    volumes:
-      - app:/app
-    networks:
-      - transcendence
-    command: ["dev"]
-  #   # command: ["deploy"]
+  # frontend:
+  #   depends_on:
+  #     - backend
+  #   build: 
+  #     context: ./app/frontend
+  #     dockerfile: Dockerfile
+  #   image: frontend
+  #   pull_policy: never
+  #   container_name: frontend
+  #   restart: always
+  #   ports:
+  #     - '3000:3000'
+  #   volumes:
+  #     - app:/app
+  #   networks:
+  #     - transcendence
+  #   command: ["dev"]
+  # #   # command: ["deploy"]
 
 networks:
   transcendence:
