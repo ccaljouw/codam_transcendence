@@ -31,7 +31,7 @@ export default function UserContextMenu({ user }:
 	const sendInvite = (payload?: ChatMessageToRoomDto) => {
 		console.log('sendInvite()')
 		if (!payload && socketPayload) // if no payload, use socketPayload
-				payload = socketPayload;
+			payload = socketPayload;
 		if (!payload) // if no payload and no socketPayload, return
 			return;
 		console.log('sending invite over socket');
@@ -75,11 +75,11 @@ export default function UserContextMenu({ user }:
 			state: "SENT"
 		}
 		inviteFetcher({ url: constants.API_INVITE + "create", fetchMethod: 'POST', payload: inviteMessage });
-		if (type == InviteType.GAME) {
-			// should probably navigate to game page here
-			router.push('/game');
-			console.log(`Invite this user to a game: ${user.userName}`);
-		}
+		// if (type == InviteType.GAME) {
+		// 	// should probably navigate to game page here
+		// 	router.push('/game');
+		// 	console.log(`Invite this user to a game: ${user.userName}`);
+		// }
 	}
 
 
@@ -106,7 +106,7 @@ export default function UserContextMenu({ user }:
 
 	useEffect(() => {
 		if (invite) {
-      console.log('Invite', invite);
+			console.log('Invite', invite);
 			if (!chat) {
 				const payload: CreateDMDto = {
 					user1Id: currentUser.id,
@@ -117,10 +117,10 @@ export default function UserContextMenu({ user }:
 			else if (chat.id != currentChatRoom.id) {
 				setNewChatRoom({ room: chat.id, count: newChatRoom.count++ }); // set new chat room, count to trigger useEffect
 			}
-      if (invite.type == InviteType.GAME) {
-        console.log(`Invite this user to a game: ${user.userName}`);
-        router.push(`/game/${invite.id}`);
-      }
+			if (invite.type == InviteType.GAME) {
+				console.log(`Invite this user to a game: ${user.userName}`);
+				router.push(`/game/${invite.id}`);
+			}
 		}
 	}, [invite]);
 
