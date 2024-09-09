@@ -87,6 +87,12 @@ export class AuthController {
     }
   }
 
+  @Post('logout')
+  async logout(@Req() req: Request): Promise<boolean> {
+    console.log('Logging out');
+    return await this.authService.deleteJwtCookie(req);
+  }
+
   @Patch('change_pwd')
   @UseGuards(JwtAuthGuard)
   async changePwd(@Body() updatePwdDto: UpdatePwdDto): Promise<boolean> {
@@ -106,7 +112,7 @@ export class AuthController {
     throw new UnauthorizedException();
   }
 
-  @Get('42User/:id')
+  @Get('is42User/:id')
   // @UseGuards(JwtAuthGuard)
   async checkAuth(@Param('id', ParseIntPipe) id: number) {
     return await this.authService.checkAuth(id);

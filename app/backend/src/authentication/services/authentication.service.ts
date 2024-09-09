@@ -165,6 +165,19 @@ export class AuthService {
 		}
 	}
 
+  async deleteJwtCookie(req: Request): Promise<boolean> {
+		try {
+			(req.res as Response).cookie('jwt', null, {
+				httpOnly: true,
+				sameSite: 'strict',
+			});
+      return true;
+		} catch (error) {
+			console.log('Error setting jwt cookie:', error.message);
+			throw error;
+		}
+	}
+
 	async generateChatToken(chat: FetchChatDto): Promise<string> {
 		const payload = { id: chat.id, visibility: chat.visibility };
 		return this.jwtService.sign(payload);
