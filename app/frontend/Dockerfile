@@ -8,3 +8,4 @@ RUN chmod +x /wait-for-it.sh
 WORKDIR /app/frontend
 
 ENTRYPOINT ["/wait-for-it.sh"]
+CMD ["deploy"]

@@ -1,5 +1,5 @@
 # Base Image
-FROM node:18-alpine
+FROM node:21.6
 
 # Create app directory
 WORKDIR /app
