@@ -89,7 +89,8 @@ export default function UserContextMenu({ user }:
 		console.log(`Block this user: ${user.userName}`);
 		if (block) {
 			blockFetcher({ url: constants.API_BLOCK + currentUser.id + '/' + user.id });
-			setNewChatRoom({ room: -1, count: newChatRoom.count++ });
+			if (currentChatRoom.id != -1)
+				setNewChatRoom({ room: -1, count: newChatRoom.count++ });
 		}
 		else
 			blockFetcher({ url: constants.API_UNBLOCK + currentUser.id + '/' + user.id });
