@@ -6,7 +6,7 @@ import { MulterModule } from '@nestjs/platform-express';
 @Module({
   imports: [
     MulterModule.register({
-      dest: '../Shared/avatars',
+      dest: '../shared/avatars',
     }),
   ],
   controllers: [AvatarController],
