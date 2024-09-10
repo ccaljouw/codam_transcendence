@@ -40,7 +40,7 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 
 	return (
 		<>
-            {isLoading && 
+						{isLoading && 
 				<H3 text={`Loading profile page of ${userName}...`}/>
 			}
 			{error != null &&
@@ -65,7 +65,7 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 					{user.userName == currentUser.userName &&
 						<div className="row">
 							<div className="col col-lg-6 col-md-12 white-box">
-								<GameSettings user={user}/>
+								<GameSettings/>
 							</div>
 						</div>
 					}
