@@ -37,7 +37,7 @@ export default function Avatar({user, editable} : {user: UserProfileDto, editabl
 	const selectNewImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
 		try {
-		if(file && file.size < maxFileSize) {
+		if(file && file.size <= maxFileSize) {
 			const formData = new FormData();
 			console.log(`Form data: `);
 			formData.append('file', file);
