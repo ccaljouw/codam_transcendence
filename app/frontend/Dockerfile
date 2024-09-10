@@ -19,6 +19,5 @@ RUN chmod +x /wait-for-it.sh
 WORKDIR /app/frontend
 
 ENTRYPOINT ["/wait-for-it.sh","backend:3001",  "--"]
-# RUN npm run build
-# CMD ["npm", "run", "dev"]
-CMD ["npm", "run", "deploy"]
+CMD ["npm", "run", "dev"]
+# CMD ["npm", "run", "deploy"]
