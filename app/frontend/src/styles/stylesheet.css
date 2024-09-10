@@ -167,3 +167,7 @@
 .channelListLink:hover {
 	font-weight: bold;
 }
+
+.slider {
+	width: 100%;
+}
