@@ -15,9 +15,10 @@ export default function Welcome() : JSX.Element {
 				<p>Newly implemented on the frontend side:</p>
 				<li>Not found page added</li>
 				<li>2FA login goes in 2 steps now</li>
-				<li>Almost ready: 42 user can not set 2FA or password</li>
+				<li>2FA QR code is scalable</li>
 				<li>Avatar is scalable</li>
 				<li>For all files that I changed, I updated the tabs indentation to 2 tabs</li>
+				<li>Almost ready: 42 user can not set 2FA or password</li>
 		</>
 	);
 }
