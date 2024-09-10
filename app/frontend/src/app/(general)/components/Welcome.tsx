@@ -8,17 +8,16 @@ export default function Welcome() : JSX.Element {
 	
 	return (
 		<>
-            <H3 text={`Welcome ${currentUser.userName},`}/>
-            <p>Challenge your friends to play pong and make new ones on the way!</p>
+			<H3 text={`Welcome ${currentUser.userName},`}/>
+			<p>Challenge your friends to play pong and make new ones on the way!</p>
 
-            <H3 text="NEWS 04/09"/>
-			<p>Newly implemented on the frontend side:</p>
-			<li>Logout bug origin found and understood</li>
-			<li>Change password works correctly</li>
-			<li>Game does not use sessionStorage userId but currentUser.id</li>
-			<li>Min and max values defined</li>
-			<li>Seed done in package.json instead of login component</li>
-			<li>Ladder positions shown on home page and profile page</li>
-        </>
+			<H3 text="NEWS 11/09"/>
+				<p>Newly implemented on the frontend side:</p>
+				<li>Not found page added</li>
+				<li>2FA login goes in 2 steps now</li>
+				<li>Almost ready: 42 user can not set 2FA or password</li>
+				<li>Avatar is scalable</li>
+				<li>For all files that I changed, I updated the tabs indentation to 2 tabs</li>
+		</>
 	);
 }
