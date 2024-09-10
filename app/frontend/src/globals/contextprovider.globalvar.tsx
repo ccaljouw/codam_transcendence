@@ -211,7 +211,8 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	return (
 		<>
 			<TranscendenceContext.Provider value={contextValues}>
-				{(currentUser.id != null || pathname == '/login' || pathname == '/signup' || pathname == '/auth')? <>{children}</> : <p>Authenticating...</p>}
+				{(currentUser.id != null || pathname == '/login' || pathname == '/signup' || pathname == '/auth')? <>{children}</> 
+				: <div className="text-center white-box navbar"><p>Authenticating...</p></div>}
 			</TranscendenceContext.Provider>
 		</>
 	)
