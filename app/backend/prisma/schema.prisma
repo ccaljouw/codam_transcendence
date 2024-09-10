@@ -92,6 +92,7 @@ model Chat {
 	updatedAt DateTime       @updatedAt
 	users     ChatUsers[]
 	messages  ChatMessages[]
+	chatAuth  ChatAuth?
 }
 
 model ChatUsers {
@@ -122,6 +123,17 @@ model ChatMessages {
 	chat        Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
 	invite      Invite?  @relation(fields: [inviteId], references: [id])
 	inviteId    Int? @unique
+}
+
+model ChatAuth {
+	id     Int    @id @default(autoincrement())
+  	chatId Int    @unique	
+
+  	pwd    String?
+
+ 	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
+  	chat      Chat     @relation(fields: [chatId], references: [id])
 }
 
 model Game {

@@ -10,8 +10,6 @@ import useFetch from 'src/globals/functionComponents/useFetch.tsx'
 import styles from '../styles.module.css';
 import { useRouter } from 'next/navigation';
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar'
-import { H3 } from 'src/globals/layoutComponents/Font'
-
 
 // GameComponent is a functional component that renders the game canvas and handles game logic
 export default function GameComponent({inviteId}: {inviteId: number}) {
@@ -27,44 +25,43 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 	const [instanceType, setInstanceType] = useState<InstanceTypes>(InstanceTypes.notSet) // 0 for player 1, 1 for player 2
 	const [aiLevel, setAiLevel] = useState<number>(0);
 
-	function startGame() {
-		console.log("GameComponent: starting game");
-		canvasRef.current!.focus();
-		const payload: UpdateGameStateDto = {id: roomId, state: GameState.STARTED};
-		gameSocket.emit("game/updateGameState", payload);
-	}
-		
-	function abortGame() {
-		console.log("GameComponent: aborting game");
-		if (game?.gameState !== GameState.ABORTED && game?.gameState !== GameState.FINISHED) {
-			const payload: UpdateGameStateDto = {id: roomId, state: GameState.ABORTED};
-			gameSocket.emit("game/updateGameState", payload);
-		}
-	}
-		
-	function handleClick() {
-		console.log("GameComponent: leaving game");
-		game?.cleanCanvas();
-		abortGame();
-		router.push('/play');
-	}
-		
-	// fetch game data
-	useEffect(() => {
-		if (inviteId === -1 ) {
-			setAiLevel(0.5);
-		}
-		console.log("GameComponent: InviteId: ", inviteId);
-		if (userId && gameSocket.id && game === null) {
-			console.log("GameComponent: transendance socket id: ", gameSocket.id);
-			if(inviteId == 0) console.log("GameComponent: fetching random game");
-			else console.log("GameComponent: fetching invite game");
-			
-			const payloadGetGame : GetGameDto = {userId: parseInt(userId), clientId: gameSocket.id, inviteId: inviteId};
-			gameFetcher({url: `${constants.API_GETGAME}`, fetchMethod: 'PATCH', payload: payloadGetGame});
-		}
-	}, [inviteId]);
-		
+  function startGame() {
+    console.log("GameComponent: starting game");
+    canvasRef.current!.focus();
+    const payload: UpdateGameStateDto = {id: roomId, state: GameState.STARTED};
+    gameSocket.emit("game/updateGameState", payload);
+  }
+  
+  function abortGame() {
+    console.log("GameComponent: aborting game");
+      const payload: UpdateGameStateDto = {id: roomId, state: GameState.ABORTED};
+      gameSocket.emit("game/updateGameState", payload);
+    
+  }
+  
+  function handleClick() {
+    console.log("GameComponent: leaving game");
+    game?.cleanCanvas();
+    abortGame();
+    router.push('/play');
+  }
+  
+  // fetch game data
+  useEffect(() => {
+    if (inviteId === -1 ) {
+      setAiLevel(0.5);
+    }
+    console.log("GameComponent: InviteId: ", inviteId);
+    if (userId && gameSocket.id && game === null) {
+      console.log("GameComponent: transendance socket id: ", gameSocket.id);
+      if(inviteId == 0) console.log("GameComponent: fetching random game");
+      else console.log("GameComponent: fetching invite game");
+      
+      const payloadGetGame : GetGameDto = {userId: parseInt(userId), clientId: gameSocket.id, inviteId: inviteId};
+      gameFetcher({url: `${constants.API_GETGAME}`, fetchMethod: 'PATCH', payload: payloadGetGame});
+    }
+  }, [inviteId]);
+  
 
 	// update game data
 	useEffect(() => {

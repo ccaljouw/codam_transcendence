@@ -10,8 +10,8 @@ export default function DataFetcher<T,U> (
 )
 {
 	const {data, isLoading, error, fetcher} = useFetch<T,U>();
-	const loadingComponent = showLoading || <p>Loading...</p>;
-	const errorComponent = showError || <p>Error: {error?.message}</p>;
+	const loadingComponent = showLoading || <>Loading...</>;
+	const errorComponent = showError || <>Error: {error?.message}</>;
 	
 	
 	useEffect(() => {

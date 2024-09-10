@@ -35,11 +35,12 @@ export default function ChannelStatusIndicator(props: { userId: number, onlineSt
 
 	useEffect(() => {
 		console.log('someUserUpdatedTheirStatus', someUserUpdatedTheirStatus);
-		if (someUserUpdatedTheirStatus === undefined || someUserUpdatedTheirStatus.status == props.onlineStatus) return;
+		if (someUserUpdatedTheirStatus === undefined ) return;
 		if (someUserUpdatedTheirStatus.userId === props.userId && someUserUpdatedTheirStatus.status == OnlineStatus.OFFLINE) {
 			setStatus(StatusDisplay.OFFLINE);
 		}
 		else if (someUserUpdatedTheirStatus.userId === props.userId && someUserUpdatedTheirStatus.status == OnlineStatus.ONLINE) {
+			if (status === StatusDisplay.IN_CHANNEL) return;
 			console.log('setting status to online');
 			setStatus(StatusDisplay.ONLINE);
 		}

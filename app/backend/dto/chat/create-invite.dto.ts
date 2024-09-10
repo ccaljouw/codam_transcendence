@@ -1,8 +1,9 @@
-import { IsEnum, IsInt, IsNotEmpty, IsOptional } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
-import { InviteStatus, InviteType } from '@prisma/client';
+import { IsEnum, IsInt, IsNotEmpty, IsOptional } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { InviteStatus, InviteType } from "@prisma/client";
 
 export class CreateInviteDto {
+
   @IsInt()
   @IsOptional()
   @ApiProperty({ required: true, type: Number })

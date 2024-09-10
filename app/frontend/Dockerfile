@@ -9,7 +9,7 @@
 # CMD ["dev"]
 
 #---------
-FROM node:21.6
+FROM node:22.8
 
 ENV PATH /app/node_modules/.bin:$PATH
 
@@ -19,5 +19,6 @@ RUN chmod +x /wait-for-it.sh
 WORKDIR /app/frontend
 
 ENTRYPOINT ["/wait-for-it.sh","backend:3001",  "--"]
+# RUN npm run build
 # CMD ["npm", "run", "dev"]
 CMD ["npm", "run", "deploy"]
