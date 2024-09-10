@@ -10,10 +10,12 @@ export default function Avatar({user, editable} : {user: UserProfileDto, editabl
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<Error | null>(null);
 	const [avatarUrl, setAvatarUrl] = useState<string>(user.avatarUrl);
+	const maxFileSize = 8000000;
+	const [tooBigFile, setTooBigFile] = useState<boolean>(false);
 	const {data: newAvatarUrl, error: errorStoringNewAvatarUrl, fetcher: storeNewAvatarUrl} = useFetch<Partial<UpdateUserDto>, boolean>();
 	const {data: postedAvatarUrl, error: errorPostingAvatar, fetcher: postAvatar} = useFetch<FormData, {avatarUrl: string}>();
 
-  useEffect(() => {
+	useEffect(() => {
 		if (avatarUrl != null && newAvatarUrl == true)
 		{
 			const user = { ...currentUser, avatarUrl };
@@ -21,37 +23,41 @@ export default function Avatar({user, editable} : {user: UserProfileDto, editabl
 			console.log(`reload page from userInfo, new avatarUrl: ${avatarUrl}, current user: ${currentUser.avatarUrl}`);
 		}
 	}, [avatarUrl, newAvatarUrl]);
-  
-  useEffect(() => {
-		if (postedAvatarUrl != null)
-	  {
-			console.log(`postedAvatarUrl: ${postedAvatarUrl.avatarUrl}`);
-			setAvatarUrl(postedAvatarUrl.avatarUrl);
-			storeNewAvatarUrl({ url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: { avatarUrl: postedAvatarUrl.avatarUrl }});
-		}
-  }, [postedAvatarUrl]);
+	
+	useEffect(() => {
+	if (postedAvatarUrl != null)
+	{
+		console.log(`postedAvatarUrl: ${postedAvatarUrl.avatarUrl}`);
+		setTooBigFile(false);
+		setAvatarUrl(postedAvatarUrl.avatarUrl);
+		storeNewAvatarUrl({ url: constants.API_USERS + currentUser.id, fetchMethod: 'PATCH', payload: { avatarUrl: postedAvatarUrl.avatarUrl }});
+	}
+	}, [postedAvatarUrl]);
 
-  const selectNewImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
+	const selectNewImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
-	  try {
-		if(file) {
-		  const formData = new FormData();
-		  console.log(`Form data: `);
-		  formData.append('file', file);
-		  console.log(formData);
-		  postAvatar({url: constants.API_NEW_AVATAR, fetchMethod: 'POST', payload: formData});
+		try {
+		if(file && file.size < maxFileSize) {
+			const formData = new FormData();
+			console.log(`Form data: `);
+			formData.append('file', file);
+			console.log(formData);
+			postAvatar({url: constants.API_NEW_AVATAR, fetchMethod: 'POST', payload: formData});
+		} else if(file) {
+			console.log('file too big');
+			setTooBigFile(true);
 		} else {
-		  console.log("no file selected");
+			console.log("no file selected");
 		}
-	  } catch (e: any) { 
-		  console.log("error uploading avatar: ", e.message);
-		  setError(e);
-	  } finally {
-		  setIsLoading(false);
-	  }
+		} catch (e: any) { 
+			console.log("error uploading avatar: ", e.message);
+			setError(e);
+		} finally {
+			setIsLoading(false);
+		}
 	};
-  
-  return (
+	
+	return (
 		<>
 			<div className="row">
 				<div className="col col-3">
@@ -74,10 +80,11 @@ export default function Avatar({user, editable} : {user: UserProfileDto, editabl
 					}
 				</div>
 			</div>
+			{editable && tooBigFile == true && <p>Error: File too big. Should be smaller than {maxFileSize}B</p>}
 			{editable && isLoading == true && <p>Updating avatar...</p>}
 			{editable && error != null && <p>Not possible to update avatar: {error.message}</p>}
 			{editable && errorPostingAvatar != null && <p>Not possible to update avatar: {errorPostingAvatar.message}</p>}
 			{editable && errorStoringNewAvatarUrl != null && <p>Error storing new avatarUrl in database: {errorStoringNewAvatarUrl.message}</p>}
 		</>
-  );
+	);
 }
