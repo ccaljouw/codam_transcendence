@@ -186,35 +186,39 @@ export class AuthService {
 	}
 
 
-	async validateChatLogin(id: number, password: string) : Promise<FetchChatDto> {
-		const chat = await this.db.chat.findUnique({ 
-		  where: { id },
-		  include: { users: true, chatAuth: true }
+	async validateChatLogin(id: number, password: string): Promise<FetchChatDto> {
+		const chat = await this.db.chat.findUnique({
+			where: { id },
+			include: { users: true, chatAuth: true }
 		});
 		if (!chat)
-		  throw new UnauthorizedException("chat not found");
+			throw new UnauthorizedException("chat not found");
 		if (chat.visibility == ChatType.PROTECTED) {
-		  if (!chat.chatAuth)
-			throw new UnauthorizedException("No password found for protected chat")
-		  const validPwd = await bcrypt.compare(password, chat.chatAuth?.pwd);
-		  if (!validPwd)
-			throw new UnauthorizedException("Incorrect password")
+			if (!chat.chatAuth)
+				throw new UnauthorizedException("No password found for protected chat")
+			const validPwd = await bcrypt.compare(password, chat.chatAuth?.pwd);
+			if (!validPwd)
+				throw new UnauthorizedException("Incorrect password")
 		} else {
-		  throw new BadRequestException("Trying to login to unprotected chat");
+			throw new BadRequestException("Trying to login to unprotected chat");
 		}
 		delete chat.chatAuth;
 		return chat;
-	  }
+	}
 
-	  async setChatPassword(chatId: number, password: string): Promise<boolean> {
+	async setChatPassword(chatId: number, password: string): Promise<boolean> {
 		try {
-		  const salt = await bcrypt.genSalt(10);
-		  const hash = await bcrypt.hash(password, salt);
-		  await this.db.chatAuth.create({data: {chatId, pwd: hash}});
-		  return true;
+			const salt = await bcrypt.genSalt(10);
+			const hash = await bcrypt.hash(password, salt);
+			await this.db.chatAuth.upsert({
+				where: { chatId },
+				update: { pwd: hash },
+				create: { chatId, pwd: hash }
+			});
+			return true;
 		} catch (error) {
-		  console.log('Error setting chat password:', error.message);
-		  throw error;
+			console.log('Error setting chat password:', error.message);
+			throw error;
 		}
-	  }
+	}
 }

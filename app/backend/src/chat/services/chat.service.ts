@@ -21,6 +21,12 @@ export class ChatService {
 			include: { users: true },
 			data
 		});
+		const chatAuth = await this.db.chatAuth.findFirst({
+			where: { chatId }
+		});
+		if (chatAuth && data.visibility != ChatType.PROTECTED) { // Delete password if visibility is not protected
+			await this.db.chatAuth.delete({ where: { id: chatAuth.id } });
+		}
 		return chat;
 	}
 

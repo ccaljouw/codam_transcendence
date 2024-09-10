@@ -6,16 +6,23 @@ import EditableDataField from "src/app/(general)/profile/[username]/components/u
 import FormToUpdateChatDto from "src/globals/functionComponents/form/FormToUpdateChatDto";
 import useFetch from "src/globals/functionComponents/useFetch";
 import { transcendenceSocket } from "src/globals/socket.globalvar";
+import { ChatType } from "@prisma/client";
 
 export default function ChannelSettings({room} : {room: FetchChatDto}) {
 	const { data: chatPatched, error: patchError, isLoading: patchIsLoading, fetcher: chatPatcher } = useFetch<UpdateChatDto, FetchChatDto>();
 	const { data: chatDeleted, error: deleteError, isLoading: deleteIsLoading, fetcher: chatDeleter } = useFetch<Partial<FetchChatDto>, boolean>();
 	// const { data: chatPatched, error: patchError, isLoading: patchIsLoading, fetcher: chatPatcher } = useFetch<Partial<UpdateChatDto>, boolean>();
 
-	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+	const submitChannelNameChange = async (event: FormEvent<HTMLFormElement>) => {
 		console.log("Changing channel name");
 		event.preventDefault();
 		await chatPatcher({url: constants.API_CHAT + room.id, fetchMethod: 'PATCH', payload: FormToUpdateChatDto(event)})
+	}
+
+	const submitPassWordChange = async (event: FormEvent<HTMLFormElement>) => {
+		console.log("Changing channel password");
+		event.preventDefault();
+		// await chatPatcher({url: constants.API_CHAT + room.id, fetchMethod: 'PATCH', payload: FormToUpdateChatDto
 	}
 
 	useEffect(() => {
@@ -34,7 +41,7 @@ export default function ChannelSettings({room} : {room: FetchChatDto}) {
 	return (
 		<>
 			<b>Channel settings here.</b><br />
-			<form onChange={handleSubmit} acceptCharset='utf-8' className="row">
+			<form onChange={submitChannelNameChange} acceptCharset='utf-8' className="row">
 				<div className="col col-3">
 					<p>Channel visibility</p>
 				</div>
@@ -44,11 +51,16 @@ export default function ChannelSettings({room} : {room: FetchChatDto}) {
 						<option key="Private" value="PRIVATE" id="visibility">Private</option>
 						<option key="Password" value="PROTECTED" id="visibility">Password</option>
 					</select>
-					{chatPatched ? chatPatched.visibility : room.visibility}
+					{((chatPatched && chatPatched.visibility == ChatType.PROTECTED) || (!chatPatched && room.visibility == ChatType.PROTECTED)) && // if the room is protected, show the password field
+						<form method="post" onSubmit={submitPassWordChange}>
+						<input className="form-control form-control-sm" placeholder="new password" type="password" name="password" required={true} autoComplete="new-password" minLength={6} maxLength={30}></input>
+						<input type="submit" value="Save Password" />
+						</form>
+					}
 				</div>
 			</form>
 			<br />&emsp;&emsp; [with set/change password option]<br />
-			<form onSubmit={handleSubmit} acceptCharset='utf-8' className="row">
+			<form onSubmit={submitChannelNameChange} acceptCharset='utf-8' className="row">
 				<EditableDataField name="Channel name" data={room.name}>
 					<input className="form-control form-control-sm" placeholder={room.name} type="text" name="name" required={false} autoComplete="off" minLength={6} maxLength={30}></input> {/* //todo: JMA: finetune min and max */}
 				</EditableDataField>
