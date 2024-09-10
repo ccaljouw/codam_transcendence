@@ -7,23 +7,34 @@ import FormToUpdateChatDto from "src/globals/functionComponents/form/FormToUpdat
 import useFetch from "src/globals/functionComponents/useFetch";
 import { transcendenceSocket } from "src/globals/socket.globalvar";
 import { ChatType } from "@prisma/client";
+import { ChatAuthDto } from "@ft_dto/authentication/chat-auth.dto";
 
-export default function ChannelSettings({room} : {room: FetchChatDto}) {
+export default function ChannelSettings({ room }: { room: FetchChatDto }) {
 	const { data: chatPatched, error: patchError, isLoading: patchIsLoading, fetcher: chatPatcher } = useFetch<UpdateChatDto, FetchChatDto>();
 	const { data: chatDeleted, error: deleteError, isLoading: deleteIsLoading, fetcher: chatDeleter } = useFetch<Partial<FetchChatDto>, boolean>();
+	const { data: setChatPassword, error: setChatPasswordError, isLoading: setChatPasswordIsLoading, fetcher: chatPasswordSetter } = useFetch<ChatAuthDto, boolean>();
+	const [password, setPassword] = useState<string>("");
 	// const { data: chatPatched, error: patchError, isLoading: patchIsLoading, fetcher: chatPatcher } = useFetch<Partial<UpdateChatDto>, boolean>();
 
 	const submitChannelNameChange = async (event: FormEvent<HTMLFormElement>) => {
 		console.log("Changing channel name");
 		event.preventDefault();
-		await chatPatcher({url: constants.API_CHAT + room.id, fetchMethod: 'PATCH', payload: FormToUpdateChatDto(event)})
+		await chatPatcher({ url: constants.API_CHAT + room.id, fetchMethod: 'PATCH', payload: FormToUpdateChatDto(event) })
 	}
 
 	const submitPassWordChange = async (event: FormEvent<HTMLFormElement>) => {
 		console.log("Changing channel password");
 		event.preventDefault();
+		await chatPasswordSetter({ url: constants.API_AUTH_CHANGE_CHAT_PWD, fetchMethod: 'POST', payload: { chatId: room.id, pwd: password } });
 		// await chatPatcher({url: constants.API_CHAT + room.id, fetchMethod: 'PATCH', payload: FormToUpdateChatDto
 	}
+
+	useEffect(() => {
+		if (setChatPassword) {
+			console.log("Chat password set");
+			setChatPassword
+		}
+	}, [setChatPassword]);
 
 	useEffect(() => {
 		if (chatPatched) {
@@ -35,7 +46,7 @@ export default function ChannelSettings({room} : {room: FetchChatDto}) {
 
 	const handleDeleteClick = async () => {
 		console.log("submitting form field entry");
-		await chatDeleter({url: constants.API_CHAT + room.id, fetchMethod: 'DELETE'});
+		await chatDeleter({ url: constants.API_CHAT + room.id, fetchMethod: 'DELETE' });
 	}
 
 	return (
@@ -51,14 +62,15 @@ export default function ChannelSettings({room} : {room: FetchChatDto}) {
 						<option key="Private" value="PRIVATE" id="visibility">Private</option>
 						<option key="Password" value="PROTECTED" id="visibility">Password</option>
 					</select>
-					{((chatPatched && chatPatched.visibility == ChatType.PROTECTED) || (!chatPatched && room.visibility == ChatType.PROTECTED)) && // if the room is protected, show the password field
-						<form method="post" onSubmit={submitPassWordChange}>
-						<input className="form-control form-control-sm" placeholder="new password" type="password" name="password" required={true} autoComplete="new-password" minLength={6} maxLength={30}></input>
-						<input type="submit" value="Save Password" />
-						</form>
-					}
+
 				</div>
 			</form>
+			{((chatPatched && chatPatched.visibility == ChatType.PROTECTED) || (!chatPatched && room.visibility == ChatType.PROTECTED)) && // if the room is protected, show the password field
+				<form method="post" onSubmit={submitPassWordChange}>
+					<input className="form-control form-control-sm" placeholder="new password" type="password" name="password" required={true} autoComplete="new-password" minLength={6} maxLength={30} onChange={(e) => setPassword(e.target.value)}></input>
+					<input type="submit" value="Save Password" />
+				</form>
+			}
 			<br />&emsp;&emsp; [with set/change password option]<br />
 			<form onSubmit={submitChannelNameChange} acceptCharset='utf-8' className="row">
 				<EditableDataField name="Channel name" data={room.name}>
@@ -68,7 +80,7 @@ export default function ChannelSettings({room} : {room: FetchChatDto}) {
 			{/* todo: albert: trigger reload when chat patch worked */}
 			{/* {chatPatched && setCurrentChatRoom} */}
 			{patchIsLoading && "Updating chat name..."}
-			<button className="btn btn-outline-dark btn-sm"onClick={handleDeleteClick} >Delete channel</button>
+			<button className="btn btn-outline-dark btn-sm" onClick={handleDeleteClick} >Delete channel</button>
 			{chatDeleted == true && "Albert: trigger page reload"}
 		</>
 	)

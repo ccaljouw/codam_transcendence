@@ -120,6 +120,7 @@ export class AuthController {
 
   @Post('setChatPwd')
   async setChatPassword(@Body()chatAuth: ChatAuthDto) : Promise<boolean> {
+	console.log(`Setting password for ${chatAuth.chatId}`);
     return await this.authService.setChatPassword(chatAuth.chatId, chatAuth.pwd);
   }
 

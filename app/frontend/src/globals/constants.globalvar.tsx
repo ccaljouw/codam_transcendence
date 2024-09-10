@@ -78,6 +78,7 @@ export class constants {
 	static API_CHECK_ID = this.BACKEND_BASEURL + '/auth/check_id/';
 
 	static API_AUTH_CHAT = this.BACKEND_BASEURL + '/auth/loginChat/';
+	static API_AUTH_CHANGE_CHAT_PWD = this.BACKEND_BASEURL + '/auth/setChatPwd/';
 
 	static API_ENABLE2FA = this.BACKEND_BASEURL + '/auth/2FA/enable/';
 	static API_DISABLE2FA = this.BACKEND_BASEURL + '/auth/2FA/disable/';
