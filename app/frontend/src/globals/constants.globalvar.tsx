@@ -12,7 +12,7 @@ export class constants {
 	static config = 'test';
 	static themes = ['classic', 'blackAndWhite', 'neon'];
 
-	static BACKEND_BASEURL = `http://localhost:3001`;
+	static BACKEND_BASEURL = 'http://localhost:3001';
 	static FRONTEND_BASEURL = 'http://localhost:3000'; //todo: JMA: consider adding '/' at end of url
 
 
@@ -48,14 +48,14 @@ export class constants {
 	static INVITE_RESPOND_TO_GAME_REQUEST = this.API_INVITE + 'respondToGameRequest/';
 	static INVITE_RESPOND_TO_CHAT_REQUEST = this.API_INVITE + 'respondToChatRequest/';
   
-	static API_TEST = this.BACKEND_BASEURL + 'test/';
+	static API_TEST = this.BACKEND_BASEURL + '/test/';
 	static API_TEST_BACKEND = this.API_TEST + 'backend';
 	static API_TEST_FRONTEND = this.API_TEST + 'frontend';
 	static API_TEST_ALL = this.API_TEST + 'all';
 	static API_TEST_OUTPUT = this.API_TEST + 'output';
 	static API_TEST_REPORT = this.API_TEST + 'report';
   
-	static API_SWAGGER = this.BACKEND_BASEURL + 'api';
+	static API_SWAGGER = this.BACKEND_BASEURL + '/api';
 
 	static API_GAME = this.BACKEND_BASEURL + '/game/'
 	static API_GETGAME = this.BACKEND_BASEURL + '/game/getGame';
