@@ -15,7 +15,8 @@ import { useRouter } from 'next/navigation';
 
 export default function UserInfo({user, editable} : {user: UserProfileDto, editable: boolean}) : JSX.Element {
 	const {currentUser, setCurrentUser} = useContext(TranscendenceContext);
-	const {data: updatedUser, isLoading: loadingUser, error: errorUser, fetcher: fetchUser} = useFetch<UpdateUserDto, UserProfileDto >();
+	const {data: updatedUser, isLoading: loadingUser, error: errorUser, fetcher: fetchUser} = useFetch<UpdateUserDto, UserProfileDto>();
+	// const {data: is42User, isLoading: loadingAuthMethod, error: errorAuthMethod, fetcher: fetchAuthMethod} = useFetch<null, boolean>();
 	const router = useRouter();
 	
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -36,6 +37,17 @@ export default function UserInfo({user, editable} : {user: UserProfileDto, edita
 				console.log("reload page from userInfo");
 			}
 	}, [updatedUser]);
+
+	// useEffect(() => {
+	// 	if (editable == true)
+	// 	{
+	// 		checkLoggedWithAuth42();
+	// 	}
+	// }, []);
+
+	// const checkLoggedWithAuth42 = async () => {
+	// 	await fetchAuthMethod({url: constants.API_42_USER + currentUser.id});
+	// }
 
 	return (
 		<>
@@ -68,8 +80,10 @@ export default function UserInfo({user, editable} : {user: UserProfileDto, edita
 					</EditableDataField>
 				</form>
 				<hr></hr>
-				<ChangePassword/>
-				<TwoFactorAuthentication/>
+				{/* {(is42User != null && is42User == false) && <> */}
+					<ChangePassword/>
+					<TwoFactorAuthentication/>
+				{/* </>} */}
 			</>}
 			{loadingUser == true && <p>Updating user...</p>}
 			{errorUser != null && <p>Not possible to update user: {errorUser.message}</p>}
