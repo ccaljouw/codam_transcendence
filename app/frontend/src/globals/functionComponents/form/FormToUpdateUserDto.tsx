@@ -2,7 +2,7 @@ import { FormEvent } from 'react';
 import { UpdateUserDto } from '@ft_dto/users';
 
 export default function FormToUpdateUserDto (event: FormEvent<HTMLFormElement>) : Partial<UpdateUserDto> {
-    const formData = new FormData(event.currentTarget); // todo: we use new, should we use delete?
+    const formData = new FormData(event.currentTarget);
     const patchUser: Partial<UpdateUserDto> = {};
 
     if (formData.get('userName')) {
@@ -28,14 +28,11 @@ export default function FormToUpdateUserDto (event: FormEvent<HTMLFormElement>) 
 
     if (formData.get('theme')) {
         patchUser.theme = Number(formData.get('theme'));
-        // console.log(`theme value is: ${Number(themeValue)}`);
     }
 
     if (formData.get('volume')) {
         patchUser.volume = Number(formData.get('volume'));
-        // console.log(`volume value is: ${Number(volumeValue)}`);
     }
 
-    //todo: consider adding avatarId and online status
     return (patchUser);
 }

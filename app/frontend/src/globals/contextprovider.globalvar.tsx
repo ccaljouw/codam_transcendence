@@ -163,7 +163,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 			const statusUpdate: WebsocketStatusChangeDto = {
 				userId: currentUser.id,
 				userName: currentUser.userName,
-				token: (transcendenceSocket.id ? transcendenceSocket.id : ''), //Albert: Can the transcendenceSocket.id change while the addTokenFetcher is updating the token in the backend? Should the backend give back a WebsocketStatusChangeDto? - Jorien
+				token: (transcendenceSocket.id ? transcendenceSocket.id : ''),
 				status: OnlineStatus.ONLINE
 			}
 			transcendenceSocket.emit('socket/statusChange', statusUpdate); // Emit the status change to the socket
