@@ -3,12 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "deploy": "next build && next start",
+    "deploy": "npm run build && npm run start",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
     "test:ci": "jest --ci"
+  },
+  "dependencies": {
+    "punycode": "^2.3.1"
   }
 }
