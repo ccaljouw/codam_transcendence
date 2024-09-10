@@ -15,6 +15,7 @@ type LoginCredentials = {
 export default function Login() : JSX.Element {
 	const {data: loggedUser, isLoading, error, fetcher} = useFetch<LoginCredentials, UserProfileDto>();
 	const {storeUser} = useAuthentication();
+	const [tokenRequestVisible, setTokenRequestVisible] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (loggedUser != null) {
@@ -22,6 +23,13 @@ export default function Login() : JSX.Element {
 			storeUser(loggedUser);
 		}
 	}, [loggedUser]);
+
+	useEffect(() => {
+		if (error != null && (error.message == '401 - 2FA token is required' || error.message == '401 - Token verification failed: invalid token')) 
+		{
+			setTokenRequestVisible(true);
+		}			
+	}, [error]);
 
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
@@ -42,14 +50,18 @@ export default function Login() : JSX.Element {
 	return (
 		<>
 			<div className="white-box">
-				<H3 text="Login to play some pong"></H3>
+				{tokenRequestVisible == true ?
+					<H3 text="Fill in 2FA token"></H3>
+					:
+					<H3 text="Login to play some pong"></H3>
+				}
 				<form onSubmit={handleSubmit} acceptCharset='utf-8' className="row">
-					<input id="loginName" type="loginName" required={true} className="form-control form-control-sm" placeholder={"loginName"}></input>
-					<input id="password" type="password" required={true} className="form-control form-control-sm" placeholder={"password"}></input>
-					<input id="token" type="token" required={false} className="form-control form-control-sm" placeholder={"include token if 2FA enabled"}></input>
+						<input id="loginName" type={tokenRequestVisible == true ? "hidden" : "text"} required={true} className="form-control form-control-sm" placeholder={"loginName"}></input>
+						<input id="password" type={tokenRequestVisible == true ? "hidden" : "password"} autoComplete="off" required={true} className="form-control form-control-sm" placeholder={"password"}></input>
+						<input id="token" type={tokenRequestVisible == true ? "number" : "hidden"} autoComplete="off" required={false} className="form-control form-control-sm" placeholder={"2FA token"} minLength={6} maxLength={6}></input>
 					<button className="btn btn-dark btn-sm" type="submit">{isLoading? "Logging in user" : "Login"}</button>
 				</form>
-				{error && <p>Login error: {error.message}</p>}
+				{(error && error.message != '401 - 2FA token is required') && <p>Login error: {error.message}</p>}
 			</div>			
 		</>
 	);
