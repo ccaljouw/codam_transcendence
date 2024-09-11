@@ -57,4 +57,4 @@ cleannodemodules: clean
 # cleans also the database volume
 cleanvolumes: cleandatabase cleannodemodules
 
-.PHONY:	all run re start stop down clean fclean cleandatabase cleanvolumes backend
+.PHONY:	all run re start stop down clean fclean cleanvolumes cleandatabase cleannodemodules backend

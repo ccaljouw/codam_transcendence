@@ -4,15 +4,17 @@ services:
     image: postgres:16
     container_name: postgres
     restart: always
+    env_file: ./app/backend/.env
     volumes:
       - database_files:/var/lib/postgresql/data
     networks:
       - transcendence
     healthcheck:
-      test: ["CMD-SHELL", "sh 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}'"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 3s
       timeout: 5s
       retries: 5
+    stop_grace_period: 30s 
   
   backend: 
     build: 
@@ -29,7 +31,8 @@ services:
       - ./app:/app
       - node_modules:/node_modules
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - transcendence
     # Default command will run "start", uncommend below to run "start:watch" for development 
