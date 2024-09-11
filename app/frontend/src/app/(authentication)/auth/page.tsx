@@ -1,15 +1,15 @@
 "use client";
-import { useEffect, useState } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { H3 } from 'src/globals/layoutComponents/Font';
+import { Suspense } from 'react';
+
+// function 
 
 export default function Page() : JSX.Element {
 	const params = useSearchParams();
 	const auth42Status = params.get('status');
 	const auth42Message = params.get('message');
-	// const pathname = usePathname();
-	// const router = useRouter();
-	// const [auth42Error, setAuth42Error] = useState<String | null>(null);
 
 	useEffect(() => {
 		
@@ -17,6 +17,7 @@ export default function Page() : JSX.Element {
 
 	return (
 		<>
+			{/* <Suspense fallback={<Loading />}> */}
 			<div className="white-box">
 				{(auth42Status && auth42Status != "200")?
 					<>
@@ -27,6 +28,7 @@ export default function Page() : JSX.Element {
 					<p>Logging in with Auth42 successful</p>
 				}
 			</div>
+			{/* </Suspense> */}
 		</>
 	);
 }

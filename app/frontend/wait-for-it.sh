@@ -25,4 +25,6 @@ until [ "$backend_status" -eq "200" ]; do
     fi
 done
 
+echo "Calling command npm run ... now!"
+
 exec npm run "$@"

@@ -1,6 +1,6 @@
-import { IsInt, IsString, MaxLength, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import { IsInt, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class ChatAuthDto {
 

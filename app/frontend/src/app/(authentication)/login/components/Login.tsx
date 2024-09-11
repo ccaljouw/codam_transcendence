@@ -56,9 +56,9 @@ export default function Login() : JSX.Element {
 					<H3 text="Login to play some pong"></H3>
 				}
 				<form onSubmit={handleSubmit} acceptCharset='utf-8' className="row">
-						<input id="loginName" type={tokenRequestVisible == true ? "hidden" : "text"} required={true} className="form-control form-control-sm" placeholder={"loginName"}></input>
-						<input id="password" type={tokenRequestVisible == true ? "hidden" : "password"} autoComplete="off" required={true} className="form-control form-control-sm" placeholder={"password"}></input>
-						<input id="token" type={tokenRequestVisible == true ? "number" : "hidden"} autoComplete="off" required={false} className="form-control form-control-sm" placeholder={"2FA token"} minLength={6} maxLength={6}></input>
+					<input id="loginName" type={tokenRequestVisible == true ? "hidden" : "text"} required={true} className="form-control form-control-sm" placeholder={"loginName"}></input>
+					<input id="password" type={tokenRequestVisible == true ? "hidden" : "password"} autoComplete="off" required={true} className="form-control form-control-sm" placeholder={"password"}></input>
+					<input id="token" type={tokenRequestVisible == true ? "number" : "hidden"} autoComplete="off" required={false} className="form-control form-control-sm" placeholder={"2FA token"} minLength={6} maxLength={6}></input>
 					<button className="btn btn-dark btn-sm" type="submit">{isLoading? "Logging in user" : "Login"}</button>
 				</form>
 				{(error && error.message != '401 - 2FA token is required') && <p>Login error: {error.message}</p>}

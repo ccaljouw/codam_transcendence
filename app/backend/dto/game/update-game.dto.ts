@@ -8,8 +8,8 @@ import {
   IsNotEmpty,
   IsOptional,
 } from 'class-validator';
-import { CreateGameDto } from 'dto/game/create-game.dto';
-import { UpdateGameUserDto } from 'dto/game/update-gameUser.dto';
+import { CreateGameDto } from './create-game.dto';
+import { UpdateGameUserDto } from './update-gameUser.dto';
 
 export class UpdateGameDto extends PartialType(CreateGameDto) {
   @ApiProperty({ required: true })

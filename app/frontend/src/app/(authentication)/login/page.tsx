@@ -1,14 +1,12 @@
 import Login from "./components/Login";
+import { Suspense } from 'react';
 
-export default function Page({error} : {error: Error | null}) : JSX.Element { 
+export default function Page() : JSX.Element { 
 	return (
 		<>
-			<Login/>
-			{error != null && 
-				<div className="white-box">
-					<p>Error: {error.message}</p>
-				</div>
-			}
+			{/* <Suspense > */}
+				<Login/>
+			{/* </Suspense> */}
 		</>
 	);
 }
