@@ -4,10 +4,10 @@ services:
     image: postgres:16
     container_name: postgres
     restart: always
-    # environment:
-    #   - POSTGRES_USER=me
-    #   - POSTGRES_PASSWORD=pwd
-    #   - POSTGRES_DB=transcendence
+    environment:
+      - POSTGRES_USER=me
+      - POSTGRES_PASSWORD=pwd
+      - POSTGRES_DB=transcendence
     volumes:
       - database_files:/var/lib/postgresql/data
     networks:
@@ -26,6 +26,8 @@ services:
     pull_policy: never
     container_name: backend
     restart: always
+    # env_file:
+    #   - ./backend/.env
     ports: 
       - '3001:3001'
       - '5555:5555'
