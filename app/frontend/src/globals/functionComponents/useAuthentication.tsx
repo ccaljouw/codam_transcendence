@@ -1,3 +1,4 @@
+"use client";
 import { useContext, useEffect, useState } from "react";
 import { UserProfileDto } from "@ft_dto/users";
 import { TranscendenceContext } from "../contextprovider.globalvar";
@@ -10,9 +11,23 @@ type authenticationOutput = {
 	storeUser: (loggedInUser: UserProfileDto) => void,
 }
 
+// function getSearchParamsForReal() : string | null {
+// 	console.log("get search params for real");
+
+// 	const searchParams = useSearchParams(); // this does not work
+// 	console.log("searchParams found");
+
+// 	const userString = searchParams.get('user');
+// 	console.log("user string ready");
+
+// 	return (userString);
+// }
+
 export default function useAuthentication() : authenticationOutput {
 	const {setCurrentUser} = useContext(TranscendenceContext);
-	const [userFromUrl, setUserFromUrl] = useState<string | null>(null);
+	const searchParams = useSearchParams();
+	const userFromUrl = searchParams.get('user');
+	// const [userFromUrl, setUserFromUrl] = useState<string | null>(null);
 	const [user, setUser] = useState<UserProfileDto | null>(null);
 	const {data: fetchedUser, error, fetcher: userFetcher} = useFetch<null, UserProfileDto>();
 	const [idFromStorage, setIdFromStorage] = useState<string | null>(null);
@@ -21,7 +36,7 @@ export default function useAuthentication() : authenticationOutput {
 
 	useEffect (() => {
 		const id = sessionStorage.getItem('userId');
-		getSearchParams();
+		// getSearchParams();
 		if (userFromUrl != null)
 		{
 			fetchUserById(constants.API_CHECK_ID + userFromUrl);
@@ -39,14 +54,14 @@ export default function useAuthentication() : authenticationOutput {
 		}
 	}, [userFromUrl]);
 
-	const getSearchParams = async () : Promise<void>  => {
-		console.log("get search params");
-		const params = await useSearchParams(); // this does not work
-		const userString = params.get('user');
-		console.log(`search userString: ${userString}`);
-		if (userString != null)
-			setUserFromUrl(userString);
-	};
+	// const getSearchParams = async () : Promise<void>  => {
+	// 	console.log("get search params");
+
+	// 	const userString = getSearchParamsForReal();//"4";
+	// 	console.log(`search userString: ${userString}`);
+	// 	if (userString != null)
+	// 		setUserFromUrl(userString);
+	// };
 
 	const fetchUserById = async (url: string) : Promise<void>  => {
 		console.log("fetching user");
