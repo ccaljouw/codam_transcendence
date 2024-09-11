@@ -80,7 +80,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 		}
 	}, [fetchedGameData]);
 		
-
+	
 	// join room
 	useEffect(() => {
 		if (roomId !== 0) {
@@ -95,7 +95,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 		
 		const handleMessage = (msg: string) => {
 			console.log(`GameComponent: received message: "${msg}"`);
-			if (fetchedGameData?.state === GameState.WAITING && fetchedGameData?.id) {
+			if (instanceType == InstanceTypes.notSet && fetchedGameData?.state === GameState.WAITING && fetchedGameData?.id) {
 				console.log("GameComponent: less than two players in game, refreshing game data, gameid:", fetchedGameData.id);
 				gameFetcher({url: `${constants.API_GAME}${fetchedGameData.id}`});
 			}
