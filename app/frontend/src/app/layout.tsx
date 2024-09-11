@@ -20,7 +20,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 						{children}
 					</ContextProvider>
 				</div>
-				<BootstrapClient />
+				<BootstrapClient/>
 			</body>
 		</html>
     );

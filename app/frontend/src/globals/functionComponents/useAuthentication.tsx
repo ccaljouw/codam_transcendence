@@ -12,8 +12,7 @@ type authenticationOutput = {
 
 export default function useAuthentication() : authenticationOutput {
 	const {setCurrentUser} = useContext(TranscendenceContext);
-	const params = useSearchParams();
-	const userFromUrl = params.get('user');
+	const [userFromUrl, setUserFromUrl] = useState<string | null>(null);
 	const [user, setUser] = useState<UserProfileDto | null>(null);
 	const {data: fetchedUser, error, fetcher: userFetcher} = useFetch<null, UserProfileDto>();
 	const [idFromStorage, setIdFromStorage] = useState<string | null>(null);
@@ -22,6 +21,7 @@ export default function useAuthentication() : authenticationOutput {
 
 	useEffect (() => {
 		const id = sessionStorage.getItem('userId');
+		getSearchParams();
 		if (userFromUrl != null)
 		{
 			fetchUserById(constants.API_CHECK_ID + userFromUrl);
@@ -37,15 +37,26 @@ export default function useAuthentication() : authenticationOutput {
 			if (pathname != '/login' && pathname != '/signup' && pathname != '/auth')
 				router.push('/login');
 		}
-	}, []);
+	}, [userFromUrl]);
+
+	const getSearchParams = async () : Promise<void>  => {
+		console.log("get search params");
+		const params = await useSearchParams(); // this does not work
+		const userString = params.get('user');
+		console.log(`search userString: ${userString}`);
+		if (userString != null)
+			setUserFromUrl(userString);
+	};
 
 	const fetchUserById = async (url: string) : Promise<void>  => {
+		console.log("fetching user");
 		await userFetcher({url: url});
 	};
 
 	useEffect(() => {
 		if (fetchedUser != null)
 		{
+			console.log("storing user");
 			storeUser(fetchedUser);
 		}
 	}, [fetchedUser]);
@@ -70,7 +81,7 @@ export default function useAuthentication() : authenticationOutput {
 		setUser(loggedInUser);
 		setCurrentUser(loggedInUser);
 		setSessionStorage(loggedInUser);
-		if (pathname == '/login' || pathname == '/signup' || pathname == '/auth' || (userFromUrl && fetchedUser))
+		if (pathname == '/login' || pathname == '/signup' || pathname == '/auth' || (userFromUrl != null && fetchedUser))
 		{
 			router.push('/');
 		}

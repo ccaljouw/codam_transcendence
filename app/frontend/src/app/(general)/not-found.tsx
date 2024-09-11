@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { H3, FontPopArt } from '@ft_global/layoutComponents/Font.tsx';
 
-export default function NotFound() {
+export default function Page() {
 	return (
 		<div className="text-center white-box navbar not-found">
 			<div className="col">
