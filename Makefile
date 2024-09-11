@@ -19,9 +19,7 @@ run: clean
 
 # rebuilds the images and application after clearing the app volume. Does not clear de database volume
 # use make re after changes to dockerfiles or startup scripts.
-re: down
-	@echo -e "$(COLOR_BLUE) **** REMOVE APP VOLUME ****$(COLOR_RESET)"
-	$(call color_output, docker volume rm transcendence_app)
+re: clean
 	docker compose up --build
 
 start:

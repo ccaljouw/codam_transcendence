@@ -27,7 +27,6 @@ CREATE TABLE "User" (
     "twoFactEnabled" BOOLEAN NOT NULL DEFAULT false,
     "avatarUrl" TEXT DEFAULT 'http://localhost:3001/avatar/favicon.ico',
     "theme" INTEGER NOT NULL DEFAULT 0,
-    "volume" DOUBLE PRECISION NOT NULL DEFAULT 0.5,
     "online" "OnlineStatus" NOT NULL DEFAULT 'OFFLINE',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
