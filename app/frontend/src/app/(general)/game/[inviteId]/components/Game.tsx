@@ -10,6 +10,7 @@ import useFetch from 'src/globals/functionComponents/useFetch.tsx'
 import styles from '../styles.module.css';
 import { useRouter } from 'next/navigation';
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar'
+import { H3 } from 'src/globals/layoutComponents/Font'
 
 // GameComponent is a functional component that renders the game canvas and handles game logic
 export default function GameComponent({inviteId}: {inviteId: number}) {
@@ -80,7 +81,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 		}
 	}, [fetchedGameData]);
 		
-	
+
 	// join room
 	useEffect(() => {
 		if (roomId !== 0) {
