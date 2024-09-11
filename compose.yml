@@ -67,5 +67,7 @@ networks:
 
 volumes:
   database_files:
+    name: database_files
   node_modules:
+    name: node_modules
 
