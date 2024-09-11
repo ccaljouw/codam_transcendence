@@ -50,16 +50,13 @@ fclean: cleanvolumes
 
 cleandatabase: clean
 	@echo -e "$(COLOR_BLUE) **** REMOVE DATABASE VOLUMES ****$(COLOR_RESET)"
-	$(call color_output, docker volume rm transcendence_database_files)
+	$(call color_output, docker volume rm database_files)
 
 cleannodemodules: clean
 	@echo -e "$(COLOR_BLUE) **** REMOVE NODE_MODULES VOLUMES ****$(COLOR_RESET)"
-	$(call color_output, docker volume rm transcendence_node_modules)
+	$(call color_output, docker volume rm node_modules)
 
 # cleans also the database volume
-cleanvolumes: clean
-	@echo -e "$(COLOR_BLUE) **** REMOVE DOCKER VOLUMES ****$(COLOR_RESET)"
-	$(call color_output, docker volume rm transcendence_node_modules)
-	$(call color_output, docker volume rm transcendence_database_files)
+cleanvolumes: cleandatabase cleannodemodules
 
 .PHONY:	all run re start stop down clean fclean cleandatabase cleanvolumes backend
