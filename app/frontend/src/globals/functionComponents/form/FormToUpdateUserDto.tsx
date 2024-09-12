@@ -26,22 +26,14 @@ export default function FormToUpdateUserDto (event: FormEvent<HTMLFormElement>) 
         patchUser.loginName = formData.get('loginName')?.toString();
     }
 
-    if (formData.get('pwd')) {
-        patchUser.pwd = formData.get('pwd')?.toString();
+    if (formData.get('theme')) {
+        patchUser.theme = Number(formData.get('theme'));
+        // console.log(`theme value is: ${Number(themeValue)}`);
     }
 
-    //todo: add game settings
-    if (formData.get('theme')) {
-        const themeValue = formData.get('theme');
-        patchUser.theme = themeValue !== null ? Number(themeValue) : undefined;
-        console.log(`theme value is: ${Number(themeValue)}`);
-    }
-
-    //todo: add game settings
-    if (formData.get('theme')) {
-        const themeValue = formData.get('theme');
-        patchUser.theme = themeValue !== null ? Number(themeValue) : undefined;
-        console.log(`theme value is: ${Number(themeValue)}`);
+    if (formData.get('volume')) {
+        patchUser.volume = Number(formData.get('volume'));
+        // console.log(`volume value is: ${Number(volumeValue)}`);
     }
 
     //todo: consider adding avatarId and online status

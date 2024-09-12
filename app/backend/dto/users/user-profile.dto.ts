@@ -8,6 +8,7 @@ import {
   IsEmail,
   IsEnum,
   IsInt,
+  IsNumber,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -29,14 +30,14 @@ export class UserProfileDto implements User {
   @ApiProperty({ required: true })
   @IsNotEmpty()
   @IsString()
-  @MinLength(1)
+  @MinLength(4)
   @MaxLength(15)
   loginName: string;
 
   @ApiProperty({ required: true })
   @IsNotEmpty()
   @IsString()
-  @MinLength(1)
+  @MinLength(4)
   @MaxLength(15)
   userName: string;
 
@@ -77,6 +78,14 @@ export class UserProfileDto implements User {
   @Min(0)
   @Max(2)
   theme: number;
+
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  @Max(1)
+  volume: number;
 
   @ApiProperty({ required: true })
   @IsNotEmpty()

@@ -19,7 +19,7 @@ export class ChatMessagesController {
 	) { }
 
 	@Get('messages/unreadsforuser/:userId')
-  @UseGuards(JwtAuthGuard)
+  	@UseGuards(JwtAuthGuard)
 
 	@ApiOperation({ summary: 'Returns chat unread messages for specific user' })
 	@ApiOkResponse({ type: [UpdateChatMessageDto] })
@@ -38,7 +38,7 @@ export class ChatMessagesController {
 	}
 
 	@Get('newChannel/:userId')
-  @UseGuards(JwtAuthGuard)
+  	@UseGuards(JwtAuthGuard)
 
 	@ApiOperation({ summary: 'Returns new channel' })
 	@ApiOkResponse({ type: FetchChatDto })
@@ -49,7 +49,7 @@ export class ChatMessagesController {
 	}
 
 	@Get('channelsForUser/:userId')
-  @UseGuards(JwtAuthGuard)
+  	@UseGuards(JwtAuthGuard)
 
 	@ApiOperation({ summary: 'Returns channels for user' })
 	@ApiOkResponse({ type: [FetchChatDto] })
@@ -69,7 +69,7 @@ export class ChatMessagesController {
 	}
 
 	@Get('messages/:chatId/:userID')
-  @UseGuards(JwtAuthGuard)
+  	@UseGuards(JwtAuthGuard)
 
 	@ApiOperation({ summary: 'Returns chat messages with specified chatId and userId' })
 	@ApiOkResponse({ type: [UpdateChatMessageDto] })
@@ -98,7 +98,7 @@ export class ChatMessagesController {
 
 
 	@Get('unreadMessagesFromFriends/:userId')
-  @UseGuards(JwtAuthGuard)
+  	@UseGuards(JwtAuthGuard)
 
 	@ApiOperation({ summary: 'Returns chat unread messages from friends' })
 	@ApiOkResponse({ type: [UpdateChatMessageDto] })
@@ -119,7 +119,7 @@ export class ChatMessagesController {
 	}
 
 	@Get('getUnreads/:chatId/:userId')
-  @UseGuards(JwtAuthGuard)
+  	@UseGuards(JwtAuthGuard)
 
 	@ApiOperation({ summary: 'Returns number of unread messages in chat' })
 	@ApiOkResponse({ type: Number })
@@ -130,7 +130,7 @@ export class ChatMessagesController {
 	}
 
 	@Get('joinRoomInDb/:chatId/:userId/:token')
-  @UseGuards(JwtAuthGuard)
+  	@UseGuards(JwtAuthGuard)
   
 	@ApiOperation({ summary: 'Returns room id if status was succesfully set' })
 	@ApiOkResponse({ type: Number })
@@ -181,6 +181,7 @@ export class ChatMessagesController {
 	}
 
 	@Get(':id')
+	@UseGuards(JwtChatGuard)
 	@ApiOperation({ summary: 'Returns chat with specified id' })
 	@ApiOkResponse({ type: UpdateInviteDto })
 	@ApiNotFoundResponse({ description: 'Chat with #${id} does not exist' })
@@ -189,8 +190,6 @@ export class ChatMessagesController {
 		const chat = await this.chatService.findOne(id);
 		return chat;
 	}
-
-
 
 	//todo: Albert: Create patch and delete method for UpdateChatDto. Return boolean if it worked or not
 	// @Patch(':id')

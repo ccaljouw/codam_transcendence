@@ -1,6 +1,5 @@
 # compiled output
 /backend/dist
-/backend/prisma/migrations
 /frontend/.next
 /frontend/.swc
 /node_modules
