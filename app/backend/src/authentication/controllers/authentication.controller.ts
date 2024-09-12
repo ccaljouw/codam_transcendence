@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  Param,
+  ParseIntPipe,
   Patch,
   Post,
   Req,
@@ -17,10 +19,9 @@ import { LocalAuthGuard } from '../guard/login-auth.guard';
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { AuthGuard42 } from '../guard/42-auth.guard';
-import { UpdatePwdDto } from '@ft_dto/authentication';
 import { ConfigService } from '@nestjs/config';
 import { FetchChatDto } from '@ft_dto/chat';
-import { ChatAuthDto } from '@ft_dto/authentication/chat-auth.dto';
+import { ChatAuthDto, UpdatePwdDto } from '@ft_dto/authentication';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -86,6 +87,12 @@ export class AuthController {
     }
   }
 
+  @Post('logout')
+  async logout(@Req() req: Request): Promise<boolean> {
+    console.log('Logging out');
+    return await this.authService.deleteJwtCookie(req);
+  }
+
   @Patch('change_pwd')
   @UseGuards(JwtAuthGuard)
   async changePwd(@Body() updatePwdDto: UpdatePwdDto): Promise<boolean> {
@@ -103,6 +110,12 @@ export class AuthController {
     const valid: boolean = user.id === parseInt(req.params.id);
     if (valid) return user;
     throw new UnauthorizedException();
+  }
+
+  @Get('is42User/:id')
+  // @UseGuards(JwtAuthGuard)
+  async checkAuth(@Param('id', ParseIntPipe) id: number) {
+    return await this.authService.checkAuth(id);
   }
 
   @Post('loginChat')

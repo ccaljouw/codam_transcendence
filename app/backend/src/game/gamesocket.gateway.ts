@@ -42,12 +42,16 @@ export class GamesocketGateway {
 
   @SubscribeMessage('game/updateGameState')
   async updateGameState(client: Socket, payload: UpdateGameStateDto) {
-    console.log('Game Socket Server: received game state: ', payload.state);
-    this.game_io
-      .to(payload.id.toString())
-      .emit('game/updateGameState', payload);
-    this.gameService.update(payload);
-    this.changeOnlineStatus(client.id, payload);
+    try {
+      console.log('Game Socket Server: received game state: ', payload.state);
+      this.game_io
+        .to(payload.id.toString())
+        .emit('game/updateGameState', payload);
+      this.gameService.update(payload);
+      this.changeOnlineStatus(client.id, payload);
+    } catch (error) {
+      throw error
+    }
   }
 
 
@@ -60,14 +64,18 @@ export class GamesocketGateway {
       status = OnlineStatus.IN_GAME;
 
     const user1 = await this.broadCastOnlineStatus(clientId, status); // broadcast staus for first player
+    await this.usersService.update(user1, {online: status});
+
     const gameFromDb = await this.gameService.findOne(game.id);
-    const user2 = gameFromDb.GameUsers[1].userId == user1 ? gameFromDb?.GameUsers[0].userId : gameFromDb.GameUsers[1].userId;
+	if (!gameFromDb || !gameFromDb.GameUsers || gameFromDb.GameUsers.length < 2)
+		return;
+    const user2 = gameFromDb.GameUsers[1]?.userId == user1 ? gameFromDb?.GameUsers[0].userId : gameFromDb.GameUsers[1].userId;
     const user2Token = await this.tokenService.findAllTokensAsStringForUser(user2);
     this.broadCastOnlineStatus(user2Token[0], status); // broadcast status for second player
 
-    await this.usersService.update(user1, {online: status});
     await this.usersService.update(user2, {online: status});
   }
+  
   async broadCastOnlineStatus(clientId: string, status: OnlineStatus) : Promise<number>
  {
     const user = await this.tokenService.findUserByToken(clientId);

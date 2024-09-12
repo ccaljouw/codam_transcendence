@@ -165,6 +165,19 @@ export class AuthService {
 		}
 	}
 
+  async deleteJwtCookie(req: Request): Promise<boolean> {
+		try {
+			(req.res as Response).cookie('jwt', null, {
+				httpOnly: true,
+				sameSite: 'strict',
+			});
+      return true;
+		} catch (error) {
+			console.log('Error setting jwt cookie:', error.message);
+			throw error;
+		}
+	}
+
 	async generateChatToken(chat: FetchChatDto): Promise<string> {
 		const payload = { id: chat.id, visibility: chat.visibility };
 		return this.jwtService.sign(payload);
@@ -210,8 +223,8 @@ export class AuthService {
 		try {
 			const salt = await bcrypt.genSalt(10);
 			const hash = await bcrypt.hash(password, salt);
-			await this.db.chatAuth.upsert({
-				where: { chatId },
+			await this.db.chatAuth.upsert({ // upsert will update if exists, create if not, saves a query/route
+				where: { chatId }, 
 				update: { pwd: hash },
 				create: { chatId, pwd: hash }
 			});
@@ -221,4 +234,19 @@ export class AuthService {
 			throw error;
 		}
 	}
+
+    async checkAuth(userId: number) : Promise<boolean> {
+      const user = await this.db.user.findUnique({
+        where: { id: userId },
+        include: { auth: true },
+      });
+      if (!user) {
+        throw new NotFoundException(`User with id ${userId} not found`);
+      }
+      console.log(user.auth);
+      if (!user.auth?.pwd) {
+        return true;
+      }
+      return false;
+    }
 }

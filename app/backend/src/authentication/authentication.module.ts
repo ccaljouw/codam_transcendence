@@ -7,13 +7,14 @@ import { DatabaseModule } from 'src/database/database.module';
 import { PassportModule } from '@nestjs/passport';
 import { StrategyFortyTwo } from './strategy/42.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { StatsService } from 'src/stats/stats.service';
 import { UsersModule } from 'src/users/users.module';
 import { LocalStrategy } from './strategy/login.strategy';
 import { TwoFAService } from './services/2FA.service';
 import { TwoFAController } from './controllers/2FA.controllers';
+import { PrismaService } from 'src/database/prisma.service';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { TwoFAController } from './controllers/2FA.controllers';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get('JWT_SECRET'),
+        secret: configService.get<string>('JWT_SECRET'),
         //TODO: determine validity
         signOptions: { expiresIn: '60m' },
       }),
@@ -40,6 +41,7 @@ import { TwoFAController } from './controllers/2FA.controllers';
     JwtStrategy,
     LocalStrategy,
     StatsService,
+    PrismaService,
   ],
   exports: [AuthService],
 })

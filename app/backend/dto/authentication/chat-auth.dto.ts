@@ -14,4 +14,4 @@ export class ChatAuthDto {
 	// @MinLength(3)
 	@MaxLength(20)
 	pwd: string;
-}	
+}
