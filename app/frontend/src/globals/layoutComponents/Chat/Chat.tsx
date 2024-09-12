@@ -36,7 +36,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 	const { data: chatInvite, isLoading: chatInviteLoading, error: chatInviteError, fetcher: chatInviteFetcher } = useFetch<null, UpdateInviteDto>();
 	const { data: newMessage, isLoading: newMessageLoading, error: newMessageError, fetcher: newMessageFetcher } = useFetch<CreateChatMessageDto, number>();
 	const { data: newUserForChannel, isLoading: newUserForChannelLoading, error: newUserForChannelError, fetcher: newUserForChannelFetcher } = useFetch<null, UpdateChatUserDto>();
-	// const { data: chatAuth, isLoading: chatAuthLoading, error: chatAuthError, fetcher: chatAuthFetcher } = useFetch<ChatAuthDto, null>();
+	const { data: chatAuth, isLoading: chatAuthLoading, error: chatAuthError, fetcher: chatAuthFetcher } = useFetch<ChatAuthDto, null>();
 	const router = useRouter();
 
 
@@ -225,7 +225,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 			chatSocket.off('chat/patch');
 			setCurrentChatRoom({ id: -1, name: '', visibility: ChatType.PUBLIC, users: [], ownerId: 0 });
 		};
-	}, [chatId, user2]);
+	}, [chatId, user2, chatAuth]);
 
 	// This effect is used to update the chat when a user changes their status.
 	useEffect(() => {
@@ -318,7 +318,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 							Password protected.
 							<form method="POST" onSubmit={(e) => {
 								e.preventDefault();
-								chatFetcher({ url: constants.API_AUTH_CHAT, fetchMethod: 'POST', payload: { chatId: chatId, pwd: e.currentTarget.password.value } });
+								chatAuthFetcher({ url: constants.API_AUTH_CHAT, fetchMethod: 'POST', payload: { chatId: chatId, pwd: e.currentTarget.password.value } });
 							}}>
 								<input type="password" name="password" />
 								<button type="submit">Submit</button>
