@@ -1,6 +1,8 @@
 # Base Image
 FROM node:21.6
 
+ARG DATABASE_URL
+
 # Copy the project and install dependencies
 COPY ./package*.json /
 RUN npm install -g npm@latest && npm install
@@ -10,12 +12,6 @@ ENV PATH /node_modules/.bin:$PATH
 
 # Set the working directory to backend
 WORKDIR /app/backend
-
-# # Generate Prisma Client
-# RUN npx prisma generate
-
-# # Build the application
-# RUN npm run build
 
 # Expose ports (backend and prisma studio)
 EXPOSE 3001
