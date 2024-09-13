@@ -38,7 +38,6 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     console.log("GameComponent: aborting game");
       const payload: UpdateGameStateDto = {id: roomId, state: GameState.ABORTED};
       gameSocket.emit("game/updateGameState", payload);
-    
   }
   
   function handleClick() {
@@ -52,7 +51,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
   useEffect(() => {
     return () => {
       console.log("GameComponent unmounting. Cleaning up game");
-      if (game && [GameState.WAITING, GameState.READY_TO_START, GameState.STARTED].includes(game.gameState)) {
+      if (game && [GameState.WAITING, GameState.READY_TO_START, GameState.STARTED]) {
         game.cleanCanvas();
         const payload: UpdateGameStateDto = {id: roomId, state: GameState.ABORTED};
         gameSocket.emit("game/updateGameState", payload);
