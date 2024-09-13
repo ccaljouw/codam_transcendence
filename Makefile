@@ -1,31 +1,60 @@
+COLOR_RESET=\033[0m
+COLOR_GREEN=\033[32m
+COLOR_RED=\033[31m
+COLOR_BLUE=\033[34m
+
+define color_output
+  @output=`$(1) 2>&1`; \
+  if [ $$? -eq 0 ]; then \
+    echo -e "$(COLOR_GREEN)$(1): $$output$(COLOR_RESET)"; \
+  else \
+    echo -e "$(COLOR_RED)$(1): $$output$(COLOR_RESET)"; \
+  fi
+endef
+
 all: run
 
-run:
+run: clean
 	docker compose up
 
-backend:
-	docker compose up backend
-
+# rebuilds the images and application after clearing the app volume. Does not clear de database volume
+# use make re after changes to dockerfiles or startup scripts.
 re: clean
-	docker compose up
-
-rebuild: clean
 	docker compose up --build
 
-clean:
+start:
+	docker compose start
+
+stop:
+	docker compose stop
+
+down:
+	@echo -e "$(COLOR_BLUE) **** REMOVING DOCKER CONTAINERS****$(COLOR_RESET)"
 	docker compose down
-	rm -rf app/backend/prisma/migrations
 
-fclean: clean
-	- docker rmi transcendence-backend
-	- docker rmi transcendence-frontend
-	- rm -r app/backend/dist
-	- rm -r app/frontend/.next
-	- rm -r app/node_modules
-	- rm -r app/coverage
+# cleans only the build files
+clean: down
+	@echo -e "$(COLOR_BLUE) **** CLEANING BUILD FILES ****$(COLOR_RESET)"
+	$(call color_output, rm -rf ./app/backend/dist)
+	$(call color_output, rm -rf ./app/frontend/.next)
 
-prune: fclean
-	docker system prune -af
-	docker volume prune -f
+# cleans all build files, test coverage and docker images and volumes
+fclean: cleanvolumes
+	@echo -e "$(COLOR_BLUE) **** REMOVING DOCKER IMAGES FRONTEND AND BACKEND****$(COLOR_RESET)"
+	$(call color_output, docker rmi frontend)
+	$(call color_output, docker rmi backend)
+	@echo -e "$(COLOR_BLUE) **** REMOVING TEST COVERAGE****$(COLOR_RESET)"
+	$(call color_output, rm -rf ./app/coverage)
 
-.PHONY:	all clean fclean re rebuild run prune backend
+cleandatabase: clean
+	@echo -e "$(COLOR_BLUE) **** REMOVE DATABASE VOLUMES ****$(COLOR_RESET)"
+	$(call color_output, docker volume rm database_files)
+
+cleannodemodules: clean
+	@echo -e "$(COLOR_BLUE) **** REMOVE NODE_MODULES VOLUMES ****$(COLOR_RESET)"
+	$(call color_output, docker volume rm node_modules)
+
+# cleans also the database volume
+cleanvolumes: cleandatabase cleannodemodules
+
+.PHONY:	all run re start stop down clean fclean cleanvolumes cleandatabase cleannodemodules backend

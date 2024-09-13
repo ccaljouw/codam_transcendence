@@ -18,7 +18,7 @@ async function addDummyUsers() {
   });
 
   const user1 = await prisma.user.upsert({
-    where: { loginName: 'Carien' },
+    where: { loginName: 'caljouw' },
     update: {},
     create: {
       userName: 'AwesomeBackendCreator',
@@ -47,7 +47,7 @@ async function addDummyUsers() {
   });
 
   const user2 = await prisma.user.upsert({
-    where: { loginName: 'Albert' },
+    where: { loginName: 'avan-and-socket' },
     update: {},
     create: {
       userName: 'AwesomeSocketCreator',
@@ -77,7 +77,7 @@ async function addDummyUsers() {
   });
 
   const user3 = await prisma.user.upsert({
-    where: { loginName: 'Jorien' },
+    where: { loginName: 'jaberkro' },
     update: {},
     create: {
       userName: 'AwesomeFrontendCreator',
@@ -107,7 +107,7 @@ async function addDummyUsers() {
   });
 
   const user4 = await prisma.user.upsert({
-    where: { loginName: 'Carlo' },
+    where: { loginName: 'cwesseli' },
     update: {},
     create: {
       userName: 'AwesomeGameCreator',
@@ -137,7 +137,7 @@ async function addDummyUsers() {
   });
 
   const user5 = await prisma.user.upsert({
-    where: { loginName: 'Friend' },
+    where: { loginName: 'friendcarlo' },
     update: {},
     create: {
       userName: 'FriendFromCarlo',
@@ -167,7 +167,7 @@ async function addDummyUsers() {
   });
 
   const user6 = await prisma.user.upsert({
-    where: { loginName: 'BlockedByCarien' },
+    where: { loginName: 'blockcarien' },
     update: {},
     create: {
       userName: 'BlockByCarien',

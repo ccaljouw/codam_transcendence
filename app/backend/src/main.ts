@@ -3,12 +3,14 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { PrismaClientExceptionFilter } from './errorHandling/prisma-client-exception.filter';
-import { HttpErrorFilter } from './errorHandling/exception.filter';
+import { AllExceptionFilter } from './errorHandling/exception.filter';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableShutdownHooks();
+  
   app.use(cookieParser());
 
   const config = new DocumentBuilder()
@@ -22,7 +24,7 @@ async function bootstrap() {
 
   app.useGlobalFilters(
     new PrismaClientExceptionFilter(),
-    new HttpErrorFilter(),
+    new AllExceptionFilter(),
   );
 
   // use pipes to validate requests (as defined in DTOs,

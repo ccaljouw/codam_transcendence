@@ -10,21 +10,22 @@ import useFetch from 'src/globals/functionComponents/useFetch.tsx'
 import styles from '../styles.module.css';
 import { useRouter } from 'next/navigation';
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar'
+import { H3 } from 'src/globals/layoutComponents/Font'
 
 
 // GameComponent is a functional component that renders the game canvas and handles game logic
 export default function GameComponent({inviteId}: {inviteId: number}) {
-  const gameSocket = transcendenceSocket;
+	const gameSocket = transcendenceSocket;
 	const canvasRef = useRef< HTMLCanvasElement | null >(null);
 	const router = useRouter();
 	const {data: fetchedGameData, isLoading: loadingGame, error: errorGame, fetcher: gameFetcher} = useFetch<GetGameDto | null, UpdateGameDto>();
-  const {currentUser} = useContext(TranscendenceContext);
-	const userId  = (currentUser.id).toString();
+	const {currentUser} = useContext(TranscendenceContext);
+	const userId	= (currentUser.id).toString();
 	const [game, setGame] = useState< Game | null >(null);
 	const [roomId, setRoomId] = useState<number>(0);
 	const [waitingForPlayers, setWaitingForPlayers] = useState<boolean>(true);
 	const [instanceType, setInstanceType] = useState<InstanceTypes>(InstanceTypes.notSet) // 0 for player 1, 1 for player 2
-  const [aiLevel, setAiLevel] = useState<number>(0);
+	const [aiLevel, setAiLevel] = useState<number>(0);
 
   function startGame() {
     console.log("GameComponent: starting game");
@@ -99,53 +100,53 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
   }, [fetchedGameData]);
   
 
-  // join room
-  useEffect(() => {
-    if (roomId !== 0) {
-      console.log("GameComponent: joining room:", roomId);
-      gameSocket.emit("game/joinRoom", roomId);
-    };
-  }, [roomId]);
-  
-  
-  // handle socket events
-  useEffect(() => {
-    
-    const handleMessage = (msg: string) => {
-      console.log(`GameComponent: received message: "${msg}"`);
-      if (fetchedGameData?.state === GameState.WAITING && fetchedGameData?.id) {
-        console.log("GameComponent: less than two players in game, refreshing game data, gameid:", fetchedGameData.id);
-        gameFetcher({url: `${constants.API_GAME}${fetchedGameData.id}`});
-      }
-    }; 
-    
-    const handleGameStateUpdate = (payload: UpdateGameStateDto) => {
-      if (!game) {
-        return;
-      }
-      console.log(`GameComponent: received game state update in handle gameState`, payload.id, payload.state);
-      if (payload.state === GameState.FINISHED || payload.state === GameState.ABORTED) {
-        console.log("GameComponent: game finished");      
-        return;
-      } 
-      if (payload.state === GameState.REJECTED) {
-        console.log("GameComponent: game rejected");
-        router.push(`/play`);
-      } else return;
-    };
+	// join room
+	useEffect(() => {
+		if (roomId !== 0) {
+			console.log("GameComponent: joining room:", roomId);
+			gameSocket.emit("game/joinRoom", roomId);
+		};
+	}, [roomId]);
+		
+		
+	// handle socket events
+	useEffect(() => {
+		
+		const handleMessage = (msg: string) => {
+			console.log(`GameComponent: received message: "${msg}"`);
+			if (fetchedGameData?.state === GameState.WAITING && fetchedGameData?.id) {
+				console.log("GameComponent: less than two players in game, refreshing game data, gameid:", fetchedGameData.id);
+				gameFetcher({url: `${constants.API_GAME}${fetchedGameData.id}`});
+			}
+		}; 
+		
+		const handleGameStateUpdate = (payload: UpdateGameStateDto) => {
+			if (!game) {
+				return;
+			}
+			console.log(`GameComponent: received game state update in handle gameState`, payload.id, payload.state);
+			if (payload.state === GameState.FINISHED || payload.state === GameState.ABORTED) {
+				console.log("GameComponent: game finished");			
+				return;
+			} 
+			if (payload.state === GameState.REJECTED) {
+				console.log("GameComponent: game rejected");
+				router.push(`/play`);
+			} else return;
+		};
 
-    gameSocket.on(`game/message`, handleMessage);
-    gameSocket.on(`game/updateGameState`, handleGameStateUpdate);
+		gameSocket.on(`game/message`, handleMessage);
+		gameSocket.on(`game/updateGameState`, handleGameStateUpdate);
 
-    return () => {
-      console.log("GameComponent: disconnecting socket");
-      gameSocket.off(`game/message`, handleMessage);
-      gameSocket.off(`game/updateGameState`, handleGameStateUpdate);
-      gameSocket.emit("game/leaveRoom", roomId);
-    };
-  }, [roomId]);
+		return () => {
+			console.log("GameComponent: disconnecting socket");
+			gameSocket.off(`game/message`, handleMessage);
+			gameSocket.off(`game/updateGameState`, handleGameStateUpdate);
+			gameSocket.emit("game/leaveRoom", roomId);
+		};
+	}, [roomId]);
 
-  
+		
 	// set instance type
 	useEffect(() => {
 		if (waitingForPlayers === false && fetchedGameData && userId) {
@@ -156,25 +157,25 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 	}, [waitingForPlayers]);
 	
 	
-  // create game instance when canvas is available and there are two players
+	// create game instance when canvas is available and there are two players
 	useEffect(() => {
 		if (!game && canvasRef.current && instanceType !== InstanceTypes.notSet) {
 			console.log("GameComponent: creating game instance of type: ", instanceType);
 
-      // set required configuration in constants
+			// set required configuration in constants
 			const newGame = new Game(
-        canvasRef.current,
-        instanceType,
-        fetchedGameData!,
-        constants.config, // config
-        constants.themes[fetchedGameData?.GameUsers?.[instanceType].user.theme], // theme
-        -0.5, // negative numbers are igored in soundFX
-        aiLevel // AI level: 0 = not an ai game 0.1 > 1 is level
-      );
+				canvasRef.current,
+				instanceType,
+				fetchedGameData!,
+				constants.config, // config
+				constants.themes[fetchedGameData?.GameUsers?.[instanceType].user.theme], // theme
+				fetchedGameData?.GameUsers?.[instanceType].user.volume, //volume
+				aiLevel // AI level > todo: implement AI level button and backend. 0 = not an ai game 0.1 > 1 is level
+			);
 			setGame(newGame);
-      if (inviteId === -1) {
-        startGame();
-      }
+			if (inviteId === -1) {
+				startGame();
+			}
 			canvasRef.current.focus();
 		}
 }, [instanceType]);

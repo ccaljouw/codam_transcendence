@@ -100,7 +100,10 @@ export class TwoFAService {
         encoding: 'base32',
         token: token,
       });
+      
       console.log('Verification Result:', verified);
+      if (verified == false)
+        throw new UnauthorizedException('Token verification failed: invalid token');
       return verified;
     } catch (error) {
       console.log('Error during 2FA verification:', error);
@@ -126,8 +129,7 @@ export class TwoFAService {
       return true;
     } catch (error) {
       console.log('Error during 2FA initial token verification:', error);
+      throw error;
     }
-
-    return true;
   }
 }
