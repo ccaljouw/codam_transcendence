@@ -136,7 +136,7 @@ export class AuthService {
 				const salt = await bcrypt.genSalt(10);
 				const hash = await bcrypt.hash(newPwd, salt);
 				await this.db.auth.update({
-					where: { id },
+					where: { userId: id },
 					data: { pwd: hash },
 				});
 				console.log('Pwd updated');

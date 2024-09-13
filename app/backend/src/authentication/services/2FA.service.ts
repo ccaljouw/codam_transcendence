@@ -48,7 +48,7 @@ export class TwoFAService {
         data: { twoFactEnabled: false },
       });
       await this.db.auth.update({
-        where: { id: userId },
+        where: { userId: userId },
         data: { twoFactSecret: null },
       });
       return true;
