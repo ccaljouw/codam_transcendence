@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { UserProfileDto } from "@ft_dto/users";
 import { TranscendenceContext } from "../contextprovider.globalvar";
 import useFetch from "./useFetch";
-import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { constants } from "../constants.globalvar";
 
 type authenticationOutput = {
