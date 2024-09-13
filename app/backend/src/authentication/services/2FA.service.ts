@@ -71,7 +71,7 @@ export class TwoFAService {
   async store2FASecret(secret: string, userId: number) {
     try {
       await this.db.auth.update({
-        where: { id: userId },
+        where: { userId: userId },
         data: { twoFactSecret: secret },
       });
     } catch (error) {
