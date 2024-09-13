@@ -59,7 +59,7 @@ services:
     networks:
       - transcendence
     # Default command will run "deploy", uncommend below to run "dev" for development 
-    command: ["dev"]
+    # command: ["dev"]
 
 networks:
   transcendence:

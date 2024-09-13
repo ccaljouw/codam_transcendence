@@ -8,6 +8,7 @@ import { constants } from "../constants.globalvar";
 
 type authenticationOutput = {
 	user: UserProfileDto | null,
+	fetchUserById: (url: string) => void,
 	storeUser: (loggedInUser: UserProfileDto) => void,
 }
 
@@ -25,8 +26,8 @@ type authenticationOutput = {
 
 export default function useAuthentication() : authenticationOutput {
 	const {setCurrentUser} = useContext(TranscendenceContext);
-	const searchParams = useSearchParams();
-	const userFromUrl = searchParams.get('user');
+	// const searchParams = useSearchParams();
+	// const userFromUrl = searchParams.get('user');
 	// const [userFromUrl, setUserFromUrl] = useState<string | null>(null);
 	const [user, setUser] = useState<UserProfileDto | null>(null);
 	const {data: fetchedUser, error, fetcher: userFetcher} = useFetch<null, UserProfileDto>();
@@ -36,12 +37,7 @@ export default function useAuthentication() : authenticationOutput {
 
 	useEffect (() => {
 		const id = sessionStorage.getItem('userId');
-		// getSearchParams();
-		if (userFromUrl != null)
-		{
-			fetchUserById(constants.API_CHECK_ID + userFromUrl);
-		}
-		else if (id != null)
+		if (id != null)
 		{
 			setIdFromStorage(id);
 			console.log(`user already logged in, fetching user ${id}`);
@@ -52,7 +48,7 @@ export default function useAuthentication() : authenticationOutput {
 			if (pathname != '/login' && pathname != '/signup' && pathname != '/auth')
 				router.push('/login');
 		}
-	}, [userFromUrl]);
+	}, []);
 
 	// const getSearchParams = async () : Promise<void>  => {
 	// 	console.log("get search params");
@@ -96,11 +92,11 @@ export default function useAuthentication() : authenticationOutput {
 		setUser(loggedInUser);
 		setCurrentUser(loggedInUser);
 		setSessionStorage(loggedInUser);
-		if (pathname == '/login' || pathname == '/signup' || pathname == '/auth' || (userFromUrl != null && fetchedUser))
+		if (pathname == '/login' || pathname == '/signup' || pathname == '/auth' || fetchedUser)
 		{
 			router.push('/');
 		}
 	}
 
-	return ({ user, storeUser });
+	return ({ user, fetchUserById, storeUser });
 }
