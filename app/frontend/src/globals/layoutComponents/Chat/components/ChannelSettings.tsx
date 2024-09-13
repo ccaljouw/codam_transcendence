@@ -49,7 +49,7 @@ export default function ChannelSettings({room} : {room: FetchChatDto}) {
 			<br />&emsp;&emsp; [with set/change password option]<br />
 			<form onSubmit={handleSubmit} acceptCharset='utf-8' className="row">
 				<EditableDataField name="Channel name" data={room.name}>
-					<input className="form-control form-control-sm" placeholder={room.name} type="text" name="name" required={false} autoComplete="off" minLength={6} maxLength={30}></input> {/* //todo: JMA: finetune min and max */}
+					<input className="form-control form-control-sm" placeholder={room.name} type="text" name="name" required={false} autoComplete="off" minLength={6} maxLength={30}></input> {/* //todo: Albert: finetune min and max */}
 				</EditableDataField>
 			</form>
 			{/* todo: albert: trigger reload when chat patch worked */}
