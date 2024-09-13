@@ -5,7 +5,7 @@ export const bangers = Bangers({weight: "400", preload: false, variable: '--my-f
 export const comic_neue = Comic_Neue({weight: "400", preload: false, variable: '--my-font-comic_neue'});
 export const pop_art = Pop_Art({
 	src: "../../app/public/fonts/PopArt-Regular.ttf",
-	preload: true,
+	preload: false,
 	variable: '--my-font-pop_art',
 });
 
