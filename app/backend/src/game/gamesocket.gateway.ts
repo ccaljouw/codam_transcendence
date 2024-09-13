@@ -42,12 +42,16 @@ export class GamesocketGateway {
 
   @SubscribeMessage('game/updateGameState')
   async updateGameState(client: Socket, payload: UpdateGameStateDto) {
-    console.log('Game Socket Server: received game state: ', payload.state);
-    this.game_io
-      .to(payload.id.toString())
-      .emit('game/updateGameState', payload);
-    this.gameService.update(payload);
-    this.changeOnlineStatus(client.id, payload);
+    try {
+      console.log('Game Socket Server: received game state: ', payload.state);
+      this.game_io
+        .to(payload.id.toString())
+        .emit('game/updateGameState', payload);
+      this.gameService.update(payload);
+      this.changeOnlineStatus(client.id, payload);
+    } catch (error) {
+      throw error
+    }
   }
 
 
