@@ -170,7 +170,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 				constants.config, // config
 				constants.themes[fetchedGameData?.GameUsers?.[instanceType].user.theme], // theme
 				fetchedGameData?.GameUsers?.[instanceType].user.volume, //volume
-				aiLevel // AI level > todo: implement AI level button and backend. 0 = not an ai game 0.1 > 1 is level
+				aiLevel // AI level. 0 = not an ai game 0.1 > 1 is level
 			);
 			setGame(newGame);
 			if (inviteId === -1) {
@@ -185,6 +185,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 		<>
 			{waitingForPlayers ? (
 				<div>
+					<button className="btn btn-dark text-center" onClick={handleClick}>{waitingForPlayers ? "Leave waiting room":"Leave Game"}</button>
 					<p>Waiting for second player to join...</p>
 				</div>
 			) : (
