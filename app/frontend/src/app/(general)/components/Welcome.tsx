@@ -23,8 +23,9 @@ export default function Welcome() : JSX.Element {
 			<H3 text="NEWS 13/09"/>
 			<p>Newly implemented on the frontend side:</p>
 			<li>We use 'npm run deploy' instead of 'npm run dev'</li>
-			<li>42 user does not see options to change password or toggle 2FA</li>
-
+			<li>42 User does not see options to change password or toggle 2FA</li>
+			<li>When no achievements or match history are available, show placeholder text</li>
+      <li>Home page scales more pretty</li>
 		</>
 	);
 }

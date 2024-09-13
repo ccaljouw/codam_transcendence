@@ -50,12 +50,12 @@ export default function Achievements({achievements} : {achievements: number[] | 
 	return (
 		<>
 			<H3 text="Achievements" />
-			{achievements?
+			{achievements != null && achievements.length > 0?
 				<div className="row justify-content-start">
 					{achievementList}
 				</div>
 				:
-				<p>You don't have any achievements yet</p>
+				<p>Nothing achieved yet. Ouch!</p>
 			}
 		</>
 	);

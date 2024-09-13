@@ -8,14 +8,14 @@ export default function Page() : JSX.Element {
 		<>
 			<div>
 				<div className="row">
-					<div className="col col-4 white-box">
+					<div className="col col-lg-4 col-md-12 white-box">
 						<Welcome/>
 					</div>
-					<div className="col col-4 white-box">
+					<div className="col col-lg-4 col-md-12 white-box">
 						<H3 text="Leaderboard"/>
 						<Top10 url={constants.API_RANK_TOP_10}/>
 					</div>
-					<div className="col col-4 white-box">
+					<div className="col col-lg-4 col-md-12 white-box">
 						<H3 text="Ladder"/>
 						<Top10 url={constants.API_LADDER_TOP_10}/>
 					</div>
