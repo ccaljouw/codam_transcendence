@@ -13,8 +13,7 @@ export class constants {
 	static themes = ['classic', 'blackAndWhite', 'neon'];
 
 	static BACKEND_BASEURL = 'http://localhost:3001';
-	static FRONTEND_BASEURL = 'http://localhost:3000'; //todo: JMA: consider adding '/' at end of url
-
+	static FRONTEND_BASEURL = 'http://localhost:3000';
 
 	static API_USERS = this.BACKEND_BASEURL + '/users/';
 	static API_ALL_USERS = this.API_USERS + 'all/';
