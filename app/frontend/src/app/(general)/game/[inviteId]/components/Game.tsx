@@ -120,7 +120,12 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 		
 		const handleGameStateUpdate = (payload: UpdateGameStateDto) => {
 			if (!game) {
-				return;
+				if (payload.state === GameState.REJECTED) {
+					console.log("GameComponent: game rejected or aborted");
+					router.push(`/play`);
+				} else {
+					return;
+				}
 			}
 			console.log(`GameComponent: received game state update in handle gameState`, payload.id, payload.state);
 			if (payload.state === GameState.FINISHED || payload.state === GameState.ABORTED) {
