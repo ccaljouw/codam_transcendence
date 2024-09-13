@@ -10,27 +10,27 @@ export const pop_art = Pop_Art({
 });
 
 export function FontBangers({children} : {children: React.ReactNode}) : JSX.Element {
-    return (
-        <>
-            <div className={bangers.className}>{children}</div>
-        </>
-    );
+	return (
+		<>
+			<div className={bangers.className}>{children}</div>
+		</>
+	);
 }
 
 export function FontPopArt({children} : {children: React.ReactNode}) : JSX.Element {
-    return (
-        <>
-            <div className={pop_art.className}>{children}</div>
-        </>
-    );
+	return (
+		<>
+			<div className={pop_art.className}>{children}</div>
+		</>
+	);
 }
 
 export function H3({text} : {text: string}) : JSX.Element {
-    return (
-        <>
-            <FontBangers>
-                <h3>{text}</h3>
-            </FontBangers>
-        </>
-    );
+	return (
+		<>
+			<FontBangers>
+				<h3>{text}</h3>
+			</FontBangers>
+		</>
+	);
 }

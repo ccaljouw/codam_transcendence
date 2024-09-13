@@ -4,13 +4,13 @@ import { AvatarController } from './avatar.controller';
 import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
-  imports: [
-    MulterModule.register({
-      dest: '../shared/avatars',
-    }),
-  ],
-  controllers: [AvatarController],
-  providers: [AvatarService],
-  exports: [AvatarService],
+	imports: [
+		MulterModule.register({
+			dest: '../shared/avatars',
+		}),
+	],
+	controllers: [AvatarController],
+	providers: [AvatarService],
+	exports: [AvatarService],
 })
 export class AvatarModule {}

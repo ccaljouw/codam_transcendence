@@ -165,13 +165,13 @@ export class AuthService {
 		}
 	}
 
-  async deleteJwtCookie(req: Request): Promise<boolean> {
+	async deleteJwtCookie(req: Request): Promise<boolean> {
 		try {
 			(req.res as Response).cookie('jwt', null, {
 				httpOnly: true,
 				sameSite: 'strict',
 			});
-      return true;
+			return true;
 		} catch (error) {
 			console.log('Error setting jwt cookie:', error.message);
 			throw error;
@@ -198,56 +198,55 @@ export class AuthService {
 		}
 	}
 
-
 	async validateChatLogin(id: number, password: string) : Promise<FetchChatDto> {
 		const chat = await this.db.chat.findUnique({ 
-		  where: { id },
-		  include: { users: true, chatAuth: true }
+			where: { id },
+			include: { users: true, chatAuth: true }
 		});
 		if (!chat)
-		  throw new UnauthorizedException("chat not found");
+			throw new UnauthorizedException("chat not found");
 		if (chat.visibility == ChatType.PROTECTED) {
-		  if (!chat.chatAuth)
+			if (!chat.chatAuth)
 			throw new UnauthorizedException("No password found for protected chat")
-		  const validPwd = await bcrypt.compare(password, chat.chatAuth?.pwd);
-		  if (!validPwd)
+			const validPwd = await bcrypt.compare(password, chat.chatAuth?.pwd);
+			if (!validPwd)
 			throw new UnauthorizedException("Incorrect password")
 		} else {
-		  throw new BadRequestException("Trying to login to unprotected chat");
+			throw new BadRequestException("Trying to login to unprotected chat");
 		}
 		delete chat.chatAuth;
 		return chat;
-	  }
+	}
 
-	  async setChatPassword(chatId: number, password: string): Promise<boolean> {
-      try {
-        const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash(password, salt);
-        await this.db.chatAuth.create({data: {chatId, pwd: hash}});
-        await this.db.chat.update({
-        where: { id: chatId },
-        include: { users: true },
-        data: { visibility: ChatType.PROTECTED },
-        })
-        return true;
-      } catch (error) {
-        console.log('Error setting chat password:', error.message);
-        throw error;
-      }
-	  }
+	async setChatPassword(chatId: number, password: string): Promise<boolean> {
+		try {
+			const salt = await bcrypt.genSalt(10);
+			const hash = await bcrypt.hash(password, salt);
+			await this.db.chatAuth.create({data: {chatId, pwd: hash}});
+			await this.db.chat.update({
+			where: { id: chatId },
+			include: { users: true },
+			data: { visibility: ChatType.PROTECTED },
+			})
+			return true;
+		} catch (error) {
+			console.log('Error setting chat password:', error.message);
+			throw error;
+		}
+	}
 
-    async checkAuth(userId: number) : Promise<boolean> {
-      const user = await this.db.user.findUnique({
-        where: { id: userId },
-        include: { auth: true },
-      });
-      if (!user) {
-        throw new NotFoundException(`User with id ${userId} not found`);
-      }
-      console.log(user.auth);
-      if (!user.auth?.pwd) {
-        return true;
-      }
-      return false;
-    }
+	async checkAuth(userId: number) : Promise<boolean> {
+		const user = await this.db.user.findUnique({
+			where: { id: userId },
+			include: { auth: true },
+		});
+		if (!user) {
+			throw new NotFoundException(`User with id ${userId} not found`);
+		}
+		console.log(user.auth);
+		if (!user.auth?.pwd) {
+			return true;
+		}
+		return false;
+	}
 }
