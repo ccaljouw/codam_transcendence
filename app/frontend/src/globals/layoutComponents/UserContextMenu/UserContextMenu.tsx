@@ -25,7 +25,7 @@ export default function UserContextMenu({ user }:
 	const { data: chat, isLoading: chatLoading, error: chatError, fetcher: chatFetcher } = useFetch<CreateDMDto, FetchChatDto>();
 	const { data: blockData, isLoading: blockLoading, error: blockError, fetcher: blockFetcher } = useFetch<null, UserProfileDto>();
 	const { data: newChatMessage, isLoading: newChatMessageLoading, error: newChatMessageError, fetcher: newChatMessageFetcher } = useFetch<ChatMessageToRoomDto, number>();
-	const userIsFriend = IsFriend(user.id, currentUser);
+	const userIsFriend = IsFriend(user?.id, currentUser);
 	const router = useRouter();
 
 	const sendInvite = (payload?: ChatMessageToRoomDto) => {

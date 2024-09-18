@@ -16,6 +16,7 @@ import useFetch from 'src/globals/functionComponents/useFetch';
 import ChannelStatusIndicator from 'src/globals/functionComponents/channelStatus';
 import ChannelSettings from './components/ChannelSettings';
 import LeaveChannel from './components/LeaveChannel';
+import ChannelContextMenu from './components/ChannelContextMenu';
 
 
 
@@ -109,6 +110,7 @@ export default function ChatArea() {
 						&nbsp;
 						{/* TODO: implement proper context menu for channels */}
 						<UserContextMenu user={user} />
+						{chatUser?.role != ChatUserRole.DEFAULT && <ChannelContextMenu user={user} currentChatUser={chatUser} />}
 					</li>
 				</>
 		);
@@ -130,6 +132,7 @@ export default function ChatArea() {
 					&nbsp;
 					<b><UnreadMessages secondUserId={user.id} indexInUserList={indexInUserList} statusChangeCallBack={statusChangeCallback} /></b>
 					<UserContextMenu user={user} />
+					
 				</li>
 			</>
 		);
