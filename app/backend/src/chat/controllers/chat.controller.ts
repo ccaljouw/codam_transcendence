@@ -7,6 +7,7 @@ import { ChatSocketService } from '../services/chatsocket.service';
 import { UserProfileDto } from '@ft_dto/users';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { JwtChatGuard } from 'src/authentication/guard/chat.guard';
+import { ChatUserRole } from '@prisma/client';
 
 
 @Controller('chat')
@@ -167,6 +168,19 @@ export class ChatMessagesController {
 		console.log("Sending message to db");
 		return this.chatMessageService.messageToDB({ chatId: parseInt(payload.room), userId: payload.userId, content: payload.message, inviteId: payload.inviteId }); //replace with api call in frontend?
 	}
+
+
+	// TODO: check if requester is indeed he owner of the chat
+	@Patch('changeChatUserRole/:chatId/:userId/:role/:requesterId')
+	@ApiOperation({ summary: 'Returns UpdateChatUserDto if role was changed' })
+	@ApiOkResponse({ type: UpdateChatUserDto })
+	@ApiNotFoundResponse({ description: 'Chatuser not found' })
+	async changeChatUserRole(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('role') role: ChatUserRole, @Param('requesterId', ParseIntPipe) requesterId: number) {
+		const chatUser = await this.chatService.changeChatUserRole(chatId, userId, role, requesterId);
+		return chatUser;
+	}
+
+
 
 	@Patch(':id')
 	@ApiOperation({ summary: 'Updates chat with specified id' })

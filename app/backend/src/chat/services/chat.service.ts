@@ -190,4 +190,21 @@ export class ChatService {
 		});
 		return chat;
 	}
+
+	// todo: check if requester is owner
+	async changeChatUserRole(chatId: number, userId: number, role: ChatUserRole, requesterId: number): Promise<UpdateChatUserDto> {
+		// *** not sure if this the correct way to check if the requester is the owner of the chat, might need to use Guards instead *** //
+		const chat  = await this.db.chat.findUnique({
+			where: { id: chatId }
+		});
+		if (chat.ownerId != requesterId) {
+			throw new Error("Only the owner of the chat can change user roles");
+		}
+		// *********************************************************************************************************************** //
+		const chatUser = await this.db.chatUsers.update({
+			where: { chatId_userId: { chatId, userId } },
+			data: { role }
+		});
+		return chatUser;
+	}
 }

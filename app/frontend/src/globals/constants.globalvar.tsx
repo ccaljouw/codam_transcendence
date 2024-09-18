@@ -42,6 +42,7 @@ export class constants {
 	static CHAT_GET_CHATUSER = this.API_CHAT + 'chatUser/';
 	static CHAT_MESSAGE_TO_DB = this.API_CHAT + 'messageToDB/';
 	static CHAT_GET_CHAT_NAME = this.API_CHAT + 'name/';
+	static CHAT_CHANGE_USER_ROLE = this.API_CHAT + 'changeChatUserRole/';
 	
 	static API_INVITE = this.BACKEND_BASEURL + '/invite/';
 	static INVITE_RESPOND_TO_FRIEND_REQUEST = this.API_INVITE + 'respondToFriendRequest/';

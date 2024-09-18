@@ -14,13 +14,21 @@ export default function ChannelContextMenu({ user, currentChatUser }: { user: Us
 		chatUserFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + user.id, fetchMethod: 'GET' });
 	}, []);
 
+	const handleAdminClick = (makeAdmin: boolean) => {
+		const newRole = makeAdmin ? ChatUserRole.ADMIN : ChatUserRole.DEFAULT;
+		// changeChatUserRole/:chatId/:userId/:role/:requesterId
+		chatUserFetcher({ url: constants.CHAT_CHANGE_USER_ROLE + currentChatRoom.id + '/' + user.id + '/' + newRole + '/' + currentUser.id, fetchMethod: 'PATCH' });
+	}
+
 	return (
 		<>
 			<span>🔇</span>
 			<span>🦵</span> 
 			<span>🚷</span>
 			{currentChatUser?.role == ChatUserRole.OWNER ? 
-			(chatUser?.role == ChatUserRole.DEFAULT ? <span>👑</span> : <span>X👑</span>)
+			(chatUser?.role == ChatUserRole.DEFAULT ? 
+			<span onClick={() => handleAdminClick(true)}>👑</span> : 
+			<span onClick={() => handleAdminClick(false)} style={{display: "inline-block", transform: 'rotate(180deg)'}}>👑</span>)
 			: <></>
 			}
 			{/*{chatUser?.id, chatUser?.role} || {currentChatUser?.id, currentChatUser?.role} */}
