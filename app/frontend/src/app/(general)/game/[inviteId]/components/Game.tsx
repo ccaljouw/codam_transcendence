@@ -10,6 +10,7 @@ import useFetch from 'src/globals/functionComponents/useFetch.tsx'
 import styles from '../styles.module.css';
 import { useRouter } from 'next/navigation';
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar'
+import { abort } from 'process'
 
 
 // GameComponent is a functional component that renders the game canvas and handles game logic
@@ -25,7 +26,8 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 	const [waitingForPlayers, setWaitingForPlayers] = useState<boolean>(true);
 	const [instanceType, setInstanceType] = useState<InstanceTypes>(InstanceTypes.notSet) // 0 for player 1, 1 for player 2
 	const [aiLevel, setAiLevel] = useState<number>(0);
-
+	
+	
   function startGame() {
     console.log("GameComponent: starting game");
     canvasRef.current!.focus();
@@ -46,14 +48,49 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     router.push('/play');
   }
 
-  //on unmount
+	// cleanup on beforeunload and visibilitychange
+	useEffect(() => {
+
+		const cleanUpGame = () => {
+			console.log("GameComponent: cleaning up game");
+	
+			// Clear the canvas and abort the game if it's still active
+			if (game && canvasRef.current) {
+				game.cleanCanvas();
+				abortGame();
+			}
+		};
+		
+		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+			console.log("GameComponent: before unload event, cleaning up resources");
+			cleanUpGame();
+		};
+
+		const handleVisibilityChange = () => {
+			console.log("GameComponent: visibility change event, cleaning up resources");
+			if (document.hidden) {
+				cleanUpGame();
+			}
+		};
+
+		window.addEventListener('beforeunload', handleBeforeUnload);
+		document.addEventListener('visibilitychange', handleVisibilityChange);
+
+		return () => {
+			cleanUpGame();
+			window.removeEventListener('beforeunload', handleBeforeUnload);
+			document.removeEventListener('visibilitychange', handleVisibilityChange);
+		};
+	}
+	, [game]);
+
+  // cleanup on unmount
   useEffect(() => {
     return () => {
-      console.log("GameComponent unmounting. Cleaning up game");
+      console.log("GameComponent: cleaning up game");
       if (game && [GameState.WAITING, GameState.READY_TO_START, GameState.STARTED]) {
         game.cleanCanvas();
-        const payload: UpdateGameStateDto = {id: roomId, state: GameState.ABORTED};
-        gameSocket.emit("game/updateGameState", payload);
+				abortGame();
       }
     }
   }, [game]);
@@ -116,7 +153,8 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 				console.log("GameComponent: less than two players in game, refreshing game data, gameid:", fetchedGameData.id);
 				gameFetcher({url: `${constants.API_GAME}${fetchedGameData.id}`});
 			}
-		}; 
+		};
+
 		
 		const handleGameStateUpdate = (payload: UpdateGameStateDto) => {
 			if (!game) {
