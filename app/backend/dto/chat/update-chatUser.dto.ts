@@ -25,6 +25,10 @@ export class UpdateChatUserDto extends PartialType(CreateChatUserDto) {
   @ApiProperty({ required: false, type: Date })
   lastRead?: Date;
 
+  @IsDate()
+  @ApiProperty({ required: false, type: Date })
+  mutedUntil?: Date;
+
   @IsBoolean()
   @ApiProperty({ required: false, type: Boolean })
   isInChatRoom?: boolean;

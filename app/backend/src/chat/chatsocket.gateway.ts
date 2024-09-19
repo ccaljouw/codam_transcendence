@@ -61,6 +61,16 @@ export class ChatSocketGateway {
 					this.chat_io.to(element).emit('chat/messageToUserNotInRoom', messageToChat);
 				}
 			});
+		} else {
+			const chatUser = await this.chatDbService.getChatUser(parseInt(payload.room), payload.userId);
+			console.log ("Checking muted status", chatUser.mutedUntil, new Date());
+			if (chatUser.mutedUntil && chatUser.mutedUntil > new Date()) {
+				console.log("User is muted");
+				messageToChat.message = "You are muted in this chatroom.";
+				messageToChat.action = true;
+				this.chat_io.to(_client.id).emit('chat/messageFromRoom', messageToChat);
+				return;
+			}
 		}
 		this.chat_io.to(payload.room).emit('chat/messageFromRoom', messageToChat);
 		return;
@@ -129,16 +139,22 @@ export class ChatSocketGateway {
 		}
 	}
 
-	async sendKickMessageToUser(userId: number, userName: string, chatId: number) {
+	async sendActionMessageToRoom(userId: number, userName: string, chatId: number, message: string) {
 		const kickMessage: ChatMessageToRoomDto = {
 			userId: userId,
 			userName: userName,
 			room: chatId.toString(),
-			message: "KICK",
+			message: message,
 			action: true
 		};
 		this.chat_io.to(chatId.toString()).emit('chat/messageFromRoom', kickMessage);
 		this.chat_io.to(chatId.toString()).emit('chat/refreshList', kickMessage);
 		return true;
 	}
+
+	sendRefreshMessageToRoom(chatId: number) {
+		this.chat_io.to(chatId.toString()).emit('chat/refreshList', chatId);
+		return true;
+	}
+
 }

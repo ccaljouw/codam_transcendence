@@ -168,10 +168,11 @@ export class ChatMessagesController {
 	@ApiOkResponse({ type: Number })
 	messageToDB(@Body() payload: ChatMessageToRoomDto) {
 		console.log("Sending message to db");
+		// chat
 		return this.chatMessageService.messageToDB({ chatId: parseInt(payload.room), userId: payload.userId, content: payload.message, inviteId: payload.inviteId }); //replace with api call in frontend?
 	}
 
-
+	// ADMIN AND OWNER ONLY ROUTES **************************************************** //
 	// TODO: check if requester is indeed he owner of the chat
 	@Patch('changeChatUserRole/:chatId/:userId/:role/:requesterId')
 	@ApiOperation({ summary: 'Returns UpdateChatUserDto if role was changed' })
@@ -179,6 +180,7 @@ export class ChatMessagesController {
 	@ApiNotFoundResponse({ description: 'Chatuser not found' })
 	async changeChatUserRole(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('role') role: ChatUserRole, @Param('requesterId', ParseIntPipe) requesterId: number) {
 		const chatUser = await this.chatService.changeChatUserRole(chatId, userId, role, requesterId);
+		this.chatGateway.sendRefreshMessageToRoom(chatId);
 		return chatUser;
 	}
 
@@ -191,7 +193,7 @@ export class ChatMessagesController {
 		const kickCandidate = await this.chatService.getChatUser(chatId, userId);
 		if (requester.role === ChatUserRole.DEFAULT)
 		{
-			console.log("Cannot kick: requester has default rol and hence no rights");
+			console.log("Cannot kick: requester has default role and hence no rights");
 			return {kicked: false};
 		}
 		if (requester.role === ChatUserRole.ADMIN && kickCandidate.role === ChatUserRole.OWNER)
@@ -200,9 +202,32 @@ export class ChatMessagesController {
 			return {kicked: false};
 		}
 		const chatUserResult = await this.chatService.deleteChatUser(chatId, userId);
-		const chatUser = await this.chatGateway.sendKickMessageToUser(userId, userName, chatId);
+		await this.chatGateway.sendActionMessageToRoom(userId, userName, chatId, "KICK");
 		return {kicked: true};
 	}
+
+	@Get('mute/:chatId/:userId/:userName/:requesterId')
+	@ApiOperation({ summary: 'Returns user if user was muted' })
+	@ApiOkResponse({ type: UpdateChatUserDto })
+	@ApiNotFoundResponse({ description: 'Chatuser not found' })
+	async mute(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('userName') userName: string, @Param('requesterId', ParseIntPipe) requesterId: number) {
+		const requester = await this.chatService.getChatUser(chatId, requesterId);
+		const muteCandidate = await this.chatService.getChatUser(chatId, userId);
+		if (requester.role === ChatUserRole.DEFAULT)
+		{
+			console.log("Cannot mute: requester has default role and hence no rights");
+			return muteCandidate;
+		}
+		if (requester.role === ChatUserRole.ADMIN && muteCandidate.role === ChatUserRole.OWNER)
+		{
+			console.log("Cannot mute: requester is admin and candidate is owner");
+			return muteCandidate;
+		}
+		const mutedUser = await this.chatService.muteUser(chatId, userId);
+		await this.chatGateway.sendActionMessageToRoom(userId, userName, chatId, "MUTE");
+		return mutedUser;
+	}
+	// END ADMIN AND OWNER ONLY ROUTES **************************************************** //
 
 	@Patch(':id')
 	@ApiOperation({ summary: 'Updates chat with specified id' })

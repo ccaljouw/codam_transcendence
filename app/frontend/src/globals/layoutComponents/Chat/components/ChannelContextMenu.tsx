@@ -26,19 +26,33 @@ export default function ChannelContextMenu({ user, currentChatUser }: { user: Us
 		isKickedFetcher({ url: constants.CHAT_KICK_USER + user.id + '/' + user.userName + '/' + currentChatRoom.id + '/'  + currentUser.id, fetchMethod: 'GET' });
 	}
 
+	const handleMuteClick = () => {
+		// 'mute/:/:chatId/:requesterId'
+		chatUserFetcher({ url: constants.CHAT_MUTE_USER + currentChatRoom.id + '/' + user.id + '/' + user.userName + '/' + currentUser.id, fetchMethod: 'GET' });
+	}
+
 
 	return (
 		<>
-			<span>🔇</span>
-			<span onClick={() => handleKickClick()}>🦵</span> 
-			<span>🚷</span>
-			{currentChatUser?.role == ChatUserRole.OWNER ? 
-			(chatUser?.role == ChatUserRole.DEFAULT ? 
-			<span onClick={() => handleAdminClick(true)}>👑</span> : 
-			<span onClick={() => handleAdminClick(false)} style={{display: "inline-block", transform: 'rotate(180deg)'}}>👑</span>)
-			: <></>
-			}
-			{/*{chatUser?.id, chatUser?.role} || {currentChatUser?.id, currentChatUser?.role} */}
+		  {chatUser?.role !== ChatUserRole.OWNER && (
+			<>
+			  <span onClick={() => handleMuteClick()}>🔇</span>
+			  <span onClick={() => handleKickClick()}>🦵</span>
+			  <span>🚷</span>
+			  {currentChatUser?.role === ChatUserRole.OWNER ? (
+				chatUser?.role === ChatUserRole.DEFAULT ? (
+				  <span onClick={() => handleAdminClick(true)}>👑</span>
+				) : (
+				  <span 
+					onClick={() => handleAdminClick(false)} 
+					style={{ display: "inline-block", transform: 'rotate(180deg)' }}
+				  >
+					👑
+				  </span>
+				)
+			  ) : null}
+			</>
+		  )}
 		</>
-	);
+	  );
 }

@@ -41,17 +41,21 @@ export const messageParser = (
 					changeRoomStatusCallback(message.userId, false);
 					return <>{'<<'} {message.userName} has left the chat {'>>'}</>
 				case "KICK":
-					// userKickedCallback(parseInt(message.room));
 					return <>{'<<'} {message.userName} was kicked from the chat {'>>'}</>
+				case "MUTE":
+					return <>{'<<'} {message.userName} was muted {'>>'}</>
 				default:
 					if (!message.inviteId)
 						return <>{message.message}</>
 			}
 		}
-		if (message.message == "KICK") {
-			console.log("I was kicked");
-			userKickedCallback(-2);
-			return <>{'<<'} You were kicked from the chat {'>>'}</>
+		switch (message.message) {
+			case "KICK":
+				console.log("I was kicked");
+				userKickedCallback(-2);
+				return <>{'<<'} You were kicked from the chat {'>>'}</>
+			case "MUTE":
+				return <>{'<<'} You were muted {'>>'}</>
 		}
 	}
 	if (message.inviteId) {
@@ -59,7 +63,10 @@ export const messageParser = (
 		return inviteParser(message, currentChatRoom, currentUser, chatSocket, inviteCallback, friendInviteFetcher, gameInviteFetcher, chatInviteFetcher);
 	}
 	else {
-		return <>{message.userName}: {message.message}</>
+		if (message.action)
+			return <>{message.message}</>
+		else
+			return <>{message.userName}: {message.message}</>
 	}
 	return <></>;
 }

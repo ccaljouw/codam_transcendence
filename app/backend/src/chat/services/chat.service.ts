@@ -1,16 +1,19 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Inject, forwardRef } from "@nestjs/common";
 import { PrismaService } from "src/database/prisma.service";
 import { CreateDMDto, FetchChatDto, UpdateChatUserDto } from "@ft_dto/chat";
 import { UserProfileDto } from "@ft_dto/users";
 import { ChatType, ChatUserRole } from "@prisma/client";
 import { UpdateChatDto } from "@ft_dto/chat/update-chat.dto";
 import { AuthService } from "src/authentication/services/authentication.service";
+import { ChatSocketGateway } from "../chatsocket.gateway";
 
 @Injectable()
 export class ChatService {
 	constructor(
 		private db: PrismaService,
-		private authService: AuthService
+		private authService: AuthService,
+		@Inject(forwardRef(() => ChatSocketGateway)) private readonly chatGateWay: ChatSocketGateway,
+		// private chatGateway: ChatSocketGateway
 	) { }
 
 	async update(chatId: number, data: UpdateChatDto): Promise<FetchChatDto> {
@@ -183,6 +186,8 @@ export class ChatService {
 				}
 			});
 		}
+		// send refresh message to room
+		this.chatGateWay.sendRefreshMessageToRoom(channelId);
 		console.log("Getting channel ", channelId);
 		const chat = await this.db.chat.findUnique({
 			where: { id: channelId },
@@ -207,4 +212,15 @@ export class ChatService {
 		});
 		return chatUser;
 	}
+
+	async muteUser(chatId: number, userId: number): Promise<UpdateChatUserDto> {
+		const muteDuration = 1000 * 30; // Mute for 30 seconds
+		const muteTime = new Date(new Date().getTime() + muteDuration); // Calculate the future mute time
+		const mutedUser = await this.db.chatUsers.update({
+		  where: { chatId_userId: { chatId, userId } },
+		  data: { mutedUntil: muteTime } // Set the mutedUntil field
+		});
+		return mutedUser;
+	  }
+	  
 }
