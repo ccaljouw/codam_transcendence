@@ -187,6 +187,18 @@ export class ChatMessagesController {
 	@ApiOkResponse({ type: Boolean })
 	@ApiNotFoundResponse({ description: 'Chatuser not found' })
 	async kickUser(@Param('userId', ParseIntPipe) userId: number, @Param('userName') userName: string, @Param('chatId', ParseIntPipe) chatId: number, @Param('requesterId', ParseIntPipe) requesterId: number) {
+		const requester = await this.chatService.getChatUser(chatId, requesterId);
+		const kickCandidate = await this.chatService.getChatUser(chatId, userId);
+		if (requester.role === ChatUserRole.DEFAULT)
+		{
+			console.log("Cannot kick: requester has default rol and hence no rights");
+			return {kicked: false};
+		}
+		if (requester.role === ChatUserRole.ADMIN && kickCandidate.role === ChatUserRole.OWNER)
+		{
+			console.log("Cannot kick: requester is admin and candidate is owner");
+			return {kicked: false};
+		}
 		const chatUserResult = await this.chatService.deleteChatUser(chatId, userId);
 		const chatUser = await this.chatGateway.sendKickMessageToUser(userId, userName, chatId);
 		return {kicked: true};
