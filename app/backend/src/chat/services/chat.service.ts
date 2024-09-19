@@ -64,11 +64,11 @@ export class ChatService {
 	// This function is used to create a chat between two users.
 	async createDM(payload: CreateDMDto): Promise<FetchChatDto> {
 
-    const exists = await this.findDMChat(payload.user1Id, payload.user2Id);
-    if (exists) {
-      // Return chat id if it exists
-      return exists;
-    }
+		const exists = await this.findDMChat(payload.user1Id, payload.user2Id);
+		if (exists) {
+			// Return chat id if it exists
+			return exists;
+		}
 
 		// Create chat
 		const newChat = await this.db.chat.create({
@@ -115,9 +115,23 @@ export class ChatService {
 		// If no users left, delete the chat
 		if (usersLeft.length == 0) {
 			await this.db.chat.delete({ where: { id: chatId } });
+			return true;
 		}
-		else if (chatUser.role == ChatUserRole.OWNER) {
-			// TODO - assign new owner
+		if (chatUser.role == ChatUserRole.OWNER) { // If the user was the owner, assign a new owner
+			const admins = await this.db.chatUsers.findMany({ // Get all admins
+				where: { chatId, role: ChatUserRole.ADMIN }
+			});
+			if (admins.length > 0) { // If there are admins, assign the first one as the owner
+				await this.db.chatUsers.update({
+					where: { chatId_userId: { chatId, userId: admins[0].userId } },
+					data: { role: ChatUserRole.OWNER }
+				});
+			} else { // If there are no admins, assign the first user as the owner
+				await this.db.chatUsers.update({
+					where: { chatId_userId: { chatId, userId: usersLeft[0].userId } },
+					data: { role: ChatUserRole.OWNER }
+				});
+			}
 		}
 		return true;
 	}
@@ -151,15 +165,16 @@ export class ChatService {
 					NOT: { visibility: ChatType.DM }
 				}
 			},
-			include: { chat: 
-				{ include: { users: true } }
-			 }
+			include: {
+				chat:
+					{ include: { users: true } }
+			}
 		});
 		const openChannels = await this.db.chat.findMany({ // Get all public and protected channels where the user is not a member
 			where: {
 				OR: [
-					{visibility: ChatType.PUBLIC},
-					{visibility: ChatType.PROTECTED}
+					{ visibility: ChatType.PUBLIC },
+					{ visibility: ChatType.PROTECTED }
 				],
 				NOT: {
 					users: { some: { userId } }
@@ -199,7 +214,7 @@ export class ChatService {
 	// todo: check if requester is owner
 	async changeChatUserRole(chatId: number, userId: number, role: ChatUserRole, requesterId: number): Promise<UpdateChatUserDto> {
 		// *** not sure if this the correct way to check if the requester is the owner of the chat, might need to use Guards instead *** //
-		const chat  = await this.db.chat.findUnique({
+		const chat = await this.db.chat.findUnique({
 			where: { id: chatId }
 		});
 		if (chat.ownerId != requesterId) {
@@ -217,10 +232,10 @@ export class ChatService {
 		const muteDuration = 1000 * 30; // Mute for 30 seconds
 		const muteTime = new Date(new Date().getTime() + muteDuration); // Calculate the future mute time
 		const mutedUser = await this.db.chatUsers.update({
-		  where: { chatId_userId: { chatId, userId } },
-		  data: { mutedUntil: muteTime } // Set the mutedUntil field
+			where: { chatId_userId: { chatId, userId } },
+			data: { mutedUntil: muteTime } // Set the mutedUntil field
 		});
 		return mutedUser;
-	  }
-	  
+	}
+
 }
