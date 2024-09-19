@@ -9,6 +9,7 @@ import { ChatUserRole } from "@prisma/client";
 export default function ChannelContextMenu({ user, currentChatUser }: { user: UserProfileDto, currentChatUser: UpdateChatUserDto | null }): JSX.Element {
 	const { currentUser, currentChatRoom } = useContext(TranscendenceContext);
 	const { data: chatUser, isLoading: chatUserLoading, error: chatUserError, fetcher: chatUserFetcher } = useFetch<null, UpdateChatUserDto>();
+	const { data: isKicked, isLoading: isKickedLoading, error: isKickedError, fetcher: isKickedFetcher } = useFetch<null, boolean>();
 
 	useEffect(() => {
 		chatUserFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + user.id, fetchMethod: 'GET' });
@@ -20,10 +21,16 @@ export default function ChannelContextMenu({ user, currentChatUser }: { user: Us
 		chatUserFetcher({ url: constants.CHAT_CHANGE_USER_ROLE + currentChatRoom.id + '/' + user.id + '/' + newRole + '/' + currentUser.id, fetchMethod: 'PATCH' });
 	}
 
+	const handleKickClick = () => {
+		// kickUser/:chatId/:userId/:requesterId
+		isKickedFetcher({ url: constants.CHAT_KICK_USER + user.id + '/' + user.userName + '/' + currentChatRoom.id + '/'  + currentUser.id, fetchMethod: 'GET' });
+	}
+
+
 	return (
 		<>
 			<span>🔇</span>
-			<span>🦵</span> 
+			<span onClick={() => handleKickClick()}>🦵</span> 
 			<span>🚷</span>
 			{currentChatUser?.role == ChatUserRole.OWNER ? 
 			(chatUser?.role == ChatUserRole.DEFAULT ? 

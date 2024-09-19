@@ -8,6 +8,7 @@ import { UserProfileDto } from '@ft_dto/users';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { JwtChatGuard } from 'src/authentication/guard/chat.guard';
 import { ChatUserRole } from '@prisma/client';
+import { ChatSocketGateway } from '../chatsocket.gateway';
 
 
 @Controller('chat')
@@ -17,6 +18,7 @@ export class ChatMessagesController {
 		private readonly chatMessageService: ChatMessageService,
 		private readonly chatSocketService: ChatSocketService,
 		private readonly chatService: ChatService,
+		private readonly chatGateway: ChatSocketGateway
 	) { }
 
 	@Get('messages/unreadsforuser/:userId')
@@ -180,7 +182,15 @@ export class ChatMessagesController {
 		return chatUser;
 	}
 
-
+	@Get('kickUser/:userId/:userName/:chatId/:requesterId')
+	@ApiOperation({ summary: 'Returns boolean if user was kicked' })
+	@ApiOkResponse({ type: Boolean })
+	@ApiNotFoundResponse({ description: 'Chatuser not found' })
+	async kickUser(@Param('userId', ParseIntPipe) userId: number, @Param('userName') userName: string, @Param('chatId', ParseIntPipe) chatId: number, @Param('requesterId', ParseIntPipe) requesterId: number) {
+		const chatUserResult = await this.chatService.deleteChatUser(chatId, userId);
+		const chatUser = await this.chatGateway.sendKickMessageToUser(userId, userName, chatId);
+		return {kicked: true};
+	}
 
 	@Patch(':id')
 	@ApiOperation({ summary: 'Updates chat with specified id' })
@@ -202,6 +212,7 @@ export class ChatMessagesController {
 		const chat = await this.chatService.findOne(chatId);
 		return chat;
 	}
+
 
 	//todo: Albert: Create patch and delete method for UpdateChatDto. Return boolean if it worked or not
 	// @Patch(':id')

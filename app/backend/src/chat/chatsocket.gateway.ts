@@ -128,4 +128,17 @@ export class ChatSocketGateway {
 			}
 		}
 	}
+
+	async sendKickMessageToUser(userId: number, userName: string, chatId: number) {
+		const kickMessage: ChatMessageToRoomDto = {
+			userId: userId,
+			userName: userName,
+			room: chatId.toString(),
+			message: "KICK",
+			action: true
+		};
+		this.chat_io.to(chatId.toString()).emit('chat/messageFromRoom', kickMessage);
+		this.chat_io.to(chatId.toString()).emit('chat/refreshList', kickMessage);
+		return true;
+	}
 }
