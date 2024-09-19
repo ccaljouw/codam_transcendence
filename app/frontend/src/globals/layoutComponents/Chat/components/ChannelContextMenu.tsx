@@ -9,7 +9,7 @@ import { ChatUserRole } from "@prisma/client";
 export default function ChannelContextMenu({ user, currentChatUser }: { user: UserProfileDto, currentChatUser: UpdateChatUserDto | null }): JSX.Element {
 	const { currentUser, currentChatRoom } = useContext(TranscendenceContext);
 	const { data: chatUser, isLoading: chatUserLoading, error: chatUserError, fetcher: chatUserFetcher } = useFetch<null, UpdateChatUserDto>();
-	const { data: isKicked, isLoading: isKickedLoading, error: isKickedError, fetcher: isKickedFetcher } = useFetch<null, boolean>();
+	const { data: fetchBanKick, isLoading: fetchBanKickLoading, error: fetchBanKickError, fetcher: fetchBanKickFetcher } = useFetch<null, boolean>();
 
 	useEffect(() => {
 		chatUserFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + user.id, fetchMethod: 'GET' });
@@ -17,36 +17,36 @@ export default function ChannelContextMenu({ user, currentChatUser }: { user: Us
 
 	const handleAdminClick = (makeAdmin: boolean) => {
 		const newRole = makeAdmin ? ChatUserRole.ADMIN : ChatUserRole.DEFAULT;
-		// changeChatUserRole/:chatId/:userId/:role/:requesterId
 		chatUserFetcher({ url: constants.CHAT_CHANGE_USER_ROLE + currentChatRoom.id + '/' + user.id + '/' + newRole + '/' + currentUser.id, fetchMethod: 'PATCH' });
 	}
 
 	const handleKickClick = () => {
-		// kickUser/:chatId/:userId/:requesterId
-		isKickedFetcher({ url: constants.CHAT_KICK_USER + user.id + '/' + user.userName + '/' + currentChatRoom.id + '/'  + currentUser.id, fetchMethod: 'GET' });
+		fetchBanKickFetcher({ url: constants.CHAT_KICK_USER + user.id + '/' + user.userName + '/' + currentChatRoom.id + '/'  + currentUser.id, fetchMethod: 'GET' });
 	}
 
 	const handleMuteClick = () => {
-		// 'mute/:/:chatId/:requesterId'
 		chatUserFetcher({ url: constants.CHAT_MUTE_USER + currentChatRoom.id + '/' + user.id + '/' + user.userName + '/' + currentUser.id, fetchMethod: 'GET' });
 	}
 
+	const handleBanClick = () => {
+		fetchBanKickFetcher({ url: constants.CHAT_BAN_USER + currentChatRoom.id + '/' + user.id + '/' + user.userName + '/'  + currentUser.id, fetchMethod: 'GET' });
+	}
 
 	return (
 		<>
 		  {chatUser?.role !== ChatUserRole.OWNER && (
 			<>
-			  <span onClick={() => handleMuteClick()}>🔇</span>
-			  <span onClick={() => handleKickClick()}>🦵</span>
-			  <span>🚷</span>
+			  <span onClick={() => handleMuteClick()} title="Mute user for 30 seconds">🔇</span>
+			  <span onClick={() => handleKickClick()} title="Kick user from channel">🦵</span>
+			  <span onClick={() => handleBanClick()} title="Ban user from channel">🚷</span>
 			  {currentChatUser?.role === ChatUserRole.OWNER ? (
 				chatUser?.role === ChatUserRole.DEFAULT ? (
-				  <span onClick={() => handleAdminClick(true)}>👑</span>
+				  <span onClick={() => handleAdminClick(true)} title="Make user admin of this channel">👑</span>
 				) : (
 				  <span 
 					onClick={() => handleAdminClick(false)} 
 					style={{ display: "inline-block", transform: 'rotate(180deg)' }}
-				  >
+				  title="Remove admin priviliges for this user">
 					👑
 				  </span>
 				)

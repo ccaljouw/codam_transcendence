@@ -238,4 +238,11 @@ export class ChatService {
 		return mutedUser;
 	}
 
+	async banUser(chatId: number, userId: number): Promise<Number> {
+		const bannedUser = await this.db.bannedUsersForChat.create({
+			data: { chatId, userId }
+		});
+		return bannedUser.id;
+	}
+
 }

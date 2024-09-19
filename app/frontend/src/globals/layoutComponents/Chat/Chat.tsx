@@ -330,7 +330,11 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 								<button type="submit">Submit</button>
 							</form>
 						</>
-						: <>Error loading chat <br />{chatError.message}</>)
+						: 
+						(
+						chatError.message == "401 - User is banned from chat" ?
+						<>You are banned from this chat.</>
+						: <>Error loading chat <br />{chatError.message}</>))
 				}
 				{chatFromDb && <>
 					<div className="chat-title">

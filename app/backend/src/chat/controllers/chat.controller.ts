@@ -152,6 +152,8 @@ export class ChatMessagesController {
 	@ApiNotFoundResponse({ description: 'No chat with #${chatId}' })
 	async getChatName(@Param('chatId', ParseIntPipe) chatId: number) {
 		const chat = await this.chatService.findOne(chatId);
+		if (!chat)
+			return {name: "Chat not found"};
 		return {name: chat.name};
 	}
 
@@ -201,7 +203,7 @@ export class ChatMessagesController {
 			console.log("Cannot kick: requester is admin and candidate is owner");
 			return {kicked: false};
 		}
-		const chatUserResult = await this.chatService.deleteChatUser(chatId, userId);
+		await this.chatService.deleteChatUser(chatId, userId);
 		await this.chatGateway.sendActionMessageToRoom(userId, userName, chatId, "KICK");
 		return {kicked: true};
 	}
@@ -223,10 +225,35 @@ export class ChatMessagesController {
 			console.log("Cannot mute: requester is admin and candidate is owner");
 			return muteCandidate;
 		}
-		const mutedUser = await this.chatService.muteUser(chatId, userId);
+		const mutedUser =await this.chatService.muteUser(chatId, userId);
 		await this.chatGateway.sendActionMessageToRoom(userId, userName, chatId, "MUTE");
 		return mutedUser;
 	}
+
+	@Get('ban/:chatId/:userId/:userName/:requesterId')
+	@ApiOperation({ summary: 'Returns bool if user was banned' })
+	@ApiOkResponse({ type: Boolean })
+	@ApiNotFoundResponse({ description: 'Chatuser not found' })
+	async ban(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('userName') userName: string, @Param('requesterId', ParseIntPipe) requesterId: number) {
+		console.log("Banning user");
+		const requester = await this.chatService.getChatUser(chatId, requesterId);
+		const banCandidate = await this.chatService.getChatUser(chatId, userId);
+		if (requester.role === ChatUserRole.DEFAULT)
+		{
+			console.log("Cannot ban: requester has default role and hence no rights");
+			return {banned: false};
+		}
+		if (requester.role === ChatUserRole.ADMIN && banCandidate.role === ChatUserRole.OWNER)
+		{
+			console.log("Cannot ban: requester is admin and candidate is owner");
+			return {banned: false};
+		}
+		await this.chatService.deleteChatUser(chatId, userId);
+		await this.chatService.banUser(chatId, userId);
+		await this.chatGateway.sendActionMessageToRoom(userId, userName, chatId, "BAN");
+		return {banned: true};
+	}
+
 	// END ADMIN AND OWNER ONLY ROUTES **************************************************** //
 
 	@Patch(':id')

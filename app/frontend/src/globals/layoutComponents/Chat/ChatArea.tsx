@@ -152,15 +152,25 @@ export default function ChatArea() {
 
 	}
 
+	const renderChatContent = () => {
+		if (secondUser && secondUser !== -1 || newChatRoom.room > 0) {
+		  return <Chat key={newChatRoom.count} user2={secondUser} chatID={newChatRoom.room} />;
+		}
+	  
+		switch (newChatRoom.room) {
+		  case -2:
+			return <div className="white-box"><h3>You were kicked from the chat</h3></div>;
+		  case -3:
+			return <div className="white-box"><h3>You were banned from the chat</h3></div>;
+		  default:
+			return <div className="white-box"><h3>Hello {currentUser.userName}, Who do you want to chat with?</h3></div>;
+		}
+	  };
+
+
 	return (
 		<>
-			{(secondUser && secondUser != -1) || newChatRoom.room > 0 ?
-				<Chat key={newChatRoom.count} user2={secondUser} chatID={newChatRoom.room} />
-				: (
-					newChatRoom.room == -2 ? <div className="white-box"><h3>You were kicked from the chat</h3></div> :
-				<div className="white-box"><h3>Hello {currentUser.userName}, Who do you want to chat with?</h3></div>
-			)
-			}
+			{renderChatContent()}
 			<div className='chat-users white-box'>
 				<div className='chat-userTypeSelect'>
 					{userListType == UserListType.Friends ?

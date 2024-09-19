@@ -44,6 +44,8 @@ export const messageParser = (
 					return <>{'<<'} {message.userName} was kicked from the chat {'>>'}</>
 				case "MUTE":
 					return <>{'<<'} {message.userName} was muted {'>>'}</>
+				case "BAN":
+					return <>{'<<'} {message.userName} was banned from the chat {'>>'}</>
 				default:
 					if (!message.inviteId)
 						return <>{message.message}</>
@@ -56,6 +58,14 @@ export const messageParser = (
 				return <>{'<<'} You were kicked from the chat {'>>'}</>
 			case "MUTE":
 				return <>{'<<'} You were muted {'>>'}</>
+			case "BAN":
+				console.log("I was banned");
+				userKickedCallback(-3);
+				return <>{'<<'} You were banned from the chat {'>>'}</>
+			case "LEAVE":
+				return null;
+			case "JOIN":
+				return null;
 		}
 	}
 	if (message.inviteId) {
