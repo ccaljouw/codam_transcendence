@@ -54,7 +54,7 @@ model User {
     blocked   User[] @relation("Blocked")
     blockedBy User[] @relation("Blocked")
 
-    blockedChats BlockedUsersForChat[]
+    blockedChats BannedUsersForChat[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -95,10 +95,10 @@ model Chat {
     messages  ChatMessages[]
     chatAuth  ChatAuth?
 
-    blockedUsers BlockedUsersForChat[]
+    blockedUsers BannedUsersForChat[]
 }
 
-model BlockedUsersForChat {
+model BannedUsersForChat {
     id     Int @id @default(autoincrement())
     chatId Int
     userId Int
