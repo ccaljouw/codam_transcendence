@@ -14,8 +14,6 @@ export class ChatService {
 	) { }
 
 	async update(chatId: number, data: UpdateChatDto): Promise<FetchChatDto> {
-		if (data.visibility == ChatType.PROTECTED)
-			this.authService.setChatPassword(chatId, "");
 		const chat = await this.db.chat.update({
 			where: { id: chatId },
 			include: { users: true },
@@ -24,8 +22,11 @@ export class ChatService {
 		const chatAuth = await this.db.chatAuth.findFirst({
 			where: { chatId }
 		});
-		if (chatAuth && data.visibility != ChatType.PROTECTED) { // Delete password if visibility is not protected
+		console.log("ChatAuth: ", chatAuth, "chat.visibility: ", chat.visibility);
+		if (chatAuth && chat.visibility != ChatType.PROTECTED) { // Delete password if visibility is not protected
 			await this.db.chatAuth.delete({ where: { id: chatAuth.id } });
+		} else if(!chatAuth && (chat.visibility == ChatType.PROTECTED)) { // create empty password if visibility is protected and no password exists
+			await this.authService.setChatPassword(chatId, "");
 		}
 		return chat;
 	}
