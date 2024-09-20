@@ -64,6 +64,7 @@ export class ChatMessageService {
 
 	// Called by the chat controller to get all messages in a chat
 	async findMessagesInChat(chatId: number, userId: number): Promise<FetchChatMessageDto[]> {
+		console.log("finding messages in chat", chatId, userId);
 		try {
 			const chat = await this.db.chat.findUnique({
 				where: { id: chatId },

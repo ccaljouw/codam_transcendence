@@ -59,22 +59,22 @@ export class ChatMessagesController {
 		return channels;
 	}
 
-	@Get('channelWithUser/:channelId/:userId')
+	@Get('channelWithUser/:chatId/:userId')
+	@UseGuards(JwtAuthGuard, JwtChatGuard)
 	@ApiOperation({ summary: 'Returns channel with user' })
 	@ApiOkResponse({ type: FetchChatDto })
-	@ApiNotFoundResponse({ description: 'No channel with #${channelId} and #${userId}' })
-	async getChannelWithUser(@Param('channelId', ParseIntPipe) channelId: number, @Param('userId', ParseIntPipe) userId: number) {
-		const channel = await this.chatService.getSingleChannelForUser(userId, channelId);
+	@ApiNotFoundResponse({ description: 'No channel with #${chatId} and #${userId}' })
+	async getChannelWithUser(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number) {
+		const channel = await this.chatService.getSingleChannelForUser(userId, chatId);
 		return channel;
 	}
 
-	@Get('messages/:chatId/:userID')
-  	@UseGuards(JwtAuthGuard)
-
+	@Get('messages/:chatId/:userId')
+  	@UseGuards(JwtAuthGuard, JwtChatGuard)
 	@ApiOperation({ summary: 'Returns chat messages with specified chatId and userId' })
 	@ApiOkResponse({ type: [UpdateChatMessageDto] })
 	@ApiNotFoundResponse({ description: 'No messages with #${chatId}' })
-	findMessagesInChat(@Param('chatId', ParseIntPipe) chatId: number, @Param('userID', ParseIntPipe) userId: number) {
+	findMessagesInChat(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number) {
 		return this.chatMessageService.findMessagesInChat(chatId, userId);
 	}
 
@@ -130,8 +130,7 @@ export class ChatMessagesController {
 	}
 
 	@Get('joinRoomInDb/:chatId/:userId/:token')
-  	@UseGuards(JwtAuthGuard)
-  
+	@UseGuards(JwtAuthGuard)
 	@ApiOperation({ summary: 'Returns room id if status was succesfully set' })
 	@ApiOkResponse({ type: Number })
 	@ApiNotFoundResponse({ description: 'No chat with #${chatId}' })
@@ -180,14 +179,13 @@ export class ChatMessagesController {
 		return chat;
 	}
 
-	@Get(':id')
-	@UseGuards(JwtChatGuard)
+	@Get(':chatId')
 	@ApiOperation({ summary: 'Returns chat with specified id' })
 	@ApiOkResponse({ type: UpdateInviteDto })
 	@ApiNotFoundResponse({ description: 'Chat with #${id} does not exist' })
-	@UseGuards(JwtChatGuard)
-	async findOne(@Param('id', ParseIntPipe) id: number): Promise<FetchChatDto> {
-		const chat = await this.chatService.findOne(id);
+	@UseGuards(JwtChatGuard, JwtAuthGuard)
+	async findOne(@Param('chatId', ParseIntPipe) chatId: number): Promise<FetchChatDto> {
+		const chat = await this.chatService.findOne(chatId);
 		return chat;
 	}
 
