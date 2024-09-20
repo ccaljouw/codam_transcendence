@@ -75,11 +75,6 @@ export default function UserContextMenu({ user }:
 			state: "SENT"
 		}
 		inviteFetcher({ url: constants.API_INVITE + "create", fetchMethod: 'POST', payload: inviteMessage });
-		// if (type == InviteType.GAME) {
-		// 	// should probably navigate to game page here
-		// 	router.push('/game');
-		// 	console.log(`Invite this user to a game: ${user.userName}`);
-		// }
 	}
 
 
@@ -89,8 +84,6 @@ export default function UserContextMenu({ user }:
 		console.log(`Block this user: ${user.userName}`);
 		if (block) {
 			blockFetcher({ url: constants.API_BLOCK + currentUser.id + '/' + user.id });
-			if (currentChatRoom.id != -1)
-				setNewChatRoom({ room: -1, count: newChatRoom.count++ });
 		}
 		else
 			blockFetcher({ url: constants.API_UNBLOCK + currentUser.id + '/' + user.id });

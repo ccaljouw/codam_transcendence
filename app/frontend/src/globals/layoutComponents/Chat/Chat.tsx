@@ -124,7 +124,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		}
 	};
 
-	const messageParserProps: parserProps = useMemo(() => ({ // UseMemo is used to prevent the parserProps from being recreated on every render.
+	const messageParserProps: parserProps = {
 		inviteCallback: inviteCallback,
 		currentChatRoom: currentChatRoom,
 		currentUser: currentUser,
@@ -133,7 +133,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		gameInviteFetcher: gameInviteFetcher,
 		chatInviteFetcher: chatInviteFetcher,
 		changeRoomStatusCallback: changeRoomStatusCallBack
-	}), [currentChatRoom, currentUser]);
+	};
 
 	const handleMessageFromRoom = (payload: ChatMessageToRoomDto) => {
 		console.log("Message from room: ", payload,);
