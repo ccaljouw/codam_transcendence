@@ -12,7 +12,6 @@ import { useRouter } from 'next/navigation';
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar'
 import { abort } from 'process'
 
-
 // GameComponent is a functional component that renders the game canvas and handles game logic
 export default function GameComponent({inviteId}: {inviteId: number}) {
 	const gameSocket = transcendenceSocket;
@@ -149,7 +148,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 		
 		const handleMessage = (msg: string) => {
 			console.log(`GameComponent: received message: "${msg}"`);
-			if (fetchedGameData?.state === GameState.WAITING && fetchedGameData?.id) {
+			if (!loadingGame && fetchedGameData?.state === GameState.WAITING && fetchedGameData?.id) {//!game && instanceType === InstanceTypes.notSet && !loadingGame && fetchedGameData?.GameUsers?.length < 2 && 
 				console.log("GameComponent: less than two players in game, refreshing game data, gameid:", fetchedGameData.id);
 				gameFetcher({url: `${constants.API_GAME}${fetchedGameData.id}`});
 			}
@@ -192,7 +191,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 	useEffect(() => {
 		if (waitingForPlayers === false && fetchedGameData && userId) {
 				const userIdNum = parseInt(userId || '0');
-				const firstUserId = fetchedGameData?.GameUsers?.[0]?.user.id || 0;
+				const firstUserId = fetchedGameData?.GameUsers?.[0]?.user?.id || 0;
 				setInstanceType(userIdNum === firstUserId ? InstanceTypes.left : InstanceTypes.right);
 		}
 	}, [waitingForPlayers]);
@@ -202,16 +201,15 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 	useEffect(() => {
 		if (!game && canvasRef.current && instanceType !== InstanceTypes.notSet) {
 			console.log("GameComponent: creating game instance of type: ", instanceType);
-
 			// set required configuration in constants
 			const newGame = new Game(
 				canvasRef.current,
 				instanceType,
 				fetchedGameData!,
 				constants.config, // config
-				constants.themes[fetchedGameData?.GameUsers?.[instanceType].user.theme], // theme
-				fetchedGameData?.GameUsers?.[instanceType].user.volume, //volume
-				aiLevel // AI level. 0 = not an ai game 0.1 > 1 is level
+				constants.themes[fetchedGameData?.GameUsers?.[instanceType].user?.theme || 0], // theme
+				fetchedGameData?.GameUsers?.[instanceType].user?.volume || 0.5, //volume
+				aiLevel // AI level > todo: implement AI level button and backend. 0 = not an ai game 0.1 > 1 is level
 			);
 			setGame(newGame);
 			if (inviteId === -1) {

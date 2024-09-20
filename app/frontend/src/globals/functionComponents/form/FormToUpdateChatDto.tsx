@@ -3,7 +3,7 @@ import { UpdateChatDto } from '@ft_dto/chat';
 import { ChatType } from '@prisma/client';
 
 export default function FormToUpdateChatDto (event: FormEvent<HTMLFormElement>) :UpdateChatDto {
-    const formData = new FormData(event.currentTarget); // todo: we use new, should we use delete?
+    const formData = new FormData(event.currentTarget);
     let patchChat: UpdateChatDto = {};
 
 	const stringToChatType = (str: string): ChatType => {

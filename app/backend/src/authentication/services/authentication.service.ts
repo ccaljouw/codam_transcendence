@@ -136,7 +136,7 @@ export class AuthService {
 				const salt = await bcrypt.genSalt(10);
 				const hash = await bcrypt.hash(newPwd, salt);
 				await this.db.auth.update({
-					where: { id },
+					where: { userId: id },
 					data: { pwd: hash },
 				});
 				console.log('Pwd updated');
@@ -165,13 +165,13 @@ export class AuthService {
 		}
 	}
 
-  async deleteJwtCookie(req: Request): Promise<boolean> {
+	async deleteJwtCookie(req: Request): Promise<boolean> {
 		try {
 			(req.res as Response).cookie('jwt', null, {
 				httpOnly: true,
 				sameSite: 'strict',
 			});
-      return true;
+			return true;
 		} catch (error) {
 			console.log('Error setting jwt cookie:', error.message);
 			throw error;
@@ -235,18 +235,18 @@ export class AuthService {
 		}
 	}
 
-    async checkAuth(userId: number) : Promise<boolean> {
-      const user = await this.db.user.findUnique({
-        where: { id: userId },
-        include: { auth: true },
-      });
-      if (!user) {
-        throw new NotFoundException(`User with id ${userId} not found`);
-      }
-      console.log(user.auth);
-      if (!user.auth?.pwd) {
-        return true;
-      }
-      return false;
-    }
+	async checkAuth(userId: number) : Promise<boolean> {
+		const user = await this.db.user.findUnique({
+			where: { id: userId },
+			include: { auth: true },
+		});
+		if (!user) {
+			throw new NotFoundException(`User with id ${userId} not found`);
+		}
+		console.log(user.auth);
+		if (!user.auth?.pwd) {
+			return true;
+		}
+		return false;
+	}
 }

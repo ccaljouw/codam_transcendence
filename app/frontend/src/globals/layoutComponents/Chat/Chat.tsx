@@ -318,7 +318,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 							Password protected.
 							<form method="POST" onSubmit={(e) => {
 								e.preventDefault();
-								chatAuthFetcher({ url: constants.API_AUTH_CHAT, fetchMethod: 'POST', payload: { chatId: chatId, pwd: e.currentTarget.password.value } });
+								chatAuthFetcher({ url: constants.API_AUTH_CHAT, fetchMethod: 'POST', payload: { chatId: (chatId? chatId : -1), pwd: e.currentTarget.password.value } });
 							}}>
 								<input type="password" name="password" />
 								<button type="submit">Submit</button>

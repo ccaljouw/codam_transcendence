@@ -14,7 +14,7 @@ export class UsersService {
     console.log(updateUserDto);
     try {
       const user = await this.db.user.update({
-        where: { id },
+        where: { id }, // todo: Carien: this fails when you create a new user through sign up and play a practice game
         data: updateUserDto,
         include: {
           friends: { orderBy: [{ online: 'desc' }, { userName: 'asc' }] },

@@ -9,7 +9,7 @@ export default function Top10({url} : {url: string}) : JSX.Element {
 
 	useEffect(() => {
 		fetch();
-	}, []);
+	}, [url]);
 
 	async function fetch(){
 		await fetcher({url: url});
@@ -24,7 +24,7 @@ export default function Top10({url} : {url: string}) : JSX.Element {
 					</p>
 				))
 			}
-			{isLoading && <p>Loading...</p>}
+			{isLoading == true && <p>Loading...</p>}
 			{error != null && <p>Error: {error.message}</p>}
 		</>
 	);
