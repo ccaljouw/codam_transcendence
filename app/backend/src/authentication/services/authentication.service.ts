@@ -189,7 +189,7 @@ export class AuthService {
 			(req.res as Response).cookie(`chatToken_${chat.id}`, token, {
 				httpOnly: true,
 				//TODO: determine validity
-				maxAge: 3600000, // expires in 1 hour
+				// maxAge: 3600000, // expires in 1 hour
 				sameSite: 'strict',
 			});
 		} catch (error) {
@@ -199,42 +199,41 @@ export class AuthService {
 	}
 
 
-	async validateChatLogin(id: number, password: string) : Promise<FetchChatDto> {
-		const chat = await this.db.chat.findUnique({ 
-		  where: { id },
-		  include: { users: true, chatAuth: true }
+	async validateChatLogin(id: number, password: string): Promise<FetchChatDto> {
+		const chat = await this.db.chat.findUnique({
+			where: { id },
+			include: { users: true, chatAuth: true }
 		});
 		if (!chat)
-		  throw new UnauthorizedException("chat not found");
+			throw new UnauthorizedException("chat not found");
 		if (chat.visibility == ChatType.PROTECTED) {
-		  if (!chat.chatAuth)
-			throw new UnauthorizedException("No password found for protected chat")
-		  const validPwd = await bcrypt.compare(password, chat.chatAuth?.pwd);
-		  if (!validPwd)
-			throw new UnauthorizedException("Incorrect password")
+			if (!chat.chatAuth)
+				throw new UnauthorizedException("No password found for protected chat")
+			const validPwd = await bcrypt.compare(password, chat.chatAuth?.pwd);
+			if (!validPwd)
+				throw new UnauthorizedException("Incorrect password")
 		} else {
-		  throw new BadRequestException("Trying to login to unprotected chat");
+			throw new BadRequestException("Trying to login to unprotected chat");
 		}
 		delete chat.chatAuth;
 		return chat;
-	  }
+	}
 
-	  async setChatPassword(chatId: number, password: string): Promise<boolean> {
-      try {
-        const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash(password, salt);
-        await this.db.chatAuth.create({data: {chatId, pwd: hash}});
-        await this.db.chat.update({
-        where: { id: chatId },
-        include: { users: true },
-        data: { visibility: ChatType.PROTECTED },
-        })
-        return true;
-      } catch (error) {
-        console.log('Error setting chat password:', error.message);
-        throw error;
-      }
-	  }
+	async setChatPassword(chatId: number, password: string): Promise<boolean> {
+		try {
+			const salt = await bcrypt.genSalt(10);
+			const hash = await bcrypt.hash(password, salt);
+			await this.db.chatAuth.upsert({ // upsert will update if exists, create if not, saves a query/route
+				where: { chatId }, 
+				update: { pwd: hash },
+				create: { chatId, pwd: hash }
+			});
+			return true;
+		} catch (error) {
+			console.log('Error setting chat password:', error.message);
+			throw error;
+		}
+	}
 
     async checkAuth(userId: number) : Promise<boolean> {
       const user = await this.db.user.findUnique({

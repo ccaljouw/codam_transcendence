@@ -9,6 +9,8 @@ export const fetchMessages = async (
 ) => {
 	if (!currentChat)
 		return;
+	if (currentChat.id == -1)
+		return;
 	await chatMessagesFetcher({ url: constants.CHAT_GET_MESSAGES_FROM_CHAT + currentChat.id + '/' + userId });
 }
 

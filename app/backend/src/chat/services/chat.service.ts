@@ -4,11 +4,13 @@ import { CreateDMDto, FetchChatDto, UpdateChatUserDto } from "@ft_dto/chat";
 import { UserProfileDto } from "@ft_dto/users";
 import { ChatType, ChatUserRole } from "@prisma/client";
 import { UpdateChatDto } from "@ft_dto/chat/update-chat.dto";
+import { AuthService } from "src/authentication/services/authentication.service";
 
 @Injectable()
 export class ChatService {
 	constructor(
-		private db: PrismaService
+		private db: PrismaService,
+		private authService: AuthService
 	) { }
 
 	async update(chatId: number, data: UpdateChatDto): Promise<FetchChatDto> {
@@ -17,6 +19,15 @@ export class ChatService {
 			include: { users: true },
 			data
 		});
+		const chatAuth = await this.db.chatAuth.findFirst({
+			where: { chatId }
+		});
+		console.log("ChatAuth: ", chatAuth, "chat.visibility: ", chat.visibility);
+		if (chatAuth && chat.visibility != ChatType.PROTECTED) { // Delete password if visibility is not protected
+			await this.db.chatAuth.delete({ where: { id: chatAuth.id } });
+		} else if(!chatAuth && (chat.visibility == ChatType.PROTECTED)) { // create empty password if visibility is protected and no password exists
+			await this.authService.setChatPassword(chatId, "");
+		}
 		return chat;
 	}
 
@@ -131,7 +142,7 @@ export class ChatService {
 	}
 
 	async getChannelsForUser(userId: number): Promise<FetchChatDto[]> {
-		const userChannels = await this.db.chatUsers.findMany({
+		const userChannels = await this.db.chatUsers.findMany({ // Get all channels with the user as a member
 			where: {
 				userId,
 				chat: {
@@ -142,9 +153,12 @@ export class ChatService {
 				{ include: { users: true } }
 			 }
 		});
-		const openChannels = await this.db.chat.findMany({
+		const openChannels = await this.db.chat.findMany({ // Get all public and protected channels where the user is not a member
 			where: {
-				visibility: ChatType.PUBLIC,
+				OR: [
+					{visibility: ChatType.PUBLIC},
+					{visibility: ChatType.PROTECTED}
+				],
 				NOT: {
 					users: { some: { userId } }
 				}

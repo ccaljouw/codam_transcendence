@@ -14,13 +14,19 @@ type LoginCredentials = {
 
 export default function Login() : JSX.Element {
 	const {data: loggedUser, isLoading, error, fetcher} = useFetch<LoginCredentials, UserProfileDto>();
+	// const {data: clearAuthCookies, isLoading: clearAuthCookiesLoading, error: clearAuthCookiesError, fetcher: clearAuthCookiesFetcher} = useFetch<null, null>();
 	const {storeUser} = useAuthentication();
+
+	// clearAuthCookiesFetcher({url: `${constants.BACKEND_BASEURL + '/auth/resetAuthCookies'}`, fetchMethod: 'GET'});
+
 
 	useEffect(() => {
 		if (loggedUser != null) {
 			console.log("Setting new user with id " + loggedUser.id + " in Login");
 			storeUser(loggedUser);
 		}
+		// else
+		// 	clearAuthCookiesFetcher({url: `${constants.BACKEND_BASEURL + '/auth/resetAuthCookies'}`, fetchMethod: 'GET'});
 	}, [loggedUser]);
 
 	const handleSubmit = async (e: FormEvent) => {
