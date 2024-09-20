@@ -201,16 +201,15 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 	useEffect(() => {
 		if (!game && canvasRef.current && instanceType !== InstanceTypes.notSet) {
 			console.log("GameComponent: creating game instance of type: ", instanceType);
-
 			// set required configuration in constants
 			const newGame = new Game(
 				canvasRef.current,
 				instanceType,
 				fetchedGameData!,
 				constants.config, // config
-				constants.themes[fetchedGameData?.GameUsers?.[instanceType].user.theme], // theme
-				fetchedGameData?.GameUsers?.[instanceType].user.volume, //volume
-				aiLevel // AI level. 0 = not an ai game 0.1 > 1 is level
+				constants.themes[fetchedGameData?.GameUsers?.[instanceType].user?.theme || 0], // theme
+				fetchedGameData?.GameUsers?.[instanceType].user?.volume || 0.5, //volume
+				aiLevel // AI level > todo: implement AI level button and backend. 0 = not an ai game 0.1 > 1 is level
 			);
 			setGame(newGame);
 			if (inviteId === -1) {
