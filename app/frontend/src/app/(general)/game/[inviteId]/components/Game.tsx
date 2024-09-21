@@ -10,8 +10,7 @@ import useFetch from 'src/globals/functionComponents/useFetch.tsx'
 import styles from '../styles.module.css';
 import { useRouter } from 'next/navigation';
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar'
-import { H3 } from 'src/globals/layoutComponents/Font'
-
+import { abort } from 'process'
 
 // GameComponent is a functional component that renders the game canvas and handles game logic
 export default function GameComponent({inviteId}: {inviteId: number}) {
@@ -26,7 +25,8 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 	const [waitingForPlayers, setWaitingForPlayers] = useState<boolean>(true);
 	const [instanceType, setInstanceType] = useState<InstanceTypes>(InstanceTypes.notSet) // 0 for player 1, 1 for player 2
 	const [aiLevel, setAiLevel] = useState<number>(0);
-
+	
+	
   function startGame() {
     console.log("GameComponent: starting game");
     canvasRef.current!.focus();
@@ -38,7 +38,6 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     console.log("GameComponent: aborting game");
       const payload: UpdateGameStateDto = {id: roomId, state: GameState.ABORTED};
       gameSocket.emit("game/updateGameState", payload);
-    
   }
   
   function handleClick() {
@@ -47,7 +46,55 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
     abortGame();
     router.push('/play');
   }
-  
+
+	// cleanup on beforeunload and visibilitychange
+	useEffect(() => {
+
+		const cleanUpGame = () => {
+			console.log("GameComponent: cleaning up game");
+	
+			// Clear the canvas and abort the game if it's still active
+			if (game && canvasRef.current) {
+				game.cleanCanvas();
+				abortGame();
+			}
+		};
+		
+		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+			console.log("GameComponent: before unload event, cleaning up resources");
+			cleanUpGame();
+		};
+
+		const handleVisibilityChange = () => {
+			console.log("GameComponent: visibility change event, cleaning up resources");
+			if (document.hidden) {
+				cleanUpGame();
+			}
+		};
+
+		window.addEventListener('beforeunload', handleBeforeUnload);
+		document.addEventListener('visibilitychange', handleVisibilityChange);
+
+		return () => {
+			cleanUpGame();
+			window.removeEventListener('beforeunload', handleBeforeUnload);
+			document.removeEventListener('visibilitychange', handleVisibilityChange);
+		};
+	}
+	, [game]);
+
+  // cleanup on unmount
+  useEffect(() => {
+    return () => {
+      console.log("GameComponent: cleaning up game");
+      if (game && [GameState.WAITING, GameState.READY_TO_START, GameState.STARTED]) {
+        game.cleanCanvas();
+				abortGame();
+      }
+    }
+  }, [game]);
+
+
   // fetch game data
   useEffect(() => {
     if (inviteId === -1 ) {
@@ -65,23 +112,27 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
   }, [inviteId]);
   
 
-	// update game data
-	useEffect(() => {
-		if (!fetchedGameData) return;
-		if (fetchedGameData.state === GameState.READY_TO_START && roomId !== 0 && canvasRef.current) {
-			startGame();
-			return;
-		}
-		if (roomId === 0) {
-			setRoomId(fetchedGameData.id);
-		} else {
-			console.log("GameComponent: waiting for second player to join in get/update game data");
-		}
-		if(fetchedGameData.state === GameState.READY_TO_START || inviteId === -1) {
-			setWaitingForPlayers(false);
-		}
-	}, [fetchedGameData]);
-		
+  // update game data
+  useEffect(() => {
+    if (!fetchedGameData) return;
+    if (fetchedGameData.state === GameState.READY_TO_START && roomId !== 0 && canvasRef.current) {
+      startGame();
+      return;
+    }
+    if (roomId === 0) {
+      setRoomId(fetchedGameData.id);
+    } else {
+      console.log("GameComponent: waiting for second player to join in get/update game data");
+    }
+    if(fetchedGameData.state === GameState.READY_TO_START || inviteId === -1) {
+      setWaitingForPlayers(false);
+    }
+    if(fetchedGameData.state === GameState.REJECTED || fetchedGameData.state === GameState.ABORTED || fetchedGameData.state === GameState.FINISHED) {
+      console.log("GameComponent: fetched game was rejected or aborted");
+      router.push(`/play`);
+    }
+  }, [fetchedGameData]);
+  
 
 	// join room
 	useEffect(() => {
@@ -97,15 +148,21 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 		
 		const handleMessage = (msg: string) => {
 			console.log(`GameComponent: received message: "${msg}"`);
-			if (fetchedGameData?.state === GameState.WAITING && fetchedGameData?.id) {
+			if (!loadingGame && fetchedGameData?.state === GameState.WAITING && fetchedGameData?.id) {//!game && instanceType === InstanceTypes.notSet && !loadingGame && fetchedGameData?.GameUsers?.length < 2 && 
 				console.log("GameComponent: less than two players in game, refreshing game data, gameid:", fetchedGameData.id);
 				gameFetcher({url: `${constants.API_GAME}${fetchedGameData.id}`});
 			}
-		}; 
+		};
+
 		
 		const handleGameStateUpdate = (payload: UpdateGameStateDto) => {
 			if (!game) {
-				return;
+				if (payload.state === GameState.REJECTED) {
+					console.log("GameComponent: game rejected or aborted");
+					router.push(`/play`);
+				} else {
+					return;
+				}
 			}
 			console.log(`GameComponent: received game state update in handle gameState`, payload.id, payload.state);
 			if (payload.state === GameState.FINISHED || payload.state === GameState.ABORTED) {
@@ -134,7 +191,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 	useEffect(() => {
 		if (waitingForPlayers === false && fetchedGameData && userId) {
 				const userIdNum = parseInt(userId || '0');
-				const firstUserId = fetchedGameData?.GameUsers?.[0]?.user.id || 0;
+				const firstUserId = fetchedGameData?.GameUsers?.[0]?.user?.id || 0;
 				setInstanceType(userIdNum === firstUserId ? InstanceTypes.left : InstanceTypes.right);
 		}
 	}, [waitingForPlayers]);
@@ -144,15 +201,14 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 	useEffect(() => {
 		if (!game && canvasRef.current && instanceType !== InstanceTypes.notSet) {
 			console.log("GameComponent: creating game instance of type: ", instanceType);
-
 			// set required configuration in constants
 			const newGame = new Game(
 				canvasRef.current,
 				instanceType,
 				fetchedGameData!,
 				constants.config, // config
-				constants.themes[fetchedGameData?.GameUsers?.[instanceType].user.theme], // theme
-				fetchedGameData?.GameUsers?.[instanceType].user.volume, //volume
+				constants.themes[fetchedGameData?.GameUsers?.[instanceType].user?.theme || 0], // theme
+				fetchedGameData?.GameUsers?.[instanceType].user?.volume || 0.5, //volume
 				aiLevel // AI level > todo: implement AI level button and backend. 0 = not an ai game 0.1 > 1 is level
 			);
 			setGame(newGame);
@@ -166,16 +222,21 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 
 	return (
 		<>
-			{fetchedGameData !== null && 
-				<div className={`${styles.game}`}>
-					<button className="btn btn-dark text-center" onClick={handleClick}>{waitingForPlayers ? "Leave waiting room":"Leave Game"}</button>
-					{waitingForPlayers ?
-						<img src={`${constants.API_AVATAR}waitingForOtherPlayers.jpg`}/>
-						: 					
-						<canvas ref={canvasRef} tabIndex={0} />
-					}
+			{waitingForPlayers ? (
+				<div>
+					<div>
+						<button className="btn btn-dark text-center" onClick={handleClick}>{waitingForPlayers ? "Leave waiting room":"Leave Game"}</button>
+					</div>
+					<img src={`${constants.API_AVATAR}waitingForOtherPlayers.jpg`}/>
 				</div>
-			}
+			) : (
+				<div className={`${styles.game}`}>
+					<div className={`row`}>
+						<button className="btn btn-dark text-center" onClick={handleClick}>Leave Game</button>
+					</div>
+					<canvas ref={canvasRef} tabIndex={0} />
+				</div>
+			)}
 		</>
 	);
 }

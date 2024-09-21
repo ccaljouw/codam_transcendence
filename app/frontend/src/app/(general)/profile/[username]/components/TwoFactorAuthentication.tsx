@@ -14,7 +14,6 @@ export default function TwoFactorAuthentication() : JSX.Element {
 	const [token, setToken] = useState<string>('');
 	const [twoFactor, setTwoFactorEnabled] = useState(currentUser.twoFactEnabled? "Disable2FA" : "Enable2FA");
 	const [qrUrl, setQrUrl] = useState<string | null>(null);
-	const [close, setClose] = useState<boolean>(false);
 	const [error, setError] = useState<Error | null>(null);
 	
 	useEffect(() => {
@@ -23,7 +22,6 @@ export default function TwoFactorAuthentication() : JSX.Element {
 			const user = { ...currentUser, twoFactEnabled: true };
 			setTwoFactorEnabled("Disable2FA");
 			setCurrentUser(user);
-			setClose(true);
 			console.log("2FA Enabled");
 		}
 		else {
@@ -39,7 +37,6 @@ export default function TwoFactorAuthentication() : JSX.Element {
 			setCurrentUser(user);
 			setToken('');
 			setQrUrl(null);
-			setClose(true);
 			console.log("2FA Disabled");
 		}
 	}, [disable2FA]);
@@ -54,7 +51,6 @@ export default function TwoFactorAuthentication() : JSX.Element {
 	useEffect(() => {
 		if (loading2FA == true || loadingDisable2FA == true || loadingFAValid == true)
 		{
-			setClose(false);
 			setError(null);
 		}
 	}, [loading2FA, loadingDisable2FA, loadingFAValid]);

@@ -93,7 +93,7 @@ export class Paddle extends GameObject {
 	// 	const margin = 3;
 	// 	// let hasMoved = false;
 		
-	// 	//todo: get sensor input
+	// // 	first get sensor input
 	// 	let sensorInputValue = 0; //-1 to 1
 
 	// 	const paddleMinY = CON.config[config].wallWidth + CON.config[config].paddleGap;

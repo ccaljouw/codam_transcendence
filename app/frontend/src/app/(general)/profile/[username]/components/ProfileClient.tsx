@@ -4,7 +4,7 @@ import Stats from "./Stats.tsx";
 import MatchHistory from "./MatchHistory.tsx";
 import GameSettings from "./GameSettings.tsx";
 import { H3 } from '@ft_global/layoutComponents/Font';
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import useFetch from "src/globals/functionComponents/useFetch.tsx";
 import { UserProfileDto } from "@ft_dto/users/user-profile.dto.ts";
@@ -15,7 +15,6 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 	const {currentUser} = useContext(TranscendenceContext);
 	const {data, isLoading, error, fetcher} = useFetch<null, UserProfileDto>();
 	const pathname = usePathname();
-	const router = useRouter();
 	const [user, setUser] = useState<UserProfileDto | null>(null);
 	
 	useEffect(() => {
@@ -40,7 +39,7 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 
 	return (
 		<>
-            {isLoading && 
+			{isLoading && 
 				<H3 text={`Loading profile page of ${userName}...`}/>
 			}
 			{error != null &&
@@ -65,7 +64,7 @@ export default function ProfileClient({userName} : {userName : string}) : JSX.El
 					{user.userName == currentUser.userName &&
 						<div className="row">
 							<div className="col col-lg-6 col-md-12 white-box">
-								<GameSettings user={user}/>
+								<GameSettings/>
 							</div>
 						</div>
 					}

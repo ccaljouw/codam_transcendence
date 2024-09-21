@@ -18,7 +18,7 @@ export default function ({name, data, close, editText, saveText, children} : {na
 			<div className="col col-3">
 				<p>{name}</p>
 			</div>
-			<div className="col col-6">
+			<div className="col col-6 px-2">
 				{editMode == false?
 					<b>{data? data : "Loading data..."}</b>
 					:

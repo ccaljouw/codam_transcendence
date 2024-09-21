@@ -155,7 +155,7 @@ export class Ball extends GameObject {
 
 	public incrementRally() {
 		this._rally++;
-		log(`GameScript: rally incrmented`);	
+		log(`GameScript: rally incremented`);	
 		if (this._rally > this._longestRally) {
 			this.setLongestRally(this._rally);
 		}

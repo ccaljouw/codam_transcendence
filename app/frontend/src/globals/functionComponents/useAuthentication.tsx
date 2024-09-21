@@ -1,19 +1,19 @@
+"use client";
 import { useContext, useEffect, useState } from "react";
 import { UserProfileDto } from "@ft_dto/users";
 import { TranscendenceContext } from "../contextprovider.globalvar";
 import useFetch from "./useFetch";
-import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { constants } from "../constants.globalvar";
 
 type authenticationOutput = {
 	user: UserProfileDto | null,
+	fetchUserById: (url: string) => void,
 	storeUser: (loggedInUser: UserProfileDto) => void,
 }
 
 export default function useAuthentication() : authenticationOutput {
 	const {setCurrentUser} = useContext(TranscendenceContext);
-	const params = useSearchParams();
-	const userFromUrl = params.get('user');
 	const [user, setUser] = useState<UserProfileDto | null>(null);
 	const {data: fetchedUser, error, fetcher: userFetcher} = useFetch<null, UserProfileDto>();
 	const [idFromStorage, setIdFromStorage] = useState<string | null>(null);
@@ -22,11 +22,7 @@ export default function useAuthentication() : authenticationOutput {
 
 	useEffect (() => {
 		const id = sessionStorage.getItem('userId');
-		if (userFromUrl != null)
-		{
-			fetchUserById(constants.API_CHECK_ID + userFromUrl);
-		}
-		else if (id != null)
+		if (id != null)
 		{
 			setIdFromStorage(id);
 			console.log(`user already logged in, fetching user ${id}`);
@@ -40,12 +36,14 @@ export default function useAuthentication() : authenticationOutput {
 	}, []);
 
 	const fetchUserById = async (url: string) : Promise<void>  => {
+		console.log("fetching user");
 		await userFetcher({url: url});
 	};
 
 	useEffect(() => {
 		if (fetchedUser != null)
 		{
+			console.log("storing user");
 			storeUser(fetchedUser);
 		}
 	}, [fetchedUser]);
@@ -70,11 +68,11 @@ export default function useAuthentication() : authenticationOutput {
 		setUser(loggedInUser);
 		setCurrentUser(loggedInUser);
 		setSessionStorage(loggedInUser);
-		if (pathname == '/login' || pathname == '/signup' || pathname == '/auth' || (userFromUrl && fetchedUser))
+		if (pathname == '/login' || pathname == '/signup' || pathname == '/auth')
 		{
 			router.push('/');
 		}
 	}
 
-	return ({ user, storeUser });
+	return ({ user, fetchUserById, storeUser });
 }

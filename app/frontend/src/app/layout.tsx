@@ -12,16 +12,16 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) : Promise<JSX.Element> {
 	console.log("root rerender");
-    return (
-		<html lang="en" >
-			<body>
-				<div className={`root-layout ${comic_neue.className}`}>
-					<ContextProvider>
-						{children}
-					</ContextProvider>
-				</div>
-				<BootstrapClient />
-			</body>
-		</html>
-    );
+	return (
+	<html lang="en" >
+		<body>
+			<div className={`root-layout ${comic_neue.className}`}>
+				<ContextProvider>
+					{children}
+				</ContextProvider>
+			</div>
+			<BootstrapClient/>
+		</body>
+	</html>
+	);
 }

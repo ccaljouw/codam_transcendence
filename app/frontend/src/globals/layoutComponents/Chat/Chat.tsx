@@ -130,7 +130,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		setNewChatRoom({ room: channel, count: newChatRoom.count + 1 });
 	}
 
-	const messageParserProps: parserProps = useMemo(() => ({ // UseMemo is used to prevent the parserProps from being recreated on every render.
+	const messageParserProps: parserProps = {
 		inviteCallback: inviteCallback,
 		currentChatRoom: currentChatRoom,
 		currentUser: currentUser,

@@ -79,7 +79,6 @@ export function MenuBar() : JSX.Element {
 										<MenuLink href="/logout" title="Logout" />
 									</div>
 									<div className={"navbar-nav"}>
-										{ /* todo: JMA: limit access on the pages itself as well */ }
 										{awsomeNames.includes(currentUser.loginName) && 
 											<>
 												<li className="nav-item dropdown">

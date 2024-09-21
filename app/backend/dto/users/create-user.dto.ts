@@ -17,7 +17,6 @@ import {
 // Everthing starting with @Api fills the api documetation. It does not enforce
 // the format specified or update automatically when validation rules are changed
 
-//TODO: define min and max lenth for all strings
 export class CreateUserDto {
   @ApiProperty({ required: true, uniqueItems: true })
   @IsNotEmpty()

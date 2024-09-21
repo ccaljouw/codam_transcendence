@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { TranscendenceContext } from "@ft_global/contextprovider.globalvar";
 import { constants } from "@ft_global/constants.globalvar";
-// import DataFetcherJson from "./DataFetcherJson";
 import useFetch from "./useFetch";
 import { OnlineStatus } from "@prisma/client";
 import { IsBlocked, IsFriend } from "./FriendOrBlocked";

@@ -4,12 +4,10 @@ import { ChatType } from '@prisma/client';
 
 export class UpdateChatDto {
 
-	
-
 	@IsString()
 	@IsOptional()
 	@ApiProperty({ required: false, type: String })
-	name?: string; 
+	name?: string;
 
 	@IsEnum(ChatType)
 	@IsOptional()

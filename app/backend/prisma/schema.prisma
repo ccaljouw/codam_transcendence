@@ -2,26 +2,26 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 // ***************************************************************** //
-//            INSTRUCTION FOR CHANGING DATABASE MODEL
+//						INSTRUCTION FOR CHANGING DATABASE MODEL
 // ***************************************************************** //
 // 1. add new model of change existing model in this file
 // 2. migrate the database by running this command in a running container
-//    $ docker exec -it backend prisma db push
+//		$ docker exec -it backend prisma db push
 // 3. Adjust seed.ts if necessary so that the dummy data can be loaded
-//    conform data definition.
+//		conform data definition.
 // Note: after migration, the database is empty.
 
 // ***************************************************************** //
 //
 
 generator client {
-    provider      = "prisma-client-js"
-    binaryTargets = ["native", "linux-arm64-openssl-3.0.x", "darwin-arm64"]
+	provider			= "prisma-client-js"
+	binaryTargets	= ["native", "linux-arm64-openssl-3.0.x", "darwin-arm64"]
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+	provider	= "postgresql"
+	url				= env("DATABASE_URL")
 }
 
 // ***************************************************************** //
