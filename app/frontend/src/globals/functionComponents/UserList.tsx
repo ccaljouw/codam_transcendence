@@ -8,7 +8,7 @@ interface UserListProps {
 	fetchUrl: string;
 	// updateUnreadCounter?: (val: number) => void;
 	className?: string;
-	refreshTrigger?: boolean;
+	refreshTrigger?: Boolean;
 }
 
 interface UserListContextVars {

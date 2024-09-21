@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, Req, UnauthorizedException } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UpdateChatMessageDto, CreateDMDto, CreateChatMessageDto, FetchChatMessageDto, UpdateInviteDto, FetchChatDto, ChatMessageToRoomDto, UpdateChatDto, UpdateChatUserDto } from '@ft_dto/chat';
 import { ChatMessageService } from '../services/chat-messages.service';
@@ -183,80 +183,81 @@ export class ChatMessagesController {
 		return this.chatMessageService.messageToDB({ chatId: parseInt(payload.room), userId: payload.userId, content: payload.message, inviteId: payload.inviteId }); //replace with api call in frontend?
 	}
 
+
+	//
+
+	// @Patch('changeChatUserRole/:chatId/:userId/:role/:requesterId')
+	// @UseGuards(JwtAuthGuard)
+	//   @ApiOperation({ summary: 'Returns UpdateChatUserDto if role was changed' })
+	//   @ApiOkResponse({ type: UpdateChatUserDto })
+	//   @ApiNotFoundResponse({ description: 'Chatuser not found' })
+	//   async changeChatUserRole(@Req() req: Request | any, @Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('role') role: ChatUserRole, @Param('requesterId', ParseIntPipe) requesterId: number) {
+	//   const user: UserProfileDto = req.user;
+	//   const valid: boolean = user.id === requesterId;
+	//   if (!valid)
+	// 	throw new UnauthorizedException();
+	// 	  const chatUser = await this.chatService.changeChatUserRole(chatId, userId, role, requesterId);
+	// 	  this.chatGateway.sendRefreshMessageToRoom(chatId);
+	// 	  return chatUser;
+	//   }
+	//
+
+
 	// ADMIN AND OWNER ONLY ROUTES **************************************************** //
 	// TODO: check if requester is indeed he owner of the chat
 	@Patch('changeChatUserRole/:chatId/:userId/:role/:requesterId')
+	@UseGuards(JwtAuthGuard)
 	@ApiOperation({ summary: 'Returns UpdateChatUserDto if role was changed' })
 	@ApiOkResponse({ type: UpdateChatUserDto })
 	@ApiNotFoundResponse({ description: 'Chatuser not found' })
-	async changeChatUserRole(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('role') role: ChatUserRole, @Param('requesterId', ParseIntPipe) requesterId: number) {
+	async changeChatUserRole(@Req() req: Request | any, @Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('role') role: ChatUserRole, @Param('requesterId', ParseIntPipe) requesterId: number) {
+		const requesterRole = await this.chatService.getRoleForUserInChat(chatId, requesterId);
+		if (requesterRole !== ChatUserRole.OWNER || req.user.id !== requesterId)
+			throw new UnauthorizedException("Requester is not owner of chat");
 		const chatUser = await this.chatService.changeChatUserRole(chatId, userId, role, requesterId);
 		this.chatGateway.sendRefreshMessageToRoom(chatId);
 		return chatUser;
 	}
 
 	@Get('kickUser/:userId/:userName/:chatId/:requesterId')
+	@UseGuards(JwtAuthGuard)
 	@ApiOperation({ summary: 'Returns boolean if user was kicked' })
 	@ApiOkResponse({ type: Boolean })
 	@ApiNotFoundResponse({ description: 'Chatuser not found' })
-	async kickUser(@Param('userId', ParseIntPipe) userId: number, @Param('userName') userName: string, @Param('chatId', ParseIntPipe) chatId: number, @Param('requesterId', ParseIntPipe) requesterId: number) {
-		const requester = await this.chatService.getChatUser(chatId, requesterId);
-		const kickCandidate = await this.chatService.getChatUser(chatId, userId);
-		if (requester.role === ChatUserRole.DEFAULT)
-		{
-			console.log("Cannot kick: requester has default role and hence no rights");
-			return {kicked: false};
-		}
-		if (requester.role === ChatUserRole.ADMIN && kickCandidate.role === ChatUserRole.OWNER)
-		{
-			console.log("Cannot kick: requester is admin and candidate is owner");
-			return {kicked: false};
-		}
+	async kickUser(@Req() req: Request | any, @Param('userId', ParseIntPipe) userId: number, @Param('userName') userName: string, @Param('chatId', ParseIntPipe) chatId: number, @Param('requesterId', ParseIntPipe) requesterId: number) {
+		// const requesterRole = await this.chatService.getRoleForUserInChat(chatId, requesterId);
+		// if (requesterRole === ChatUserRole.DEFAULT)
+		// 	throw new UnauthorizedException("Requester is not owner or admin of chat");
+		// const kickCandidate = await this.chatService.getChatUser(chatId, userId);
+		// if (requesterRole === ChatUserRole.ADMIN && kickCandidate.role === ChatUserRole.OWNER)
+		// 	throw new UnauthorizedException("Cannot kick: requester is admin and candidate is owner");
+		// if (requesterId !== req.user.id)
+		// 	throw new UnauthorizedException("RequesterID does not match with token");
+		await this.chatService.checkChatUserPrivileges(chatId, userId, requesterId, req.user);
 		await this.chatService.deleteChatUser(chatId, userId);
 		await this.chatGateway.sendActionMessageToRoom(userId, userName, chatId, "KICK");
 		return {kicked: true};
 	}
 
 	@Get('mute/:chatId/:userId/:userName/:requesterId')
+	@UseGuards(JwtAuthGuard)
 	@ApiOperation({ summary: 'Returns user if user was muted' })
 	@ApiOkResponse({ type: UpdateChatUserDto })
 	@ApiNotFoundResponse({ description: 'Chatuser not found' })
-	async mute(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('userName') userName: string, @Param('requesterId', ParseIntPipe) requesterId: number) {
-		const requester = await this.chatService.getChatUser(chatId, requesterId);
-		const muteCandidate = await this.chatService.getChatUser(chatId, userId);
-		if (requester.role === ChatUserRole.DEFAULT)
-		{
-			console.log("Cannot mute: requester has default role and hence no rights");
-			return muteCandidate;
-		}
-		if (requester.role === ChatUserRole.ADMIN && muteCandidate.role === ChatUserRole.OWNER)
-		{
-			console.log("Cannot mute: requester is admin and candidate is owner");
-			return muteCandidate;
-		}
+	async mute(@Req() req: Request | any, @Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('userName') userName: string, @Param('requesterId', ParseIntPipe) requesterId: number) {
+		await this.chatService.checkChatUserPrivileges(chatId, userId, requesterId, req.user);
 		const mutedUser =await this.chatService.muteUser(chatId, userId);
 		await this.chatGateway.sendActionMessageToRoom(userId, userName, chatId, "MUTE");
 		return mutedUser;
 	}
 
 	@Get('ban/:chatId/:userId/:userName/:requesterId')
+	@UseGuards(JwtAuthGuard)
 	@ApiOperation({ summary: 'Returns bool if user was banned' })
 	@ApiOkResponse({ type: Boolean })
 	@ApiNotFoundResponse({ description: 'Chatuser not found' })
-	async ban(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('userName') userName: string, @Param('requesterId', ParseIntPipe) requesterId: number) {
-		console.log("Banning user");
-		const requester = await this.chatService.getChatUser(chatId, requesterId);
-		const banCandidate = await this.chatService.getChatUser(chatId, userId);
-		if (requester.role === ChatUserRole.DEFAULT)
-		{
-			console.log("Cannot ban: requester has default role and hence no rights");
-			return {banned: false};
-		}
-		if (requester.role === ChatUserRole.ADMIN && banCandidate.role === ChatUserRole.OWNER)
-		{
-			console.log("Cannot ban: requester is admin and candidate is owner");
-			return {banned: false};
-		}
+	async ban(@Req() req: Request | any, @Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('userName') userName: string, @Param('requesterId', ParseIntPipe) requesterId: number) {
+		await this.chatService.checkChatUserPrivileges(chatId, userId, requesterId, req.user);
 		await this.chatService.deleteChatUser(chatId, userId);
 		await this.chatService.banUser(chatId, userId);
 		await this.chatGateway.sendActionMessageToRoom(userId, userName, chatId, "BAN");

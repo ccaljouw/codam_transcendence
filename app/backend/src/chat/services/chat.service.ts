@@ -1,4 +1,4 @@
-import { Injectable, Inject, forwardRef } from "@nestjs/common";
+import { Injectable, Inject, forwardRef, UnauthorizedException } from "@nestjs/common";
 import { PrismaService } from "src/database/prisma.service";
 import { CreateDMDto, FetchChatDto, UpdateChatUserDto } from "@ft_dto/chat";
 import { UserProfileDto } from "@ft_dto/users";
@@ -212,16 +212,29 @@ export class ChatService {
 		return chat;
 	}
 
+
+	async getRoleForUserInChat(chatId: number, userId: number): Promise<ChatUserRole> {
+		const chatUser = await this.db.chatUsers.findFirst({
+			where: { chatId, userId }
+		});
+		return chatUser.role;
+	}
+
+
+	async checkChatUserPrivileges(chatId: number, userId, requesterId: number, tokenUser: UserProfileDto): Promise<void> {
+		const requesterRole = await this.getRoleForUserInChat(chatId, requesterId);
+		if (requesterRole === ChatUserRole.DEFAULT)
+			throw new UnauthorizedException("Requester is not owner or admin of chat");
+		const kickCandidate = await this.getChatUser(chatId, userId);
+		if (requesterRole === ChatUserRole.ADMIN && kickCandidate.role === ChatUserRole.OWNER)
+			throw new UnauthorizedException("Cannot kick: requester is admin and candidate is owner");
+		if (requesterId !== tokenUser.id)
+			throw new UnauthorizedException("RequesterID does not match with token");
+	}
+
+
 	// todo: check if requester is owner
 	async changeChatUserRole(chatId: number, userId: number, role: ChatUserRole, requesterId: number): Promise<UpdateChatUserDto> {
-		// *** not sure if this the correct way to check if the requester is the owner of the chat, might need to use Guards instead *** //
-		const chat = await this.db.chat.findUnique({
-			where: { id: chatId }
-		});
-		if (chat.ownerId != requesterId) {
-			throw new Error("Only the owner of the chat can change user roles");
-		}
-		// *********************************************************************************************************************** //
 		const chatUser = await this.db.chatUsers.update({
 			where: { chatId_userId: { chatId, userId } },
 			data: { role }

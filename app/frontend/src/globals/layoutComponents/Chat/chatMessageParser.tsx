@@ -63,9 +63,9 @@ export const messageParser = (
 				userKickedCallback(-3);
 				return <>{'<<'} You were banned from the chat {'>>'}</>
 			case "LEAVE":
-				return null;
+				return <></>;
 			case "JOIN":
-				return null;
+				return <></>;
 		}
 	}
 	if (message.inviteId) {
