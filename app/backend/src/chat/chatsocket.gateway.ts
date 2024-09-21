@@ -157,4 +157,21 @@ export class ChatSocketGateway {
 		return true;
 	}
 
+	async joinRoomInSocket(userId: number, chatId: number, socketClientId: string) {
+		const client : Socket = this.chat_io.sockets.sockets.get(socketClientId);
+		if (!client) return false;
+		await client.join(chatId.toString());
+	}
+
+	sendJoinMessageToRoom(userId: number, userName: string, chatId: number) {
+		const joinMessage: ChatMessageToRoomDto = {
+			userId: userId,
+			userName: userName,
+			room: chatId.toString(),
+			message: "JOIN",
+			action: true
+		};
+		this.chat_io.to(chatId.toString()).emit('chat/messageFromRoom', joinMessage);
+	}
+
 }

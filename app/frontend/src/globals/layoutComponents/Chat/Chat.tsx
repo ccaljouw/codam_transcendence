@@ -140,7 +140,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		chatInviteFetcher: chatInviteFetcher,
 		changeRoomStatusCallback: changeRoomStatusCallBack,
 		userKickedCallback: userKickedCallback
-	}), [currentChatRoom, currentUser]);
+	};
 
 	const handleMessageFromRoom = (payload: ChatMessageToRoomDto) => {
 		console.log("Message from room: ", payload,);

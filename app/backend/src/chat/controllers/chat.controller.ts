@@ -9,6 +9,7 @@ import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { JwtChatGuard } from 'src/authentication/guard/chat.guard';
 import { ChatUserRole } from '@prisma/client';
 import { ChatSocketGateway } from '../chatsocket.gateway';
+import { PrismaService } from 'src/database/prisma.service';
 
 
 @Controller('chat')
@@ -18,7 +19,8 @@ export class ChatMessagesController {
 		private readonly chatMessageService: ChatMessageService,
 		private readonly chatSocketService: ChatSocketService,
 		private readonly chatService: ChatService,
-		private readonly chatGateway: ChatSocketGateway
+		private readonly chatGateway: ChatSocketGateway,
+		private readonly db: PrismaService
 	) { }
 
 	@Get('messages/unreadsforuser/:userId')
@@ -138,9 +140,16 @@ export class ChatMessagesController {
 	@ApiOkResponse({ type: Number })
 	@ApiNotFoundResponse({ description: 'No chat with #${chatId}' })
 	async joinRoomInDb(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('token') token: string) {
-
+		const chatUser = await this.chatService.getChatUser(chatId, userId);
+		const user = await this.db.user.findUnique({ where: { id: userId } });
 		const socketUpdate = await this.chatSocketService.changeChatUserStatus({ token: token, userId: userId, chatId: chatId, isInChatRoom: true });
 		const unreadUpdate = await this.chatMessageService.resetUnreadMessages({ userId: userId, chatId: chatId });
+		await this.chatGateway.joinRoomInSocket(userId, chatId, token);
+		if (!chatUser?.isInChatRoom)
+		{
+			// emit message to room that user has joined
+			this.chatGateway.sendJoinMessageToRoom(userId, user.userName, chatId);
+		}
 		if (socketUpdate && unreadUpdate)
 			return chatId;
 		return -1;

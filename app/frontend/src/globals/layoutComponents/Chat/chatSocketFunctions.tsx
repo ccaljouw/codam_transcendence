@@ -50,14 +50,14 @@ export const joinRoom = (
 		leaveRoom(currentUserId, currentChatRoom, currentUser, () => { });
 	}
 	console.log("Joining room", chatToJoin);
-	const statusChangeMsg: ChatMessageToRoomDto = {
-		userId: currentUserId,
-		userName: currentUser.userName,
-		room: chatToJoin.id.toString(),
-		message: `<< ${currentUser.userName} has joined the chat >>`,
-		action: true
-	};
-	transcendenceSocket.emit('chat/joinRoom', statusChangeMsg);
+	// const statusChangeMsg: ChatMessageToRoomDto = {
+	// 	userId: currentUserId,
+	// 	userName: currentUser.userName,
+	// 	room: chatToJoin.id.toString(),
+	// 	message: `<< ${currentUser.userName} has joined the chat >>`,
+	// 	action: true
+	// };
+	// transcendenceSocket.emit('chat/joinRoom', statusChangeMsg);
 
 	// this function sets the user online in the database
 	chatRoomFetcher({ url: constants.CHAT_JOIN_ROOM_IN_DB + chatToJoin.id + '/' + currentUserId + '/' + transcendenceSocket.id });
