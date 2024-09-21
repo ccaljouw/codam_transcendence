@@ -2,7 +2,7 @@ import myThemes from '../pongThemes.json'
 import myConfig from '../pongConfig.json'
 
 //turn on or of console logging for the game script here
-export const logging = true;
+export const logging = false;
 
 type Theme = {
 	leftPaddleColor: string;
