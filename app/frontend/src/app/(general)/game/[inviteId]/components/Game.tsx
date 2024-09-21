@@ -7,10 +7,9 @@ import { InstanceTypes } from '@ft_game/utils/constants.ts'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { constants } from '@ft_global/constants.globalvar.tsx'
 import useFetch from 'src/globals/functionComponents/useFetch.tsx'
-import styles from '../styles.module.css';
-import { useRouter } from 'next/navigation';
+import styles from '../styles.module.css'
+import { useRouter } from 'next/navigation'
 import { TranscendenceContext } from 'src/globals/contextprovider.globalvar'
-import { abort } from 'process'
 
 // GameComponent is a functional component that renders the game canvas and handles game logic
 export default function GameComponent({inviteId}: {inviteId: number}) {
@@ -35,65 +34,56 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
   }
   
   function abortGame() {
-    console.log("GameComponent: aborting game");
-      const payload: UpdateGameStateDto = {id: roomId, state: GameState.ABORTED};
-      gameSocket.emit("game/updateGameState", payload);
+		if (game) 
+			if (canvasRef.current) {
+				game.cleanCanvas();
+			}
+			if (
+				game?.gameState === GameState.WAITING ||
+				game?.gameState === GameState.READY_TO_START ||
+				game?.gameState === GameState.STARTED) {
+							console.log("GameComponent: aborting game");
+							const payload: UpdateGameStateDto = {id: roomId, state: GameState.ABORTED};
+							gameSocket.emit("game/updateGameState", payload);
+				}		
   }
   
-  function handleClick() {
-    console.log("GameComponent: leaving game");
-    game?.cleanCanvas();
-    abortGame();
-    router.push('/play');
-  }
+	function handleClick() {
+		if (waitingForPlayers) {
+			console.log(`GameComponent: leaving waiting room`);
+			const payload: UpdateGameStateDto = {id: roomId, state: GameState.ABORTED};
+			gameSocket.emit("game/updateGameState", payload);
+		}
+		router.push('/play');
+	}
 
 	// cleanup on beforeunload and visibilitychange
 	useEffect(() => {
-
-		const cleanUpGame = () => {
-			console.log("GameComponent: cleaning up game");
 	
-			// Clear the canvas and abort the game if it's still active
-			if (game && canvasRef.current) {
-				game.cleanCanvas();
-				abortGame();
-			}
-		};
-		
 		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
 			console.log("GameComponent: before unload event, cleaning up resources");
-			cleanUpGame();
+			abortGame();
 		};
 
 		const handleVisibilityChange = () => {
 			console.log("GameComponent: visibility change event, cleaning up resources");
 			if (document.hidden) {
-				cleanUpGame();
+				abortGame();
 			}
 		};
 
 		window.addEventListener('beforeunload', handleBeforeUnload);
 		document.addEventListener('visibilitychange', handleVisibilityChange);
 
+		//on unmount
 		return () => {
-			cleanUpGame();
+			console.log("GameComponent: cleaning up resources");
+			abortGame();
 			window.removeEventListener('beforeunload', handleBeforeUnload);
 			document.removeEventListener('visibilitychange', handleVisibilityChange);
 		};
 	}
 	, [game]);
-
-  // cleanup on unmount
-  useEffect(() => {
-    return () => {
-      console.log("GameComponent: cleaning up game");
-      if (game && [GameState.WAITING, GameState.READY_TO_START, GameState.STARTED]) {
-        game.cleanCanvas();
-				abortGame();
-      }
-    }
-  }, [game]);
-
 
   // fetch game data
   useEffect(() => {
@@ -148,13 +138,12 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 		
 		const handleMessage = (msg: string) => {
 			console.log(`GameComponent: received message: "${msg}"`);
-			if (!loadingGame && fetchedGameData?.state === GameState.WAITING && fetchedGameData?.id) {//!game && instanceType === InstanceTypes.notSet && !loadingGame && fetchedGameData?.GameUsers?.length < 2 && 
+			if (fetchedGameData?.state === GameState.WAITING && fetchedGameData?.id) {
 				console.log("GameComponent: less than two players in game, refreshing game data, gameid:", fetchedGameData.id);
 				gameFetcher({url: `${constants.API_GAME}${fetchedGameData.id}`});
 			}
 		};
 
-		
 		const handleGameStateUpdate = (payload: UpdateGameStateDto) => {
 			if (!game) {
 				if (payload.state === GameState.REJECTED) {
@@ -208,7 +197,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 				fetchedGameData!,
 				constants.config, // config
 				constants.themes[fetchedGameData?.GameUsers?.[instanceType].user?.theme || 0], // theme
-				fetchedGameData?.GameUsers?.[instanceType].user?.volume || 0.5, //volume
+				fetchedGameData?.GameUsers?.[instanceType].user?.volume || -0.5, //volume
 				aiLevel // AI level > todo: implement AI level button and backend. 0 = not an ai game 0.1 > 1 is level
 			);
 			setGame(newGame);
