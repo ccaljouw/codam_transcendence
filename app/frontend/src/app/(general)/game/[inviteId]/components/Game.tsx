@@ -191,13 +191,22 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 		if (!game && canvasRef.current && instanceType !== InstanceTypes.notSet) {
 			console.log("GameComponent: creating game instance of type: ", instanceType);
 			// set required configuration in constants
+			let newVolume, newTheme;
+			if (fetchedGameData?.GameUsers?.[instanceType].user) {
+				newVolume = fetchedGameData?.GameUsers?.[instanceType].user.volume;
+				newTheme = fetchedGameData?.GameUsers?.[instanceType].user.theme;
+			}else {
+				newVolume = -0.5;
+				newTheme = 0;
+			}
+
 			const newGame = new Game(
 				canvasRef.current,
 				instanceType,
 				fetchedGameData!,
 				constants.config, // config
-				constants.themes[fetchedGameData?.GameUsers?.[instanceType].user?.theme || 0], // theme
-				fetchedGameData?.GameUsers?.[instanceType].user?.volume || -0.5, //volume
+				constants.themes[newTheme], // theme
+				newVolume, //volume
 				aiLevel // AI level > todo: implement AI level button and backend. 0 = not an ai game 0.1 > 1 is level
 			);
 			setGame(newGame);
