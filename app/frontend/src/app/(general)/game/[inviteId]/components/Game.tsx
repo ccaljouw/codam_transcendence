@@ -191,14 +191,13 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 		if (!game && canvasRef.current && instanceType !== InstanceTypes.notSet) {
 			console.log("GameComponent: creating game instance of type: ", instanceType);
 			// set required configuration in constants
-			let newVolume, newTheme;
-			if (fetchedGameData?.GameUsers?.[instanceType].user) {
+			let newVolume = 0.5;
+			let newTheme = 0;
+			if (fetchedGameData?.GameUsers?.[instanceType].user?.volume !== undefined)
 				newVolume = fetchedGameData?.GameUsers?.[instanceType].user.volume;
+			if (fetchedGameData?.GameUsers?.[instanceType].user?.theme !== undefined)
 				newTheme = fetchedGameData?.GameUsers?.[instanceType].user.theme;
-			}else {
-				newVolume = -0.5;
-				newTheme = 0;
-			}
+			
 
 			const newGame = new Game(
 				canvasRef.current,
