@@ -47,7 +47,7 @@ async function addDummyUsers() {
   });
 
   const user2 = await prisma.user.upsert({
-    where: { loginName: 'avan-and-socket' },
+    where: { loginName: 'avanand' },
     update: {},
     create: {
       userName: 'AwesomeSocketCreator',
