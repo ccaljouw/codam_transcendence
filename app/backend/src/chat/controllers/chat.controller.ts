@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, Req, UnauthorizedException } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UpdateChatMessageDto, CreateDMDto, CreateChatMessageDto, FetchChatMessageDto, UpdateInviteDto, FetchChatDto, ChatMessageToRoomDto, UpdateChatDto, UpdateChatUserDto } from '@ft_dto/chat';
 import { ChatMessageService } from '../services/chat-messages.service';
@@ -7,6 +7,9 @@ import { ChatSocketService } from '../services/chatsocket.service';
 import { UserProfileDto } from '@ft_dto/users';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { JwtChatGuard } from 'src/authentication/guard/chat.guard';
+import { ChatUserRole } from '@prisma/client';
+import { ChatSocketGateway } from '../chatsocket.gateway';
+import { PrismaService } from 'src/database/prisma.service';
 
 
 @Controller('chat')
@@ -16,6 +19,8 @@ export class ChatMessagesController {
 		private readonly chatMessageService: ChatMessageService,
 		private readonly chatSocketService: ChatSocketService,
 		private readonly chatService: ChatService,
+		private readonly chatGateway: ChatSocketGateway,
+		private readonly db: PrismaService
 	) { }
 
 	@Get('messages/unreadsforuser/:userId')
@@ -135,9 +140,16 @@ export class ChatMessagesController {
 	@ApiOkResponse({ type: Number })
 	@ApiNotFoundResponse({ description: 'No chat with #${chatId}' })
 	async joinRoomInDb(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('token') token: string) {
-
+		const chatUser = await this.chatService.getChatUser(chatId, userId);
+		const user = await this.db.user.findUnique({ where: { id: userId } });
 		const socketUpdate = await this.chatSocketService.changeChatUserStatus({ token: token, userId: userId, chatId: chatId, isInChatRoom: true });
 		const unreadUpdate = await this.chatMessageService.resetUnreadMessages({ userId: userId, chatId: chatId });
+		await this.chatGateway.joinRoomInSocket(userId, chatId, token);
+		if (!chatUser?.isInChatRoom)
+		{
+			// emit message to room that user has joined
+			this.chatGateway.sendJoinMessageToRoom(userId, user.userName, chatId);
+		}
 		if (socketUpdate && unreadUpdate)
 			return chatId;
 		return -1;
@@ -149,6 +161,8 @@ export class ChatMessagesController {
 	@ApiNotFoundResponse({ description: 'No chat with #${chatId}' })
 	async getChatName(@Param('chatId', ParseIntPipe) chatId: number) {
 		const chat = await this.chatService.findOne(chatId);
+		if (!chat)
+			return {name: "Chat not found"};
 		return {name: chat.name};
 	}
 
@@ -165,8 +179,92 @@ export class ChatMessagesController {
 	@ApiOkResponse({ type: Number })
 	messageToDB(@Body() payload: ChatMessageToRoomDto) {
 		console.log("Sending message to db");
+		// chat
 		return this.chatMessageService.messageToDB({ chatId: parseInt(payload.room), userId: payload.userId, content: payload.message, inviteId: payload.inviteId }); //replace with api call in frontend?
 	}
+
+
+	//
+
+	// @Patch('changeChatUserRole/:chatId/:userId/:role/:requesterId')
+	// @UseGuards(JwtAuthGuard)
+	//   @ApiOperation({ summary: 'Returns UpdateChatUserDto if role was changed' })
+	//   @ApiOkResponse({ type: UpdateChatUserDto })
+	//   @ApiNotFoundResponse({ description: 'Chatuser not found' })
+	//   async changeChatUserRole(@Req() req: Request | any, @Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('role') role: ChatUserRole, @Param('requesterId', ParseIntPipe) requesterId: number) {
+	//   const user: UserProfileDto = req.user;
+	//   const valid: boolean = user.id === requesterId;
+	//   if (!valid)
+	// 	throw new UnauthorizedException();
+	// 	  const chatUser = await this.chatService.changeChatUserRole(chatId, userId, role, requesterId);
+	// 	  this.chatGateway.sendRefreshMessageToRoom(chatId);
+	// 	  return chatUser;
+	//   }
+	//
+
+
+	// ADMIN AND OWNER ONLY ROUTES **************************************************** //
+	// TODO: check if requester is indeed he owner of the chat
+	@Patch('changeChatUserRole/:chatId/:userId/:role/:requesterId')
+	@UseGuards(JwtAuthGuard)
+	@ApiOperation({ summary: 'Returns UpdateChatUserDto if role was changed' })
+	@ApiOkResponse({ type: UpdateChatUserDto })
+	@ApiNotFoundResponse({ description: 'Chatuser not found' })
+	async changeChatUserRole(@Req() req: Request | any, @Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('role') role: ChatUserRole, @Param('requesterId', ParseIntPipe) requesterId: number) {
+		const requesterRole = await this.chatService.getRoleForUserInChat(chatId, requesterId);
+		if (requesterRole !== ChatUserRole.OWNER || req.user.id !== requesterId)
+			throw new UnauthorizedException("Requester is not owner of chat");
+		const chatUser = await this.chatService.changeChatUserRole(chatId, userId, role, requesterId);
+		this.chatGateway.sendRefreshMessageToRoom(chatId);
+		return chatUser;
+	}
+
+	@Get('kickUser/:userId/:userName/:chatId/:requesterId')
+	@UseGuards(JwtAuthGuard)
+	@ApiOperation({ summary: 'Returns boolean if user was kicked' })
+	@ApiOkResponse({ type: Boolean })
+	@ApiNotFoundResponse({ description: 'Chatuser not found' })
+	async kickUser(@Req() req: Request | any, @Param('userId', ParseIntPipe) userId: number, @Param('userName') userName: string, @Param('chatId', ParseIntPipe) chatId: number, @Param('requesterId', ParseIntPipe) requesterId: number) {
+		// const requesterRole = await this.chatService.getRoleForUserInChat(chatId, requesterId);
+		// if (requesterRole === ChatUserRole.DEFAULT)
+		// 	throw new UnauthorizedException("Requester is not owner or admin of chat");
+		// const kickCandidate = await this.chatService.getChatUser(chatId, userId);
+		// if (requesterRole === ChatUserRole.ADMIN && kickCandidate.role === ChatUserRole.OWNER)
+		// 	throw new UnauthorizedException("Cannot kick: requester is admin and candidate is owner");
+		// if (requesterId !== req.user.id)
+		// 	throw new UnauthorizedException("RequesterID does not match with token");
+		await this.chatService.checkChatUserPrivileges(chatId, userId, requesterId, req.user);
+		await this.chatService.deleteChatUser(chatId, userId);
+		await this.chatGateway.sendActionMessageToRoom(userId, userName, chatId, "KICK");
+		return {kicked: true};
+	}
+
+	@Get('mute/:chatId/:userId/:userName/:requesterId')
+	@UseGuards(JwtAuthGuard)
+	@ApiOperation({ summary: 'Returns user if user was muted' })
+	@ApiOkResponse({ type: UpdateChatUserDto })
+	@ApiNotFoundResponse({ description: 'Chatuser not found' })
+	async mute(@Req() req: Request | any, @Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('userName') userName: string, @Param('requesterId', ParseIntPipe) requesterId: number) {
+		await this.chatService.checkChatUserPrivileges(chatId, userId, requesterId, req.user);
+		const mutedUser =await this.chatService.muteUser(chatId, userId);
+		await this.chatGateway.sendActionMessageToRoom(userId, userName, chatId, "MUTE");
+		return mutedUser;
+	}
+
+	@Get('ban/:chatId/:userId/:userName/:requesterId')
+	@UseGuards(JwtAuthGuard)
+	@ApiOperation({ summary: 'Returns bool if user was banned' })
+	@ApiOkResponse({ type: Boolean })
+	@ApiNotFoundResponse({ description: 'Chatuser not found' })
+	async ban(@Req() req: Request | any, @Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('userName') userName: string, @Param('requesterId', ParseIntPipe) requesterId: number) {
+		await this.chatService.checkChatUserPrivileges(chatId, userId, requesterId, req.user);
+		await this.chatService.deleteChatUser(chatId, userId);
+		await this.chatService.banUser(chatId, userId);
+		await this.chatGateway.sendActionMessageToRoom(userId, userName, chatId, "BAN");
+		return {banned: true};
+	}
+
+	// END ADMIN AND OWNER ONLY ROUTES **************************************************** //
 
 	@Patch(':id')
 	@ApiOperation({ summary: 'Updates chat with specified id' })
@@ -188,6 +286,7 @@ export class ChatMessagesController {
 		const chat = await this.chatService.findOne(chatId);
 		return chat;
 	}
+
 
 	//todo: Albert: Create patch and delete method for UpdateChatDto. Return boolean if it worked or not
 	// @Patch(':id')

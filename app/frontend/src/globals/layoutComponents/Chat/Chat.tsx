@@ -123,6 +123,12 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 			newUserForChannelFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + userId });
 		}
 	};
+	
+	const userKickedCallback = (channel: number) => {
+		console.log("Kick callback: ", channel);
+		leaveRoom(currentUser.id, currentChatRoom, currentUser, setCurrentChatRoom);
+		setNewChatRoom({ room: channel, count: newChatRoom.count + 1 });
+	}
 
 	const messageParserProps: parserProps = {
 		inviteCallback: inviteCallback,
@@ -132,7 +138,8 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		friendInviteFetcher: friendInviteFetcher,
 		gameInviteFetcher: gameInviteFetcher,
 		chatInviteFetcher: chatInviteFetcher,
-		changeRoomStatusCallback: changeRoomStatusCallBack
+		changeRoomStatusCallback: changeRoomStatusCallBack,
+		userKickedCallback: userKickedCallback
 	};
 
 	const handleMessageFromRoom = (payload: ChatMessageToRoomDto) => {
@@ -199,7 +206,6 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		else if (chatId && chatId !== -1) // If we have a chatid, we need to fetch the chat messages for it
 		{
 			fetchChat(chatFetcher, chatId, currentUser.id);
-
 		}
 		chatSocket.on('chat/messageFromRoom', handleMessageFromRoom);
 		chatSocket.on('invite/inviteResponse', (payload: InviteSocketMessageDto) => { inviteResponseHandler(payload, currentUser, currentChatRoom, chatMessagesFetcher, friendInviteFetcher, newChatRoom, setNewChatRoom, switchToChannelCounter, setSwitchToChannelCounter) });
@@ -318,13 +324,17 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 							Password protected.
 							<form method="POST" onSubmit={(e) => {
 								e.preventDefault();
-								chatAuthFetcher({ url: constants.API_AUTH_CHAT, fetchMethod: 'POST', payload: { chatId: (chatId? chatId : -1), pwd: e.currentTarget.password.value } });
+								chatAuthFetcher({ url: constants.API_AUTH_CHAT, fetchMethod: 'POST', payload: { chatId: (chatId? chatId: -1), pwd: e.currentTarget.password.value } });
 							}}>
 								<input type="password" name="password" />
 								<button type="submit">Submit</button>
 							</form>
 						</>
-						: <>Error loading chat <br />{chatError.message}</>)
+						: 
+						(
+						chatError.message == "401 - User is banned from chat" ?
+						<>You are banned from this chat.</>
+						: <>Error loading chat <br />{chatError.message}</>))
 				}
 				{chatFromDb && <>
 					<div className="chat-title">

@@ -8,6 +8,7 @@ interface UserListProps {
 	fetchUrl: string;
 	// updateUnreadCounter?: (val: number) => void;
 	className?: string;
+	refreshTrigger?: Boolean;
 }
 
 interface UserListContextVars {
@@ -32,8 +33,9 @@ export default function UserList(props: UserListProps): JSX.Element {
 	
 	// fetch users on mount
 	useEffect(() => {
+		console.log("fetching users: ", props);
 		fetchUsers();
-	}, []);
+	}, [props.refreshTrigger]);
 
 	useEffect(() => { // update userlist when usersFromDb is fetched
 		if (usersFromDb != null) {

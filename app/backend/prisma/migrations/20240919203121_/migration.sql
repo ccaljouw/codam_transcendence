@@ -27,6 +27,7 @@ CREATE TABLE "User" (
     "twoFactEnabled" BOOLEAN NOT NULL DEFAULT false,
     "avatarUrl" TEXT DEFAULT 'http://localhost:3001/avatar/favicon.ico',
     "theme" INTEGER NOT NULL DEFAULT 0,
+    "volume" DOUBLE PRECISION NOT NULL DEFAULT 0.5,
     "online" "OnlineStatus" NOT NULL DEFAULT 'OFFLINE',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -71,6 +72,16 @@ CREATE TABLE "Chat" (
 );
 
 -- CreateTable
+CREATE TABLE "BannedUsersForChat" (
+    "id" SERIAL NOT NULL,
+    "chatId" INTEGER NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "BannedUsersForChat_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "ChatUsers" (
     "id" SERIAL NOT NULL,
     "chatId" INTEGER NOT NULL,
@@ -79,6 +90,7 @@ CREATE TABLE "ChatUsers" (
     "role" "ChatUserRole" NOT NULL DEFAULT 'DEFAULT',
     "isInChatRoom" BOOLEAN NOT NULL DEFAULT false,
     "unreadMessages" INTEGER NOT NULL DEFAULT 0,
+    "mutedUntil" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -194,6 +206,9 @@ CREATE UNIQUE INDEX "Tokens_token_key" ON "Tokens"("token");
 CREATE UNIQUE INDEX "Auth_userId_key" ON "Auth"("userId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "BannedUsersForChat_chatId_userId_key" ON "BannedUsersForChat"("chatId", "userId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "ChatUsers_chatId_userId_key" ON "ChatUsers"("chatId", "userId");
 
 -- CreateIndex
@@ -228,6 +243,12 @@ ALTER TABLE "Tokens" ADD CONSTRAINT "Tokens_userId_fkey" FOREIGN KEY ("userId") 
 
 -- AddForeignKey
 ALTER TABLE "Auth" ADD CONSTRAINT "Auth_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BannedUsersForChat" ADD CONSTRAINT "BannedUsersForChat_chatId_fkey" FOREIGN KEY ("chatId") REFERENCES "Chat"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BannedUsersForChat" ADD CONSTRAINT "BannedUsersForChat_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ChatUsers" ADD CONSTRAINT "ChatUsers_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

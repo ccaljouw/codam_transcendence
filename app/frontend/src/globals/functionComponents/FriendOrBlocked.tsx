@@ -6,7 +6,7 @@ import { UserProfileDto } from "@ft_dto/users";
 //
 
 export const IsFriend = (idToTest: number, user : UserProfileDto) : boolean => {
-	if (!user.friends)
+	if (!user || !user.friends)
 		return false;
 	for (const friend of user.friends as UserProfileDto[]) {
 		// console.log("checking friend", friend.id, idToTest);

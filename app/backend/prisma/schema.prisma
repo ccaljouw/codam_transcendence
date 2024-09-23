@@ -28,214 +28,234 @@ datasource db {
 //			MODELS
 
 model User {
-	id				Int			@id @default(autoincrement())
-	loginName String	@unique
+    id        Int    @id @default(autoincrement())
+    loginName String @unique
 
-	userName				String? @unique //if no userName is provided loginName is used
-	email						String? //changed to not uni1que by carien
-	firstName				String?
-	lastName				String?
-	auth						Auth?
-	token						Tokens[]
+    userName  String?  @unique //if no userName is provided loginName is used
+    email     String?
+    firstName String?
+    lastName  String?
+    auth      Auth?
+    token     Tokens[]
 
-	twoFactEnabled	Boolean				@default(false)
-	avatarUrl				String?				@default("http://localhost:3001/avatar/favicon.ico")
-	theme						Int						@default(0)
-	volume					Float					@default(0.5)
-	online					OnlineStatus	@default(OFFLINE)
+    twoFactEnabled Boolean      @default(false)
+    avatarUrl      String?      @default("http://localhost:3001/avatar/favicon.ico")
+    theme          Int          @default(0)
+    volume         Float        @default(0.5)
+    online         OnlineStatus @default(OFFLINE)
 
-	chats ChatUsers[]
-	games GameUser[]
-	stats Stats?
+    chats ChatUsers[]
+    games GameUser[]
+    stats Stats?
 
-	friends User[]		@relation("Friends")
-	friendOf User[]		@relation("Friends")
+    friends  User[] @relation("Friends")
+    friendOf User[] @relation("Friends")
 
-	blocked User[]		@relation("Blocked")
-	blockedBy User[]	@relation("Blocked")
+    blocked   User[] @relation("Blocked")
+    blockedBy User[] @relation("Blocked")
 
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
+    blockedChats BannedUsersForChat[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model Tokens {
-	id			Int			@id @default(autoincrement())
-	token		String	@unique
-	userId	Int
-	chatId	Int?
+    id     Int    @id @default(autoincrement())
+    token  String @unique
+    userId Int
+    chatId Int?
 
-	createdAt	DateTime	@default(now())
-	updatedAt	DateTime	@updatedAt
-	user			User			@relation(fields: [userId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id])
 }
 
 model Auth {
-	id		 Int		@id @default(autoincrement())
-	userId Int		@unique
+    id     Int @id @default(autoincrement())
+    userId Int @unique
 
-	pwd						String?
-	twoFactSecret	String?
+    pwd           String?
+    twoFactSecret String?
 
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
-	user			User		 @relation(fields: [userId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id])
 }
 
 model Chat {
-	id					Int				@id @default(autoincrement())
-	ownerId			Int				@default(-1)
-	visibility	ChatType	@default(PUBLIC)
-	name				String		@default("")
+    id         Int      @id @default(autoincrement())
+    ownerId    Int      @default(-1)
+    visibility ChatType @default(PUBLIC)
+    name       String   @default("")
 
-	createdAt	DateTime		@default(now())
-	updatedAt	DateTime		@updatedAt
-	users			ChatUsers[]
-	messages	ChatMessages[]
-	chatAuth	ChatAuth?
+    createdAt DateTime       @default(now())
+    updatedAt DateTime       @updatedAt
+    users     ChatUsers[]
+    messages  ChatMessages[]
+    chatAuth  ChatAuth?
+
+    blockedUsers BannedUsersForChat[]
+}
+
+model BannedUsersForChat {
+    id     Int @id @default(autoincrement())
+    chatId Int
+    userId Int
+
+    createAt DateTime @default(now())
+
+    chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([chatId, userId])
 }
 
 model ChatUsers {
-	id							Int						@id @default(autoincrement())
-	chatId					Int
-	userId					Int
-	lastRead				DateTime
-	role						ChatUserRole	@default(DEFAULT)
-	isInChatRoom		Boolean				@default(false)
-	unreadMessages	Int						@default(0)
+    id             Int          @id @default(autoincrement())
+    chatId         Int
+    userId         Int
+    lastRead       DateTime
+    role           ChatUserRole @default(DEFAULT)
+    isInChatRoom   Boolean      @default(false)
+    unreadMessages Int          @default(0)
+    mutedUntil     DateTime?
 
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
-	user			User		 @relation(fields: [userId], references: [id], onDelete: Cascade)
-	chat			Chat		 @relation(fields: [chatId], references: [id], onDelete: Cascade)
-	@@unique([chatId, userId])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+    @@unique([chatId, userId])
 }
 
 model ChatMessages {
-	id			Int		@id @default(autoincrement())
-	content String
-	chatId	Int
-	userId	Int
+    id      Int    @id @default(autoincrement())
+    content String
+    chatId  Int
+    userId  Int
 
-	createdAt		DateTime @default(now())
-	updatedAt		DateTime @updatedAt
-	chat				Chat		 @relation(fields: [chatId], references: [id], onDelete: Cascade)
-	invite			Invite?	@relation(fields: [inviteId], references: [id])
-	inviteId		Int? @unique
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+    invite    Invite?  @relation(fields: [inviteId], references: [id])
+    inviteId  Int?     @unique
 }
 
 model ChatAuth {
-	id		 Int		@id @default(autoincrement())
-	chatId Int		@unique	
+    id     Int @id @default(autoincrement())
+    chatId Int @unique
 
-	pwd		String?
+    pwd String?
 
- 	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
-	chat			Chat		 @relation(fields: [chatId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    chat      Chat     @relation(fields: [chatId], references: [id])
 }
 
 model Game {
-	id							Int				@id @default(autoincrement())
-	state						GameState
-	GameUsers				GameUser[]
-	longestRally		Int				@default(0)
-	winnerId				Int?
-	inviteId				Int?			@unique @default(0)
-	
-	gameStartedAt		DateTime?
-	gameFinishedAt	DateTime?
-	createdAt				DateTime @default(now())
-	updatedAt				DateTime @updatedAt
+    id           Int        @id @default(autoincrement())
+    state        GameState
+    GameUsers    GameUser[]
+    longestRally Int        @default(0)
+    winnerId     Int?
+    inviteId     Int?       @unique @default(0)
+
+    gameStartedAt  DateTime?
+    gameFinishedAt DateTime?
+    createdAt      DateTime  @default(now())
+    updatedAt      DateTime  @updatedAt
 }
 
 model GameUser {
-	id				Int			@id @default(autoincrement())
-	clientId	String
-	player		Int
-	score			Int			@default(0)
+    id       Int    @id @default(autoincrement())
+    clientId String
+    player   Int
+    score    Int    @default(0)
 
-	gameId	Int
-	game		Game @relation(fields: [gameId], references: [id])
+    gameId Int
+    game   Game @relation(fields: [gameId], references: [id])
 
-	userId	Int
-	user		User @relation(fields: [userId], references: [id])
-	@@unique([gameId, player])
+    userId Int
+    user   User @relation(fields: [userId], references: [id])
+
+    @@unique([gameId, player])
 }
 
 model Invite {
-	id					Int	@id @default(autoincrement())
-	chatId			Int
-	senderId		Int
-	recipientId	Int
+    id          Int @id @default(autoincrement())
+    chatId      Int
+    senderId    Int
+    recipientId Int
 
-	state		InviteStatus @default(SENT)
-	type		InviteType
+    state InviteStatus @default(SENT)
+    type  InviteType
 
-	createdAt		DateTime @default(now())
-	updatedAt		DateTime @updatedAt
-	expiredAt		DateTime @default(now()) //change\\
-	chatMessage	ChatMessages? @relation()
-//	 chatMessageId Int?
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+    expiredAt   DateTime      @default(now()) //change\\
+    chatMessage ChatMessages? @relation()
+    //   chatMessageId Int?
 }
 
 // stats tracked to monitor achievements and rank
 model Stats {
-	id									Int @id @default(autoincrement())
-	userId							Int @unique
-	wonLastGame					Boolean @default(false)
-	wins								Int @default(0)
-	losses							Int @default(0)
-	winLossRatio				Float @default(1)
-	consecutiveWins			Int @default(0)
-	maxConsecutiveWins	Int @default(0)
-	ladderPosition			Int[]
-	achievements				Int[]
+    id                 Int     @id @default(autoincrement())
+    userId             Int     @unique
+    wonLastGame        Boolean @default(false)
+    wins               Int     @default(0)
+    losses             Int     @default(0)
+    winLossRatio       Float   @default(1)
+    consecutiveWins    Int     @default(0)
+    maxConsecutiveWins Int     @default(0)
+    ladderPosition     Int[]
+    achievements       Int[]
 
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
-	user			User		 @relation(fields: [userId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id])
 }
 
 // ***************************************************************** //
 //			ENUMS
 
 enum OnlineStatus {
-	OFFLINE
-	IN_GAME
-	ONLINE
+    OFFLINE
+    IN_GAME
+    ONLINE
 }
 
 enum ChatType {
-	DM
-	PRIVATE
-	PROTECTED
-	PUBLIC
+    DM
+    PRIVATE
+    PROTECTED
+    PUBLIC
 }
 
 enum ChatUserRole {
-	DEFAULT
-	ADMIN
-	OWNER
+    DEFAULT
+    ADMIN
+    OWNER
 }
 
 enum GameState {
-	WAITING
-	READY_TO_START
-	STARTED
-	FINISHED
-	ABORTED
-	REJECTED
+    WAITING
+    READY_TO_START
+    STARTED
+    FINISHED
+    ABORTED
+    REJECTED
 }
 
 enum InviteType {
-	FRIEND
-	CHAT
-	GAME
+    FRIEND
+    CHAT
+    GAME
 }
 
 enum InviteStatus {
-	SENT
-	ACCEPTED
-	REJECTED
-	EXPIRED
+    SENT
+    ACCEPTED
+    REJECTED
+    EXPIRED
 }

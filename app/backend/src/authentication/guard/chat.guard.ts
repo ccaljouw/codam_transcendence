@@ -24,6 +24,16 @@ export class JwtChatGuard implements CanActivate {
 		})
 		if (!chat)
 			throw new NotFoundException("Chat not found");
+		const bannedUser = await this.db.bannedUsersForChat.findFirst({
+			where: {
+				AND: [
+					{ chatId: chatId },
+					{ userId: parseInt(req.params.userId) }
+				]
+			}
+		});
+		if (bannedUser)
+			throw new UnauthorizedException("User is banned from chat");
 		if (chat.visibility != ChatType.PROTECTED) {
 			console.log("fetching unprotected chat");
 			return true;
