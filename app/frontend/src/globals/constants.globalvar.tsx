@@ -9,7 +9,7 @@
 
 export class constants {
 
-	static config = 'test';
+	static config = 'standard';
 	static themes = ['classic', 'blackAndWhite', 'neon'];
 
 	static BACKEND_BASEURL = 'http://localhost:3001';
