@@ -8,8 +8,8 @@
     "winningScore": "5",
     "collisionCooldown": "500",
     "ballWidth": "15",
-    "ballBaseSpeed": "6",
-    "ballSpeedIncrease": "0.7",
+    "ballBaseSpeed": "5",
+    "ballSpeedIncrease": "0.6",
     "paddleBaseSpeed": "8",
 
     "socketUpdateInterval": "0.01",
@@ -42,7 +42,7 @@
     "paddleHeightFactor": ".25",
     "paddleGap": "2",
     
-    "AILevel": "0.6",
+    "AILevel": "0.7",
     "helpAtEnd": "true"
   },
   
