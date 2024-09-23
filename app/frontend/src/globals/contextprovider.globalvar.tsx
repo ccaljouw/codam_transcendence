@@ -58,6 +58,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	const [newChatRoom, setNewChatRoom] = useState<{ room: number, count: number }>({ room: -1, count: 0 });
 	const [currentUser, setCurrentUser] = useState<UserProfileDto>({} as UserProfileDto);
 	const currentUserRef = useRef<UserProfileDto>(currentUser);
+	const [socketId, setSocketId] = useState<string>('');
 	const { user } = useAuthentication();
 	const pathname = usePathname();
 	const [allUsersUnreadCounter, setAllUsersUnreadCounter] = useState<number>(0);
@@ -90,6 +91,9 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 
 		//	Listener for when the socket connects: update the user's status to online
 		transcendenceSocket.on('connect', () => {
+			console.log('Socket connected');
+			if (transcendenceSocket.id != undefined) 
+				setSocketId(transcendenceSocket.id);
 			setUserStatusToOnline();
 		});
 
@@ -109,8 +113,10 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 			unreadMessageCountFetcher({ url: constants.CHAT_MESSAGES_UNREAD_FOR_USER + currentUser.id });
 			unreadsFromFriendsFetcher({ url: constants.CHAT_UNREAD_MESSAGES_FROM_FRIENDS + currentUser.id });
 
+		}else{
+			console.log("Currentuser.id/transcendencsesocket.id userEffect called but no socket.id or currentUser.id", transcendenceSocket.id, currentUser.id);
 		}
-	}, [currentUser.id])
+	}, [currentUser.id, socketId]);
 
 	useEffect(() => {
 		currentUserRef.current = currentUser;
@@ -165,6 +171,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	}, [userPatch]);
 
 	useEffect(() => {
+		console.log(`addToken useEffect in contextprovider`);
 		if (addToken) {
 			console.log(`updating usertoken in addToken useEffect in contextprovider`);
 			const statusUpdate: WebsocketStatusChangeDto = {
@@ -188,7 +195,11 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 
 	// Function to update the user's online status
 	const setUserStatusToOnline = async () => {
-		if (!currentUser.id || transcendenceSocket.id == undefined) return;
+		if (!currentUser.id || transcendenceSocket.id == undefined)
+		{
+			console.log(`currentUser.id or transcendenceSocket.id is undefined in setUserStatusToOnline function in contextprovider`, currentUser.id, transcendenceSocket.id);
+			return;
+		}
 		console.log(`updating user status to online in setUserStatusToOnline function in contextprovider`);
 		const patchUserData: UpdateUserDto = {
 			online: OnlineStatus.ONLINE,
