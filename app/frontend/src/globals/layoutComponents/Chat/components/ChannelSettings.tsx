@@ -21,7 +21,13 @@ export default function ChannelSettings({ room }: { room: FetchChatDto }) {
 	const submitChannelNameChange = async (event: FormEvent<HTMLFormElement>) => {
 		console.log("Changing channel name");
 		event.preventDefault();
-		setCurrentChatRoom({ ...currentChatRoom, name: event.currentTarget.value});
+		const form = event.currentTarget;
+		const nameInput = form.elements.namedItem('name') as HTMLInputElement;
+	
+		if (!nameInput) return;
+	
+		const newName = nameInput.value;
+		setCurrentChatRoom({ ...currentChatRoom, name: newName});
 		await chatPatcher({ url: constants.API_CHAT + room.id, fetchMethod: 'PATCH', payload: FormToUpdateChatDto(event) })
 	}
 
