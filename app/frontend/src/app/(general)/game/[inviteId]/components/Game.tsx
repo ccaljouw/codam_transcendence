@@ -220,7 +220,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 	return (
 		<>
 			{waitingForPlayers ? (
-				<div>
+				<div className={`${styles.game}`}>
 					<div>
 						<button className="btn btn-dark text-center" onClick={handleClick}>{waitingForPlayers ? "Leave waiting room":"Leave Game"}</button>
 					</div>
