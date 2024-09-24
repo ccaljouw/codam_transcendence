@@ -48,8 +48,10 @@ export default function ChatArea() {
 	useEffect(() => {
 		if (!currentChatRoom) return;
 		console.log('currentChatRoom: chatarea', currentChatRoom);
+		console.log('chatArea selectedTab', selectedTab);
 		if (currentChatRoom.id > 0 && currentChatRoom.visibility !== ChatType.DM) {
-			setUserListType(UserListType.Channel);
+			if (selectedTab !== UserListType.Settings)
+				setUserListType(UserListType.Channel);
 		}
 		if (currentChatRoom.id > 0) {
 			chatUserFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + currentUser.id });
@@ -159,9 +161,9 @@ export default function ChatArea() {
 	  
 		switch (newChatRoom.room) {
 		  case -2:
-			return <div className="white-box"><h3>You were kicked from the chat</h3></div>;
+			return <div className="white-box"><h3>You were kicked from the chat {currentChatRoom.name}</h3></div>;
 		  case -3:
-			return <div className="white-box"><h3>You were banned from the chat</h3></div>;
+			return <div className="white-box"><h3>You were banned from the chat {currentChatRoom.name}</h3></div>;
 		  default:
 			return <div className="white-box"><h3>Hello {currentUser.userName}, Who do you want to chat with?</h3></div>;
 		}
@@ -189,7 +191,7 @@ export default function ChatArea() {
 							{
 								userListType == UserListType.Channel ?
 									<span className='chat-selectedUserListType'>Channel</span>
-									: <span className='chat-userListType' onClick={() => setUserListType(UserListType.Channel)}>Channel</span>
+									: <span className='chat-userListType' onClick={() => {setUserListType(UserListType.Channel); setSelectedTab(UserListType.Channel)}}>Channel</span>
 							}
 							{
 								chatUser && chatUser.role == ChatUserRole.OWNER &&
@@ -197,7 +199,7 @@ export default function ChatArea() {
 									&nbsp;|&nbsp;
 									{userListType == UserListType.Settings ?
 										<span className='chat-selectedUserListType'>Settings</span>
-										: <span className='chat-userListType' onClick={() => setUserListType(UserListType.Settings)}>Settings</span>
+										: <span className='chat-userListType' onClick={() => {setUserListType(UserListType.Settings); setSelectedTab(UserListType.Settings)}}>Settings</span>
 									}
 								</>
 							}

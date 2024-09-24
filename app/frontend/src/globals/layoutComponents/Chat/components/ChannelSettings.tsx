@@ -10,6 +10,7 @@ import { ChatType } from "@prisma/client";
 import { ChatAuthDto } from "@ft_dto/authentication/chat-auth.dto";
 
 export default function ChannelSettings({ room }: { room: FetchChatDto }) {
+	const { setCurrentChatRoom, currentChatRoom } = useContext(TranscendenceContext);
 	const { data: chatPatched, error: patchError, isLoading: patchIsLoading, fetcher: chatPatcher } = useFetch<UpdateChatDto, FetchChatDto>();
 	const { data: chatDeleted, error: deleteError, isLoading: deleteIsLoading, fetcher: chatDeleter } = useFetch<Partial<FetchChatDto>, boolean>();
 	const { data: setChatPassword, error: setChatPasswordError, isLoading: setChatPasswordIsLoading, fetcher: chatPasswordSetter } = useFetch<ChatAuthDto, boolean>();
@@ -20,12 +21,14 @@ export default function ChannelSettings({ room }: { room: FetchChatDto }) {
 	const submitChannelNameChange = async (event: FormEvent<HTMLFormElement>) => {
 		console.log("Changing channel name");
 		event.preventDefault();
+		setCurrentChatRoom({ ...currentChatRoom, name: event.currentTarget.name.value });
 		await chatPatcher({ url: constants.API_CHAT + room.id, fetchMethod: 'PATCH', payload: FormToUpdateChatDto(event) })
 	}
 
 	const submitPassWordChange = async (event: FormEvent<HTMLFormElement>) => {
 		console.log("Changing channel password");
 		event.preventDefault();
+
 		await chatPasswordSetter({ url: constants.API_AUTH_CHANGE_CHAT_PWD, fetchMethod: 'POST', payload: { chatId: room.id, pwd: password } });
 		// await chatPatcher({url: constants.API_CHAT + room.id, fetchMethod: 'PATCH', payload: FormToUpdateChatDto
 	}
@@ -39,7 +42,7 @@ export default function ChannelSettings({ room }: { room: FetchChatDto }) {
 
 	useEffect(() => {
 		if (chatPatched) {
-			console.log("Chat patched");
+			console.log("Chat patched", chatPatched);
 			chatPatched.action = "patch";
 			transcendenceSocket.emit('chat/patch', chatPatched);
 		}
