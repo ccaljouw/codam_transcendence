@@ -1,6 +1,9 @@
 import myThemes from '../pongThemes.json'
 import myConfig from '../pongConfig.json'
 
+//turn on or of console logging for the game script here
+export const logging = false;
+
 type Theme = {
 	leftPaddleColor: string;
 	rightPaddleColor: string;
@@ -88,11 +91,8 @@ type Config = {
 	leftPaddleDownKey: string;
 	rightPaddleUpKey: string;
 	rightPaddleDownKey: string;
-	leftBackWall: boolean;
-	rightBackWall: boolean;
 	backWallGap: number;
 	startMessage: string;
-	winMessage: string;
 	scoreFieldOffset_X: number;
 	scoreFieldOffset_Y: number;
 	bottomMessageOffset_X: number;
@@ -106,6 +106,7 @@ type Config = {
 	paddleHeightFactor: number;
 	paddleGap: number;
 	AILevel: number;
+	helpAtEnd: boolean;
 };
 
 
@@ -126,16 +127,13 @@ function parseConfig(jsonConfig: any): Record<string, Config> {
 			socketUpdateInterval: parseFloat(value.socketUpdateInterval),
 			interpolationFactor: parseFloat(value.interpolationFactor),
 			paddleBaseSpeed: parseInt(value.paddleBaseSpeed, 10),
-			sensorInput: value.sensorInput,
+			sensorInput: value.sensorInput === "true",
 			leftPaddleUpKey: value.leftPaddleUpKey,
 			leftPaddleDownKey: value.leftPaddleDownKey,
 			rightPaddleUpKey: value.rightPaddleUpKey,
 			rightPaddleDownKey: value.rightPaddleDownKey,
-			leftBackWall: value.leftBackWall,
-			rightBackWall: value.rightBackWall,
 			backWallGap: parseInt(value.backWallGap, 10),
 			startMessage: value.startMessage,
-			winMessage: value.winMessage,
 			scoreFieldOffset_X: parseInt(value.scoreFieldOffset_X, 10),
 			scoreFieldOffset_Y: parseInt(value.scoreFieldOffset_Y, 10),
 			bottomMessageOffset_X: parseInt(value.bottomMessageOffset_X, 10),
@@ -149,6 +147,7 @@ function parseConfig(jsonConfig: any): Record<string, Config> {
 			paddleHeightFactor: parseFloat(value.paddleHeightFactor),
 			paddleGap: parseInt(value.paddleGap, 10),
 			AILevel: parseFloat(value.AILevel),
+			helpAtEnd: value.helpAtEnd === "true",
 		};
 	}
 	return config;

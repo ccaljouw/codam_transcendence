@@ -1,19 +1,22 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsString, IsNotEmpty, IsOptional, IsInt } from 'class-validator';
 
 export class CreateTokenDto {
-	@IsNotEmpty()
-	@IsString()
-	@ApiProperty({ required: true })
-	token: string;
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @Type(() => Number)
+  @IsInt()
+  userId: number;
 
-	@IsNotEmpty()
-	@IsNumber()
-	@ApiProperty({ required: true })
-	userId: number;
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsString()
+  token: string;
 
-	@IsOptional()
-	@IsNumber()
-	@ApiProperty({ required: false })
-	chatId?: number;
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  chatId?: number;
 }

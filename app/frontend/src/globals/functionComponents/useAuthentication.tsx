@@ -1,62 +1,79 @@
+"use client";
 import { useContext, useEffect, useState } from "react";
 import { UserProfileDto } from "@ft_dto/users";
 import { TranscendenceContext } from "../contextprovider.globalvar";
 import useFetch from "./useFetch";
-import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { constants } from "../constants.globalvar";
 
 type authenticationOutput = {
 	user: UserProfileDto | null,
-	loginUser: (url: string) => void,
-	storeUser: (user: UserProfileDto) => void,
+	fetchUserById: (url: string) => void,
+	storeUser: (loggedInUser: UserProfileDto) => void,
 }
 
-export default function useAuthentication() : authenticationOutput {
-	const { currentUser, setCurrentUser } = useContext(TranscendenceContext);
-	const params = useSearchParams();
-	const codeFromUrl = params.get('code');
-	const {data: user, fetcher: userFetcher} = useFetch<null, UserProfileDto>();
+export default function useAuthentication(): authenticationOutput {
+	const { setCurrentUser, currentUser } = useContext(TranscendenceContext);
+	const [user, setUser] = useState<UserProfileDto | null>(null);
+	const { data: fetchedUser, error, fetcher: userFetcher } = useFetch<null, UserProfileDto>();
 	const [idFromStorage, setIdFromStorage] = useState<string | null>(null);
 	const router = useRouter();
 	const pathname = usePathname();
 
-	useEffect (() => {
+	useEffect(() => {
 		const id = sessionStorage.getItem('userId');
-		if (id != null)
-		{
+		if (id != null) {
 			setIdFromStorage(id);
-			console.log("user already logged in, fetching user " + id);
-			loginUser(constants.API_USERS + id);
+			console.log(`user already logged in, fetching user ${id}`);
+			fetchUserById(constants.API_CHECK_ID + id);
 		}
-		if (codeFromUrl != null)
-		{
-			loginUser(constants.API_AUTH42 + codeFromUrl);
-			router.push(pathname);
+		else {
+			if (pathname != '/login' && pathname != '/signup' && pathname != '/auth')
+				router.push('/login');
 		}
 	}, []);
 
-	const loginUser = (url: string) : void  => {
-		userFetcher({url: url});
+	const fetchUserById = async (url: string): Promise<void> => {
+		console.log("fetching user");
+		await userFetcher({ url: url });
 	};
 
 	useEffect(() => {
-		if (user != null)
-			storeUser(user);
-	}, [user]);
-
-	const storeUser = (user: UserProfileDto) : void  => {
-		console.log("Setting user with id " + user.id + " in useAuthentication");
-		if (currentUser != user)
-		{
-			console.log("updating currentUser from useAuthentication")
-			setCurrentUser(user);
+		if (fetchedUser != null) {
+			console.log("storing user");
+			setCurrentUser( // set ID 0 to trigger useEffect in context provider when user is stored
+				{
+					...currentUser,
+					id: 0,
+				}
+			);
+			storeUser(fetchedUser);
 		}
-		if (idFromStorage == null || +idFromStorage != user.id)
-		{
-			console.log("updating sessionStorage from useAuthentication")
+	}, [fetchedUser]);
+
+	useEffect(() => {
+		if (error != null) {
+			console.log(`Error authenticating in useAuthentication: ${error.name}: ${error.message}`);
+			if (pathname != '/login' && pathname != '/signup' && pathname != '/auth')
+				router.push('/login');
+		}
+	}, [error]);
+
+	const setSessionStorage = (user: UserProfileDto): void => {
+		if (user != null && (idFromStorage == null || +idFromStorage != user.id)) {
 			sessionStorage.setItem('userId', JSON.stringify(user.id));
 		}
 	};
 
-	return ({ user, loginUser, storeUser });
+	const storeUser = (loggedInUser: UserProfileDto): void => {
+		setSessionStorage(loggedInUser);
+		setUser(loggedInUser);
+		setCurrentUser(loggedInUser);
+		if (pathname == '/login' || pathname == '/signup' || pathname == '/auth') {
+			console.log("pusing to /");
+			router.push('/');
+		}
+	}
+
+	return ({ user, fetchUserById, storeUser });
 }

@@ -14,7 +14,10 @@ import { GameService } from 'src/game/game.service';
 
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:3000'],
+    origin: [
+      `${process.env.FRONTEND_URL_LOCAL}`,
+      `${process.env.FRONTEND_URL}`,
+    ],
   },
 })
 @Injectable()

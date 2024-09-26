@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { TranscendenceContext } from "@ft_global/contextprovider.globalvar";
 import { OnlineStatus } from "@prisma/client";
+import { IsBlocked } from "./FriendOrBlocked";
 
 const StatusDisplay = {
 	ONLINE: '🟢',
 	OFFLINE: '🔴',
 	IN_GAME: '🏓',
+	BLOCKED: '🚫',
 };
 
 /**
@@ -15,23 +17,42 @@ const StatusDisplay = {
  */
 export default function StatusIndicator(props: { userId: number, status: OnlineStatus, indexInUserList: number, statusChangeCallback: (idx: number, newStatus: OnlineStatus) => void }): JSX.Element {
 	const [status, setStatus] = useState<string>(props.status == null ? StatusDisplay.OFFLINE : StatusDisplay[props.status]);
-	const { someUserUpdatedTheirStatus } = useContext(TranscendenceContext);
+	const [displayStatus, setDisplayStatus] = useState<string>(props.status == null ? StatusDisplay.OFFLINE : StatusDisplay[props.status]);
+	const { someUserUpdatedTheirStatus, currentUser } = useContext(TranscendenceContext);
 
 	useEffect(() => {
+		// console.log("StatusIndicator: useEffect", props.userId, currentUser);
 		if (someUserUpdatedTheirStatus === undefined) // if the context is not yet initialized, return
 			return;
+
 		if (someUserUpdatedTheirStatus.userId == props.userId	// if the user that updated their status is the same as the user we are displaying the status for
 			&& someUserUpdatedTheirStatus.status != null		// if the new status is not null
 			&& someUserUpdatedTheirStatus.status !== props.status // if the new status is different from the current status
 		) {
 			setStatus(StatusDisplay[someUserUpdatedTheirStatus.status]);
 			props.statusChangeCallback(props.indexInUserList, someUserUpdatedTheirStatus.status);
+			setDisplayStatus(StatusDisplay[someUserUpdatedTheirStatus.status]);
 		}
-	}, [someUserUpdatedTheirStatus]);
+		else if (status)
+			setDisplayStatus(status);
+		if (IsBlocked(props.userId, currentUser)) // if the user is blocked, display the blocked status
+			setDisplayStatus(StatusDisplay.BLOCKED);
+		// else
+			
+	}, [someUserUpdatedTheirStatus, currentUser]);
+
+	// useEffect(() => {
+	// 	if (IsBlocked(props.userId, currentUser)) {
+	// 		setDisplayStatus(StatusDisplay.BLOCKED);
+	// 		return;
+	// 	}else{
+	// 		setDisplayStatus(status);
+	// 	}
+	// },[currentUser])
 
 	return (
 		<>
-			{status}
+			{displayStatus}
 		</>
 	);
 }

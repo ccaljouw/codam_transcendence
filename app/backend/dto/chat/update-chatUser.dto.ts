@@ -2,6 +2,7 @@ import { PartialType } from '@nestjs/mapped-types';
 import { CreateChatUserDto } from './create-chatUser.dto';
 import { IsBoolean, IsDate, IsInt, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { ChatUserRole } from '@prisma/client';
 
 export class UpdateChatUserDto extends PartialType(CreateChatUserDto) {
   
@@ -24,7 +25,15 @@ export class UpdateChatUserDto extends PartialType(CreateChatUserDto) {
   @ApiProperty({ required: false, type: Date })
   lastRead?: Date;
 
+  @IsDate()
+  @ApiProperty({ required: false, type: Date })
+  mutedUntil?: Date;
+
   @IsBoolean()
   @ApiProperty({ required: false, type: Boolean })
   isInChatRoom?: boolean;
+
+// cannot add this property due to circular dependency
+//   @ApiProperty({ required: false, type: ChatUserRole })
+  role?: ChatUserRole;
 }

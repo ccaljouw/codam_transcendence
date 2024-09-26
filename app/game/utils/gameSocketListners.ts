@@ -2,6 +2,8 @@ import { Game } from '../components/Game'
 import { GameState } from '@prisma/client'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
 import { UpdateGameObjectsDto, UpdateGameStateDto, UpdateGameDto } from '@ft_dto/game'
+import { updateWalls } from './updateObjects';
+import { log } from './utils';
 
 
 export function setSocketListeners(game: Game) {
@@ -10,14 +12,15 @@ export function setSocketListeners(game: Game) {
   let gamerunning = false;
 
   gameSocket.emit("game/joinRoom", roomId);
-  console.log("Script: joined room");
+  log("GameScript: joined room");
     
   gameSocket.on(`game/updateGameObjects`, (payload: UpdateGameObjectsDto) => {
     if (game.gameState === GameState.FINISHED) {
       return;
     }
     
-    console.log(`Script (${game.gameData!.id}) received game objects update`, payload);
+    // turn off or remove this log
+    //log(`GameScript ${game.gameData!.id} received game objects update ${payload}`);
 
     if (payload.roomId !== undefined) {
       game.receivedUpdatedGameObjects = {
@@ -25,7 +28,7 @@ export function setSocketListeners(game: Game) {
         ...payload        
       };
     } else { 
-      console.error(`Script: received game objects update from server, but no roomId in payload`, payload);
+      console.error(`GameScript: received game objects update from server, but no roomId in payload`, payload);
     }
 
     if (payload.resetGame === 1 && game.instanceType < 2) {
@@ -38,27 +41,26 @@ export function setSocketListeners(game: Game) {
     
     if (payload.score1! >= 0 || payload.score2! >= 0) {
       setNewScore(game, payload.score1!, payload.score2!);
+      updateWalls(game);
     }
   });
 
   gameSocket.on(`game/updateGameState`, (payload: UpdateGameStateDto) => {
-
-    console.log(`Script: received game state update from server`, payload.roomId, payload.state, payload.winner);
-
     if (game.gameState === GameState.FINISHED) {
       return;
     }
+    log(`GameScript: received game state update in handle gameState, gameid: ${payload.id}, state: ${payload.state}`);
+    
+    if (payload.state === GameState.FINISHED) {
+      game.finishGame(payload.winnerId!);
+      return;
+    } 
 
     if (payload.state === GameState.ABORTED) {
       game.abortGame(1);
       return;
     }
     
-    if (payload.state === GameState.FINISHED) {
-      game.finishGame(payload.winner!);
-      return;
-    } 
-
     game.gameState = payload.state;
     
     if (game.gameState === GameState.STARTED && !gamerunning) {
@@ -84,4 +86,13 @@ export function setNewPaddlePositions(game: Game, paddle1Y: number, paddle2Y: nu
    if (game.instanceType === 1 && paddle1Y > 0) {
     game.paddels[0].setY(paddle1Y);
    }
+}
+
+
+export function disconnectSocket(game: Game) {
+  const gameSocket = transcendenceSocket;
+  gameSocket.off(`game/updateGameObjects`);
+  gameSocket.off(`game/updateGameState`);
+  gameSocket.emit("game/leaveRoom", game.gameData!.id);
+  log("GameScript: leaving room");
 }

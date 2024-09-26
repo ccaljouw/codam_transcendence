@@ -1,11 +1,17 @@
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { NotFoundException, ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { PrismaClientExceptionFilter } from './errorHandling/prisma-client-exception/prisma-client-exception.filter';
+import { PrismaClientExceptionFilter } from './errorHandling/prisma-client-exception.filter';
+import { AllExceptionFilter } from './errorHandling/exception.filter';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.enableShutdownHooks();
+  
+  app.use(cookieParser());
 
   const config = new DocumentBuilder()
     .setTitle('Transcendence')
@@ -16,16 +22,26 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const { httpAdapter } = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
+  app.useGlobalFilters(
+    new PrismaClientExceptionFilter(),
+    new AllExceptionFilter(),
+  );
 
   // use pipes to validate requests (as defined in DTOs,
   // whitelist: true strips out addition information that is send but not part of the DTO)
   // It’s important to note that this option will filter all properties without validation decorators,
   // even if they are defined in the DTO.
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true })); //forbidNonWhitelisted: true
 
-  app.enableCors()
-  await app.listen(3000);
-};
+  app.enableCors({
+    origin: [
+      `${process.env.FRONTEND_URL_LOCAL}`,
+      `${process.env.FRONTEND_URL}`,
+    ],
+    methods: 'GET,PATCH,POST,DELETE, ',
+    allowedHeaders: 'Content-Type',
+    credentials: true,
+  });
+  await app.listen(3001);
+}
 bootstrap();

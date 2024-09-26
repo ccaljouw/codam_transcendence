@@ -5,12 +5,15 @@ import * as CON from '../utils/constants'
 import { Game } from '../components/Game'
 import { GameState } from '@prisma/client'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
+import { log } from '../utils/utils'
 
 export class Ball extends GameObject {
 	public	movementComponent: MovementComponent;
 	private _lastCollisionWithWall: number = 0;
 	private _lastCollisionWithPaddle: number = 0;
 	private _lastcollisionType: string = "";
+	private _longestRally: number = 1;
+	private _rally: number = 1;
 
 	constructor(config: keyof typeof CON.config, theme: keyof typeof CON.themes) {
 		super("Ball",
@@ -25,8 +28,8 @@ export class Ball extends GameObject {
 			CON.config[config].screenWidth / 2 - CON.config[config].ballWidth /2,
 			CON.config[config].screenHeight / 2 - CON.config[config].ballWidth /2);
 	}
-
 	
+
 	public setLastCollisionWithHorizontalWall() {
 		this._lastCollisionWithWall = Date.now();
 		this._lastcollisionType = "h_wall";
@@ -87,25 +90,19 @@ export class Ball extends GameObject {
 
 		//set base speed + random value between -1 and 1
 		speed = CON.config[config].ballBaseSpeed + Math.random() * 2 - 1;
-
 		this.movementComponent.setDirection(direction);
 		this.movementComponent.setSpeed(speed);
-		
-		console.log("Script: startvalues set to direction: ", direction, " and speed: ", speed);
 		gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, ballDirection: direction, ballSpeed: speed});
 	} 
-
 
 	public setStartValues(direction: number, speed: number) {
 		this.movementComponent.setDirection(direction);
 		this.movementComponent.setSpeed(speed);
 	}
-
 	
 	public increaseSpeed(config: keyof typeof CON.config) {
 		this.movementComponent.setSpeed(this.movementComponent.getSpeed() + CON.config[config].ballSpeedIncrease);
 	}
-
 
 	public getNewDirection(paddle: GameObject, angle: number) {
 		let normalizedDistance = getNormalizedDistance(this, paddle);
@@ -121,15 +118,13 @@ export class Ball extends GameObject {
     	return newDirection;
     }
 
-
 	public hitPaddle(paddle: GameObject, config: keyof typeof CON.config) {
 		//get new direction based on where the ball hits the paddle
 		let newDirection = this.getNewDirection(paddle, this.movementComponent.getDirection());
 		this.movementComponent.setDirection(newDirection);
-		
 		this.increaseSpeed(config);
+		this.incrementRally();
 	}
-
 
 	public hitHorizontalWall() {
 		this.movementComponent.setSpeedY(this.movementComponent.getSpeedY() * -1);
@@ -139,7 +134,6 @@ export class Ball extends GameObject {
 			this.y -= this.movementComponent.getSpeed();
 		}
 	}
-
 
 	public hitVerticalWall() {
 		this.movementComponent.setSpeedX(this.movementComponent.getSpeedX() * -1);
@@ -157,5 +151,37 @@ export class Ball extends GameObject {
 		this.movementComponent.update(deltaTime);
 		this.x = this.movementComponent.getX();
 		this.y = this.movementComponent.getY();
+	}
+
+	public incrementRally() {
+		this._rally++;
+		log(`GameScript: rally incremented`);	
+		if (this._rally > this._longestRally) {
+			this.setLongestRally(this._rally);
+		}
+	}
+
+	public resetRally() {
+		log(`GameScript: Rally reset`);
+		this._rally = 0;
+	}
+
+	public setLongestRally(rally: number) {
+		log(`GameScript: longest rally set`);
+		this._longestRally = rally;
+	}
+
+	public getLongestRally() {
+		return this._longestRally;
+	}
+	
+	public resetLongestRally() {
+		log(`GameScript: longest rally reset`);
+		this._longestRally = 0;
+	}
+
+	public resetBothRallies() {
+		this.resetRally();
+		this.resetLongestRally();
 	}
 }

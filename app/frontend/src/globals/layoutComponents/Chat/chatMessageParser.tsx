@@ -1,48 +1,89 @@
-import { ChatMessageToRoomDto, UpdateChatDto } from "@ft_dto/chat";
+import { ChatMessageToRoomDto, FetchChatDto } from "@ft_dto/chat";
 import { fetchProps } from "src/globals/functionComponents/useFetch";
-import { inviteCallbackProps } from "./inviteFunctions";
 import { UserProfileDto } from "@ft_dto/users";
 import { Socket } from "socket.io-client";
-import { friendInviteParser } from "./friendInvite";
-import { gameInviteParser } from "./gameInvite";
+
+import { IsBlocked } from "src/globals/functionComponents/FriendOrBlocked";
+import { gameInviteParser } from "./inviteFunctions/gameInvite";
+import { inviteCallbackProps } from "./inviteFunctions/inviteFunctions";
+import { friendInviteParser } from "./inviteFunctions/friendInvite";
+import { chatInviteParser } from "./inviteFunctions/chatInvite";
 
 
 export interface parserProps {
 	inviteCallback: (props: inviteCallbackProps) => void,
-	currentChatRoom: UpdateChatDto,
+	currentChatRoom: FetchChatDto,
 	currentUser: UserProfileDto,
 	chatSocket: Socket,
 	friendInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>,
 	gameInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>,
-	chatInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>
+	chatInviteFetcher: ({ url, fetchMethod, payload }: fetchProps<null>) => Promise<void>,
+	changeRoomStatusCallback: (userId: number, status: boolean) => void
+	userKickedCallback: (channel: number) => void
 }
 
 export const messageParser = (
 	message: ChatMessageToRoomDto, context: parserProps
 ): JSX.Element => {
-	const { inviteCallback, currentChatRoom, currentUser, chatSocket, friendInviteFetcher, gameInviteFetcher, chatInviteFetcher } = context;
+	const { inviteCallback, currentChatRoom, currentUser, chatSocket, friendInviteFetcher, gameInviteFetcher, chatInviteFetcher, changeRoomStatusCallback, userKickedCallback } = context;
+	if (IsBlocked(message.userId, currentUser))
+		return <></>
+	console.log(message);
+	console.log("message.userId: ", message.userId, "currentUser.id: ", currentUser.id);
 	if (message.action) {
-		if (message.userId == currentUser.id) // If the user is the current user, we don't want to show the message.	
-			return <></>
+		if (message.userId != currentUser.id) // Don't show own actions
+		{
+			switch (message.message) { // 
+				case "JOIN":
+					changeRoomStatusCallback(message.userId, true);
+					return <>{'<<'} {message.userName} has joined the chat {'>>'}</>
+				case "LEAVE":
+					changeRoomStatusCallback(message.userId, false);
+					return <>{'<<'} {message.userName} has left the chat {'>>'}</>
+				case "KICK":
+					return <>{'<<'} {message.userName} was kicked from the chat {'>>'}</>
+				case "MUTE":
+					return <>{'<<'} {message.userName} was muted {'>>'}</>
+				case "BAN":
+					return <>{'<<'} {message.userName} was banned from the chat {'>>'}</>
+				default:
+					if (!message.inviteId)
+						return <>{message.message}</>
+			}
+		}
 		switch (message.message) {
-			case "JOIN":
-				return <>{'<<'} {message.userName} has joined the chat {'>>'}</>
+			case "KICK":
+				console.log("I was kicked");
+				userKickedCallback(-2);
+				return <>{'<<'} You were kicked from the chat {'>>'}</>
+			case "MUTE":
+				return <>{'<<'} You were muted {'>>'}</>
+			case "BAN":
+				console.log("I was banned");
+				userKickedCallback(-3);
+				return <>{'<<'} You were banned from the chat {'>>'}</>
 			case "LEAVE":
-				return <>{'<<'} {message.userName} has left the chat {'>>'}</>
+				return <></>;
+			case "JOIN":
+				return <></>;
 		}
 	}
-	else if (message.inviteId) {
+	if (message.inviteId) {
+		console.log("Parsing invite");
 		return inviteParser(message, currentChatRoom, currentUser, chatSocket, inviteCallback, friendInviteFetcher, gameInviteFetcher, chatInviteFetcher);
 	}
 	else {
-		return <>{message.userName}: {message.message}</>
+		if (message.action)
+			return <>{message.message}</>
+		else
+			return <>{message.userName}: {message.message}</>
 	}
 	return <></>;
 }
 
 const inviteParser = (
 	message: ChatMessageToRoomDto,
-	currentChatRoom: UpdateChatDto,
+	currentChatRoom: FetchChatDto,
 	currentUser: UserProfileDto,
 	chatSocket: Socket,
 	inviteCallback: (props: inviteCallbackProps) => void,
@@ -65,12 +106,14 @@ const inviteParser = (
 		gameInviteFetcher: gameInviteFetcher,
 		chatInviteFetcher: chatInviteFetcher
 	}
-
+	console.log("Parsing invite");
 	switch (message.invite.type) {
 		case "FRIEND":
 			return friendInviteParser(message, currentUser, inviteCallback, inviteCallbackProps);
 		case "GAME":
 			return gameInviteParser(message, currentUser, inviteCallback, inviteCallbackProps);
+		case "CHAT":
+			return chatInviteParser(message, currentUser, inviteCallback, inviteCallbackProps);;
 	}
 	return <>Error parsing invite</>;
 }

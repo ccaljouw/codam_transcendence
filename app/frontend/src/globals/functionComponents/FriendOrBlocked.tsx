@@ -6,7 +6,7 @@ import { UserProfileDto } from "@ft_dto/users";
 //
 
 export const IsFriend = (idToTest: number, user : UserProfileDto) : boolean => {
-	if (!user.friends)
+	if (!user || !user.friends)
 		return false;
 	for (const friend of user.friends as UserProfileDto[]) {
 		// console.log("checking friend", friend.id, idToTest);
@@ -18,6 +18,8 @@ export const IsFriend = (idToTest: number, user : UserProfileDto) : boolean => {
 }
 
 export const IsBlocked = (idToTest: number, user : UserProfileDto) : boolean => {
+	if (!user.blocked)
+		return false;
 	for (const blocked of user.blocked as UserProfileDto[]) {
 		if (blocked.id === idToTest) {
 			return true;

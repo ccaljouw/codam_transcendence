@@ -4,45 +4,39 @@ services:
     image: postgres:16
     container_name: postgres
     restart: always
-    environment:
-      - POSTGRES_USER=me
-      - POSTGRES_PASSWORD=pwd
-      - POSTGRES_DB=postgres
-    # volumes:
-    #   - ./postgres_db:/var/lib/postgresql/data
+    env_file: ./app/backend/.env
+    volumes:
+      - database_files:/var/lib/postgresql/data
     networks:
       - transcendence
-    # added to check if the servise is ready to receive comms
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U me -d postgres"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 3s
       timeout: 5s
       retries: 5
-    # added to limit resourse use
-    deploy:
-     resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
-
-
+    stop_grace_period: 30s 
+  
   backend: 
     build: 
-      context: ./app/backend
-      dockerfile: Dockerfile
+      context: ./app
+      dockerfile: ./backend/Dockerfile
+    image: backend
+    pull_policy: never
     container_name: backend
     restart: always
     ports: 
-    # port for api
-      - '3001:3000'
-    # port for prisma
+      - '3001:3001'
       - '5555:5555'
     volumes:
       - ./app:/app
+      - node_modules:/node_modules
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - transcendence
+    # Default command will run "start", uncommend below to run "start:watch" for development 
+    command: start:dev
     
   frontend:
     depends_on:
@@ -50,15 +44,27 @@ services:
     build: 
       context: ./app/frontend
       dockerfile: Dockerfile
+    image: frontend
+    pull_policy: never
     container_name: frontend
     restart: always
     ports:
-    # port for website
       - '3000:3000'
     volumes:
       - ./app:/app
+      - node_modules:/node_modules
     networks:
       - transcendence
+    # Default command will run "deploy", uncommend below to run "dev" for development 
+    command: ["dev"]
 
 networks:
   transcendence:
+    name: transcendence 
+
+volumes:
+  database_files:
+    name: database_files
+  node_modules:
+    name: node_modules
+

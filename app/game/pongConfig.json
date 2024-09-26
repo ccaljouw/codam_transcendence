@@ -1,5 +1,6 @@
 {
   "standard": {
+
     "screenWidth": "1000",
     "screenHeight": "666",
 
@@ -8,8 +9,8 @@
     "collisionCooldown": "500",
     "ballWidth": "15",
     "ballBaseSpeed": "5",
-    "ballSpeedIncrease": "0.5",
-    "paddleBaseSpeed": "7",
+    "ballSpeedIncrease": "0.6",
+    "paddleBaseSpeed": "8",
 
     "socketUpdateInterval": "0.01",
     "interpolationFactor": "0.4",
@@ -19,35 +20,34 @@
     "leftPaddleDownKey": "ArrowDown",
     "rightPaddleUpKey": "ArrowUp",
     "rightPaddleDownKey": "ArrowDown",
-
-    "leftBackWall": "false",
-    "rightBackWall": "false",
+    
     "backWallGap": "200",
-
+    
     "startMessage": "Waiting for other player",
-    "winMessage": "Press SPACE to start a new match",
-
+    
     "scoreFieldOffset_X": "50",
     "scoreFieldOffset_Y": "150",
-
-    "bottomMessageOffset_X": "300",
-    "bottomMessageOffset_Y": "30",
-
-    "playerNameOffset_X": "200",
+    
+    "bottomMessageOffset_X": "275",
+    "bottomMessageOffset_Y": "50",
+    
+    "playerNameOffset_X": "50",
     "playerNameOffset_Y": "50",
-
+    
     "lineWidth": "6",
     "wallWidth": "20",
-
+    
     "paddleWidth": "20",
     "paddleOffset_X": "20",
     "paddleHeightFactor": ".25",
     "paddleGap": "2",
-
-    "AILevel": "0.7"
+    
+    "AILevel": "0.7",
+    "helpAtEnd": "true"
   },
   
   "test": {
+
     "screenWidth": "1000",
     "screenHeight": "666",
 
@@ -68,20 +68,17 @@
     "rightPaddleUpKey": "ArrowUp",
     "rightPaddleDownKey": "ArrowDown",
     
-    "leftBackWall": "false",
-    "rightBackWall": "false",
-    "backWallGap": "100",
+    "backWallGap": "200",
 
     "startMessage": "Waiting for other player",
-    "winMessage": "Press SPACE to start a new match",
 
     "scoreFieldOffset_X": "50",
     "scoreFieldOffset_Y": "150",
 
-    "bottomMessageOffset_X": "300",
-    "bottomMessageOffset_Y": "30",
+    "bottomMessageOffset_X": "275",
+    "bottomMessageOffset_Y": "50",
 
-    "playerNameOffset_X": "200",
+    "playerNameOffset_X": "50",
     "playerNameOffset_Y": "50",
 
     "lineWidth": "6",
@@ -92,10 +89,12 @@
     "paddleHeightFactor": ".25",
     "paddleGap": "2",
 
-    "AILevel": "0.7"
+    "AILevel": "0.7",
+    "helpAtEnd": "true"
   },
 
   "strongPong": {
+
     "screenWidth": "1000",
     "screenHeight": "666",
 
@@ -105,41 +104,39 @@
     "ballWidth": "15",
     "ballBaseSpeed": "5",
     "ballSpeedIncrease": "0.5",
-    "paddleBaseSpeed": "7",
+    "paddleBaseSpeed": "8",
 
     "socketUpdateInterval": "0.01",
     "interpolationFactor": "0.4",
 
-    "sensorInput": "false",
-    "leftPaddleUpKey": "w",
-    "leftPaddleDownKey": "s",
+    "sensorInput": "true",
+    "leftPaddleUpKey": "ArrowUp",
+    "leftPaddleDownKey": "ArrowDown",
     "rightPaddleUpKey": "ArrowUp",
     "rightPaddleDownKey": "ArrowDown",
-
-    "leftBackWall": "false",
-    "rightBackWall": "false",
+    
     "backWallGap": "200",
-
+    
     "startMessage": "Waiting for other player",
-    "winMessage": "Press SPACE to start a new match",
-
+    
     "scoreFieldOffset_X": "50",
     "scoreFieldOffset_Y": "150",
-
-    "bottomMessageOffset_X": "300",
-    "bottomMessageOffset_Y": "30",
-
-    "playerNameOffset_X": "200",
+    
+    "bottomMessageOffset_X": "275",
+    "bottomMessageOffset_Y": "50",
+    
+    "playerNameOffset_X": "50",
     "playerNameOffset_Y": "50",
-
+    
     "lineWidth": "6",
     "wallWidth": "20",
-
+    
     "paddleWidth": "20",
     "paddleOffset_X": "20",
     "paddleHeightFactor": ".25",
     "paddleGap": "2",
-
-    "AILevel": "0.7"
+    
+    "AILevel": "0.6",
+    "helpAtEnd": "true"
   }
 }

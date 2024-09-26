@@ -6,17 +6,19 @@ import * as CON from '../utils/constants'
 import { useContext } from 'react'
 import { TranscendenceContext } from '@ft_global/contextprovider.globalvar'
 import { Console } from 'console'
+import { log } from '../utils/utils'
 
 
 export class Paddle extends GameObject {
 	public	movementComponent: MovementComponent;
 	public	keyListener: KeyListenerComponent;
-	
+	public	AIlevel: number = 0;
 
-	constructor(name: string, x: number, y: number, width: number, height: number, color: string) {
+	constructor(aiLevel:number, name: string, x: number, y: number, width: number, height: number, color: string) {
 		super(name, x, y, width, height, color);
 		this.movementComponent = new MovementComponent(0, 0, x, y);
 		this.keyListener = new KeyListenerComponent();
+		this.AIlevel = aiLevel;
 	}
 
 	
@@ -135,7 +137,7 @@ export class Paddle extends GameObject {
 			return false;
 		}
 
-		if (this.name == `AI`) {
+		if (this.AIlevel > 0) {
 			return this.updateAiPaddle(deltaTime, config, ball as Ball);
 		}
 
@@ -145,7 +147,8 @@ export class Paddle extends GameObject {
 			console.log("sensor input");
 			return this.AnalogupdatePaddle(deltaTime, config, analogVal);
 		}
-		
+		let hasMoved = false;
+		const margin = .5;
 		if (this.keyListener.checkKeysPressed()) {
 			console.log("key input");
 			let hasMoved = false;
@@ -159,5 +162,9 @@ export class Paddle extends GameObject {
 			return hasMoved;
 		}
 		return false;
+	}
+
+	public setAIlevel(level: number) {
+		this.AIlevel = level;
 	}
 }

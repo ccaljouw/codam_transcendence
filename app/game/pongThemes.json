@@ -1,32 +1,5 @@
-{
-  "blackAndWhite": {
-    "leftPaddleColor": "white",
-    "rightPaddleColor": "white",
-    "ballColor": "white",
-    "backgroundColor": "black",
-    "lineColor": "white",
-    "wallColor": "white",
-    "backWallColor": "white",
-    "leftPlayerColor": "white",
-    "rightPlayerColor": "white",
-    "leftPlayerFont": "Arial",
-    "rightPlayerFont": "Arial",
-    "leftPlayerSize": "25",
-    "rightPlayerSize": "25",
-    "leftScoreFieldColor": "white",
-    "rightScoreFieldColor": "white",
-    "leftScoreFiledFont": "Arial",
-    "rightScoreFiledFont": "Arial",
-    "leftScoreFiledSize": "60",
-    "rightScoreFiledSize": "60",
-    "bottomLeftTextColor": "white",
-    "bottomLeftTextFont": "Arial",
-    "bottomLeftTextSize": "25",
-    "bottomRightTextColor": "white",
-    "bottomRightTextFont": "Arial",
-    "bottomRightTextSize": "25"
-  },
 
+{
   "classic": {
     "leftPaddleColor": "#4CBB17",
     "rightPaddleColor": "#4CBB17",
@@ -49,10 +22,38 @@
     "rightScoreFieldSize": "60",
     "bottomLeftTextColor": "#4CBB17",
     "bottomLeftTextFont": "Arial",
-    "bottomLeftTextSize": "25",
+    "bottomLeftTextSize": "30",
     "bottomRightTextColor": "#4CBB17",
     "bottomRightTextFont": "Arial",
-    "bottomRightTextSize": "25"
+    "bottomRightTextSize": "30"
+  },
+  
+  "blackAndWhite": {
+    "leftPaddleColor": "white",
+    "rightPaddleColor": "white",
+    "ballColor": "white",
+    "backgroundColor": "black",
+    "lineColor": "white",
+    "wallColor": "white",
+    "backWallColor": "white",
+    "leftPlayerColor": "white",
+    "rightPlayerColor": "white",
+    "leftPlayerFont": "Arial",
+    "rightPlayerFont": "Arial",
+    "leftPlayerSize": "25",
+    "rightPlayerSize": "25",
+    "leftScoreFieldColor": "white",
+    "rightScoreFieldColor": "white",
+    "leftScoreFiledFont": "Arial",
+    "rightScoreFiledFont": "Arial",
+    "leftScoreFiledSize": "60",
+    "rightScoreFiledSize": "60",
+    "bottomLeftTextColor": "white",
+    "bottomLeftTextFont": "Arial",
+    "bottomLeftTextSize": "30",
+    "bottomRightTextColor": "white",
+    "bottomRightTextFont": "Arial",
+    "bottomRightTextSize": "30"
   },
   
   "neon": {
@@ -62,7 +63,7 @@
     "backgroundColor": "black",
     "lineColor": "#39FF14",
     "wallColor": "#39FF14",
-    "backWallColor": "#FF1493",
+    "backWallColor": "#39FF14",
     "leftPlayerColor": "#FF1493",
     "rightPlayerColor": "#FF1493",
     "leftPlayerFont": "Arial",
@@ -77,9 +78,9 @@
     "rightScoreFiledSize": "60",
     "bottomLeftTextColor": "#00D0FF",
     "bottomLeftTextFont": "Helvetica",
-    "bottomLeftTextSize": "25",
-    "bottomRightTextColor": "#00D0FF",
+    "bottomLeftTextSize": "30",
+    "bottomRightTextColor": "#39FF14",
     "bottomRightTextFont": "Helvetica",
-    "bottomRightTextSize": "25"
+    "bottomRightTextSize": "30"
   }
 }

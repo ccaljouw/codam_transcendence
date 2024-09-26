@@ -1,6 +1,5 @@
 import { GameObject } from '../gameObjects/GameObject'
 import { Ball } from '../gameObjects/Ball'
-import { PlayerComponent } from '../components/PlayerComponent'
 import { Game } from '../components/Game'
 import * as CON from './constants'
 import { TextComponent } from '../components/TextComponent'
@@ -36,36 +35,29 @@ function clearMessageFields(messageFields: TextComponent[]) {
 	}
 }
 
-// export function startKeyPressed(game: Game) {
-// 	if (game.gameState == `FINISHED`) {
-// 		game.resetMatch();
-// 	} else if (game.gameState == `WAITING`){
-// 		game.gameState = `STARTED`;
-// 		countdown(game);
-// 	}
-// }
-
 export function escapeKeyPressed(game: Game) {
 	const gameSocket = transcendenceSocket;
-	const payload : UpdateGameStateDto  = {roomId: game.roomId, state: GameState.ABORTED};
+	const payload : UpdateGameStateDto  = {id: game.roomId, state: GameState.ABORTED};
   gameSocket.emit("game/updateGameState", payload);
-	//todo: close canvas or link to other page
 	game.abortGame(0);
 }
 
 export function countdown(game: Game) {
+	log("GameScript: countdown started");
+
 	let count = CON.config[game.config].countdownTime;
 	let interval = setInterval(() => {
 		game.messageFields[0]?.setText(count.toString());
 		count--;
 		
 		if (count == -1) {
+			game.soundFX.playStart();
 			clearMessageFields(game.messageFields);
 			clearInterval(interval);
 			if (game.instanceType === 0 && game.ball?.movementComponent.getSpeed() === 0) {
 				game.ball?.getStartValues(game.config, game);
 			}
-		}
+		} else { game.soundFX.playCountdown2(); }
 	}, 1000);
 }
 
@@ -81,7 +73,6 @@ export function checkWinCondition(game: Game) {
 
 export function settleScore(thisSideScored: CON.PlayerSide, game: Game) {
 	const gameSocket = transcendenceSocket;
-
 	game.players[thisSideScored].setScore(game.players[thisSideScored].getScore() + 1);
 	gameSocket.emit("game/updateGameObjects", {roomId: game.roomId, score1: game.players[0].getScore(), score2: game.players[1].getScore()});
 }
@@ -103,9 +94,15 @@ function setPaddleTheme(game: Game) {
 	game.paddels.forEach(paddle => paddle.setColor(CON.themes[game.theme].rightPaddleColor));
 }
 
-function setWallTheme(game: Game) {
-	game.walls.forEach(wall => wall.setColor(CON.themes[game.theme].backWallColor));
-	game.walls.forEach(wall => wall.setColor(CON.themes[game.theme].wallColor));
+export function setWallTheme(game: Game) {
+	game.walls.forEach(wall => {
+		if (wall.getType() == 0) {
+			wall.setColor(CON.themes[game.theme].wallColor);
+		}
+		else {
+			wall.setColor(CON.themes[game.theme].backWallColor);
+		}
+	});
 }
 
 function setPlayerTheme(game: Game) {
@@ -155,4 +152,14 @@ export function	setTheme(game: Game) {
 	game.ball?.setColor(CON.themes[game.theme].ballColor);
 	game.ctx.clearRect(0, 0, game.canvas!.width, game.canvas!.height);
 	drawGameObjects(game);
+}
+
+export function setAILevel(game: Game, level: number) {
+	CON.config[game.config].AILevel = level;
+}
+
+export function log(message: string) {
+	if (CON.logging) {
+		console.log("GameScript: ", message);
+	}
 }
