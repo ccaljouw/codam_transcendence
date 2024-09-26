@@ -6,7 +6,6 @@ import { detectScore, checkWinCondition, setWallTheme, log } from './utils'
 import { GameState } from '@prisma/client'
 import { UpdateGameStateDto } from '@ft_dto/game'
 import { transcendenceSocket } from '@ft_global/socket.globalvar'
-import { useContext } from 'react'
 
 export function updateObjects(game: Game, deltaTime: number) {
   if (game.gameState !== GameState.STARTED) {
@@ -14,17 +13,17 @@ export function updateObjects(game: Game, deltaTime: number) {
   }
   game.elapasedTimeSincceLastUpdate += deltaTime;
 
-  updatePaddles(game, deltaTime, game.firstBike, game.secondBike);
+  updatePaddles(game, deltaTime, game.firstBike, game.secondBike, game.firstBikeConnected, game.secondBikeConnected);
   updateBall(game, deltaTime);
 }
 
-function updatePaddles(game: Game, deltaTime: number, firstBike: number, secondBike: number) {
+function updatePaddles(game: Game, deltaTime: number, firstBike: number, secondBike: number, firstBikeConnected: boolean, secondBikeConnected: boolean) {
   const gameSocket = transcendenceSocket;
 	console.log("Bike 1: ", firstBike, " Bike 2: ", secondBike)
   CON.config[game.config].socketUpdateInterval
 //   let paddleMoved = game.paddels.map(paddle => paddle.updatePaddle(deltaTime, game.config, game.ball as Ball, firstBike, secondBike));
-  let firstMoved = game.paddels[0].updatePaddle(deltaTime, game.config, game.ball as Ball, firstBike);
-  let secondMoved = game.paddels[1].updatePaddle(deltaTime, game.config, game.ball as Ball, secondBike);
+  let firstMoved = game.paddels[0].updatePaddle(deltaTime, game.config, game.ball as Ball, firstBike, firstBikeConnected);
+  let secondMoved = game.paddels[1].updatePaddle(deltaTime, game.config, game.ball as Ball, secondBike, secondBikeConnected);
   if ((firstMoved || secondMoved) && game.elapasedTimeSincceLastUpdate >= CON.config[game.config].socketUpdateInterval) {
     if (game.instanceType === 0) {
       gameSocket.emit("game/updateGameObjects", {

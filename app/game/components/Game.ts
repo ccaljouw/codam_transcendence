@@ -42,6 +42,8 @@ export class Game {
 	currentAnimationFrame: number = 0;
 	firstBike: number = 0;
 	secondBike: number = 0;
+	firstBikeConnected: boolean = false;
+	secondBikeConnected: boolean = false;
 
 	constructor(newCanvas: HTMLCanvasElement | undefined, instanceType: CON.InstanceTypes, data: UpdateGameDto, givenConfig: string, givenTheme: string, context: any, givenVolume: number, aiLevel: number) {
 		this.config = givenConfig;
@@ -56,6 +58,8 @@ export class Game {
 		this.aiLevel = aiLevel;
 		this.firstBike = context.firstBike.value;
 		this.secondBike = context.secondBike.value;
+		this.firstBikeConnected = context.firstBike.connected;
+		this.seconBikeConnected = context.secondBike.connected;
 		initializeGameObjects(this);
 		setTheme(this);
 		setSocketListeners(this);
@@ -191,6 +195,11 @@ export class Game {
 		this.instanceType = CON.InstanceTypes.notSet;
 		this.config = "";
 		this.theme = "";
+		this.aiLevel = 0;
+		this.firstBike = 0;
+		this.secondBike = 0;
+		this.firstBikeConnected = false;
+		this.secondBikeConnected = false;
 		disconnectSocket(this);
 	}
 }

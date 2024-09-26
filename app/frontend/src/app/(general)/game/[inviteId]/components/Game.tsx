@@ -198,7 +198,6 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 				newVolume = fetchedGameData?.GameUsers?.[instanceType].user.volume;
 			if (fetchedGameData?.GameUsers?.[instanceType].user?.theme !== undefined)
 				newTheme = fetchedGameData?.GameUsers?.[instanceType].user.theme;
-			
 
 			const newGame = new Game(
 				canvasRef.current,

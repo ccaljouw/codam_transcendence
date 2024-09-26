@@ -132,7 +132,7 @@ export class Paddle extends GameObject {
 	}
 
 
-	public updatePaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball | null, analogVal: number): boolean {
+	public updatePaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball | null, analogVal: number, useAnalogval: boolean): boolean {
     if (ball == null || ball.movementComponent.getSpeed() === 0) {
 			return false;
 		}
@@ -143,7 +143,7 @@ export class Paddle extends GameObject {
 
 		//this value can be set in the pongConfig.json file: sensorInput = true
 		// to choose which config we use (there are three in the json file) you can specify it in the constants.globalvar.tsx file
-		if (CON.config[config].sensorInput) {
+		if (CON.config[config].sensorInput || useAnalogval) {
 			console.log("sensor input");
 			return this.AnalogupdatePaddle(deltaTime, config, analogVal);
 		}

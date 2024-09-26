@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useEffect, useRef, useState, useCallback } from "react";
 import { ChatType, OnlineStatus } from "@prisma/client";
 import { UserProfileDto, UpdateUserDto } from "@ft_dto/users";
 import { ChatMessageToRoomDto, FetchChatDto } from "@ft_dto/chat";
@@ -13,6 +13,7 @@ import { usePathname } from "next/navigation";
 
 interface BikeValues {
     value: number;
+	connected: boolean;
 }
 
 interface TranscendenceContextVars {
@@ -57,8 +58,8 @@ export const TranscendenceContext = createContext<TranscendenceContextVars>({
 	setAllUsersUnreadCounter: () => { },
 	friendsUnreadCounter: 0,
 	setFriendsUnreadCounter: () => { },
-	firstBike: {value: 0},
-	secondBike: {value: 0},
+	firstBike: {value: 0, connected: false},
+	secondBike: {value: 0, connected: false},
 	setFirstBike: () => { },
 	setSecondBike: () => { },
 	connectToESP8266: async () => { },
@@ -83,8 +84,8 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	const { data: addToken, isLoading: addTokenLoading, error: addTokenError, fetcher: addTokenFetcher } = useFetch<CreateTokenDto, boolean>();
 	const { data: unreadMessageCount, isLoading: unreadMessageCountLoading, error: unreadMessageCountError, fetcher: unreadMessageCountFetcher } = useFetch<null, number>();
 	const { data: unreadsFromFriends, isLoading: unreadsFromFriendsLoading, error: unreadsFromFriendsError, fetcher: unreadsFromFriendsFetcher } = useFetch<number, number>();
-	const firstBikeRef = useRef<BikeValues>({ value: 0 });
-    const secondBikeRef = useRef<BikeValues>({ value: 0 });
+	const firstBikeRef = useRef<BikeValues>({ value: 0, connected: false });
+    const secondBikeRef = useRef<BikeValues>({ value: 0, connected: false });
 	const [firstBike, setFirstBike] = useState<number>(0);
 	const [secondBike, setSecondBike] = useState<number>(0);
 	const [switchToChannelCounter, setSwitchToChannelCounter] = useState({ channel: -1, count: 0, invite: -1 });
@@ -99,12 +100,13 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
         notifySubscribers();
     }, [firstBike, secondBike]);
 
-    const subscribeToBikeUpdates = (callback: (firstBike: BikeValues, secondBike: BikeValues) => void) => {
+    const subscribeToBikeUpdates = useCallback(
+		(callback: (firstBike: BikeValues, secondBike: BikeValues) => void) => {
         subscribers.current.push(callback);
         return () => {
             subscribers.current = subscribers.current.filter(cb => cb !== callback);
         };
-    };
+    },[]);
 	const connectToESP8266 = async (updateCallBack: Function) => {
 		//todo: consider changing this: The line below makes the code ignore the navigator.serial warning
 		//@ts-ignore
@@ -215,12 +217,14 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 
     const handleSetFirstBike = (val: number) => {
         firstBikeRef.current.value = val;
+		firstBikeRef.current.connected = true;
         setFirstBike(val);
         notifySubscribers();
     };
 
     const handleSetSecondBike = (val: number) => {
         secondBikeRef.current.value = val;
+		secondBikeRef.current.connected = true;
         setSecondBike(val);
         notifySubscribers();
     };
@@ -316,19 +320,21 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	}, [user]);
 
 
-	
+
    // Update the state when the ref value changes
    useEffect(() => {
 	console.log("Subscribing to bike updates");
+	console.log("firstBike connected?", firstBikeRef.current.connected, "secondBike connected?", secondBikeRef.current.connected);
 	const updateBikeValues = () => {
-		console.log("firstBike.current.value: ", firstBikeRef.current.value, "secondBike.current.value: ", secondBikeRef.current.value);
+		console.log("firstBike.current.value: ", firstBikeRef.current.value, "connected?", firstBikeRef.current.connected, 
+			"secondBike.current.value: ", secondBikeRef.current.value, "connected?", secondBikeRef.current.connected);
 		setFirstBike(firstBikeRef.current.value);
 		setSecondBike(secondBikeRef.current.value);
-	};
+	};	
 	
-	const unsubscribe = subscribeToBikeUpdates(updateBikeValues);
+	const unsubscribe = subscribeToBikeUpdates(updateBikeValues); // calling the subscribe function returns the unsubscribe function
 	
-	return () => unsubscribe();
+	return () => unsubscribe(); // call the unsubscribe function when the component unmounts
 }, [subscribeToBikeUpdates]);
 
 	return (

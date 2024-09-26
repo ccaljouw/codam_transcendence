@@ -5,10 +5,6 @@ backend_status="000"
 timeout=360
 start_time=$(date +%s)
 
-# trap SIGTERM and SIGINT, forwarding them to the child process
-trap 'kill -TERM $PID' TERM INT
-trap 'kill -INT $PID' INT
-
 until [ "$backend_status" -eq "200" ]; do
     backend_status=$(curl -s -o /dev/null -w "%{http_code}" backend:3001/healthcheck)
     if [ $backend_status -eq 200 ]; then
@@ -29,15 +25,4 @@ until [ "$backend_status" -eq "200" ]; do
     fi
 done
 
-# Run the command
-npm run "$@" &
-
-# Save the PID of the command so we can forward signals to it
-PID=$!
-
-# Wait for the command to exit
-wait $PID
-
-# forward the exit code of from the command
-EXIT_CODE=$?
-exit $EXIT_CODE
+exec npm run "$@"
