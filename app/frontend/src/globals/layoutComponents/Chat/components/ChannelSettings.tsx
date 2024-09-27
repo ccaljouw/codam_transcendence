@@ -21,7 +21,13 @@ export default function ChannelSettings({ room }: { room: FetchChatDto }) {
 	const submitChannelNameChange = async (event: FormEvent<HTMLFormElement>) => {
 		console.log("Changing channel name");
 		event.preventDefault();
-		setCurrentChatRoom({ ...currentChatRoom, name: event.currentTarget.name.value });
+		const form = new FormData(event.currentTarget);
+		const newName = form.get('name')?.toString();
+		const newVisibility = form.get('visibility');
+		if (newName) 
+			setCurrentChatRoom({ ...currentChatRoom, name: newName });
+		if (newVisibility)
+			setCurrentChatRoom({ ...currentChatRoom, visibility: newVisibility as ChatType });
 		await chatPatcher({ url: constants.API_CHAT + room.id, fetchMethod: 'PATCH', payload: FormToUpdateChatDto(event) })
 	}
 
@@ -61,7 +67,7 @@ export default function ChannelSettings({ room }: { room: FetchChatDto }) {
 					<p>Channel visibility</p>
 				</div>
 				<div className="col col-6">
-					<select className="btn-outline-dark form-select custom-select form-select-sm" defaultValue={room.visibility} name="visibility">
+					<select className="btn-outline-dark form-select custom-select form-select-sm" defaultValue={(chatPatched && chatPatched.visibility ? chatPatched.visibility : room.visibility)} name="visibility">
 						<option key="Public" value="PUBLIC" id="visibility">Public</option>
 						<option key="Private" value="PRIVATE" id="visibility">Private</option>
 						<option key="Password" value="PROTECTED" id="visibility">Password</option>

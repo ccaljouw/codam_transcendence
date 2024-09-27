@@ -221,7 +221,7 @@ export default function GameComponent({inviteId}: {inviteId: number}) {
 		<>
 			{waitingForPlayers ? (
 				<div>
-					<div>
+					<div className={`${styles.game}`}>
 						<button className="btn btn-dark text-center" onClick={handleClick}>{waitingForPlayers ? "Leave waiting room":"Leave Game"}</button>
 					</div>
 					<img src={`${constants.API_AVATAR}waitingForOtherPlayers.jpg`}/>
