@@ -204,8 +204,8 @@ export default function ChatArea() {
 								</>
 							}
 						</>}
-
 				</div>
+				<hr></hr>
 				<div className='chat-userlist'>
 					{userListType == UserListType.Friends &&
 						(HasFriends(currentUser) ?

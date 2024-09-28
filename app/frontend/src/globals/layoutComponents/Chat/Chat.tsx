@@ -387,7 +387,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 								onChange={(e) => setMessage(e.target.value)}
 								/>	
 							</div>
-							<div className="col col-3">
+							<div className="col col-auto">
 								<button className="btn btn-dark btn-sm" type='submit' disabled={message.length > 0 ? false : true}>Send</button>
 							</div>
 						</form>

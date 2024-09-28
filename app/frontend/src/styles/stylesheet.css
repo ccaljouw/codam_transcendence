@@ -78,6 +78,7 @@
 {
 	align-self: flex-start;
 	margin-top: auto;
+	width: 100%;
 }
 
 .chat-input form {
