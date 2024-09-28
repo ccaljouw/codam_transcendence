@@ -57,10 +57,10 @@ export default function ChannelSettings({ room }: { room: FetchChatDto }) {
 	return (
 		<>
 			<form onChange={submitChannelNameChange} acceptCharset='utf-8' className="row">
-				<div className="col col-5">
+				<div className="col col-3">
 					<p>Channel visibility</p>
 				</div>
-				<div className="col col-6">
+				<div className="col col-6 px-2">
 					<select className="btn-outline-dark form-select custom-select form-select-sm" defaultValue={(chatPatched && chatPatched.visibility ? chatPatched.visibility : room.visibility)} name="visibility">
 						<option key="Public" value="PUBLIC" id="visibility">Public</option>
 						<option key="Private" value="PRIVATE" id="visibility">Private</option>
@@ -70,10 +70,12 @@ export default function ChannelSettings({ room }: { room: FetchChatDto }) {
 				</div>
 			</form>
 			{((chatPatched && chatPatched.visibility == ChatType.PROTECTED) || (!chatPatched && room.visibility == ChatType.PROTECTED)) && // if the room is protected, show the password field
-				<form method="post" onSubmit={submitPassWordChange}>
-					<input className="form-control form-control-sm col col-6" placeholder="new password" type="password" name="password" required={true} autoComplete="new-password" minLength={6} maxLength={30} onChange={(e) => setPassword(e.target.value)}></input>
-					{showSuccess ? <>password saved! <input type="button" value="change again" onClick={() => setShowSuccess(false)}/></> : <input type="submit" value="Save Password" />}
-				</form>
+				<form method="post" onSubmit={submitPassWordChange} className="row">
+					<EditableDataField name="Password" data="**********" close={setChatPassword}>
+						<input className="form-control form-control-sm" placeholder="new password" type="password" name="password" required={true} autoComplete="new-password" minLength={6} maxLength={30} onChange={(e) => setPassword(e.target.value)}></input>
+						{/* {showSuccess ? <>Password saved!</>}//<button onClick={() => setShowSuccess(false)}>"Change again"</button></> : <button className="btn btn-outline-dark btn-sm" type="submit">Save Password</button>} */}
+					</EditableDataField>
+				</form> 
 			}
 			<form onSubmit={submitChannelNameChange} acceptCharset='utf-8' className="row">
 				<EditableDataField name="Channel name" data={chatPatched? chatPatched.name : room.name} close={chatPatched ? true : false}>

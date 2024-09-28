@@ -321,13 +321,22 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 				{chatError &&
 					(chatError.message == "401 - Unauthorized access to chat" ?
 						<>
-							Password protected.
-							<form method="POST" onSubmit={(e) => {
+							<FontBangers>
+								<h4>Protected channel</h4>
+							</FontBangers>
+							<form method="POST" className="row" onSubmit={(e) => {
 								e.preventDefault();
 								chatAuthFetcher({ url: constants.API_AUTH_CHAT, fetchMethod: 'POST', payload: { chatId: (chatId? chatId: -1), pwd: e.currentTarget.password.value } });
 							}}>
-								<input type="password" name="password" />
-								<button type="submit">Submit</button>
+								<div className="col col-4">
+									<p>Password:</p>
+								</div>
+								<div className="col col-5">
+									<input className="form-control form-control-sm" type="password" name="password" />
+								</div>
+								<div className="col col-3">
+									<button className="btn btn-dark btn-sm" type="submit">Submit</button>
+								</div>
 							</form>
 						</>
 						: 
