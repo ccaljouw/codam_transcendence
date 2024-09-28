@@ -91,7 +91,7 @@
     padding-left: calc(var(--strongpong-padding) / 2);
     padding-right: calc(var(--strongpong-padding) / 2);
     color: var(--strongpong-dark-blue);
-    margin-bottom: 1px;
+    margin-bottom: 0px;
 }
 
 .form-control {
