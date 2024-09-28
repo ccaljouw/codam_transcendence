@@ -8,7 +8,7 @@
     --strongpong-dark-blue: #1948cb;
     --strongpong-white: #F8DED7;
     --strongpong-white-transparent: #F8DED7A8;
-    --strongpong-padding: 20px;
+    --strongpong-padding: 15px;
 }
 
 .root-layout {
@@ -67,8 +67,8 @@
 }
 
 .white-box {
-    border-radius: 5px;
     background-color: var(--strongpong-white-transparent);
+    border-radius: 5px;
     border: 4px double var(--strongpong-black);
     text-overflow: clip;
     padding: var(--strongpong-padding);
@@ -83,8 +83,15 @@
 }
 
 .chat-messages p {
+    background-color: var(--strongpong-white-transparent);
+    border-radius: 5px;
+    border: 2px double var(--strongpong-black);
+    text-overflow: clip;
+    padding: calc(var(--strongpong-padding) / 4);
+    padding-left: calc(var(--strongpong-padding) / 2);
+    padding-right: calc(var(--strongpong-padding) / 2);
     color: var(--strongpong-dark-blue);
-    margin-bottom: -2pt;
+    margin-bottom: 1px;
 }
 
 .form-control {

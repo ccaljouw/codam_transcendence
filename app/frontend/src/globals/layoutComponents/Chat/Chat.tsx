@@ -335,15 +335,17 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 									<input className="form-control form-control-sm" type="password" name="password" />
 								</div>
 								<div className="col col-3">
-									<button className="btn btn-dark btn-sm" type="submit">Submit</button>
+									<button className="btn btn-dark btn-sm" type="submit">Enter</button>
 								</div>
 							</form>
 						</>
-						: 
-						(
-						chatError.message == "401 - User is banned from chat" ?
-						<>You are banned from this chat.</>
-						: <>Error loading chat <br />{chatError.message}</>))
+					: 
+						(chatError.message == "401 - User is banned from chat" ?
+							<FontBangers>You are banned from this chat.</FontBangers>
+						:
+							<FontBangers>Error loading chat <br />{chatError.message}</FontBangers>
+						)
+					)
 				}
 				{chatFromDb && <>
 					<div className="chat-title">
@@ -374,15 +376,20 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 						)) : <></>}
 					</div>
 					<div className="chat-input">
-						<form onSubmit={(e) => {
+						<form className="row justify-content-end" onSubmit={(e) => {
 							e.preventDefault();
 							sendMessage(currentUser.id, otherUserForDm ? otherUserForDm : 0, chatFromDb, currentUser, message, chatSocket, setMessage, newMessageFetcher);
 						}}>
-							<input className="form-control"
+							<div className="col">
+								<input className="form-control form-control-sm"
 								type='text'
 								value={message}
 								onChange={(e) => setMessage(e.target.value)}
-							/><button className="btn btn-dark" type='submit' disabled={message.length > 0 ? false : true}>send</button>
+								/>	
+							</div>
+							<div className="col col-3">
+								<button className="btn btn-dark btn-sm" type='submit' disabled={message.length > 0 ? false : true}>Send</button>
+							</div>
 						</form>
 					</div>
 				</>}

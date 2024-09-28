@@ -71,7 +71,7 @@ export default function ChannelSettings({ room }: { room: FetchChatDto }) {
 			</form>
 			{((chatPatched && chatPatched.visibility == ChatType.PROTECTED) || (!chatPatched && room.visibility == ChatType.PROTECTED)) && // if the room is protected, show the password field
 				<form method="post" onSubmit={submitPassWordChange} className="row">
-					<EditableDataField name="Password" data="**********" close={setChatPassword}>
+					<EditableDataField name="Password" data="**********" close={setChatPassword != null? true : false}>
 						<input className="form-control form-control-sm" placeholder="new password" type="password" name="password" required={true} autoComplete="new-password" minLength={6} maxLength={30} onChange={(e) => setPassword(e.target.value)}></input>
 						{/* {showSuccess ? <>Password saved!</>}//<button onClick={() => setShowSuccess(false)}>"Change again"</button></> : <button className="btn btn-outline-dark btn-sm" type="submit">Save Password</button>} */}
 					</EditableDataField>
