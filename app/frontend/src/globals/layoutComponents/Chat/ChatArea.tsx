@@ -9,7 +9,7 @@ import UnreadMessages from '@ft_global/functionComponents/UnreadMessages';
 import Chat from './Chat';
 import UserContextMenu from '../UserContextMenu/UserContextMenu';
 import { ChatType, ChatUserRole, OnlineStatus } from '@prisma/client';
-import { HasFriends, IsBlocked } from 'src/globals/functionComponents/FriendOrBlocked';
+import { HasFriends, IsBlocked, IsFriend } from 'src/globals/functionComponents/FriendOrBlocked';
 import ChannelList from './channelList';
 import { ChatMessageToRoomDto, UpdateChatUserDto } from '@ft_dto/chat';
 import useFetch from 'src/globals/functionComponents/useFetch';
@@ -60,13 +60,16 @@ export default function ChatArea() {
 			setRefreshTrigger(!refreshTrigger);
 			console.log('chat/refreshList',refreshTrigger);
 		});
-
+		if (currentChatRoom.visibility == ChatType.DM) {
+			if (IsFriend(currentChatRoom.users[0].id, currentUser) || IsFriend(currentChatRoom.users[1].id, currentUser)) {
+				setUserListType(UserListType.Friends);
+			}else{
+				setUserListType(UserListType.AllUsers);
+			}
+		}
 		return () => {
 			chatSocket.off('chat/refreshList');
 		}
-		// if (currentChatRoom.id == -1 ) {
-		// 	setUserListType(UserListType.AllUsers);
-		// }
 	}, [currentChatRoom, currentChatRoom.users?.length, refreshTrigger]);
 
 	useEffect(() => {
@@ -83,24 +86,7 @@ export default function ChatArea() {
 		}
 	}, []);
 
-	// useEffect(() => {
-	// 	if (HasFriends(currentUser)) {
-	// 		setUserListType(UserListType.Friends);
-	// 	}
-	// 	else
-	// 		setUserListType(UserListType.AllUsers);
-	// }, [currentUser]);
 
-
-	// useEffect(() => {
-	// 	if (currentChatRoom.visibility == ChatType.DM) {
-	// 		if (HasFriends(currentUser)) {
-	// 			setUserListType(UserListType.Friends);
-	// 		}
-	// 		else
-	// 			setUserListType(UserListType.AllUsers);
-	// 	}
-	// }, [currentChatRoom]);
 
 	useEffect(() => {
 		if (allUsersUnreadCounter == 0) {
@@ -123,8 +109,6 @@ export default function ChatArea() {
 						&nbsp;&nbsp;
 						<span className={IsBlocked(user.id, currentUser) ? 'blocked' : ''} onClick={() => { !IsBlocked(user.id, currentUser) ? setSecondUser(user.id) : setNewChatRoom({ room: -1, count: newChatRoom.count++ }) }}>{user.userName}</span>
 						&nbsp;
-						{/* TODO: implement proper context menu for channels */}
-						<UserContextMenu user={user} />
 						{chatUser?.role != ChatUserRole.DEFAULT && <ChannelContextMenu user={user} currentChatUser={chatUser} />}
 					</li>
 				</>
