@@ -19,6 +19,7 @@ EXPOSE 5555
 
 # Startup
 COPY ./startup-script-backend.sh /
-RUN chmod +x /startup-script-backend.sh
+COPY ./updateScript.sh /
+RUN chmod +x /startup-script-backend.sh /updateScript.sh
 ENTRYPOINT ["/startup-script-backend.sh"]
 CMD ["start"]

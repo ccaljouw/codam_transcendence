@@ -29,17 +29,8 @@ update_dependencies() {
 export -f update_dependencies
 export -f echo_orange
 export -f echo_green
+
 # Update dependencies in the root directory
 update_dependencies "."
-# Update dependencies in the app directory
-update_dependencies "app"
-# Find and update dependencies in all first-level subdirectories of app
-# for dir in app/*/; do
-#   if [ -d "$dir" ] && [ -f "$dir/package.json" ]; then
-#     update_dependencies "$dir"
-#   fi
-# done
-# Rebuild docker containers
-echo -e "\n\n$(echo_orange "Rebuilding Docker containers and starting application")"
-make rebuild
+
 echo_green "All done"
