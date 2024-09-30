@@ -10,7 +10,6 @@ import {
   MinLength,
 } from 'class-validator';
 
-// TODO: Carien, define min and max length
 export class WebsocketStatusChangeDto {
   @ApiProperty({ required: false })
   @IsOptional()

@@ -241,7 +241,6 @@ async function addDummyUsers() {
   });
 }
 
-// todo: add userState to dummy data
 async function main() {
   addDummyUsers();
 }

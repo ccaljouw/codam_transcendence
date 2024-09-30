@@ -6,13 +6,11 @@ import { OnlineStatus } from "@prisma/client";
 interface UserListProps {
 	userDisplayFunction: (user: UserProfileDto, indexInUserList: number, statusChangeCallback: (idx: number, newStatus? : OnlineStatus) => void) => JSX.Element;
 	fetchUrl: string;
-	// updateUnreadCounter?: (val: number) => void;
 	className?: string;
 	refreshTrigger?: Boolean;
 }
 
 interface UserListContextVars {
-	// todo: change statusChangeCallback to context useState
 	contextMenuClickSent: number;
 	triggerContextMenuClick: (val: number) => void;
 }

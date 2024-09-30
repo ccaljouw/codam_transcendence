@@ -123,7 +123,6 @@ export default function ChatArea() {
 						&nbsp;&nbsp;
 						<span className={IsBlocked(user.id, currentUser) ? 'blocked' : ''} onClick={() => { !IsBlocked(user.id, currentUser) ? setSecondUser(user.id) : setNewChatRoom({ room: -1, count: newChatRoom.count++ }) }}>{user.userName}</span>
 						&nbsp;
-						{/* TODO: implement proper context menu for channels */}
 						<UserContextMenu user={user} />
 						{chatUser?.role != ChatUserRole.DEFAULT && <ChannelContextMenu user={user} currentChatUser={chatUser} />}
 					</li>

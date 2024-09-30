@@ -179,5 +179,3 @@ export default function UserContextMenu({ user }:
 		</>
 	);
 }
-
-//todo: expand handleClick functions

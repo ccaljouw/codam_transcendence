@@ -1,4 +1,5 @@
-/** @type {import('next').NextConfig} */
+import type { NextConfig } from 'next'
+
 const nextConfig = {
 	reactStrictMode: false,
 	headers: async () => {
@@ -13,7 +14,8 @@ const nextConfig = {
 				],
 			},
 		];
-	}
+	},
+	exerimental: { appDir: true }
 };
 
 export default nextConfig;

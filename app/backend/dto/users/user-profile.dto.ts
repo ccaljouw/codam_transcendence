@@ -18,8 +18,6 @@ import {
   MinLength,
 } from 'class-validator';
 
-//TODO: Carien, define min and max length
-//TODO: Jorien, make enum for theme
 export class UserProfileDto implements User {
   @ApiProperty({ required: true })
   @IsNotEmpty()
