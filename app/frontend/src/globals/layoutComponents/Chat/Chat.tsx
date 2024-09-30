@@ -307,9 +307,9 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 				const parsedMessage = messageParser(dbMessageForParser, messageParserProps);
 				if (parsedMessage)
 					return parsedMessage;
-				return <></>
+				return null;
 			}
-			));
+			).filter((parsedMessage) => parsedMessage != null));
 		}
 	}, [chatMessages])
 

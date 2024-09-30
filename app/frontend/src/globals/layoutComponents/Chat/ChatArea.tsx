@@ -61,7 +61,7 @@ export default function ChatArea() {
 			console.log('chat/refreshList',refreshTrigger);
 		});
 		if (currentChatRoom.visibility == ChatType.DM) {
-			if (IsFriend(currentChatRoom.users[0].id, currentUser) || IsFriend(currentChatRoom.users[1].id, currentUser)) {
+			if (IsFriend(currentChatRoom?.users[0]?.id, currentUser) || IsFriend(currentChatRoom?.users[1]?.id, currentUser)) {
 				setUserListType(UserListType.Friends);
 			}else{
 				setUserListType(UserListType.AllUsers);

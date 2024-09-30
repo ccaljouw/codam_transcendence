@@ -24,10 +24,10 @@ export interface parserProps {
 
 export const messageParser = (
 	message: ChatMessageToRoomDto, context: parserProps
-): JSX.Element => {
+): JSX.Element | null => {
 	const { inviteCallback, currentChatRoom, currentUser, chatSocket, friendInviteFetcher, gameInviteFetcher, chatInviteFetcher, changeRoomStatusCallback, userKickedCallback } = context;
 	if (IsBlocked(message.userId, currentUser))
-		return <></>
+		return null;
 	console.log(message);
 	console.log("message.userId: ", message.userId, "currentUser.id: ", currentUser.id);
 	if (message.action) {
@@ -63,9 +63,9 @@ export const messageParser = (
 				userKickedCallback(-3);
 				return <>{'<<'} You were banned from the chat {'>>'}</>
 			case "LEAVE":
-				return <></>;
+				return null;
 			case "JOIN":
-				return <></>;
+				return null;
 		}
 	}
 	if (message.inviteId) {
@@ -78,7 +78,6 @@ export const messageParser = (
 		else
 			return <>{message.userName}: {message.message}</>
 	}
-	return <></>;
 }
 
 const inviteParser = (
