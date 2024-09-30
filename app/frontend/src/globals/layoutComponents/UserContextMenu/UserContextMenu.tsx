@@ -58,6 +58,14 @@ export default function UserContextMenu({ user }:
 		}
 	}, [currentChatRoom]);
 
+	useEffect(() => {
+		console.log('UserContextMenu useEffect currentUser', currentUser);
+		if(blockData){
+			console.log('UserContextMenu useEffect blockData');
+			setNewChatRoom({ room: -1, count: newChatRoom.count++ });
+			setNewChatRoom({ room: currentChatRoom.id, count: newChatRoom.count++ });
+		}
+	},[currentUser])
 
 	const toggleMenu = () => {
 		triggerContextMenuClick(user.id); // send user id to context menu
@@ -120,6 +128,7 @@ export default function UserContextMenu({ user }:
 	useEffect(() => {
 		if (blockData) {
 			setCurrentUser(blockData);
+	
 		}
 	}, [blockData])
 
