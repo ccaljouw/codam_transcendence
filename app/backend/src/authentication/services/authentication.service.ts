@@ -155,8 +155,7 @@ export class AuthService {
 			const jwt: string = await this.generateJwt(user);
 			(req.res as Response).cookie('jwt', jwt, {
 				httpOnly: true,
-				//TODO: determine validity
-				maxAge: 3600000, // expires in 1 hour
+				maxAge: 11800000,
 				sameSite: 'strict',
 			});
 		} catch (error) {
@@ -188,8 +187,7 @@ export class AuthService {
 			const token: string = await this.generateChatToken(chat);
 			(req.res as Response).cookie(`chatToken_${chat.id}`, token, {
 				httpOnly: true,
-				//TODO: determine validity
-				// maxAge: 3600000, // expires in 1 hour
+				maxAge: 11800000,
 				sameSite: 'strict',
 			});
 		} catch (error) {

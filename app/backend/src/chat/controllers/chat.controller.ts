@@ -204,7 +204,6 @@ export class ChatMessagesController {
 
 
 	// ADMIN AND OWNER ONLY ROUTES **************************************************** //
-	// TODO: check if requester is indeed he owner of the chat
 	@Patch('changeChatUserRole/:chatId/:userId/:role/:requesterId')
 	@UseGuards(JwtAuthGuard)
 	@ApiOperation({ summary: 'Returns UpdateChatUserDto if role was changed' })
@@ -286,9 +285,4 @@ export class ChatMessagesController {
 		const chat = await this.chatService.findOne(chatId);
 		return chat;
 	}
-
-
-	//todo: Albert: Create patch and delete method for UpdateChatDto. Return boolean if it worked or not
-	// @Patch(':id')
-	// @Delete(':id')
 }

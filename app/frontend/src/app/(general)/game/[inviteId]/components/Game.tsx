@@ -206,7 +206,7 @@ export default function GameComponent({ inviteId }: { inviteId: number }) {
 				constants.config, // config
 				constants.themes[newTheme], // theme
 				newVolume, //volume
-				aiLevel // AI level > todo: implement AI level button and backend. 0 = not an ai game 0.1 > 1 is level
+				aiLevel // AI level
 			);
 			setGame(newGame);
 			if (inviteId === -1) {

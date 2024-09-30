@@ -79,7 +79,7 @@ export default function ChannelSettings({ room }: { room: FetchChatDto }) {
 			}
 			<form onSubmit={submitChannelNameChange} acceptCharset='utf-8' className="row">
 				<EditableDataField name="Channel name" data={chatPatched? chatPatched.name : room.name} close={chatPatched ? true : false}>
-					<input className="form-control form-control-sm" placeholder={room.name} type="text" name="name" required={false} autoComplete="off" minLength={6} maxLength={30}></input> {/* //todo: JMA: finetune min and max */}
+					<input className="form-control form-control-sm" placeholder={room.name} type="text" name="name" required={false} autoComplete="off" minLength={6} maxLength={30}></input>
 				</EditableDataField>
 			</form>
 		</>

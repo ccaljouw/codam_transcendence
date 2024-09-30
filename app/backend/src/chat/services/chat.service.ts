@@ -233,7 +233,6 @@ export class ChatService {
 	}
 
 
-	// todo: check if requester is owner
 	async changeChatUserRole(chatId: number, userId: number, role: ChatUserRole, requesterId: number): Promise<UpdateChatUserDto> {
 		const chatUser = await this.db.chatUsers.update({
 			where: { chatId_userId: { chatId, userId } },
