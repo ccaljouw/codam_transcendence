@@ -198,13 +198,13 @@ export default function GameComponent({ inviteId }: { inviteId: number }) {
 			if (fetchedGameData?.GameUsers?.[instanceType].user?.theme !== undefined)
 				newTheme = fetchedGameData?.GameUsers?.[instanceType].user.theme;
 
-
 			const newGame = new Game(
 				canvasRef.current,
 				instanceType,
 				fetchedGameData!,
 				constants.config, // config
 				constants.themes[newTheme], // theme
+				context,
 				newVolume, //volume
 				aiLevel // AI level
 			);

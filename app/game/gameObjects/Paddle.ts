@@ -3,6 +3,9 @@ import { MovementComponent } from '../components/MovementComponent'
 import { Ball } from './Ball'
 import { KeyListenerComponent } from '../components/KeyListenerComponent'
 import * as CON from '../utils/constants'
+import { useContext } from 'react'
+import { TranscendenceContext } from '@ft_global/contextprovider.globalvar'
+import { Console } from 'console'
 import { log } from '../utils/utils'
 
 
@@ -89,28 +92,47 @@ export class Paddle extends GameObject {
     return hasMoved;
 	}
 
-	// private AnalogupdatePaddle(deltaTime: number, config: keyof typeof CON.config): boolean {
-	// 	const margin = 3;
-	// 	// let hasMoved = false;
+	private AnalogupdatePaddle(deltaTime: number, config: keyof typeof CON.config, analogVal: number): boolean {
+		// const margin = 10;
+		// console.log("Analog value: ", analogVal.toPrecision(6));
+		//todo: get sensor input
+		// let sensorInputValue = 0; //-1 to 1
+
+		//calculate paddle position
+		const paddleMinY = CON.config[config].wallWidth + CON.config[config].paddleGap;
+		const paddleMaxY = CON.config[config].screenHeight - this.height - CON.config[config].wallWidth - CON.config[config].paddleGap;
+		const paddleRange = paddleMaxY - paddleMinY;
+		// console.log("Analog paddleRange: ", paddleRange, "paddleMinY: ", paddleMinY, "paddleMaxY: ", paddleMaxY);
+		//calculate required paddle position
+		const requiredPaddlePosition = (paddleRange / 2)  + (analogVal * paddleRange)  + paddleMinY;
+		// console.log("Analog requiredPaddlePosition: ", requiredPaddlePosition, "TRUE? ", requiredPaddlePosition - this.y < margin);
 		
-	// // 	first get sensor input
-	// 	let sensorInputValue = 0; //-1 to 1
 
-	// 	const paddleMinY = CON.config[config].wallWidth + CON.config[config].paddleGap;
-	// 	const paddleMaxY = CON.config[config].screenHeight - this.height - CON.config[config].wallWidth - CON.config[config].paddleGap;
-	// 	const paddleRange = paddleMaxY - paddleMinY;
+		//option 1: simply set new position (hacker verion)
+		// if (requiredPaddlePosition - this.y < margin) {
+		// 	return false;
+		// }
+		this.y = requiredPaddlePosition;
+		return true
+		
+		
+		// option 2: calculate using speed and delta time
+		// const currentY = this.movementComponent.getY();
+		// const requiredMovement = requiredPaddlePosition - currentY;
+		// if (Math.abs(requiredMovement) > margin) {
+		// 	const speed = Math.min(CON.config[config].paddleBaseSpeed, Math.abs(requiredMovement));
+		// 	this.movementComponent.setSpeed(speed);
+		// 	this.movementComponent.setDirection(requiredMovement > 0 ? 0.5 * Math.PI : 1.5 * Math.PI);
+		// 	this.movementComponent.update(deltaTime);
+		// 	this.y = this.movementComponent.getY();
+		// 	this.checkBounds(config);
+		// 	return = true;
+		// }
+		// return false;
+	}
 
-	// 	//simply set new position
-	// 	const requiredPaddlePosition = paddleRange * sensorInputValue + paddleMinY;
-	// 	if (requiredPaddlePosition - this.y < margin) {
-	// 		return false;
-	// 	}
-	// 	this.y = requiredPaddlePosition;
-	// 	return true
-	// }
 
-
-	public updatePaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball | null): boolean {
+	public updatePaddle(deltaTime: number, config: keyof typeof CON.config, ball: Ball | null, analogVal: number, useAnalogval: boolean): boolean {
     if (ball == null || ball.movementComponent.getSpeed() === 0) {
 			return false;
 		}
@@ -119,23 +141,27 @@ export class Paddle extends GameObject {
 			return this.updateAiPaddle(deltaTime, config, ball as Ball);
 		}
 
-		if (CON.config[config].sensorInput === true) {
-			log(`gameScript: sensor input not implemented in this version`);
-			// return this.AnalogupdatePaddle(deltaTime, config);
+		//this value can be set in the pongConfig.json file: sensorInput = true
+		// to choose which config we use (there are three in the json file) you can specify it in the constants.globalvar.tsx file
+		if (CON.config[config].sensorInput || useAnalogval) {
+			console.log("sensor input");
+			return this.AnalogupdatePaddle(deltaTime, config, analogVal);
 		}
-
 		let hasMoved = false;
 		const margin = .5;
-
 		if (this.keyListener.checkKeysPressed()) {
+			console.log("key input");
+			let hasMoved = false;
+			const margin = .5;
 			let initialY = this.y;
 			this.movementComponent.update(deltaTime);
 			this.y = this.movementComponent.getY();
 			this.checkBounds(config);
 			
 			hasMoved = Math.abs(this.y - initialY) > margin;
+			return hasMoved;
 		}
-		return hasMoved;
+		return false;
 	}
 
 	public setAIlevel(level: number) {
