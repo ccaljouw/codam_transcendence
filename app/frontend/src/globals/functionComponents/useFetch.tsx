@@ -58,6 +58,7 @@ export default function useFetch<T, U>(): fetchOutput<T, U> {
 			setData(await response.json() as U);
 		} catch (e: any) {
 			console.log("useFetch error: ", e.message);
+			setData(null);
 			setError(e);
 		} finally {
 			setIsLoading(false);
