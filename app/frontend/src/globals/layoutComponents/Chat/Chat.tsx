@@ -123,6 +123,12 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 			newUserForChannelFetcher({ url: constants.CHAT_GET_CHATUSER + currentChatRoom.id + '/' + userId });
 		}
 	};
+	
+	const userKickedCallback = (channel: number) => {
+		console.log("Kick callback: ", channel);
+		leaveRoom(currentUser.id, currentChatRoom, currentUser, setCurrentChatRoom);
+		setNewChatRoom({ room: channel, count: newChatRoom.count + 1 });
+	}
 
 	const messageParserProps: parserProps = {
 		inviteCallback: inviteCallback,
@@ -132,7 +138,8 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		friendInviteFetcher: friendInviteFetcher,
 		gameInviteFetcher: gameInviteFetcher,
 		chatInviteFetcher: chatInviteFetcher,
-		changeRoomStatusCallback: changeRoomStatusCallBack
+		changeRoomStatusCallback: changeRoomStatusCallBack,
+		userKickedCallback: userKickedCallback
 	};
 
 	const handleMessageFromRoom = (payload: ChatMessageToRoomDto) => {
@@ -199,7 +206,6 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		else if (chatId && chatId !== -1) // If we have a chatid, we need to fetch the chat messages for it
 		{
 			fetchChat(chatFetcher, chatId, currentUser.id);
-
 		}
 		chatSocket.on('chat/messageFromRoom', handleMessageFromRoom);
 		chatSocket.on('invite/inviteResponse', (payload: InviteSocketMessageDto) => { inviteResponseHandler(payload, currentUser, currentChatRoom, chatMessagesFetcher, friendInviteFetcher, newChatRoom, setNewChatRoom, switchToChannelCounter, setSwitchToChannelCounter) });
@@ -301,9 +307,9 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 				const parsedMessage = messageParser(dbMessageForParser, messageParserProps);
 				if (parsedMessage)
 					return parsedMessage;
-				return <></>
+				return null;
 			}
-			));
+			).filter((parsedMessage) => parsedMessage != null));
 		}
 	}, [chatMessages])
 
@@ -315,16 +321,31 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 				{chatError &&
 					(chatError.message == "401 - Unauthorized access to chat" ?
 						<>
-							Password protected.
-							<form method="POST" onSubmit={(e) => {
+							<FontBangers>
+								<h4>Protected channel</h4>
+							</FontBangers>
+							<form method="POST" className="row" onSubmit={(e) => {
 								e.preventDefault();
-								chatAuthFetcher({ url: constants.API_AUTH_CHAT, fetchMethod: 'POST', payload: { chatId: (chatId? chatId : -1), pwd: e.currentTarget.password.value } });
+								chatAuthFetcher({ url: constants.API_AUTH_CHAT, fetchMethod: 'POST', payload: { chatId: (chatId? chatId: -1), pwd: e.currentTarget.password.value } });
 							}}>
-								<input type="password" name="password" />
-								<button type="submit">Submit</button>
+								<div className="col col-4">
+									<p>Password:</p>
+								</div>
+								<div className="col col-5">
+									<input className="form-control form-control-sm" type="password" name="password" />
+								</div>
+								<div className="col col-3">
+									<button className="btn btn-dark btn-sm" type="submit">Enter</button>
+								</div>
 							</form>
 						</>
-						: <>Error loading chat <br />{chatError.message}</>)
+					: 
+						(chatError.message == "401 - User is banned from chat" ?
+							<FontBangers>You are banned from this chat.</FontBangers>
+						:
+							<FontBangers>Error loading chat <br />{chatError.message}</FontBangers>
+						)
+					)
 				}
 				{chatFromDb && <>
 					<div className="chat-title">
@@ -355,15 +376,20 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 						)) : <></>}
 					</div>
 					<div className="chat-input">
-						<form onSubmit={(e) => {
+						<form className="row justify-content-end" onSubmit={(e) => {
 							e.preventDefault();
 							sendMessage(currentUser.id, otherUserForDm ? otherUserForDm : 0, chatFromDb, currentUser, message, chatSocket, setMessage, newMessageFetcher);
 						}}>
-							<input className="form-control"
+							<div className="col">
+								<input className="form-control form-control-sm"
 								type='text'
 								value={message}
 								onChange={(e) => setMessage(e.target.value)}
-							/><button className="btn btn-dark" type='submit' disabled={message.length > 0 ? false : true}>send</button>
+								/>	
+							</div>
+							<div className="col col-auto">
+								<button className="btn btn-dark btn-sm" type='submit' disabled={message.length > 0 ? false : true}>Send</button>
+							</div>
 						</form>
 					</div>
 				</>}

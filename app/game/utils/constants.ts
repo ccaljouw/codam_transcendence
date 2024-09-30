@@ -2,7 +2,7 @@ import myThemes from '../pongThemes.json'
 import myConfig from '../pongConfig.json'
 
 //turn on or of console logging for the game script here
-export const logging = true;
+export const logging = false;
 
 type Theme = {
 	leftPaddleColor: string;
@@ -93,7 +93,6 @@ type Config = {
 	rightPaddleDownKey: string;
 	backWallGap: number;
 	startMessage: string;
-	winMessage: string;
 	scoreFieldOffset_X: number;
 	scoreFieldOffset_Y: number;
 	bottomMessageOffset_X: number;
@@ -135,7 +134,6 @@ function parseConfig(jsonConfig: any): Record<string, Config> {
 			rightPaddleDownKey: value.rightPaddleDownKey,
 			backWallGap: parseInt(value.backWallGap, 10),
 			startMessage: value.startMessage,
-			winMessage: value.winMessage,
 			scoreFieldOffset_X: parseInt(value.scoreFieldOffset_X, 10),
 			scoreFieldOffset_Y: parseInt(value.scoreFieldOffset_Y, 10),
 			bottomMessageOffset_X: parseInt(value.bottomMessageOffset_X, 10),

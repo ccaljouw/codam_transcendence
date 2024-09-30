@@ -36,7 +36,7 @@ services:
     networks:
       - transcendence
     # Default command will run "start", uncommend below to run "start:watch" for development 
-    command: start:dev
+    # command: start:dev
     
   frontend:
     depends_on:

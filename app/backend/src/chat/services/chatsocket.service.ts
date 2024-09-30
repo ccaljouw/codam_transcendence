@@ -53,17 +53,21 @@ export class ChatSocketService {
 
 		const currentToken = await this.tokenService.getTokenEntry(data.token);
 		if (currentToken && currentToken.chatId && currentToken.chatId !== data.chatId && currentToken.chatId !== 0) {
-			await this.db.chatUsers.update({
-				where: {
-					chatId_userId: {
-						chatId: currentToken.chatId,
-						userId: data.userId
+			try {
+				await this.db.chatUsers.update({
+					where: {
+						chatId_userId: {
+							chatId: currentToken.chatId,
+							userId: data.userId
+						}
+					},
+					data: {
+						isInChatRoom: false
 					}
-				},
-				data: {
-					isInChatRoom: false
-				}
-			});
+				});
+			} catch (e) {
+				console.error("Error updating chatUser", e);
+			}
 		}
 		await this.tokenService.updateToken({ userId: data.userId, chatId: data.isInChatRoom ? data.chatId : 0, token: data.token }); // update token with chatId if user is in chatroom, else set chatId to 0
 		const userStillInChat = await this.isUserInChatRoom(data.chatId, data.userId);

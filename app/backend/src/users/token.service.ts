@@ -129,7 +129,7 @@ export class TokenService {
       return tokenUser;
     } catch (error) {
       console.error('Error adding token:', error);
-      throw error;
+      throw new NotFoundException(`User with token ${createToken.token} not added.`, error.message);
     }
   }
 

@@ -13,26 +13,16 @@ export class ChatMessageService {
 
 	// Called by socket when a user sends a message, adds the message to the database, sets unread messages for all offline users in the chat
 	async messageToDB(theMessage: CreateChatMessageDto): Promise<{ messageId: number }> {
+		const chatUser = await this.db.chatUsers.findFirst({
+			where: {
+				chatId: theMessage.chatId,
+				userId: theMessage.userId
+			}
+		});
+		if (chatUser && chatUser.mutedUntil && chatUser.mutedUntil > new Date()) {
+			throw new NotFoundException(`User is muted until ${chatUser.mutedUntil}`);
+		}
 		const newMessage = await this.db.chatMessages.create({ data: theMessage });
-		// const chatUsersNotInRoom = await this.db.chatUsers.findMany({
-		// 	where: {
-		// 		chatId: theMessage.chatId,
-		// 		isInChatRoom: false
-		// 	}
-		// });
-		// let idsOfUsersNotInRoom: number[] = [];
-		// for (const chatUser of chatUsersNotInRoom) {
-		// 	const user = await this.db.user.findUnique({ where: { id: chatUser.userId }, include: { blocked: true } });
-		// 	if (user.blocked.some(block => block.id === theMessage.userId)) // If the user is blocked, continue
-		// 		continue;
-		// 	await this.db.chatUsers.update({
-		// 		where: { id: chatUser.id },
-		// 		data: {
-		// 			unreadMessages: chatUser.unreadMessages + 1
-		// 		}
-		// 	});
-		// 	idsOfUsersNotInRoom.push(chatUser.userId);
-		// }
 		return { messageId: newMessage.id };
 	}
 

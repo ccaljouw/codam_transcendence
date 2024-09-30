@@ -10,10 +10,10 @@ interface fetchOutput<T, U> {
 	data: U | null,
 	isLoading: boolean,
 	error: Error | null,
-	fetcher: ({url, fetchMethod, payload}: fetchProps<T>) => Promise<void>,
+	fetcher: ({ url, fetchMethod, payload }: fetchProps<T>) => Promise<void>,
 }
 
-export default function useFetch<T, U>() : fetchOutput<T, U> {
+export default function useFetch<T, U>(): fetchOutput<T, U> {
 	const [data, setData] = useState<U | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<Error | null>(null);
@@ -22,7 +22,7 @@ export default function useFetch<T, U>() : fetchOutput<T, U> {
 		url,
 		fetchMethod,
 		payload,
-	} : fetchProps<T> ) : Promise<void> => {
+	}: fetchProps<T>): Promise<void> => {
 		// (re)set states to default values to prevent old data from being displayed
 		setIsLoading(true);
 		setError(null);
@@ -55,13 +55,14 @@ export default function useFetch<T, U>() : fetchOutput<T, U> {
 				}
 				throw new Error(errorMessage);
 			}
-				setData(await response.json() as U);
+			setData(await response.json() as U);
 		} catch (e: any) {
 			console.log("useFetch error: ", e.message);
+			setData(null);
 			setError(e);
 		} finally {
 			setIsLoading(false);
 		}
 	};
-	return ({data, isLoading, error, fetcher});
+	return ({ data, isLoading, error, fetcher });
 };

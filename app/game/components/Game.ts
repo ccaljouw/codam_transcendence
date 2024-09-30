@@ -13,6 +13,7 @@ import { disconnectSocket, setSocketListeners } from '../utils/gameSocketListner
 import { updateObjects, checkForGoals } from '../utils/updateObjects'
 import { countdown, setTheme, log } from '../utils/utils'
 import { initializeGameObjects, drawGameObjects, resetGameObjects } from '../utils/objectController'
+import { first } from 'rxjs'
 
 export class Game {
 	canvas?: HTMLCanvasElement;
@@ -39,8 +40,12 @@ export class Game {
 	elapasedTimeSincceLastUpdate: number = 0;
 	lastFrameTime: number = 0;
 	currentAnimationFrame: number = 0;
+	firstBike: number = 0;
+	secondBike: number = 0;
+	firstBikeConnected: boolean = false;
+	secondBikeConnected: boolean = false;
 
-	constructor(newCanvas: HTMLCanvasElement | undefined, instanceType: CON.InstanceTypes, data: UpdateGameDto, givenConfig: string, givenTheme: string, givenVolume: number, aiLevel: number) {
+	constructor(newCanvas: HTMLCanvasElement | undefined, instanceType: CON.InstanceTypes, data: UpdateGameDto, givenConfig: string, givenTheme: string, context: any, givenVolume: number, aiLevel: number) {
 		this.config = givenConfig;
 		this.theme = givenTheme;
 		this.gameData = data;
@@ -51,12 +56,23 @@ export class Game {
 		this.gameUsers = this.gameData.GameUsers as UpdateGameUserDto [];
 		this.soundFX.setVolume(givenConfig, givenVolume);
 		this.aiLevel = aiLevel;
+		this.firstBike = context.firstBike.value;
+		this.secondBike = context.secondBike.value;
+		this.firstBikeConnected = context.firstBike.connected;
+		this.seconBikeConnected = context.secondBike.connected;
 		initializeGameObjects(this);
 		setTheme(this);
 		setSocketListeners(this);
+		console.log("script: game created with config: ", this.config, " and theme: ", this.theme);
+		console.log("script: sensorInput = ", CON.config[this.config].sensorInput);
+		context.subscribeToBikeUpdates(this.updateBikeValues.bind(this))
 		log(`GameScript: instance type: ${this.instanceType}`);
 	}
 	
+	updateBikeValues(firstBike: number, secondBike: number) {
+        this.firstBike = firstBike;
+        this.secondBike = secondBike;
+    }
 
 	redrawGameObjects() {
 		this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
@@ -179,6 +195,11 @@ export class Game {
 		this.instanceType = CON.InstanceTypes.notSet;
 		this.config = "";
 		this.theme = "";
+		this.aiLevel = 0;
+		this.firstBike = 0;
+		this.secondBike = 0;
+		this.firstBikeConnected = false;
+		this.secondBikeConnected = false;
 		disconnectSocket(this);
 	}
 }

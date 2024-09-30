@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useEffect, useRef, useState, useCallback } from "react";
 import { ChatType, OnlineStatus } from "@prisma/client";
 import { UserProfileDto, UpdateUserDto } from "@ft_dto/users";
 import { ChatMessageToRoomDto, FetchChatDto } from "@ft_dto/chat";
@@ -11,7 +11,11 @@ import useAuthentication from "./functionComponents/useAuthentication";
 import { IsBlocked, IsFriend } from "./functionComponents/FriendOrBlocked";
 import { usePathname } from "next/navigation";
 
-// Context for the entire app
+interface BikeValues {
+    value: number;
+	connected: boolean;
+}
+
 interface TranscendenceContextVars {
 	currentUser: UserProfileDto;
 	setCurrentUser: (val: UserProfileDto) => void;
@@ -27,6 +31,13 @@ interface TranscendenceContextVars {
 	setAllUsersUnreadCounter: (val: number) => void;
 	friendsUnreadCounter: number;
 	setFriendsUnreadCounter: (val: number) => void;
+	firstBike: BikeValues;
+	secondBike: BikeValues;
+	setFirstBike: (val: number) => void;
+	setSecondBike: (val: number) => void;
+	connectToESP8266: (updateCallBack: Function) => Promise<void>;
+	subscribeToBikeUpdates: (callback: (firstBike: BikeValues, secondBike: BikeValues) => void) => void;
+
 	switchToChannelCounter: { channel: number, count: number, invite: number };
 	setSwitchToChannelCounter: (val: { channel: number, count: number, invite: number }) => void;
 }
@@ -47,6 +58,12 @@ export const TranscendenceContext = createContext<TranscendenceContextVars>({
 	setAllUsersUnreadCounter: () => { },
 	friendsUnreadCounter: 0,
 	setFriendsUnreadCounter: () => { },
+	firstBike: {value: 0, connected: false},
+	secondBike: {value: 0, connected: false},
+	setFirstBike: () => { },
+	setSecondBike: () => { },
+	connectToESP8266: async () => { },
+	subscribeToBikeUpdates: () => { },
 	switchToChannelCounter: { channel: -1, count: 0, invite: -1 },
 	setSwitchToChannelCounter: () => { }
 });
@@ -58,6 +75,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	const [newChatRoom, setNewChatRoom] = useState<{ room: number, count: number }>({ room: -1, count: 0 });
 	const [currentUser, setCurrentUser] = useState<UserProfileDto>({} as UserProfileDto);
 	const currentUserRef = useRef<UserProfileDto>(currentUser);
+	const [socketId, setSocketId] = useState<string>('');
 	const { user } = useAuthentication();
 	const pathname = usePathname();
 	const [allUsersUnreadCounter, setAllUsersUnreadCounter] = useState<number>(0);
@@ -66,11 +84,76 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	const { data: addToken, isLoading: addTokenLoading, error: addTokenError, fetcher: addTokenFetcher } = useFetch<CreateTokenDto, boolean>();
 	const { data: unreadMessageCount, isLoading: unreadMessageCountLoading, error: unreadMessageCountError, fetcher: unreadMessageCountFetcher } = useFetch<null, number>();
 	const { data: unreadsFromFriends, isLoading: unreadsFromFriendsLoading, error: unreadsFromFriendsError, fetcher: unreadsFromFriendsFetcher } = useFetch<number, number>();
+	const firstBikeRef = useRef<BikeValues>({ value: 0, connected: false });
+    const secondBikeRef = useRef<BikeValues>({ value: 0, connected: false });
+	const [firstBike, setFirstBike] = useState<number>(0);
+	const [secondBike, setSecondBike] = useState<number>(0);
 	const [switchToChannelCounter, setSwitchToChannelCounter] = useState({ channel: -1, count: 0, invite: -1 });
+
+    const subscribers = useRef<Function[]>([]);	
+
+    const notifySubscribers = () => {
+        subscribers.current.forEach(callback => callback(firstBikeRef.current.value, secondBikeRef.current.value));
+    };
+
+    useEffect(() => {
+        notifySubscribers();
+    }, [firstBike, secondBike]);
+
+    const subscribeToBikeUpdates = useCallback(
+		(callback: (firstBike: BikeValues, secondBike: BikeValues) => void) => {
+        subscribers.current.push(callback);
+        return () => {
+            subscribers.current = subscribers.current.filter(cb => cb !== callback);
+        };
+    },[]);
+	const connectToESP8266 = async (updateCallBack: Function) => {
+		//todo: consider changing this: The line below makes the code ignore the navigator.serial warning
+		//@ts-ignore
+		const serial = navigator.serial as Serial;
+		if (!serial) {
+			console.log("Only available in Chrome");
+			return;
+		}
+		try {
+			// Request access to the serial port
+			const port = await serial.requestPort();
+			await port.open({ baudRate: 9600 });
+
+			// Start reading data from the serial port
+			const reader = port.readable.getReader();
+			let buffer = ''; // Initialize buffer to store incoming data
+
+			while (true) {
+				const { value, done } = await reader.read();
+				if (done) break;
+				// Append incoming data to the buffer
+				buffer += new TextDecoder().decode(value);
+
+				// Process complete lines from the buffer
+				let lines = buffer.split('\n');
+				// The last element may be incomplete, so keep it in the buffer
+				buffer = lines.pop() || '';
+
+				for (let line of lines) {
+					if (line.trim() !== '') {
+						// Process the complete line (e.g., update the webpage)
+						updateCallBack(line.trim());
+					}
+				}
+			}
+			// If there's any remaining data in the buffer, process it
+			if (buffer.trim() !== '') {
+				updateCallBack(buffer.trim());
+			}
+		} catch (error) {
+			console.error('Serial port error:', error);
+		}
+	};
+	
 
 
 	useEffect(() => {
-
 		// Listener for status changes of other users
 		transcendenceSocket.on('socket/statusChange', (payload: WebsocketStatusChangeDto) => {
 			setSomeUserUpdatedTheirStatus(payload);
@@ -88,14 +171,17 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 			setMessageToUserNotInRoom(payload);
 		});
 
-		//	Listener for when the socket connects: update the user's status to online
+		// Listener for when the socket connects: update the user's status to online
 		transcendenceSocket.on('connect', () => {
+			console.log('Socket connected');
+			if (transcendenceSocket.id != undefined) 
+				setSocketId(transcendenceSocket.id);
 			setUserStatusToOnline();
 		});
 
 		return () => { // Cleanup socket listener
 			transcendenceSocket.off('socket/statusChange');
-			transcendenceSocket.off('socket/messageToUserNotInRoom');
+			transcendenceSocket.off('chat/messageToUserNotInRoom');
 			transcendenceSocket.off('connect');
 		}
 	}, []);
@@ -105,12 +191,13 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		if (transcendenceSocket.id && transcendenceSocket.id != '0' && currentUser && currentUser.id !== undefined && currentUser.id != 0) {
 			console.log(`updating user status to online in currentuser.id useEffect in contextprovider`);
 			setUserStatusToOnline();
-
 			unreadMessageCountFetcher({ url: constants.CHAT_MESSAGES_UNREAD_FOR_USER + currentUser.id });
 			unreadsFromFriendsFetcher({ url: constants.CHAT_UNREAD_MESSAGES_FROM_FRIENDS + currentUser.id });
 
+		}else{
+			console.log("Currentuser.id/transcendencsesocket.id userEffect called but no socket.id or currentUser.id", transcendenceSocket.id, currentUser.id);
 		}
-	}, [currentUser.id])
+	}, [currentUser.id, socketId]);
 
 	useEffect(() => {
 		currentUserRef.current = currentUser;
@@ -128,6 +215,19 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		}
 	}, [unreadsFromFriends]);
 
+    const handleSetFirstBike = (val: number) => {
+        firstBikeRef.current.value = val;
+		firstBikeRef.current.connected = true;
+        setFirstBike(val);
+        notifySubscribers();
+    };
+
+    const handleSetSecondBike = (val: number) => {
+        secondBikeRef.current.value = val;
+		secondBikeRef.current.connected = true;
+        setSecondBike(val);
+        notifySubscribers();
+    };
 
 	useEffect(() => {
 		if (!messageToUserNotInRoom.userId) return;
@@ -153,9 +253,15 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 		setAllUsersUnreadCounter,
 		friendsUnreadCounter,
 		setFriendsUnreadCounter,
+		firstBike: firstBikeRef.current,
+		secondBike: secondBikeRef.current,
+		setFirstBike: handleSetFirstBike,
+		setSecondBike: handleSetSecondBike,
+		connectToESP8266,
+		subscribeToBikeUpdates,
 		switchToChannelCounter,
 		setSwitchToChannelCounter
-	}
+	};
 
 	useEffect(() => {
 		if (userPatch) {
@@ -165,6 +271,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 	}, [userPatch]);
 
 	useEffect(() => {
+		console.log(`addToken useEffect in contextprovider`);
 		if (addToken) {
 			console.log(`updating usertoken in addToken useEffect in contextprovider`);
 			const statusUpdate: WebsocketStatusChangeDto = {
@@ -188,7 +295,11 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 
 	// Function to update the user's online status
 	const setUserStatusToOnline = async () => {
-		if (!currentUser.id || transcendenceSocket.id == undefined) return;
+		if (!currentUser.id || transcendenceSocket.id == undefined)
+		{
+			console.log(`currentUser.id or transcendenceSocket.id is undefined in setUserStatusToOnline function in contextprovider`, currentUser.id, transcendenceSocket.id);
+			return;
+		}
 		console.log(`updating user status to online in setUserStatusToOnline function in contextprovider`);
 		const patchUserData: UpdateUserDto = {
 			online: OnlineStatus.ONLINE,
@@ -207,6 +318,24 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
 			setCurrentUser(user);
 		}
 	}, [user]);
+
+
+
+   // Update the state when the ref value changes
+   useEffect(() => {
+	console.log("Subscribing to bike updates");
+	console.log("firstBike connected?", firstBikeRef.current.connected, "secondBike connected?", secondBikeRef.current.connected);
+	const updateBikeValues = () => {
+		console.log("firstBike.current.value: ", firstBikeRef.current.value, "connected?", firstBikeRef.current.connected, 
+			"secondBike.current.value: ", secondBikeRef.current.value, "connected?", secondBikeRef.current.connected);
+		setFirstBike(firstBikeRef.current.value);
+		setSecondBike(secondBikeRef.current.value);
+	};	
+	
+	const unsubscribe = subscribeToBikeUpdates(updateBikeValues); // calling the subscribe function returns the unsubscribe function
+	
+	return () => unsubscribe(); // call the unsubscribe function when the component unmounts
+}, [subscribeToBikeUpdates]);
 
 	return (
 		<>

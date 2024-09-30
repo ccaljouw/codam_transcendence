@@ -25,7 +25,7 @@ export default function UserContextMenu({ user }:
 	const { data: chat, isLoading: chatLoading, error: chatError, fetcher: chatFetcher } = useFetch<CreateDMDto, FetchChatDto>();
 	const { data: blockData, isLoading: blockLoading, error: blockError, fetcher: blockFetcher } = useFetch<null, UserProfileDto>();
 	const { data: newChatMessage, isLoading: newChatMessageLoading, error: newChatMessageError, fetcher: newChatMessageFetcher } = useFetch<ChatMessageToRoomDto, number>();
-	const userIsFriend = IsFriend(user.id, currentUser);
+	const userIsFriend = IsFriend(user?.id, currentUser);
 	const router = useRouter();
 
 	const sendInvite = (payload?: ChatMessageToRoomDto) => {
@@ -58,6 +58,14 @@ export default function UserContextMenu({ user }:
 		}
 	}, [currentChatRoom]);
 
+	useEffect(() => {
+		console.log('UserContextMenu useEffect currentUser', currentUser);
+		if(blockData){
+			console.log('UserContextMenu useEffect blockData');
+			setNewChatRoom({ room: -1, count: newChatRoom.count++ });
+			setNewChatRoom({ room: currentChatRoom.id, count: newChatRoom.count++ });
+		}
+	},[currentUser])
 
 	const toggleMenu = () => {
 		triggerContextMenuClick(user.id); // send user id to context menu
@@ -120,6 +128,7 @@ export default function UserContextMenu({ user }:
 	useEffect(() => {
 		if (blockData) {
 			setCurrentUser(blockData);
+	
 		}
 	}, [blockData])
 
@@ -179,5 +188,3 @@ export default function UserContextMenu({ user }:
 		</>
 	);
 }
-
-//todo: expand handleClick functions

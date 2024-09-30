@@ -21,7 +21,6 @@ import { Response } from 'express';
 import * as path from 'path';
 import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 
-// TODO: define max filesize
 @Controller('avatar')
 @ApiTags('avatar')
 export class AvatarController {

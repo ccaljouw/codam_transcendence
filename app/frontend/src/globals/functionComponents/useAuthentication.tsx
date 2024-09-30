@@ -12,64 +12,65 @@ type authenticationOutput = {
 	storeUser: (loggedInUser: UserProfileDto) => void,
 }
 
-export default function useAuthentication() : authenticationOutput {
-	const {setCurrentUser} = useContext(TranscendenceContext);
+export default function useAuthentication(): authenticationOutput {
+	const { setCurrentUser, currentUser } = useContext(TranscendenceContext);
 	const [user, setUser] = useState<UserProfileDto | null>(null);
-	const {data: fetchedUser, error, fetcher: userFetcher} = useFetch<null, UserProfileDto>();
+	const { data: fetchedUser, error, fetcher: userFetcher } = useFetch<null, UserProfileDto>();
 	const [idFromStorage, setIdFromStorage] = useState<string | null>(null);
 	const router = useRouter();
 	const pathname = usePathname();
 
-	useEffect (() => {
+	useEffect(() => {
 		const id = sessionStorage.getItem('userId');
-		if (id != null)
-		{
+		if (id != null) {
 			setIdFromStorage(id);
 			console.log(`user already logged in, fetching user ${id}`);
 			fetchUserById(constants.API_CHECK_ID + id);
 		}
-		else
-		{
+		else {
 			if (pathname != '/login' && pathname != '/signup' && pathname != '/auth')
 				router.push('/login');
 		}
 	}, []);
 
-	const fetchUserById = async (url: string) : Promise<void>  => {
+	const fetchUserById = async (url: string): Promise<void> => {
 		console.log("fetching user");
-		await userFetcher({url: url});
+		await userFetcher({ url: url });
 	};
 
 	useEffect(() => {
-		if (fetchedUser != null)
-		{
+		if (fetchedUser != null) {
 			console.log("storing user");
+			setCurrentUser( // set ID 0 to trigger useEffect in context provider when user is stored
+				{
+					...currentUser,
+					id: 0,
+				}
+			);
 			storeUser(fetchedUser);
 		}
 	}, [fetchedUser]);
 
 	useEffect(() => {
-		if (error != null)
-		{
+		if (error != null) {
 			console.log(`Error authenticating in useAuthentication: ${error.name}: ${error.message}`);
 			if (pathname != '/login' && pathname != '/signup' && pathname != '/auth')
 				router.push('/login');
 		}
 	}, [error]);
 
-	const setSessionStorage = (user: UserProfileDto) : void  => {
-		if (user != null && (idFromStorage == null || +idFromStorage != user.id))
-		{
+	const setSessionStorage = (user: UserProfileDto): void => {
+		if (user != null && (idFromStorage == null || +idFromStorage != user.id)) {
 			sessionStorage.setItem('userId', JSON.stringify(user.id));
 		}
 	};
 
-	const storeUser = (loggedInUser: UserProfileDto) : void => {
+	const storeUser = (loggedInUser: UserProfileDto): void => {
+		setSessionStorage(loggedInUser);
 		setUser(loggedInUser);
 		setCurrentUser(loggedInUser);
-		setSessionStorage(loggedInUser);
-		if (pathname == '/login' || pathname == '/signup' || pathname == '/auth')
-		{
+		if (pathname == '/login' || pathname == '/signup' || pathname == '/auth') {
+			console.log("pusing to /");
 			router.push('/');
 		}
 	}

@@ -6,12 +6,11 @@ import { OnlineStatus } from "@prisma/client";
 interface UserListProps {
 	userDisplayFunction: (user: UserProfileDto, indexInUserList: number, statusChangeCallback: (idx: number, newStatus? : OnlineStatus) => void) => JSX.Element;
 	fetchUrl: string;
-	// updateUnreadCounter?: (val: number) => void;
 	className?: string;
+	refreshTrigger?: Boolean;
 }
 
 interface UserListContextVars {
-	// todo: change statusChangeCallback to context useState
 	contextMenuClickSent: number;
 	triggerContextMenuClick: (val: number) => void;
 }
@@ -32,8 +31,9 @@ export default function UserList(props: UserListProps): JSX.Element {
 	
 	// fetch users on mount
 	useEffect(() => {
+		console.log("fetching users: ", props);
 		fetchUsers();
-	}, []);
+	}, [props.refreshTrigger]);
 
 	useEffect(() => { // update userlist when usersFromDb is fetched
 		if (usersFromDb != null) {
