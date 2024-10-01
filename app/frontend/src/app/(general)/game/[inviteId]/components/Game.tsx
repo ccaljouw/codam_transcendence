@@ -24,6 +24,7 @@ export default function GameComponent({ inviteId }: { inviteId: number }) {
 	const [waitingForPlayers, setWaitingForPlayers] = useState<boolean>(true);
 	const [instanceType, setInstanceType] = useState<InstanceTypes>(InstanceTypes.notSet) // 0 for player 1, 1 for player 2
 	const [aiLevel, setAiLevel] = useState<number>(0);
+	const context = useContext(TranscendenceContext);
 
 
 	function startGame() {
