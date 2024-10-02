@@ -13,7 +13,6 @@ import { disconnectSocket, setSocketListeners } from '../utils/gameSocketListner
 import { updateObjects, checkForGoals } from '../utils/updateObjects'
 import { countdown, setTheme, log } from '../utils/utils'
 import { initializeGameObjects, drawGameObjects, resetGameObjects } from '../utils/objectController'
-import { first } from 'rxjs'
 
 export class Game {
 	canvas?: HTMLCanvasElement;
@@ -59,7 +58,7 @@ export class Game {
 		this.firstBike = context.firstBike.value;
 		this.secondBike = context.secondBike.value;
 		this.firstBikeConnected = context.firstBike.connected;
-		this.seconBikeConnected = context.secondBike.connected;
+		this.secondBikeConnected = context.secondBike.connected;
 		initializeGameObjects(this);
 		setTheme(this);
 		setSocketListeners(this);

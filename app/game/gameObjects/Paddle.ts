@@ -68,7 +68,7 @@ export class Paddle extends GameObject {
 		const AIlevel = CON.config[config].AILevel;
 
 		//calculate distance to ball
-    const currentY = this.movementComponent.getY();
+    const currentY = this.movementComponent.getY() + this.height / 2;
     const targetY = ball.movementComponent.getY();
 		const requiredMovement = targetY - currentY;
 

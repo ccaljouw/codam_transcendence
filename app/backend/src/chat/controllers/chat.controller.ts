@@ -184,25 +184,6 @@ export class ChatMessagesController {
 	}
 
 
-	//
-
-	// @Patch('changeChatUserRole/:chatId/:userId/:role/:requesterId')
-	// @UseGuards(JwtAuthGuard)
-	//   @ApiOperation({ summary: 'Returns UpdateChatUserDto if role was changed' })
-	//   @ApiOkResponse({ type: UpdateChatUserDto })
-	//   @ApiNotFoundResponse({ description: 'Chatuser not found' })
-	//   async changeChatUserRole(@Req() req: Request | any, @Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number, @Param('role') role: ChatUserRole, @Param('requesterId', ParseIntPipe) requesterId: number) {
-	//   const user: UserProfileDto = req.user;
-	//   const valid: boolean = user.id === requesterId;
-	//   if (!valid)
-	// 	throw new UnauthorizedException();
-	// 	  const chatUser = await this.chatService.changeChatUserRole(chatId, userId, role, requesterId);
-	// 	  this.chatGateway.sendRefreshMessageToRoom(chatId);
-	// 	  return chatUser;
-	//   }
-	//
-
-
 	// ADMIN AND OWNER ONLY ROUTES **************************************************** //
 	@Patch('changeChatUserRole/:chatId/:userId/:role/:requesterId')
 	@UseGuards(JwtAuthGuard)
@@ -224,14 +205,6 @@ export class ChatMessagesController {
 	@ApiOkResponse({ type: Boolean })
 	@ApiNotFoundResponse({ description: 'Chatuser not found' })
 	async kickUser(@Req() req: Request | any, @Param('userId', ParseIntPipe) userId: number, @Param('userName') userName: string, @Param('chatId', ParseIntPipe) chatId: number, @Param('requesterId', ParseIntPipe) requesterId: number) {
-		// const requesterRole = await this.chatService.getRoleForUserInChat(chatId, requesterId);
-		// if (requesterRole === ChatUserRole.DEFAULT)
-		// 	throw new UnauthorizedException("Requester is not owner or admin of chat");
-		// const kickCandidate = await this.chatService.getChatUser(chatId, userId);
-		// if (requesterRole === ChatUserRole.ADMIN && kickCandidate.role === ChatUserRole.OWNER)
-		// 	throw new UnauthorizedException("Cannot kick: requester is admin and candidate is owner");
-		// if (requesterId !== req.user.id)
-		// 	throw new UnauthorizedException("RequesterID does not match with token");
 		await this.chatService.checkChatUserPrivileges(chatId, userId, requesterId, req.user);
 		await this.chatService.deleteChatUser(chatId, userId);
 		await this.chatGateway.sendActionMessageToRoom(userId, userName, chatId, "KICK");

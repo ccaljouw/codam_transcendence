@@ -59,6 +59,7 @@ export default function useFetch<T, U>(): fetchOutput<T, U> {
 		} catch (e: any) {
 			console.log("useFetch error: ", e.message);
 			setData(null);
+			setIsLoading(false);
 			setError(e);
 		} finally {
 			setIsLoading(false);
