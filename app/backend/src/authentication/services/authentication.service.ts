@@ -209,7 +209,7 @@ export class AuthService {
 				throw new UnauthorizedException("No password found for protected chat")
 			const validPwd = await bcrypt.compare(password, chat.chatAuth?.pwd);
 			if (!validPwd)
-				throw new UnauthorizedException("Incorrect password")
+				throw new UnauthorizedException(`Incorrect password for chat : ${id}`);
 		} else {
 			throw new BadRequestException("Trying to login to unprotected chat");
 		}

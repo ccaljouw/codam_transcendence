@@ -313,6 +313,15 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 		}
 	}, [chatMessages])
 
+	const showPassWordWrongMsg = (error: any) : Boolean => {
+		if (!error)
+			return false;
+		const prefix = "401 - Incorrect password for chat :";
+		const startIdx = error.message.indexOf(prefix) + prefix.length;
+		const chatIdString = error.message.slice(startIdx);
+		const chatId = parseInt(chatIdString);
+		return newChatRoom.room == chatId;
+	}
 
 	return (
 		<>
@@ -338,6 +347,7 @@ export default function Chat({ user2, chatID: chatId }: { user2?: number, chatID
 									<button className="btn btn-dark btn-sm" type="submit">Enter</button>
 								</div>
 							</form>
+							{showPassWordWrongMsg(chatAuthError) && <>The password you entered is incorrect.</>}
 						</>
 					: 
 						(chatError.message == "401 - User is banned from chat" ?
