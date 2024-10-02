@@ -6,7 +6,7 @@
 
     "countdownTime": "3",
     "winningScore": "5",
-    "collisionCooldown": "500",
+    "collisionCooldown": "700",
     "ballWidth": "15",
     "ballBaseSpeed": "5",
     "ballSpeedIncrease": "0.6",
@@ -53,7 +53,7 @@
 
     "countdownTime": "1",
     "winningScore": "3",
-    "collisionCooldown": "500",
+    "collisionCooldown": "700",
     "ballWidth": "20",
     "ballBaseSpeed": "4",
     "ballSpeedIncrease": "0.5",
@@ -100,7 +100,7 @@
 
     "countdownTime": "3",
     "winningScore": "5",
-    "collisionCooldown": "500",
+    "collisionCooldown": "700",
     "ballWidth": "15",
     "ballBaseSpeed": "5",
     "ballSpeedIncrease": "0.5",

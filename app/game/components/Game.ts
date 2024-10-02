@@ -13,7 +13,6 @@ import { disconnectSocket, setSocketListeners } from '../utils/gameSocketListner
 import { updateObjects, checkForGoals } from '../utils/updateObjects'
 import { countdown, setTheme, log } from '../utils/utils'
 import { initializeGameObjects, drawGameObjects, resetGameObjects } from '../utils/objectController'
-import { first } from 'rxjs'
 
 export class Game {
 	canvas?: HTMLCanvasElement;

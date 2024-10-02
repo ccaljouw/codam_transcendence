@@ -25,17 +25,16 @@ export default function GameComponent({ inviteId }: { inviteId: number }) {
 	const [instanceType, setInstanceType] = useState<InstanceTypes>(InstanceTypes.notSet) // 0 for player 1, 1 for player 2
 	const [aiLevel, setAiLevel] = useState<number>(0);
 	const context = useContext(TranscendenceContext);
-	
-	
-  function startGame() {
-    console.log("GameComponent: starting game");
-    canvasRef.current!.focus();
-    const payload: UpdateGameStateDto = {id: roomId, state: GameState.STARTED};
-    gameSocket.emit("game/updateGameState", payload);
-  }
-  
-  function abortGame() {
-		if (game) 
+
+	function startGame() {
+		console.log("GameComponent: starting game");
+		canvasRef.current!.focus();
+		const payload: UpdateGameStateDto = { id: roomId, state: GameState.STARTED };
+		gameSocket.emit("game/updateGameState", payload);
+	}
+
+	function abortGame() {
+		if (game)
 			if (canvasRef.current) {
 				game.cleanCanvas();
 			}
