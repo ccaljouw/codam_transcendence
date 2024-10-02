@@ -12,16 +12,19 @@ export function updateObjects(game: Game, deltaTime: number) {
     return;
   }
   game.elapasedTimeSincceLastUpdate += deltaTime;
-  updatePaddles(game, deltaTime);
+
+  updatePaddles(game, deltaTime, game.firstBike, game.secondBike, game.firstBikeConnected, game.secondBikeConnected);
   updateBall(game, deltaTime);
 }
 
-function updatePaddles(game: Game, deltaTime: number) {
+function updatePaddles(game: Game, deltaTime: number, firstBike: number, secondBike: number, firstBikeConnected: boolean, secondBikeConnected: boolean) {
   const gameSocket = transcendenceSocket;
-
+	console.log("Bike 1: ", firstBike, " Bike 2: ", secondBike)
   CON.config[game.config].socketUpdateInterval
-  let paddleMoved = game.paddels.map(paddle => paddle.updatePaddle(deltaTime, game.config, game.ball as Ball));
-  if (paddleMoved.some(moved => moved === true) && game.elapasedTimeSincceLastUpdate >= CON.config[game.config].socketUpdateInterval) {
+//   let paddleMoved = game.paddels.map(paddle => paddle.updatePaddle(deltaTime, game.config, game.ball as Ball, firstBike, secondBike));
+  let firstMoved = game.paddels[0].updatePaddle(deltaTime, game.config, game.ball as Ball, firstBike, firstBikeConnected);
+  let secondMoved = game.paddels[1].updatePaddle(deltaTime, game.config, game.ball as Ball, secondBike, secondBikeConnected);
+  if ((firstMoved || secondMoved) && game.elapasedTimeSincceLastUpdate >= CON.config[game.config].socketUpdateInterval) {
     if (game.instanceType === 0) {
       gameSocket.emit("game/updateGameObjects", {
         roomId: game.roomId,

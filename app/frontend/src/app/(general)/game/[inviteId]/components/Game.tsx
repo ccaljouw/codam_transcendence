@@ -24,17 +24,18 @@ export default function GameComponent({ inviteId }: { inviteId: number }) {
 	const [waitingForPlayers, setWaitingForPlayers] = useState<boolean>(true);
 	const [instanceType, setInstanceType] = useState<InstanceTypes>(InstanceTypes.notSet) // 0 for player 1, 1 for player 2
 	const [aiLevel, setAiLevel] = useState<number>(0);
-
-
-	function startGame() {
-		console.log("GameComponent: starting game");
-		canvasRef.current!.focus();
-		const payload: UpdateGameStateDto = { id: roomId, state: GameState.STARTED };
-		gameSocket.emit("game/updateGameState", payload);
-	}
-
-	function abortGame() {
-		if (game)
+	const context = useContext(TranscendenceContext);
+	
+	
+  function startGame() {
+    console.log("GameComponent: starting game");
+    canvasRef.current!.focus();
+    const payload: UpdateGameStateDto = {id: roomId, state: GameState.STARTED};
+    gameSocket.emit("game/updateGameState", payload);
+  }
+  
+  function abortGame() {
+		if (game) 
 			if (canvasRef.current) {
 				game.cleanCanvas();
 			}
@@ -198,13 +199,13 @@ export default function GameComponent({ inviteId }: { inviteId: number }) {
 			if (fetchedGameData?.GameUsers?.[instanceType].user?.theme !== undefined)
 				newTheme = fetchedGameData?.GameUsers?.[instanceType].user.theme;
 
-
 			const newGame = new Game(
 				canvasRef.current,
 				instanceType,
 				fetchedGameData!,
 				constants.config, // config
 				constants.themes[newTheme], // theme
+				context,
 				newVolume, //volume
 				aiLevel // AI level
 			);
