@@ -44,15 +44,6 @@ export class UsersService {
 
   async findFriendsFrom(id: number): Promise<UserProfileDto[]> {
     try {
-      //@ALbert: was:
-      // const friends = await this.db.user
-      //   .findUnique({ where: { id } })
-      //   .friends();
-      // if (!friends)
-      //   throw new NotFoundException(`User with id ${id} not found.`);
-      // return friends;
-
-      // @Albert: replaced with:
       const user = await this.db.user.findUnique({
         where: { id },
         include: { friends: true },
@@ -64,7 +55,6 @@ export class UsersService {
       
       console.log('Friends from database: ' + user.friends);
       return user.friends;
-      // @Albert: end of replacement
 
     } catch (error) {
       console.log('error getting friends', error);

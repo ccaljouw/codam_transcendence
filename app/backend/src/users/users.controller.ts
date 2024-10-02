@@ -17,10 +17,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { UpdateUserDto, UserProfileDto } from '@ft_dto/users';
-import { CreateTokenDto } from '@ft_dto/users/create-token.dto';
 import { TokenService } from './token.service';
-import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../authentication/guard/jwt-auth.guard';
+import { UpdateUserDto, UserProfileDto } from '@ft_dto/users';
+import { CreateTokenDto } from '@ft_dto/socket';
 
 @Controller('users')
 @ApiTags('users')

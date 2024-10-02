@@ -5,7 +5,7 @@ import { NotFoundException } from '@nestjs/common';
 import { InviteStatus } from '@prisma/client';
 
 // Mock PrismaService for testing
-export class MockPrismaService {
+export class mockPrismaService {
   user = {
     update: jest.fn(),
     findMany: jest.fn(),
@@ -31,7 +31,7 @@ const mockFriend = {
 
 describe('UsersService', () => {
   let service: UsersService;
-  let prisma: MockPrismaService;
+  let prisma: mockPrismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -39,13 +39,13 @@ describe('UsersService', () => {
         UsersService,
         {
           provide: PrismaService,
-          useClass: MockPrismaService,
+          useClass: mockPrismaService,
         },
       ],
     }).compile();
 
     service = module.get<UsersService>(UsersService);
-    prisma = module.get<MockPrismaService>(PrismaService);
+    prisma = module.get<mockPrismaService>(PrismaService);
   });
 
   afterEach(() => {

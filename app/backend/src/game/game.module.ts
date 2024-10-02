@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { GameService } from './game.service';
 import { GamesocketGateway } from './gamesocket.gateway';
-import { PrismaService } from 'src/database/prisma.service';
-import { SocketServerModule } from 'src/socket/socketserver.module';
+import { PrismaService } from '../database/prisma.service';
+import { SocketServerModule } from '../socket/socketserver.module';
 import { GameController } from './game.controller';
-import { StatsService } from 'src/stats/stats.service';
-import { TokenService } from 'src/users/token.service';
-import { UsersService } from 'src/users/users.service';
+import { StatsService } from '../stats/stats.service';
+import { TokenService } from '../users/token.service';
+import { UsersService } from '../users/users.service';
 
 @Module({
   imports: [SocketServerModule],

@@ -3,10 +3,11 @@ import { UsersController } from '../users.controller';
 import { UsersService } from '../users.service';
 import { TokenService } from '../token.service';
 import { NotFoundException, ConflictException, ForbiddenException } from '@nestjs/common';
-import { CreateTokenDto } from '@ft_dto/users/create-token.dto';
-import { UpdateUserDto, UserProfileDto } from '@ft_dto/users';
 import { OnlineStatus } from '@prisma/client';
 import { ExecutionContext } from '@nestjs/common';
+import { UserProfileDto, UpdateUserDto} from '@ft_dto/users';
+import { CreateTokenDto } from '@ft_dto/socket';
+
 
 const mockUserService = {
   findAll: jest.fn(),

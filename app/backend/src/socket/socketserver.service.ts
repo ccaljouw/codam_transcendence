@@ -1,7 +1,7 @@
 import { Inject, Injectable, forwardRef } from "@nestjs/common";
 import { Socket } from "socket.io";
-import { ChatSocketService } from "src/chat/services/chatsocket.service";
-import { TokenService } from "src/users/token.service";
+import { ChatSocketService } from "../chat/services/chatsocket.service";
+import { TokenService } from "../users/token.service";
 
 @Injectable()
 export class SocketServerService {

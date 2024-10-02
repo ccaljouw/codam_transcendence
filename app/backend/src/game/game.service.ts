@@ -8,9 +8,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../database/prisma.service';
 import { GameState } from '@prisma/client';
-import { StatsService } from 'src/stats/stats.service';
+import { StatsService } from '../stats/stats.service';
 
 @Injectable()
 export class GameService {

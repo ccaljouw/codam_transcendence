@@ -1,11 +1,12 @@
 import { UpdateGameStateDto } from '@ft_dto/game';
 import { GameResultDto, StatsDto } from '@ft_dto/stats';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../database/prisma.service';
 
 @Injectable()
 export class StatsService {
-  constructor(private db: PrismaService) {}
+  constructor(private db: PrismaService
+  ) {}
 
   async create(userId: number): Promise<StatsDto> {
     try {

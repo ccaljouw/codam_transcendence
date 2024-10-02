@@ -9,8 +9,8 @@ import { Server, Socket } from 'socket.io';
 import { UpdateGameObjectsDto, UpdateGameStateDto } from 'dto/game';
 import { GameState, OnlineStatus } from '@prisma/client';
 import { WebsocketStatusChangeDto } from '@ft_dto/socket';
-import { TokenService } from 'src/users/token.service';
-import { UsersService } from 'src/users/users.service';
+import { TokenService } from '../users/token.service';
+import { UsersService } from '../users/users.service';
 
 @WebSocketGateway({
   cors: true,
