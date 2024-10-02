@@ -59,7 +59,7 @@ export class Game {
 		this.firstBike = context.firstBike.value;
 		this.secondBike = context.secondBike.value;
 		this.firstBikeConnected = context.firstBike.connected;
-		this.seconBikeConnected = context.secondBike.connected;
+		this.secondBikeConnected = context.secondBike.connected;
 		initializeGameObjects(this);
 		setTheme(this);
 		setSocketListeners(this);
