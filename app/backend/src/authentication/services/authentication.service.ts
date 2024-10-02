@@ -5,14 +5,14 @@ import {
 	UnauthorizedException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { UserProfileDto, CreateUserDto } from '@ft_dto/users';
-import { PrismaService } from 'src/database/prisma.service';
-import { JwtService } from '@nestjs/jwt';
-import { TwoFAService } from './2FA.service';
-import { StatsService } from 'src/stats/stats.service';
-import * as bcrypt from 'bcrypt';
-import { FetchChatDto } from '@ft_dto/chat';
 import { ChatType } from '@prisma/client';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+import { PrismaService } from '../../database/prisma.service';
+import { TwoFAService } from './2FA.service';
+import { StatsService } from '../../stats/stats.service';
+import { UserProfileDto, CreateUserDto } from '@ft_dto/users';
+import { FetchChatDto } from '@ft_dto/chat';
 
 @Injectable()
 export class AuthService {

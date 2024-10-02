@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import Strategy from 'passport-42';
-import { UsersService } from 'src/users/users.service';
-import { CreateUserDto, UpdateUserDto, UserProfileDto } from '@ft_dto/users';
-import { AuthService } from '../services/authentication.service';
 import { v4 as uuidv4 } from 'uuid';
+import { UsersService } from '../../users/users.service';
+import { AuthService } from '../services/authentication.service';
+import { CreateUserDto, UpdateUserDto, UserProfileDto } from '@ft_dto/users';
 
 @Injectable()
 export class StrategyFortyTwo extends PassportStrategy(Strategy, '42') {

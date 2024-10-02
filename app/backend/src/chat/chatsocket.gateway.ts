@@ -8,7 +8,7 @@ import { InviteService } from './services/invite.service';
 import { TokenService } from '../users/token.service';
 import { ChatService } from './services/chat.service';
 import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../authentication/guard/jwt-auth.guard';
 
 @WebSocketGateway({
 	cors: true

@@ -14,11 +14,9 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { UpdateGameDto } from 'dto/game/update-game.dto';
 import { GameService } from './game.service';
-import { UpdateGameStateDto } from 'dto/game/update-game-state.dto';
 import { JwtAuthGuard } from '../authentication/guard/jwt-auth.guard';
-import { GetGameDto } from '@ft_dto/game';
+import { GetGameDto, UpdateGameStateDto, UpdateGameDto } from '@ft_dto/game';
 
 @Controller('game')
 @ApiTags('game')

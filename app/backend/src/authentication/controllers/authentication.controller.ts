@@ -13,13 +13,13 @@ import {
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { UserProfileDto } from '@ft_dto/users';
+import { ConfigService } from '@nestjs/config';
+import { Request, Response } from 'express';
 import { AuthService } from '../services/authentication.service';
 import { LocalAuthGuard } from '../guard/login-auth.guard';
-import { Request, Response } from 'express';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { AuthGuard42 } from '../guard/42-auth.guard';
-import { ConfigService } from '@nestjs/config';
+import { UserProfileDto } from '@ft_dto/users';
 import { FetchChatDto } from '@ft_dto/chat';
 import { ChatAuthDto, UpdatePwdDto } from '@ft_dto/authentication';
 

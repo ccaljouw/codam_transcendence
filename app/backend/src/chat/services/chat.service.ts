@@ -1,9 +1,8 @@
 import { Injectable, Inject, forwardRef, UnauthorizedException } from "@nestjs/common";
 import { PrismaService } from "../../database/prisma.service";
-import { CreateDMDto, FetchChatDto, UpdateChatUserDto } from "@ft_dto/chat";
+import { CreateDMDto, FetchChatDto, UpdateChatUserDto, UpdateChatDto } from "@ft_dto/chat";
 import { UserProfileDto } from "@ft_dto/users";
 import { ChatType, ChatUserRole } from "@prisma/client";
-import { UpdateChatDto } from "@ft_dto/chat/update-chat.dto";
 import { AuthService } from "../../authentication/services/authentication.service";
 import { ChatSocketGateway } from "../chatsocket.gateway";
 

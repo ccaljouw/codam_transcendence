@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ChatSocketService } from './services/chatsocket.service';
 import { ChatSocketGateway } from './chatsocket.gateway';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../database/prisma.service';
 import { SocketServerModule } from '../socket/socketserver.module';
 import { ChatMessagesController } from './controllers/chat.controller';
 import { ChatMessageService } from './services/chat-messages.service';

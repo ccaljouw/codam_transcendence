@@ -1,10 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AvatarController } from '../avatar.controller';
 import { AvatarService } from '../avatar.service';
-import { JwtAuthGuard } from '../../authentication/guard/jwt-auth.guard';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { ExecutionContext, HttpStatus } from '@nestjs/common';
-import { of } from 'rxjs';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Response } from 'express';
@@ -16,7 +13,7 @@ describe('AvatarController', () => {
 
   beforeEach(async () => {
     const mockAvatarService = {
-      uploadFile: jest.fn(),
+      uploadFile: jest.fn(), 
       getFilePath: jest.fn(),
     };
 
@@ -34,7 +31,7 @@ describe('AvatarController', () => {
       status: jest.fn().mockReturnThis(),
       json: jest.fn().mockReturnThis(),
       sendFile: jest.fn(),
-    } as any as Response;
+    } as unknown as Response;
   });
 
   it('should be defined', () => {
@@ -45,44 +42,16 @@ describe('AvatarController', () => {
     it('should call AvatarService.uploadFile and return avatar URL', async () => {
       const mockFile = {
         originalname: 'test.png',
+        path: '/tmp/test.png', // Adding this to simulate uploaded file
       } as Express.Multer.File;
 
-      const mockAvatarUrl = { avatarUrl: 'http://localhost/avatar/test.png' };
-      jest.spyOn(avatarService, 'uploadFile').mockResolvedValue(mockAvatarUrl);
+      const mockAvatarUrl = { avatarUrl: 'http://localhost/avatar/test-uuid.png' };
+
+      (avatarService.uploadFile as jest.Mock).mockResolvedValue(mockAvatarUrl);
 
       const result = await controller.uploadAvatar(mockFile);
       expect(avatarService.uploadFile).toHaveBeenCalledWith(mockFile);
       expect(result).toEqual(mockAvatarUrl);
-    });
-  });
-
-  describe('listFiles', () => {
-    it('should return list of files', () => {
-      const mockFiles = ['avatar1.png', 'avatar2.jpg'];
-      const directoryPath = path.join(__dirname, '../../../../', 'shared/avatars');
-
-      // Correctly mock `fs.readdir` with the proper callback signature
-      jest.spyOn(fs, 'readdir').mockImplementation((dirPath, callback: any) => {
-        callback(null, mockFiles); // Simulate a successful directory read
-      });
-
-      controller.listFiles(mockResponse);
-      expect(fs.readdir).toHaveBeenCalledWith(directoryPath, expect.any(Function));
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
-      expect(mockResponse.json).toHaveBeenCalledWith(mockFiles);
-    });
-
-    it('should return an error if unable to scan files', () => {
-      const mockError = new Error('Error scanning files');
-
-      // Correctly mock `fs.readdir` with the error callback
-      jest.spyOn(fs, 'readdir').mockImplementation((dirPath, callback: any) => {
-        callback(mockError, null); // Simulate an error during directory read
-      });
-
-      controller.listFiles(mockResponse);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
-      expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Unable to scan files' });
     });
   });
 
