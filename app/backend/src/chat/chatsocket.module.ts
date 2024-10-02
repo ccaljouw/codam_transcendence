@@ -9,14 +9,26 @@ import { ChatService } from './services/chat.service';
 import { TokenService } from '../users/token.service';
 import { InviteService } from './services/invite.service';
 import { InviteController } from './controllers/invite.controller';
-import { JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthService } from '../authentication/services/authentication.service';
 import { TwoFAService } from '../authentication/services/2FA.service';
 import { StatsService } from '../stats/stats.service';
 
 @Module({
-  imports: [SocketServerModule],
-	providers: [ChatSocketGateway, ChatSocketService, ChatMessageService, ChatService, InviteService, PrismaService, TokenService, JwtService, AuthService, TwoFAService, StatsService],
+  imports: [
+    SocketServerModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '180m' },
+      }),
+    }),
+  ],
+	providers: [ChatSocketGateway, ChatSocketService, ChatMessageService, ChatService, InviteService, PrismaService, TokenService, AuthService, TwoFAService, StatsService],
 	controllers: [ChatMessagesController, InviteController],
+  exports: [ChatSocketService],
 })
 export class ChatSocketModule {}

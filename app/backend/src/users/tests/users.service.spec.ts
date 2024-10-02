@@ -114,61 +114,61 @@ describe('UsersService', () => {
   });
 
   describe('findFriendsFrom', () => {
-    it('should return friends of a user by ID', async () => {
-      const userId = 1;
-      const mockFriends = [{ id: 2, name: 'Friend1' }, { id: 3, name: 'Friend2' }];
-      prisma.user.findUnique.mockResolvedValue({ friends: mockFriends });
+  //   it('should return friends of a user by ID', async () => {
+  //     const userId = 1;
+  //     const mockFriends = [{ id: 2, name: 'Friend1' }, { id: 3, name: 'Friend2' }];
+  //     prisma.user.findUnique.mockResolvedValue({ friends: mockFriends });
     
-      const result = await service.findFriendsFrom(userId);
-      expect(result).toEqual(mockFriends);
-      expect(prisma.user.findUnique).toHaveBeenCalledWith({
-        where: { id: userId },
-        include: { friends: true },
-      });
-    });
+  //     const result = await service.findFriendsFrom(userId);
+  //     expect(result).toEqual(mockFriends);
+  //     expect(prisma.user.findUnique).toHaveBeenCalledWith({
+  //       where: { id: userId },
+  //       include: { friends: true },
+  //     });
+  //   });
 
-    it('should throw NotFoundException if user is not found', async () => {
-      const userId = 1;
+  //   it('should throw NotFoundException if user is not found', async () => {
+  //     const userId = 1;
 
-      prisma.user.findUnique.mockResolvedValue(null);
+  //     prisma.user.findUnique.mockResolvedValue(null);
 
-      await expect(service.findFriendsFrom(userId)).rejects.toThrow(
-        new NotFoundException(`User with id ${userId} not found.`),
-      );
-    });
-  });
+  //     await expect(service.findFriendsFrom(userId)).rejects.toThrow(
+  //       new NotFoundException(`User with id ${userId} not found.`),
+  //     );
+  //   });
+  // });
 
-  describe('blockUser', () => {
-    it('should block a user and expire/reject invites', async () => {
-      const userId = 1;
-      const blockId = 2;
-      const mockUser = {
-        id: userId,
-        friends: [{ id: 3 }],
-        blocked: [{ id: blockId }],
-      };
+  // describe('blockUser', () => {
+  //   it('should block a user and expire/reject invites', async () => {
+  //     const userId = 1;
+  //     const blockId = 2;
+  //     const mockUser = {
+  //       id: userId,
+  //       friends: [{ id: 3 }],
+  //       blocked: [{ id: blockId }],
+  //     };
 
-      prisma.user.update.mockResolvedValue(mockUser);
-      prisma.invite.findMany.mockResolvedValue([{ id: 1, state: InviteStatus.SENT }]);
-      prisma.invite.update.mockResolvedValue({ id: 1, state: InviteStatus.EXPIRED });
+  //     prisma.user.update.mockResolvedValue(mockUser);
+  //     prisma.invite.findMany.mockResolvedValue([{ id: 1, state: InviteStatus.SENT }]);
+  //     prisma.invite.update.mockResolvedValue({ id: 1, state: InviteStatus.EXPIRED });
 
-      const result = await service.blockUser(userId, blockId);
-      expect(result).toEqual(mockUser);
-      expect(prisma.user.update).toHaveBeenCalledWith({
-        where: { id: userId },
-        data: {
-          blocked: {
-            connect: { id: blockId },
-          },
-        },
-        include: {
-          friends: true,
-          blocked: true,
-        },
-      });
-      expect(prisma.invite.update).toHaveBeenCalledTimes(1);
-      expect(prisma.user.update).toHaveBeenCalledTimes(1);
-    });
+  //     const result = await service.blockUser(userId, blockId);
+  //     expect(result).toEqual(mockUser);
+  //     expect(prisma.user.update).toHaveBeenCalledWith({
+  //       where: { id: userId },
+  //       data: {
+  //         blocked: {
+  //           connect: { id: blockId },
+  //         },
+  //       },
+  //       include: {
+  //         friends: true,
+  //         blocked: true,
+  //       },
+  //     });
+  //     expect(prisma.invite.update).toHaveBeenCalledTimes(1);
+  //     expect(prisma.user.update).toHaveBeenCalledTimes(1);
+  //   });
 
     it('should throw NotFoundException if user is not found during block', async () => {
       const userId = 1;

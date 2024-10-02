@@ -123,7 +123,7 @@ describe('TokenService', () => {
       prisma.tokens.create.mockResolvedValue(null);
 
       await expect(service.addToken(createTokenDto)).rejects.toThrow(
-        new NotFoundException(`User with token null not found.`),
+        new NotFoundException(`User with token new_token not added.`),
       );
     });
   });

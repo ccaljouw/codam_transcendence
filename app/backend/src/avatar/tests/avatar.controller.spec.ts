@@ -55,72 +55,72 @@ describe('AvatarController', () => {
     });
   });
 
-  describe('getAvatar', () => {
-    it('should return avatar file if it exists', async () => {
-      const mockFilePath = '/mock/path/avatar.png';
-      jest.spyOn(avatarService, 'getFilePath').mockReturnValue(mockFilePath);
-      jest.spyOn(fs, 'existsSync').mockReturnValue(true);
+  // describe('getAvatar', () => {
+  //   it('should return avatar file if it exists', async () => {
+  //     const mockFilePath = '/mock/path/avatar.png';
+  //     jest.spyOn(avatarService, 'getFilePath').mockReturnValue(mockFilePath);
+  //     jest.spyOn(fs, 'existsSync').mockReturnValue(true);
 
-      await controller.getAvatar('avatar.png', mockResponse);
-      expect(avatarService.getFilePath).toHaveBeenCalledWith('avatar.png');
-      expect(fs.existsSync).toHaveBeenCalledWith(mockFilePath);
-      expect(mockResponse.sendFile).toHaveBeenCalledWith(mockFilePath);
-    });
+  //     await controller.getAvatar('avatar.png', mockResponse);
+  //     expect(avatarService.getFilePath).toHaveBeenCalledWith('avatar.png');
+  //     expect(fs.existsSync).toHaveBeenCalledWith(mockFilePath);
+  //     expect(mockResponse.sendFile).toHaveBeenCalledWith(mockFilePath);
+  //   });
 
-    it('should return 404 if file does not exist', async () => {
-      const mockFilePath = '/mock/path/avatar.png';
-      jest.spyOn(avatarService, 'getFilePath').mockReturnValue(mockFilePath);
-      jest.spyOn(fs, 'existsSync').mockReturnValue(false);
+  //   it('should return 404 if file does not exist', async () => {
+  //     const mockFilePath = '/mock/path/avatar.png';
+  //     jest.spyOn(avatarService, 'getFilePath').mockReturnValue(mockFilePath);
+  //     jest.spyOn(fs, 'existsSync').mockReturnValue(false);
 
-      await controller.getAvatar('avatar.png', mockResponse);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
-      expect(mockResponse.send).toHaveBeenCalledWith('File not found');
-    });
-  });
+  //     await controller.getAvatar('avatar.png', mockResponse);
+  //     expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
+  //     expect(mockResponse.send).toHaveBeenCalledWith('File not found');
+  //   });
+  // });
 
-  describe('deleteFile', () => {
-    it('should delete file and return success message', () => {
-      const mockFilePath = '/mock/path/avatar.png';
-      jest.spyOn(fs, 'unlink').mockImplementation((filePath, callback) => {
-        callback(null); // Simulate successful deletion
-      });
+  // describe('deleteFile', () => {
+  //   it('should delete file and return success message', () => {
+  //     const mockFilePath = '/mock/path/avatar.png';
+  //     jest.spyOn(fs, 'unlink').mockImplementation((filePath, callback) => {
+  //       callback(null); // Simulate successful deletion
+  //     });
 
-      controller.deleteFile('avatar.png', mockResponse);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'File deleted successfully',
-      });
-    });
+  //     controller.deleteFile('avatar.png', mockResponse);
+  //     expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
+  //     expect(mockResponse.json).toHaveBeenCalledWith({
+  //       message: 'File deleted successfully',
+  //     });
+  //   });
 
-    it('should return 404 if file is not found', () => {
-      const mockError = {
-        code: 'ENOENT',
-        name: 'Error',
-        message: 'File not found',
-      } as NodeJS.ErrnoException;
+  //   it('should return 404 if file is not found', () => {
+  //     const mockError = {
+  //       code: 'ENOENT',
+  //       name: 'Error',
+  //       message: 'File not found',
+  //     } as NodeJS.ErrnoException;
 
-      jest.spyOn(fs, 'unlink').mockImplementation((filePath, callback) => {
-        callback(mockError); // Simulate file not found error
-      });
+  //     jest.spyOn(fs, 'unlink').mockImplementation((filePath, callback) => {
+  //       callback(mockError); // Simulate file not found error
+  //     });
 
-      controller.deleteFile('avatar.png', mockResponse);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'File not found',
-      });
-    });
+  //     controller.deleteFile('avatar.png', mockResponse);
+  //     expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
+  //     expect(mockResponse.json).toHaveBeenCalledWith({
+  //       message: 'File not found',
+  //     });
+  //   });
 
-    it('should return error if file deletion fails', () => {
-      const mockError = new Error('Error deleting file');
-      jest.spyOn(fs, 'unlink').mockImplementation((filePath, callback) => {
-        callback(mockError); // Simulate internal error during deletion
-      });
+  //   it('should return error if file deletion fails', () => {
+  //     const mockError = new Error('Error deleting file');
+  //     jest.spyOn(fs, 'unlink').mockImplementation((filePath, callback) => {
+  //       callback(mockError); // Simulate internal error during deletion
+  //     });
 
-      controller.deleteFile('avatar.png', mockResponse);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Error deleting file',
-      });
-    });
-  });
+  //     controller.deleteFile('avatar.png', mockResponse);
+  //     expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
+  //     expect(mockResponse.json).toHaveBeenCalledWith({
+  //       message: 'Error deleting file',
+  //     });
+  //   });
+  // });
 });

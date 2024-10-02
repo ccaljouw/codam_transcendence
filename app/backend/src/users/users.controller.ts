@@ -45,7 +45,7 @@ export class UsersController {
   }
 
   @Get('all')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Returns all users currently in the database' })
   @ApiOkResponse({ type: [UserProfileDto] })
   @ApiNotFoundResponse({ description: 'No users in the database' })

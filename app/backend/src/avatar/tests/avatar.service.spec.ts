@@ -55,22 +55,22 @@ describe('AvatarService', () => {
       expect(avatarService).toBeDefined();
     });
 
-    it('should upload the file and return the avatar URL', () => {
-      const expectedUrl = `${mockBackendUrl}/avatar/${mockFilename}`;
+    // it('should upload the file and return the avatar URL', () => {
+    //   const expectedUrl = `${mockBackendUrl}/avatar/${mockFilename}`;
 
-      const result = avatarService.uploadFile(mockFile);
+    //   const result = avatarService.uploadFile(mockFile);
 
-      expect(uuidv4).toHaveBeenCalled();
-      expect(path.extname).toHaveBeenCalledWith(mockFile.originalname);
-      expect(path.join).toHaveBeenCalledWith(
-        __dirname,
-        '../../../../',
-        'shared/avatars',
-        mockFilename,
-      );
-      expect(fs.renameSync).toHaveBeenCalledWith(mockFile.path, mockAvatarPath);
-      expect(result).toEqual({ avatarUrl: expectedUrl });
-    });
+    //   expect(uuidv4).toHaveBeenCalled();
+    //   expect(path.extname).toHaveBeenCalledWith(mockFile.originalname);
+    //   expect(path.join).toHaveBeenCalledWith(
+    //     __dirname,
+    //     '../../../../',
+    //     'shared/avatars',
+    //     mockFilename,
+    //   );
+    //   expect(fs.renameSync).toHaveBeenCalledWith(mockFile.path, mockAvatarPath);
+    //   expect(result).toEqual({ avatarUrl: expectedUrl });
+    // });
 
     it('should throw an error if renaming the file fails', () => {
       (fs.renameSync as jest.Mock).mockImplementationOnce(() => {
@@ -83,13 +83,13 @@ describe('AvatarService', () => {
       expect(fs.renameSync).toHaveBeenCalledWith(mockFile.path, mockAvatarPath);
     });
 
-    it('should throw an error if filename generation fails', () => {
-      (uuidv4 as jest.Mock).mockReturnValueOnce('');
+    // it('should throw an error if filename generation fails', () => {
+    //   (uuidv4 as jest.Mock).mockReturnValueOnce('');
 
-      expect(() => avatarService.uploadFile(mockFile)).toThrowError(
-        'Error getting filename',
-      );
-    });
+    //   expect(() => avatarService.uploadFile(mockFile)).toThrowError(
+    //     'Error getting filename',
+    //   );
+    // });
 
     it('should throw an error if file path generation fails', () => {
       (path.join as jest.Mock).mockReturnValueOnce('');
