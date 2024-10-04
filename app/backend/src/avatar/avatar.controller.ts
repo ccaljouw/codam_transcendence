@@ -13,13 +13,13 @@ import {
   FileTypeValidator,
   UseGuards,
 } from '@nestjs/common';
-import { AvatarService } from './avatar.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import * as fs from 'fs';
 import { Response } from 'express';
 import * as path from 'path';
-import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../authentication/guard/jwt-auth.guard';
+import { AvatarService } from './avatar.service';
 
 @Controller('avatar')
 @ApiTags('avatar')

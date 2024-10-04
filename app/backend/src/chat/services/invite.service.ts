@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 import { CreateInviteDto, UpdateInviteDto } from '@ft_dto/chat';
 import { InviteStatus, InviteType } from '@prisma/client';
 import { UserProfileDto } from '@ft_dto/users';

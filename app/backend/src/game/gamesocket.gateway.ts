@@ -6,11 +6,11 @@ import {
 import { GameService } from './game.service';
 import { SocketServerProvider } from '../socket/socketserver.gateway';
 import { Server, Socket } from 'socket.io';
-import { UpdateGameObjectsDto, UpdateGameStateDto } from 'dto/game';
+import { UpdateGameObjectsDto, UpdateGameStateDto } from '@ft_dto/game';
 import { GameState, OnlineStatus } from '@prisma/client';
 import { WebsocketStatusChangeDto } from '@ft_dto/socket';
-import { TokenService } from 'src/users/token.service';
-import { UsersService } from 'src/users/users.service';
+import { TokenService } from '../users/token.service';
+import { UsersService } from '../users/users.service';
 
 @WebSocketGateway({
   cors: true,

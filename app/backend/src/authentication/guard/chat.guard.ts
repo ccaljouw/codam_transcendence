@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable, NotFoundException, Unauthori
 import { JwtService } from '@nestjs/jwt';
 import { ChatType } from '@prisma/client';
 import { Request } from 'express';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 
 @Injectable()
 export class JwtChatGuard implements CanActivate {

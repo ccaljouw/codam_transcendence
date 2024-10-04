@@ -5,11 +5,11 @@ import { ChatMessageService } from '../services/chat-messages.service';
 import { ChatService } from '../services/chat.service';
 import { ChatSocketService } from '../services/chatsocket.service';
 import { UserProfileDto } from '@ft_dto/users';
-import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
-import { JwtChatGuard } from 'src/authentication/guard/chat.guard';
+import { JwtAuthGuard } from '../../authentication/guard/jwt-auth.guard';
+import { JwtChatGuard } from '../../authentication/guard/chat.guard';
 import { ChatUserRole } from '@prisma/client';
 import { ChatSocketGateway } from '../chatsocket.gateway';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 
 
 @Controller('chat')
