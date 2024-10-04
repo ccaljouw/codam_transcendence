@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, Req, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, Req, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UpdateChatMessageDto, CreateDMDto, CreateChatMessageDto, FetchChatMessageDto, UpdateInviteDto, FetchChatDto, ChatMessageToRoomDto, UpdateChatDto, UpdateChatUserDto } from '@ft_dto/chat';
 import { ChatMessageService } from '../services/chat-messages.service';
@@ -7,9 +7,10 @@ import { ChatSocketService } from '../services/chatsocket.service';
 import { UserProfileDto } from '@ft_dto/users';
 import { JwtAuthGuard } from '../../authentication/guard/jwt-auth.guard';
 import { JwtChatGuard } from '../../authentication/guard/chat.guard';
-import { ChatUserRole } from '@prisma/client';
+import { ChatType, ChatUserRole } from '@prisma/client';
 import { ChatSocketGateway } from '../chatsocket.gateway';
 import { PrismaService } from '../../database/prisma.service';
+import { AuthService } from 'src/authentication/services/authentication.service';
 
 
 @Controller('chat')
@@ -20,7 +21,8 @@ export class ChatMessagesController {
 		private readonly chatSocketService: ChatSocketService,
 		private readonly chatService: ChatService,
 		private readonly chatGateway: ChatSocketGateway,
-		private readonly db: PrismaService
+		private readonly db: PrismaService,
+		private readonly authService: AuthService,
 	) { }
 
 	@Get('messages/unreadsforuser/:userId')
@@ -96,7 +98,12 @@ export class ChatMessagesController {
 	@ApiOperation({ summary: 'Deletes chat user' })
 	@ApiOkResponse({ type: Boolean })
 	@ApiNotFoundResponse({ description: 'No chat user with #${chatId}' })
-	async deleteChatUser(@Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number) {
+	async deleteChatUser(@Req() req: Request | any, @Param('chatId', ParseIntPipe) chatId: number, @Param('userId', ParseIntPipe) userId: number) {
+		const chat = await this.chatService.findOne(chatId);
+		if (!chat)
+			throw new NotFoundException(`Chat with id ${chatId} not found`);
+		if (chat.visibility == ChatType.PROTECTED)
+			this.authService.deleteChatCookie(chatId, req);
 		const chatUserResult = await this.chatService.deleteChatUser(chatId, userId);
 		return chatUserResult;
 	}

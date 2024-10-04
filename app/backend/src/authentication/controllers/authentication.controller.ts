@@ -90,6 +90,7 @@ export class AuthController {
   @Post('logout')
   async logout(@Req() req: Request): Promise<boolean> {
     console.log('Logging out');
+    await this.authService.deleteAllChatCookies(req);
     return await this.authService.deleteJwtCookie(req);
   }
 

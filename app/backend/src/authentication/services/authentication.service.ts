@@ -177,6 +177,41 @@ export class AuthService {
 		}
 	}
 
+	async deleteChatCookie(chatId: number, req: Request): Promise<boolean> {
+		try {
+			(req.res as Response).cookie(`chatToken_${chatId}`, null, {
+				httpOnly: true,
+				sameSite: 'strict',
+			});
+			return true;
+		} catch (error) {
+			console.log('Error deleting chat cookie:', error.message);
+			throw error;
+		}
+	}
+
+	async deleteAllChatCookies(req: Request): Promise<boolean> {
+		try {
+			// Get all cookies from the request
+			const cookies = req.cookies;
+
+			// Loop through each cookie and delete those containing 'chatToken'
+			Object.keys(cookies).forEach((cookieName) => {
+				if (cookieName.includes('chatToken')) {
+					// Clear the cookie by setting it to expire in the past
+					(req.res as Response).clearCookie(cookieName, {
+						httpOnly: true,
+						sameSite: 'strict',
+					});
+				}
+			});
+			return true;
+		} catch (error) {
+			console.log('Error deleting chat cookies:', error.message);
+			throw error;
+		}
+	}
+
 	async generateChatToken(chat: FetchChatDto): Promise<string> {
 		const payload = { id: chat.id, visibility: chat.visibility };
 		return this.jwtService.sign(payload);
