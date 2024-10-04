@@ -22,12 +22,14 @@ update-env:
 	@echo "Removing existing .env file (if present)..."
 	@rm -f .env
 	@echo "Creating new .env file..."
-	@NEW_HOST=$(shell { hostname -I 2>/dev/null | awk '{print $$1}'; ipconfig getifaddr en0; } || echo ""); \
+	@NEW_HOST=$(shell hostname || echo ""); \
 	if [ -n "$$NEW_HOST" ]; then \
 		echo "HOST=$${NEW_HOST}" > .env; \
 		echo "FRONTEND_URL=\"http://$${NEW_HOST}:3000\"" >> .env; \
 		echo "BACKEND_URL=\"http://$${NEW_HOST}:3001\"" >> .env; \
 		echo "FRONTEND_URL_LOCAL=\"http://localhost:3000\"" >> .env; \
+		echo "NEXT_PUBLIC_FRONTEND_URL=\"http://$${NEW_HOST}:3000\"" >> .env; \
+		echo "NEXT_PUBLIC_BACKEND_URL=\"http://$${NEW_HOST}:3001\"" >> .env; \
 		echo "Created new .env with HOST=$$NEW_HOST"; \
 	else \
 		echo "Failed to retrieve host IP."; \
@@ -35,7 +37,7 @@ update-env:
 
 # rebuilds the images and application after clearing the app volume. Does not clear de database volume
 # use make re after changes to dockerfiles or startup scripts.
-re: clean
+re: clean update-env
 	docker compose up --build
 
 start:

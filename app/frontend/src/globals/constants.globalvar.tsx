@@ -92,12 +92,12 @@ export class constants {
   // Static initialization method
   static init() {
     // Initialize the base URLs from environment variables
-    constants.BACKEND_BASEURL = process.env.NEXT_PUBLIC_BACKEND_BASEURL || 'http://192.168.178.30:3001';
-    constants.FRONTEND_BASEURL = process.env.NEXT_PUBLIC_FRONTEND_BASEURL || 'http://192.168.178.30:3000';
+    constants.BACKEND_BASEURL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://iets_stoms:3001';
+    constants.FRONTEND_BASEURL = process.env.NEX_PUBLIC_FRONTEND_URL || 'http://iets_stoms:3000';
 
     // Initialize other constants
-    constants.config = process.env.NEXT_PUBLIC_CONFIG || 'standard';
-    constants.themes = process.env.NEXT_PUBLIC_THEMES?.split(',') || ['classic', 'blackAndWhite', 'neon'];
+    constants.config = 'standard';
+    constants.themes = ['classic', 'blackAndWhite', 'neon'];
 
     // Initialize API endpoints based on BACKEND_BASEURL
     constants.API_USERS = `${constants.BACKEND_BASEURL}/users/`;
