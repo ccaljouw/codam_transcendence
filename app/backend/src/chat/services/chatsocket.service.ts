@@ -1,7 +1,7 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 import { UpdateChatUserDto } from '@ft_dto/chat'
-import { TokenService } from 'src/users/token.service';
+import { TokenService } from '../../users/token.service';
 
 
 @Injectable()

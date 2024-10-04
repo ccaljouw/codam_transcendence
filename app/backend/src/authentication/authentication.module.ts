@@ -7,7 +7,7 @@ import { DatabaseModule } from 'src/database/database.module';
 import { PassportModule } from '@nestjs/passport';
 import { StrategyFortyTwo } from './strategy/42.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { StatsService } from 'src/stats/stats.service';
 import { UsersModule } from 'src/users/users.module';

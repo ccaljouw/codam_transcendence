@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { TestingService } from './services/testing.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../authentication/guard/jwt-auth.guard';
 
 @Controller('test')
 @ApiTags('testing')

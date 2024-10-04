@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import * as QRCode from 'qrcode';
 import * as speakeasy from 'speakeasy';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 
 @Injectable()
 export class TwoFAService {

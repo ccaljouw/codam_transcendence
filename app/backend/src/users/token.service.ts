@@ -8,8 +8,8 @@ import {
   forwardRef,
 } from '@nestjs/common';
 import { OnlineStatus } from '@prisma/client';
-import { PrismaService } from 'src/database/prisma.service';
-import { SocketServerProvider } from 'src/socket/socketserver.gateway';
+import { PrismaService } from '../database/prisma.service';
+import { SocketServerProvider } from '../socket/socketserver.gateway';
 
 @Injectable()
 export class TokenService {
