@@ -13,22 +13,22 @@ define color_output
 endef
 
 
-all: run
+all: update-env run
 
 run: clean
 	docker compose up
 
 update-env:
-	@echo "Updating HOST in .env file..."
+	@echo "Removing existing .env file (if present)..."
+	@rm -f .env
+	@echo "Creating new .env file..."
 	@NEW_HOST=$(shell { hostname -I 2>/dev/null | awk '{print $$1}'; ipconfig getifaddr en0; } || echo ""); \
 	if [ -n "$$NEW_HOST" ]; then \
-		if grep -q '^HOST=' .env; then \
-			sed -i '' "s/^HOST=.*/HOST=$${NEW_HOST}/" .env; \
-			echo "Replaced existing HOST with $$NEW_HOST"; \
-		else \
-			echo "HOST=$${NEW_HOST}" >> .env; \
-			echo "Added HOST=$$NEW_HOST to .env"; \
-		fi \
+		echo "HOST=$${NEW_HOST}" > .env; \
+		echo "FRONTEND_URL=\"http://$${NEW_HOST}:3000\"" >> .env; \
+		echo "BACKEND_URL=\"http://$${NEW_HOST}:3001\"" >> .env; \
+		echo "FRONTEND_URL_LOCAL=\"http://$${NEW_HOST}:3000\"" >> .env; \
+		echo "Created new .env with HOST=$$NEW_HOST"; \
 	else \
 		echo "Failed to retrieve host IP."; \
 	fi
