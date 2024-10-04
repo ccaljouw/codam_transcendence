@@ -27,7 +27,7 @@ update-env:
 		echo "HOST=$${NEW_HOST}" > .env; \
 		echo "FRONTEND_URL=\"http://$${NEW_HOST}:3000\"" >> .env; \
 		echo "BACKEND_URL=\"http://$${NEW_HOST}:3001\"" >> .env; \
-		echo "FRONTEND_URL_LOCAL=\"http://$${NEW_HOST}:3000\"" >> .env; \
+		echo "FRONTEND_URL_LOCAL=\"http://localhoste:3000\"" >> .env; \
 		echo "Created new .env with HOST=$$NEW_HOST"; \
 	else \
 		echo "Failed to retrieve host IP."; \
