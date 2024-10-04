@@ -6,3 +6,4 @@ app/shared/avatars/*.png
 app/postgres_db
 .DS_Store
 app/backend/.env copy
+.env
